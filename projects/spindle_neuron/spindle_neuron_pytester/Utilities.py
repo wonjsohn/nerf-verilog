@@ -11,9 +11,10 @@ BUTTON_ENABLE_SIM = 2
 #DATA_EVT_PPS_I_COEF = 2
 #DATA_EVT_GAMMA_DYN = 5
 DATA_EVT_CLKRATE = 7
-SEND_TYPE = ['', '', 'float32', '', 'float32', '', '', 'int32', '']
+SEND_TYPE = ['', '', 'float32', '', 'float32', '', '', 'int32', '', '', \
+             '', '', '', '', 'float32', 'float32']
 
-DISPLAY_SCALING =[50, 0.11,  0.11, 0.001, 1,  1]
+DISPLAY_SCALING =[50, 0.11,  0.11, 0.001, 0.11,  0.11]
 DATA_OUT_ADDR = [0x22, 0x20, 0x24, 0x26, 0x28, 0x30]
 CH_TYPE = ['float32', 'float32', 'float32', 'int32', 'int32', 'float32']
 CHANNEL_COLOR = [Qt.blue, Qt.red, Qt.green, Qt.black, Qt.yellow, Qt.gray]

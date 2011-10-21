@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog_cmn/projects/spindle_neuron/spindle_neuron_pytester/Controls.ui'
 #
-# Created: Fri Oct 21 15:47:33 2011
+# Created: Fri Oct 21 16:02:10 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -409,7 +409,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_13.setObjectName(_fromUtf8("doubleSpinBox_13"))
         self.formLayout_13.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_13)
         self.layoutWidget_15 = QtGui.QWidget(Dialog)
-        self.layoutWidget_15.setGeometry(QtCore.QRect(230, 600, 203, 29))
+        self.layoutWidget_15.setGeometry(QtCore.QRect(230, 600, 212, 34))
         self.layoutWidget_15.setObjectName(_fromUtf8("layoutWidget_15"))
         self.formLayout_14 = QtGui.QFormLayout(self.layoutWidget_15)
         self.formLayout_14.setMargin(0)
@@ -420,11 +420,12 @@ class Ui_Dialog(object):
         self.doubleSpinBox_14 = QtGui.QDoubleSpinBox(self.layoutWidget_15)
         self.doubleSpinBox_14.setDecimals(5)
         self.doubleSpinBox_14.setMaximum(2000000.0)
-        self.doubleSpinBox_14.setProperty(_fromUtf8("value"), 80.0)
+        self.doubleSpinBox_14.setSingleStep(0.01)
+        self.doubleSpinBox_14.setProperty(_fromUtf8("value"), 0.0362)
         self.doubleSpinBox_14.setObjectName(_fromUtf8("doubleSpinBox_14"))
         self.formLayout_14.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_14)
         self.layoutWidget_16 = QtGui.QWidget(Dialog)
-        self.layoutWidget_16.setGeometry(QtCore.QRect(230, 635, 203, 29))
+        self.layoutWidget_16.setGeometry(QtCore.QRect(230, 635, 212, 34))
         self.layoutWidget_16.setObjectName(_fromUtf8("layoutWidget_16"))
         self.formLayout_15 = QtGui.QFormLayout(self.layoutWidget_16)
         self.formLayout_15.setMargin(0)
@@ -435,7 +436,8 @@ class Ui_Dialog(object):
         self.doubleSpinBox_15 = QtGui.QDoubleSpinBox(self.layoutWidget_16)
         self.doubleSpinBox_15.setDecimals(5)
         self.doubleSpinBox_15.setMaximum(2000000.0)
-        self.doubleSpinBox_15.setProperty(_fromUtf8("value"), 80.0)
+        self.doubleSpinBox_15.setSingleStep(0.1)
+        self.doubleSpinBox_15.setProperty(_fromUtf8("value"), 0.2356)
         self.doubleSpinBox_15.setObjectName(_fromUtf8("doubleSpinBox_15"))
         self.formLayout_15.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_15)
         self.layoutWidget_17 = QtGui.QWidget(Dialog)
@@ -499,8 +501,8 @@ class Ui_Dialog(object):
         self.label_11.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
         self.label_12.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
         self.label_13.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_14.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_15.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_14.setText(QtGui.QApplication.translate("Dialog", "B2damp", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_15.setText(QtGui.QApplication.translate("Dialog", "B1damp", None, QtGui.QApplication.UnicodeUTF8))
         self.label_16.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
         self.label_17.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
 

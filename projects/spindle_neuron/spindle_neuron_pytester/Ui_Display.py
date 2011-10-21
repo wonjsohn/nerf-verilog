@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog_cmn/projects/spindle_neuron/spindle_neuron_pytester/Display.ui'
 #
-# Created: Fri Oct 21 15:47:33 2011
+# Created: Fri Oct 21 16:02:11 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
