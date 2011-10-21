@@ -1030,15 +1030,15 @@
     <rect>
      <x>230</x>
      <y>600</y>
-     <width>203</width>
-     <height>29</height>
+     <width>212</width>
+     <height>34</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout_14">
     <item row="0" column="1">
      <widget class="QLabel" name="label_14">
       <property name="text">
-       <string>Clkrate</string>
+       <string>B2damp</string>
       </property>
      </widget>
     </item>
@@ -1050,8 +1050,11 @@
       <property name="maximum">
        <double>2000000.000000000000000</double>
       </property>
+      <property name="singleStep">
+       <double>0.010000000000000</double>
+      </property>
       <property name="value">
-       <double>80.000000000000000</double>
+       <double>0.036200000000000</double>
       </property>
      </widget>
     </item>
@@ -1062,15 +1065,15 @@
     <rect>
      <x>230</x>
      <y>635</y>
-     <width>203</width>
-     <height>29</height>
+     <width>212</width>
+     <height>34</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout_15">
     <item row="0" column="1">
      <widget class="QLabel" name="label_15">
       <property name="text">
-       <string>Clkrate</string>
+       <string>B1damp</string>
       </property>
      </widget>
     </item>
@@ -1082,8 +1085,11 @@
       <property name="maximum">
        <double>2000000.000000000000000</double>
       </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
       <property name="value">
-       <double>80.000000000000000</double>
+       <double>0.235600000000000</double>
       </property>
      </widget>
     </item>

@@ -73,6 +73,11 @@ class User(QDialog, Ui_Dialog):
 #        self.connect(self.doubleSpinBox_9, SIGNAL("editingFinished()"), self.onNewWire09In)
 #        self.connect(self.doubleSpinBox_9, SIGNAL("valueChanged(double)"), self.onNewWire09In)
 
+        self.connect(self.doubleSpinBox_14, SIGNAL("editingFinished()"), self.onNewWireIn14)
+        self.connect(self.doubleSpinBox_14, SIGNAL("valueChanged(double)"), self.onNewWireIn14)
+        
+        self.connect(self.doubleSpinBox_15, SIGNAL("editingFinished()"), self.onNewWireIn15)
+        self.connect(self.doubleSpinBox_15, SIGNAL("valueChanged(double)"), self.onNewWireIn15)
 
 
     def onCheckMoney(self):
@@ -111,6 +116,14 @@ class User(QDialog, Ui_Dialog):
     def onNewWireIn5(self):
         newWireIn = self.doubleSpinBox_5.value()
         self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 5)
+
+    def onNewWireIn14(self):
+        newWireIn = self.doubleSpinBox_14.value()
+        self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 14)
+        
+    def onNewWireIn15(self):
+        newWireIn = self.doubleSpinBox_15.value()
+        self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 15)
 
     def plotData(self, data):
         from pylab import plot, show, subplot
