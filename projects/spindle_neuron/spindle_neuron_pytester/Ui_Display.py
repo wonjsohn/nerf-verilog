@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/minos001/nerf_project/clean_nerf/projects/spindle_synapse_popizh/pyQtTester/Display.ui'
+# Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog_cmn/projects/spindle_neuron/spindle_neuron_pytester/Display.ui'
 #
-# Created: Thu Oct 20 17:25:27 2011
+# Created: Fri Oct 21 15:47:33 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!

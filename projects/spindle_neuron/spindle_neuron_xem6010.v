@@ -28,12 +28,12 @@ module spindle_neuron_xem6010(
 	input  wire        clk2,
 	
 	output wire [7:0]  led,
-    output wire  Ia_spike,
-    output wire II_spike,
-    output wire clk_out
+    output wire pin0,
+    output wire pin1,
+    output wire pin2
    );
    
-		parameter NN = 8;
+    parameter NN = 8;
 		
     // *** Dump all the declarations here:
     wire         ti_clk;
@@ -45,90 +45,37 @@ module spindle_neuron_xem6010(
     wire        is_pipe_being_written, is_lce_valid;
 
     wire [31:0] current_lce;
-    wire [15:0] lce_from_py;
+    wire [15:0] hex_from_py;
 
     wire [31:0] Ia_fr, x_0, x_1, II_fr;
     
-    reg [17:0] delay_cnt, delay_cnt_max;
-    reg [31:0] gamma_dyn;
     
-    reg test_clk;
-    reg [15:0] rawspikes;
-	 wire pipe_out_read;
-    	wire sim_clk, spindle_clk;
+    wire pipe_out_read;
     // *** Target interface bus:
     assign i2c_sda = 1'bz;
     assign i2c_scl = 1'bz;
     assign hi_muxsel = 1'b0;
 
-    // *** Endpoint connections:
-    assign ep20wire = Ia_fr[15:0];
-    assign ep21wire = Ia_fr[31:16];
-  
-    assign ep22wire = current_lce[15:0];
-    assign ep23wire = current_lce[31:16];
-    assign ep24wire = v1[15:0];
-    assign ep25wire = {16'b0, v1[17:16]};
-    assign ep26wire = x_1[15:0];
-    assign ep27wire = x_1[31:16];
-    assign ep28wire = spike_count_out[15:0];
-    assign ep29wire = spike_count_out[31:16];
-    assign ep30wire = II_fr[15:0];
-    assign ep31wire = II_fr[31:16];
-    
-    // *** Buttons, physical on XEM3010, software on XEM3050 & XEM6010
-    // *** Reset & Enable signals
-    assign reset_global = ep00wire[0];
-    assign reset_sim = ep00wire[1];
-    //assign enable_sim = is_lce_valid;
-        
-    // ** LEDs
-    assign led[4:2] = 3'b111;
-    assign led[0] = 1'b1;
-    assign led[1] = 1'b1;
-    assign led[5] = ~Ia_spike;
-    assign led[6] = ~II_spike;
-    assign led[7] = ~reset_global;
-    //assign led[6] = ~execute; // When execute==1, led lits
-
-    
-    // *** Adjust clk1 to test_clk
-    always @ (posedge clk1) begin
-//        if (reset_global) begin
-//            delay_cnt <= 0;
-//            test_clk <=
-//        end
-        if (delay_cnt < delay_cnt_max) begin
-            test_clk <= test_clk;
-            delay_cnt <= delay_cnt + 1;
-        end
-        else begin
-            test_clk <= ~test_clk;
-            delay_cnt <= 0;
-        end
-    end
-    assign clk_out = test_clk;
     // *** Triggered input from Python
+    reg [31:0] delay_cnt_max;
     always @(posedge ep50trig[7] or posedge reset_global)
     begin
         if (reset_global)
             delay_cnt_max <= delay_cnt_max;
         else
-            delay_cnt_max <= {2'b00, ep01wire};  //firing rate
-    end
+            delay_cnt_max <= {ep02wire, ep01wire};  //firing rate
+    end    
     
+    reg [31:0] gamma_dyn;
     always @(posedge ep50trig[4] or posedge reset_global)
     begin
         if (reset_global)
             gamma_dyn <= 32'h42A0_0000; // gamma_dyn reset to 80
         else
             gamma_dyn <= {ep02wire, ep01wire};  //firing rate
-    end    
+    end  
     
     reg [31:0] BDAMP_1, BDAMP_2, BDAMP_chain, GI, GII;
-	//assign BDAMP_1 = 32'h3E71_4120;//bag 1 BDAMP = 0.2356	 
-	//assign BDAMP_2 = 32'h3D14_4674; //bag 2 BDAMP = 0.0362
-    //assign BDAMP_chain = 32'h3C58_44D0;// chain BDAMP = 0.0132   
     always @(posedge ep50trig[15] or posedge reset_global)
     begin
         if (reset_global)
@@ -150,7 +97,6 @@ module spindle_neuron_xem6010(
         else
             BDAMP_chain <= {ep02wire, ep01wire};  //firing rate
     end
-    //assign GI_0	    = 32'h469C4000;    
     always @(posedge ep50trig[12] or posedge reset_global)
     begin
         if (reset_global)
@@ -158,7 +104,6 @@ module spindle_neuron_xem6010(
         else
             GI <= {ep02wire, ep01wire};  //firing rate
     end    
-    //assign GII = 32'h45E2_9000; //7250
     always @(posedge ep50trig[11] or posedge reset_global)
     begin
         if (reset_global)
@@ -166,39 +111,48 @@ module spindle_neuron_xem6010(
         else
             GII <= {ep02wire, ep01wire};  //firing rate
     end        
-    // *** Generating waveform to stimulate the spindle
-//    waveform_from_lut get_muscle_lce
-//    (   .clk(test_clk),
-//        .reset(reset_global),
-//        .value(current_lce)
-//    );
+    
+    // *** Deriving clocks from on-board clk1:
+    wire neuron_clk, sim_clk, spindle_clk;
+    wire [NN+2:0] neuronCounter;
 
+    gen_clk #(.NN(8)) useful_clocks
+    (   .rawclk(clk1), 
+        .half_cnt(delay_cnt_max), 
+        .clk_out1(neuron_clk), 
+        .clk_out2(sim_clk), 
+        .clk_out3(spindle_clk),
+        .int_neuron_cnt_out(neuronCounter) );
+                
+    
+    // *** Generating waveform to stimulate the spindle
 	waveform_from_pipe gen(	
         .ti_clk(ti_clk),
         .reset(reset_global),
         .repop(reset_sim),
         .feed_data_valid(is_pipe_being_written),
-        .feed_data(lce_from_py),
+        .feed_data(hex_from_py),
         .current_element(current_lce),
         .test_clk(sim_clk),
         .done_feeding(is_lce_valid)
     );        
 
     // *** Spindle: current_lce => Ia_fr
-    spindle bag1_bag2_chain(	.gamma_dyn(gamma_dyn), // 32'h42A0_0000
-                        .gamma_sta(gamma_dyn),
-					.lce(current_lce),
-					.clk(spindle_clk),
-					.reset(reset_sim),
-					.out0(x_0),
-                    .out1(x_1),
-                    .out2(II_fr),
-                    .out3(Ia_fr),
-                    .BDAMP_1(BDAMP_1),
-                    .BDAMP_2(BDAMP_2),
-                    .BDAMP_chain(BDAMP_chain),
-                    .GI(GI),
-                    .GII(GII)
+    spindle bag1_bag2_chain
+    (	.gamma_dyn(gamma_dyn), // 32'h42A0_0000
+        .gamma_sta(gamma_dyn),
+        .lce(current_lce),
+        .clk(spindle_clk),
+        .reset(reset_sim),
+        .out0(x_0),
+        .out1(x_1),
+        .out2(II_fr),
+        .out3(Ia_fr),
+        .BDAMP_1(BDAMP_1),
+        .BDAMP_2(BDAMP_2),
+        .BDAMP_chain(BDAMP_chain),
+        .GI(GI),
+        .GII(GII)
 		);
 
     // *** Izhikevich: Ia_fr => spikes
@@ -215,11 +169,13 @@ module spindle_neuron_xem6010(
                                 .reset(reset_sim),
 								.spike(Ia_spike)
     );
-   spindle_neuron II_neuron(	.pps(II_fr),
+    spindle_neuron II_neuron(	.pps(II_fr),
 								.clk(sim_clk),
                                 .reset(reset_sim),
 								.spike(II_spike)
     );
+    
+    
     // *** Create 1 Izh-neuron
     
 	wire [3:0] a, b, tau;
@@ -230,36 +186,11 @@ module spindle_neuron_xem6010(
 	assign d =  18'sh0_147A ; // 0.08 = dec2hex(floor(0.08 * hex2dec('ffff'))) = 147A
 	assign tau = 4'h2;
 	
-	reg [NN+2:0] neuronCounter;
-	wire [NN:0] neuronIndex;
-	reg firstNeuron;
-	reg [31:0] spike_count, spike_count_out;
-	always @ (posedge test_clk)
-	begin	
-		neuronCounter <= neuronCounter + 1'b1;
-//		if (spike)
-//			spike_count <= spike_count + 1;
-		if (firstNeuron)
-		begin
-			spike_count_out <= spike_count;
-			spike_count <= 0;
-		end
-	end
 			
-	
-	always @ (negedge test_clk)
-	begin
-		firstNeuron <= (neuronIndex == 0);
-	end
-	assign sim_clk = (neuronCounter == 0) ? 1 : 0;
-    //assign spindle_clk = sim_clk;
-
-    assign spindle_clk = (neuronIndex == 0) ? 1 : 
-                        (neuronIndex == 8'd85) ? 1 :
-                        (neuronIndex == 8'd170) ? 1 : 0;
-    
 	wire [1:0] state;
 	assign state = neuronCounter[1:0];
+    
+	wire [NN:0] neuronIndex;
 	assign neuronIndex = neuronCounter[NN+2:2];
 	
 	wire state1, state2, state3, state4;
@@ -273,12 +204,46 @@ module spindle_neuron_xem6010(
 	assign neuronWriteCount = state1;	//increment neuronID (ram address)
 	assign readClock = state2;				//read RAM
 	assign neuronWriteEnable = state4; //(state3 | state4);	//write RAM
-	assign dataValid = firstNeuron;  //(neuronIndex ==0) & state2; //(neuronIndex == 1);   //slight delay of positive edge to allow latch set-up times
+	assign dataValid = (neuronCounter == 32'd0);  //(neuronIndex ==0) & state2; //(neuronIndex == 1);   //slight delay of positive edge to allow latch set-up times
 		
-	//Iz_neuron #(.NN(NN),.DELAY(10)) neuIa(v1,s1, a,b,c,d, int_I1[17:0], test_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, spike);
+//            reg [15:0] rawspikes;
+
+	//Iz_neuron #(.NN(NN),.DELAY(10)) neuIa(v1,s1, a,b,c,d, int_I1[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, spike);
 //	always @(negedge neuronIndex[0]) rawspikes <= {1'b0, neuronIndex[NN:2], spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
     // Instantiate the okHost and connect endpoints.
     // Host interface
+    
+    
+    // ** LEDs 0 = ON    
+    assign led[4:2] = 3'b111;
+    assign led[0] = ~spindle_clk;
+    assign led[1] = 1'b1;
+    assign led[5] = ~neuron_clk;
+    assign led[6] = ~sim_clk;
+    assign led[7] = ~reset_global;
+    
+      
+    // *** Buttons, physical on XEM3010, software on XEM3050 & XEM6010
+    assign reset_global = ep00wire[0];
+    assign reset_sim = ep00wire[1];
+    
+    // *** Endpoint connections:
+    assign pin0 = neuron_clk;
+    assign pin1 = sim_clk;
+    assign pin2 = spindle_clk;
+    
+    assign ep20wire = Ia_fr[15:0];
+    assign ep21wire = Ia_fr[31:16];
+    assign ep22wire = current_lce[15:0];
+    assign ep23wire = current_lce[31:16];
+    assign ep24wire = v1[15:0];
+    assign ep25wire = {16'b0, v1[17:16]};
+    assign ep26wire = x_1[15:0];
+    assign ep27wire = x_1[31:16];
+//    assign ep28wire = spike_count_out[15:0];
+//    assign ep29wire = spike_count_out[31:16];
+    assign ep30wire = II_fr[15:0];
+    assign ep31wire = II_fr[31:16];
       
     okHost okHI(
         .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
@@ -304,7 +269,7 @@ module spindle_neuron_xem6010(
     okWireOut    wo31 (.ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h31), .ep_datain(ep31wire));
         
      //ep_ready = 1 (always ready to receive)
-    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(lce_from_py), .ep_ready(1'b1));
+    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
 
     okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
 

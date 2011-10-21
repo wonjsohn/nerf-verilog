@@ -11,7 +11,7 @@ BUTTON_ENABLE_SIM = 2
 #DATA_EVT_PPS_I_COEF = 2
 #DATA_EVT_GAMMA_DYN = 5
 DATA_EVT_CLKRATE = 7
-SEND_TYPE = ['', '', 'float32', '', 'float32', '', '', 'int16', '']
+SEND_TYPE = ['', '', 'float32', '', 'float32', '', '', 'int32', '']
 
 DISPLAY_SCALING =[50, 0.11,  0.11, 0.001, 1,  1]
 DATA_OUT_ADDR = [0x22, 0x20, 0x24, 0x26, 0x28, 0x30]
@@ -20,7 +20,7 @@ CHANNEL_COLOR = [Qt.blue, Qt.red, Qt.green, Qt.black, Qt.yellow, Qt.gray]
 ZERO_DATA = [0.0 for ix in xrange(NUM_CHANNEL)]
 BIT_FILE = "../spindle_neuron_xem6010.bit"
 SAMPLING_RATE = 1024
-NUM_NEURON = 1024
+NUM_NEURON = 512
 
 
 def ConvertType(val, fromType, toType):
