@@ -16,6 +16,7 @@ License: this code is in the public domain
 import os
 import random
 import sys
+sys.path.append('../../source/py/')
 import wx
 import wx.lib.plot as plot
 import wx.lib.agw.floatspin as fs
@@ -60,7 +61,7 @@ DATA_EVT_GAMMA = 4
 DISPLAY_SCALING =[0.1, 0.1, 50] 
 DATA_OUT_ADDR = [FR_ADDR, 0x30, LCE_ADDR]
 ZERO_DATA = [0.0 for ix in xrange(NUM_CHANNEL)]
-BIT_FILE = "./spindle_bag1_neuron_xem6010.bit"
+BIT_FILE = "./spindle_neuron_xem6010.bit"
 ## BIT_FILE = "/home/minos001/nerf_project/working_spindle/projects/pipe_in_wave_2048/pipe_in_wave_2048_xem3050.bit"
 
 class Model:

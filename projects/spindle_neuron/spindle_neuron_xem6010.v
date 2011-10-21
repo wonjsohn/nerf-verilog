@@ -15,7 +15,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module spindle_bag1_neuron_xem6010(
+module spindle_neuron_xem6010(
 	input  wire [7:0]  hi_in,
 	output wire [1:0]  hi_out,
 	inout  wire [15:0] hi_inout,
