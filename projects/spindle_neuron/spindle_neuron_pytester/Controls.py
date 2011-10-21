@@ -92,11 +92,8 @@ class User(QDialog, Ui_Dialog):
             self.data.append(newData)
         
     def onClkRate(self, value):   
-        if False: # If testing a neuron (fast structure)
-            newClkRate = 96 * (10 **6) / SAMPLING_RATE / value / 2
-        else: # If testing an organ (slow structure)
-            newClkRate = 96 * (10 **6) / SAMPLING_RATE / NUM_NEURON / value / 2
-        self.nerfModel.SendPara(newVal = newClkRate, trigEvent = DATA_EVT_CLKRATE)
+        newHalfCnt = 200 * (10 **6) / SAMPLING_RATE / NUM_NEURON / value / 2 / 4
+        self.nerfModel.SendPara(newVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
         
 #    def onNewWireIn(self, evt):
 #        newWireIn = eval('self.doubleSpinBox_'+str(evt)+u'.value()')

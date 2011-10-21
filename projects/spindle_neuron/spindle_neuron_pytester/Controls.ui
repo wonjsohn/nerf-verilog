@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>465</width>
-    <height>469</height>
+    <width>463</width>
+    <height>840</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -595,7 +595,7 @@
     <number>1</number>
    </property>
   </widget>
-  <widget class="QLabel" name="label_3">
+  <widget class="QLabel" name="label_RT">
    <property name="geometry">
     <rect>
      <x>90</x>
@@ -673,7 +673,7 @@
    </property>
    <layout class="QFormLayout" name="formLayout_3">
     <item row="0" column="1">
-     <widget class="QLabel" name="label_4">
+     <widget class="QLabel" name="label_3">
       <property name="text">
        <string>unused</string>
       </property>
@@ -702,7 +702,7 @@
    </property>
    <layout class="QFormLayout" name="formLayout_4">
     <item row="0" column="1">
-     <widget class="QLabel" name="label_5">
+     <widget class="QLabel" name="label_4">
       <property name="text">
        <string>GammaDyn</string>
       </property>
@@ -724,14 +724,14 @@
    <property name="geometry">
     <rect>
      <x>230</x>
-     <y>360</y>
+     <y>240</y>
      <width>176</width>
      <height>34</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout_5">
     <item row="0" column="1">
-     <widget class="QLabel" name="label_6">
+     <widget class="QLabel" name="label_5">
       <property name="text">
        <string>unused</string>
       </property>
@@ -760,7 +760,7 @@
    </property>
    <layout class="QFormLayout" name="formLayout_6">
     <item row="0" column="1">
-     <widget class="QLabel" name="label_7">
+     <widget class="QLabel" name="label_6">
       <property name="text">
        <string>unused</string>
       </property>
@@ -782,14 +782,14 @@
    <property name="geometry">
     <rect>
      <x>230</x>
-     <y>240</y>
+     <y>320</y>
      <width>176</width>
      <height>34</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout_7">
     <item row="0" column="1">
-     <widget class="QLabel" name="label_8">
+     <widget class="QLabel" name="label_7">
       <property name="text">
        <string>GammaSta</string>
       </property>
@@ -811,14 +811,14 @@
    <property name="geometry">
     <rect>
      <x>230</x>
-     <y>320</y>
+     <y>360</y>
      <width>176</width>
      <height>34</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout_8">
     <item row="0" column="1">
-     <widget class="QLabel" name="label_9">
+     <widget class="QLabel" name="label_8">
       <property name="text">
        <string>Clkrate</string>
       </property>
@@ -865,6 +865,321 @@
     </item>
    </layout>
   </widget>
+  <widget class="QWidget" name="layoutWidget_10">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>400</y>
+     <width>203</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout_9">
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_9">
+      <property name="text">
+       <string>Clkrate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QDoubleSpinBox" name="doubleSpinBox_9">
+      <property name="decimals">
+       <number>5</number>
+      </property>
+      <property name="maximum">
+       <double>2000000.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>80.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_11">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>440</y>
+     <width>203</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout_10">
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>Clkrate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QDoubleSpinBox" name="doubleSpinBox_10">
+      <property name="decimals">
+       <number>5</number>
+      </property>
+      <property name="maximum">
+       <double>2000000.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>80.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_12">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>480</y>
+     <width>203</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout_11">
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>Clkrate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QDoubleSpinBox" name="doubleSpinBox_11">
+      <property name="decimals">
+       <number>5</number>
+      </property>
+      <property name="maximum">
+       <double>2000000.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>80.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_13">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>520</y>
+     <width>203</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout_12">
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_12">
+      <property name="text">
+       <string>Clkrate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QDoubleSpinBox" name="doubleSpinBox_12">
+      <property name="decimals">
+       <number>5</number>
+      </property>
+      <property name="maximum">
+       <double>2000000.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>80.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_14">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>560</y>
+     <width>203</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout_13">
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_13">
+      <property name="text">
+       <string>Clkrate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QDoubleSpinBox" name="doubleSpinBox_13">
+      <property name="decimals">
+       <number>5</number>
+      </property>
+      <property name="maximum">
+       <double>2000000.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>80.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_15">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>600</y>
+     <width>203</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout_14">
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_14">
+      <property name="text">
+       <string>Clkrate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QDoubleSpinBox" name="doubleSpinBox_14">
+      <property name="decimals">
+       <number>5</number>
+      </property>
+      <property name="maximum">
+       <double>2000000.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>80.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_16">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>635</y>
+     <width>203</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout_15">
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_15">
+      <property name="text">
+       <string>Clkrate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QDoubleSpinBox" name="doubleSpinBox_15">
+      <property name="decimals">
+       <number>5</number>
+      </property>
+      <property name="maximum">
+       <double>2000000.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>80.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_17">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>670</y>
+     <width>203</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout_16">
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_16">
+      <property name="text">
+       <string>Clkrate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QDoubleSpinBox" name="doubleSpinBox_16">
+      <property name="decimals">
+       <number>5</number>
+      </property>
+      <property name="maximum">
+       <double>2000000.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>80.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_18">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>705</y>
+     <width>203</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout_17">
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_17">
+      <property name="text">
+       <string>Clkrate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QDoubleSpinBox" name="doubleSpinBox_17">
+      <property name="decimals">
+       <number>5</number>
+      </property>
+      <property name="maximum">
+       <double>2000000.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>80.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <zorder>pushButton_2</zorder>
+  <zorder>pushButton_4</zorder>
+  <zorder>pushButton_5</zorder>
+  <zorder>comboBox</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>horizontalSlider</zorder>
+  <zorder>lcdNumber</zorder>
+  <zorder>label_RT</zorder>
+  <zorder>pushButtonData</zorder>
+  <zorder>layoutWidget_2</zorder>
+  <zorder>layoutWidget_3</zorder>
+  <zorder>layoutWidget_4</zorder>
+  <zorder>layoutWidget_5</zorder>
+  <zorder>layoutWidget_6</zorder>
+  <zorder>layoutWidget_7</zorder>
+  <zorder>layoutWidget_8</zorder>
+  <zorder>layoutWidget_9</zorder>
+  <zorder>layoutWidget_10</zorder>
+  <zorder>layoutWidget_11</zorder>
+  <zorder>layoutWidget_12</zorder>
+  <zorder>layoutWidget_13</zorder>
+  <zorder>layoutWidget_14</zorder>
+  <zorder>layoutWidget_15</zorder>
+  <zorder>layoutWidget_16</zorder>
+  <zorder>layoutWidget_17</zorder>
+  <zorder>layoutWidget_18</zorder>
+  <zorder>doubleSpinBox_11</zorder>
  </widget>
  <resources/>
  <connections>
