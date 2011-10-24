@@ -210,8 +210,10 @@ module spindle_synapse_MN_xem6010(
 //			.clk(sim_clk),
 //			.reset(reset_sim)
 //	);
+	wire signed [17:0] Ia_w1, Ia_w2;  //learned synaptic weights
+
 	synapse   #(.NN(NN)) synIa(I_out, 	Ia_spike, 18'sh01000, 	1'b0, 	18'h0, 			1'b0, 	18'h0, 1'b0, 
-								neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 0, 0, 0, 0, 
+								neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 0, 0, Ia_w1, Ia_w2, 
 								0, 0);    
     
 	assign int_postsyn_I = {14'h0, I_out};
