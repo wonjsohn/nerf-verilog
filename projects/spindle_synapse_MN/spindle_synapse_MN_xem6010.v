@@ -167,19 +167,25 @@ module spindle_synapse_MN_xem6010(
         // *** Convert float_fr to int_I1
 	
     wire [31:0] float_fr_Ia, float_fr_II;
-//    wire [17:0] int_I1;
+    wire [31:0] int_I_Ia;
 
 	mult scale_pps( .x(float_rawfr_Ia), .y(float_pps_coef_Ia), .out(float_fr_Ia));
     assign float_fr_II = float_rawfr_II;
-//	floor float_to_int( .in(float_I1), .out(int_I1) );
     
-    wire Ia_spike;
-    spindle_neuron Ia_neuron(	.pps(float_fr_Ia),
-								.clk(sim_clk),
-                                .reset(reset_sim),
-								.spike(Ia_spike)
-    );
-    wire II_spike;    
+	floor float_to_int( .in(float_fr_Ia), .out(int_I_Ia) );
+    
+    wire Ia_spike, s_Ia;
+    wire signed [17:0] v_Ia;   // cell potentials
+
+    Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
+    (v_Ia,s_Ia, a,b,c,d, int_I_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
+
+//    spindle_neuron Ia_neuron(	.pps(float_fr_Ia),
+//								.clk(sim_clk),
+//                                .reset(reset_sim),
+//								.spike(Ia_spike)
+//    );
+//    wire II_spike;    
 //    spindle_neuron II_neuron(	.pps(float_fr_II),
 //								.clk(sim_clk),
 //                                .reset(reset_sim),
@@ -191,20 +197,25 @@ module spindle_synapse_MN_xem6010(
 	wire [17:0]  I_out;
 	wire [17:0]	w1, w2, w3;
 	wire spk1, spk2, spk3;
+    wire [31:0] int_postsyn_I;
     
-	synapse_int syn1(
-			.I_out(I_out),
-			.spk1(1'b0),
-			.w1(18'd1),
-			.spk2(Ia_spike),
-			.w2(18'd1),
-			.spk3(1'b0),
-			.w3(18'd1),
-			.clk(sim_clk),
-			.reset(reset_sim)
-	);
+//	synapse_int syn1(
+//			.I_out(I_out),
+//			.spk1(1'b0),
+//			.w1(18'd1),
+//			.spk2(Ia_spike),
+//			.w2(18'd1),
+//			.spk3(1'b0),
+//			.w3(18'd1),
+//			.clk(sim_clk),
+//			.reset(reset_sim)
+//	);
+	wire signed [17:0] Ia_w1, Ia_w2;  //learned synaptic weights
+
+	synapse   #(.NN(NN)) synIa(I_out, 	Ia_spike, 18'sh01000, 	1'b0, 	18'h0, 			1'b0, 	18'h0, 1'b0, 
+								neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 0, 0, Ia_w1, Ia_w2, 
+								0, 0);    
     
-	wire [31:0] int_postsyn_I;
 	assign int_postsyn_I = {14'h0, I_out};
     
     // *** izh-Motoneuron :: int_postsyn_I -> (MN_spike, rawspike)
@@ -238,7 +249,7 @@ module spindle_synapse_MN_xem6010(
     reg [15:0] rawspikes;
     wire MN_spike;
 
-	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, int_postsyn_I[17:0] >> 8, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike);
+	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, int_postsyn_I[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike);
 	always @(negedge neuronIndex[0]) rawspikes <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
     
     
