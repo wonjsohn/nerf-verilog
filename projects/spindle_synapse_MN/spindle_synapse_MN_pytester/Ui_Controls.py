@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog_cmn/projects/spindle_synapse_MN/spindle_synapse_MN_pytester/Controls.ui'
 #
-# Created: Fri Oct 21 18:24:10 2011
+# Created: Fri Oct 21 19:36:01 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -234,7 +234,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_2.setDecimals(5)
         self.doubleSpinBox_2.setMaximum(1000000.0)
         self.doubleSpinBox_2.setSingleStep(0.1)
-        self.doubleSpinBox_2.setProperty(_fromUtf8("value"), 0.05)
+        self.doubleSpinBox_2.setProperty(_fromUtf8("value"), 10.0)
         self.doubleSpinBox_2.setObjectName(_fromUtf8("doubleSpinBox_2"))
         self.formLayout_2.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_2)
         self.layoutWidget_3 = QtGui.QWidget(Dialog)
@@ -252,7 +252,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_3.setObjectName(_fromUtf8("doubleSpinBox_3"))
         self.formLayout_3.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_3)
         self.layoutWidget_4 = QtGui.QWidget(Dialog)
-        self.layoutWidget_4.setGeometry(QtCore.QRect(230, 200, 176, 34))
+        self.layoutWidget_4.setGeometry(QtCore.QRect(230, 200, 203, 34))
         self.layoutWidget_4.setObjectName(_fromUtf8("layoutWidget_4"))
         self.formLayout_4 = QtGui.QFormLayout(self.layoutWidget_4)
         self.formLayout_4.setMargin(0)
@@ -261,6 +261,7 @@ class Ui_Dialog(object):
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.formLayout_4.setWidget(0, QtGui.QFormLayout.FieldRole, self.label_4)
         self.doubleSpinBox_4 = QtGui.QDoubleSpinBox(self.layoutWidget_4)
+        self.doubleSpinBox_4.setDecimals(5)
         self.doubleSpinBox_4.setMaximum(200.0)
         self.doubleSpinBox_4.setProperty(_fromUtf8("value"), 80.0)
         self.doubleSpinBox_4.setObjectName(_fromUtf8("doubleSpinBox_4"))
