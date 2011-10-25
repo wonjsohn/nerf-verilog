@@ -9,6 +9,7 @@ from PyQt4.QtCore import pyqtSignature
 from PyQt4.QtCore import QTimer,  SIGNAL, SLOT, Qt,  QRect
 from PyQt4.QtGui import QPainter, QRegion, QPen
 import sys, random
+from struct import unpack
 
 INIT_X = 200 # pixels offset
 
@@ -68,9 +69,10 @@ class View(QMainWindow, Ui_Dialog):
 
         self.timer.start(VIEWER_REFRESH_RATE)
 
-    def newData(self, newData):
+    def newData(self, newData, newSpike = ''):
         self.data_1 = self.data
         self.data = newData
+        self.spike = newSpike
 
     def onTimeOut(self):
 
@@ -116,20 +118,37 @@ class View(QMainWindow, Ui_Dialog):
         r3 = QRegion (r1.intersect( r2 ))    ## r3 = intersection
         #p.setClipRegion( r1 )              ## set clip region
         self.drawPoints(p)          ## paint clipped graphics
+        self.drawRaster(p)
 
-#        qp = QPainter()
-#        qp.begin(self)
-#        self.drawPoints(qp)
-#        qp.end()
+
+    def drawRaster(self, gp):
+        spikeSeq = unpack("%d" % len(self.spike) + "b", self.spike)
+        
+        size = self.size()
+        winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 6;
+        self.pen.setStyle(Qt.SolidLine)
+        self.pen.setWidth(10)
+        self.pen.setBrush(Qt.blue)
+        self.pen.setCapStyle(Qt.RoundCap)
+        self.pen.setJoinStyle(Qt.RoundJoin)
+        gp.setPen(self.pen)
+        ## display the spike rasters
+        for i in xrange(0, len(spikeSeq), 2):
+            neuronID = spikeSeq[i+1]
+            rawspikes = spikeSeq[i]
+            ## flexors
+#            if (rawspikes & 64) : ## Ia
+#                gp.drawLine(self.x-4,(winScale) - 28 - (neuronID/4),\
+#                                 self.x, (winScale) -  28 - (neuronID/4))
+            if (rawspikes & 128) : ## MN
+#                gp.drawPoint(self.x, (winScale) - 24 - (neuronID/4)   ) 
+                gp.drawLine(self.x-2,(winScale) - 24 - (neuronID/2),\
+                                 self.x, (winScale) - 24 - (neuronID/2))
 
     def drawPoints(self, qp):
         """ 
         Draw a line between previous and current data points.
         """
-
-#        pen = self.pen
-
-
         size = self.size()
         self.yOffset = [size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * y for y in xrange(self.NUM_CHANNEL) ]
 

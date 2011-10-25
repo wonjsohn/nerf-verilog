@@ -61,8 +61,8 @@ class User(QDialog, Ui_Dialog):
         self.connect(self.doubleSpinBox_5, SIGNAL("editingFinished()"), self.onNewWireIn5)
         self.connect(self.doubleSpinBox_5, SIGNAL("valueChanged(double)"), self.onNewWireIn5)
 
-#        self.connect(self.doubleSpinBox_6, SIGNAL("editingFinished()"), self.onNewWire06In)
-#        self.connect(self.doubleSpinBox_6, SIGNAL("valueChanged(double)"), self.onNewWire06In)
+        self.connect(self.doubleSpinBox_6, SIGNAL("editingFinished()"), self.onNewWireIn6)
+        self.connect(self.doubleSpinBox_6, SIGNAL("valueChanged(double)"), self.onNewWireIn6)
 #
 #        self.connect(self.doubleSpinBox_7, SIGNAL("editingFinished()"), self.onNewWire07In)
 #        self.connect(self.doubleSpinBox_7, SIGNAL("valueChanged(double)"), self.onNewWire07In)
@@ -94,7 +94,9 @@ class User(QDialog, Ui_Dialog):
 #            if i == 3:
 #                print newData[i]
             
-        self.dispView.newData(newData)
+        newSpike = self.nerfModel.ReadPipe(0xA1, 4000) # read ## bytes
+        
+        self.dispView.newData(newData, newSpike)
         if (self.isLogData):
             self.data.append(newData)
         
@@ -111,17 +113,24 @@ class User(QDialog, Ui_Dialog):
         self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 2)
 
     def onNewWireIn3(self):
-        newWireIn = int(self.doubleSpinBox_3.value())
-#        print newWireIn, 
+        newWireIn = self.doubleSpinBox_3.value()
+        if SEND_TYPE[3] == 'int32': newWireIn = int(newWireIn)
         self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 3)
         
     def onNewWireIn4(self):
         newWireIn = self.doubleSpinBox_4.value()
+        if SEND_TYPE[4] == 'int32': newWireIn = int(newWireIn)
         self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 4)
 
     def onNewWireIn5(self):
         newWireIn = self.doubleSpinBox_5.value()
+        if SEND_TYPE[5] == 'int32': newWireIn = int(newWireIn)
         self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 5)
+
+    def onNewWireIn6(self):
+        newWireIn = self.doubleSpinBox_6.value()
+        if SEND_TYPE[6] == 'int32': newWireIn = int(newWireIn)
+        self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 6)
 
     def onNewWireIn14(self):
         newWireIn = self.doubleSpinBox_14.value()
