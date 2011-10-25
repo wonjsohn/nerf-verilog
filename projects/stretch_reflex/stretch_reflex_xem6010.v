@@ -47,7 +47,6 @@ module stretch_reflex_xem6010(
     wire [31:0] f_muscle_len;
     wire [15:0] hex_from_py;
  
-    wire pipe_out_read;
     // *** Target interface bus:
     assign i2c_sda = 1'bz;
     assign i2c_scl = 1'bz;
@@ -98,6 +97,15 @@ module stretch_reflex_xem6010(
         else
             f_gamma_sta <= {ep02wire, ep01wire};  
     end  
+    
+    reg [31:0] i_gain_MN;
+    always @(posedge ep50trig[6] or posedge reset_global)
+    begin
+        if (reset_global)
+            i_gain_MN <= 32'd1; // gamma_sta reset to 80
+        else
+            i_gain_MN <= {ep02wire, ep01wire};  
+    end      
     
     reg [31:0] BDAMP_1, BDAMP_2, BDAMP_chain, GI, GII;
     always @(posedge ep50trig[15] or posedge reset_global)
@@ -264,11 +272,12 @@ module stretch_reflex_xem6010(
 	assign neuronWriteEnable = state4; //(state3 | state4);	//write RAM
 	assign dataValid = (neuronCounter == 32'd0);  //(neuronIndex ==0) & state2; //(neuronIndex == 1);   //slight delay of positive edge to allow latch set-up times
 		
-    reg [15:0] rawspikes;
+    reg [15:0] raw_Ia_spikes, raw_MN_spikes;
     wire MN_spike;
 
-	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_postsyn_I[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike);
-	always @(negedge neuronIndex[0]) rawspikes <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
+	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_postsyn_I[17:0] * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike);
+	always @(negedge ti_clk) raw_MN_spikes <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
+	always @(negedge ti_clk) raw_Ia_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
     
     // *** Count the spikes: rawspikes -> spike -> spike_count_out
 	wire    [31:0] i_MN_spk_cnt;
@@ -347,12 +356,15 @@ module stretch_reflex_xem6010(
     okWireOut    wo27 (.ok1(ok1), .ok2(ok2x[ 7*17 +: 17 ]), .ep_addr(8'h27), .ep_datain(ep27wire));
     okWireOut    wo28 (.ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28), .ep_datain(ep28wire));
     okWireOut    wo29 (.ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29), .ep_datain(ep29wire));
-    okWireOut    wo30 (.ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h30), .ep_datain(ep30wire));
-    okWireOut    wo31 (.ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h31), .ep_datain(ep31wire));
+    okWireOut    wo30 (.ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30), .ep_datain(ep30wire));
+    okWireOut    wo31 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31), .ep_datain(ep31wire));
         
      //ep_ready = 1 (always ready to receive)
-    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
-    okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
+     wire pipe_out_read1, pipe_out_read2;
+
+    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
+    okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read1),  .ep_blockstrobe(), .ep_datain(raw_Ia_spikes), .ep_ready(1'b1));
+    okBTPipeOut  epA1 (.ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read2),  .ep_blockstrobe(), .ep_datain(raw_MN_spikes), .ep_ready(1'b1));
 
     okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
 endmodule
