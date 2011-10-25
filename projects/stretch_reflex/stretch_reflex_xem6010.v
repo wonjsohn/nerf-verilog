@@ -340,8 +340,8 @@ module stretch_reflex_xem6010(
         .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
         .ok1(ok1), .ok2(ok2));
 
-    wire [17*14-1:0]  ok2x;
-    okWireOR # (.N(14)) wireOR (ok2, ok2x);
+    wire [17*15-1:0]  ok2x;
+    okWireOR # (.N(16)) wireOR (ok2, ok2x);
     okWireIn     wi00 (.ok1(ok1),                           .ep_addr(8'h00), .ep_dataout(ep00wire));
     okWireIn     wi01 (.ok1(ok1),                           .ep_addr(8'h01), .ep_dataout(ep01wire));
     okWireIn     wi02 (.ok1(ok1),                           .ep_addr(8'h02), .ep_dataout(ep02wire));
