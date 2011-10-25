@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog_cmn/projects/stretch_reflex/stretch_reflex_pytester/Controls.ui'
 #
-# Created: Mon Oct 24 11:24:15 2011
+# Created: Tue Oct 25 10:56:22 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -234,7 +234,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_2.setDecimals(5)
         self.doubleSpinBox_2.setMaximum(1000000.0)
         self.doubleSpinBox_2.setSingleStep(0.1)
-        self.doubleSpinBox_2.setProperty(_fromUtf8("value"), 0.25)
+        self.doubleSpinBox_2.setProperty(_fromUtf8("value"), 0.35)
         self.doubleSpinBox_2.setObjectName(_fromUtf8("doubleSpinBox_2"))
         self.formLayout_2.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_2)
         self.layoutWidget_3 = QtGui.QWidget(Dialog)
@@ -291,7 +291,7 @@ class Ui_Dialog(object):
         self.formLayout_6.setWidget(0, QtGui.QFormLayout.FieldRole, self.label_6)
         self.doubleSpinBox_6 = QtGui.QDoubleSpinBox(self.layoutWidget_6)
         self.doubleSpinBox_6.setMaximum(200.0)
-        self.doubleSpinBox_6.setProperty(_fromUtf8("value"), 80.0)
+        self.doubleSpinBox_6.setProperty(_fromUtf8("value"), 30.0)
         self.doubleSpinBox_6.setObjectName(_fromUtf8("doubleSpinBox_6"))
         self.formLayout_6.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_6)
         self.layoutWidget_7 = QtGui.QWidget(Dialog)
@@ -495,9 +495,9 @@ class Ui_Dialog(object):
         self.label_3.setText(QtGui.QApplication.translate("Dialog", "Close loop", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("Dialog", "GammaDyn", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_6.setText(QtGui.QApplication.translate("Dialog", "gain_MN", None, QtGui.QApplication.UnicodeUTF8))
         self.label_7.setText(QtGui.QApplication.translate("Dialog", "GammaSta", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_8.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_8.setText(QtGui.QApplication.translate("Dialog", "N/A", None, QtGui.QApplication.UnicodeUTF8))
         self.label_0.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
         self.label_9.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
         self.label_10.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
