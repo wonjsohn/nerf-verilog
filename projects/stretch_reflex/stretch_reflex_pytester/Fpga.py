@@ -154,5 +154,11 @@ class Model:
         self.xem.ActivateTriggerIn(0x50, trigEvent)        
 
 
-
-
+    def ReadPipe(self, addr, len = 1000):
+        buf = "\x00" * len
+        self.xem.ReadFromPipeOut(addr, buf)
+        ## 'buf' becomes a string buffer which is used to contain the
+        ## data read from the pipeout. In both the Write and Read
+        ## cases, the length of the buffer passed is the length
+        ## transferred.
+        return buf
