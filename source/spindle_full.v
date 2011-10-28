@@ -15,7 +15,8 @@ module spindle(
     input   [31:0] GII
     );
 
-       
+
+        
     // *** Declarations
 	reg [1:0] state;   	
 	//wire [1:0] state;
@@ -202,7 +203,7 @@ module spindle(
 	integrator x_2_hat_integrator (	.x(dx_2_in), .int_x(x_2_in), .out(x_2_hat) );
 	//loeb spindle bag1 derivatives
 	spindle_derivatives derivatives(    .state(state),	
-                                 .gamma_dyn(gamma_dyn),
+                                 .gamma_dyn(gamma_sta),
                                 .gamma_sta(gamma_sta),                                 
             					.lce(lce), 
 				            	.x_0(x_0_hat), 
@@ -451,8 +452,24 @@ module spindle_derivatives(		input [1:0] state,
 	assign C_KPR_M_LSR0 = 32'h3DAF6944;//KPR[j]*LPR0[j] = 0.1127*0.76= 0.08565
     wire [31:0] flag_abs_x2_pow_25;
 	
-	pow_25	dx_2_p1(	.x({1'b0, x_2[30:0]}), .out(abs_x2_pow_25) );
-	
+    wire [31:0] beta_abs_x2, beta_abs_x2_alpha;
+    wire [7:0] beta_abs_x2_exp;
+    wire [31:0] IEEE_1;
+    
+    assign IEEE_1 = 32'h3F800000;
+    
+    assign beta_abs_x2_exp = x_2[30:23] + 8'd3;
+    assign beta_abs_x2 = {1'b0, beta_abs_x2_exp, x_2[22:0]};
+    
+    add alpha_A1 ( .x(beta_abs_x2) , .y(IEEE_1), .out(beta_abs_x2_alpha));
+    
+	//pow_25	dx_2_p1(	.x({1'b0, x_2[30:0]}), .out(abs_x2_pow_25) );
+	pow_25	dx_2_p1(	.x(beta_abs_x2_alpha), .out(abs_x2_pow_25) );
+    
+    wire [31:0] abs_x2_pow_25_alpha;
+    
+    sub alpha_S1( .x(abs_x2_pow_25), .y(IEEE_1), .out(abs_x2_pow_25_alpha) );
+    
 	wire [31:0] css_bdamp;
 	assign css_bdamp = {x_2[31], BDAMP[30:0]};
 
@@ -461,7 +478,7 @@ module spindle_derivatives(		input [1:0] state,
     
 	mult dx_2_RRRLRL6_mult( .x(css_bdamp), .y(x_0_in), .out(dx_2_RRRLRL6) );
 
-	mult dx_2_RRRLR5_mult( .x(dx_2_RRRLRL6), .y(abs_x2_pow_25), .out(dx_2_RRRL4) );
+	mult dx_2_RRRLR5_mult( .x(dx_2_RRRLRL6), .y(abs_x2_pow_25_alpha), .out(dx_2_RRRL4) );
 
 	add dx_2_RRR3_add( .x(dx_2_RRRL4), .y(IEEE_ZERO_POINT_FOUR), .out(dx_2_RRR3) );
 
