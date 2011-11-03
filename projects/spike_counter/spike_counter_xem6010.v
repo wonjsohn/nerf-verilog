@@ -15,7 +15,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module spikecnt_xem6010(
+module spike_counter_xem6010(
 	input  wire [7:0]  hi_in,
 	output wire [1:0]  hi_out,
 	inout  wire [15:0] hi_inout,
@@ -41,6 +41,7 @@ module spikecnt_xem6010(
     wire         ti_clk;
     wire [30:0]  ok1;
     wire [16:0]  ok2;   
+    //wire [15:0]  ep001wire;
     wire [15:0]  ep00wire, ep01wire, ep02wire, ep50trig, ep20wire, ep21wire, ep22wire, ep23wire;
     wire [15:0]  ep24wire, ep25wire, ep26wire, ep27wire, ep28wire, ep29wire, ep30wire, ep31wire;
     wire reset_global, reset_sim;
@@ -63,6 +64,8 @@ module spikecnt_xem6010(
     // *** Reset & Enable signals
     assign reset_global = ep00wire[0];
     assign reset_sim = ep00wire[1];
+    assign button1 = ep00wire[2];  // testing sensitivity list
+    assign button2 = ep00wire[3];
     //assign enable_sim = is_waveform_valid;
     wire    [31:0]  IEEE_1, IEEE_0;
 	assign IEEE_1 = 32'h3F800000;
@@ -127,7 +130,9 @@ module spikecnt_xem6010(
 
 
     wire [31:0]  cnt, int_cnt_out;
-    wire slow_clk_bar, slow_clk_reg, slow_clk_up, spike_while_slow_clk; 
+    wire slow_clk_bar, slow_clk_reg, slow_clk_up, spike_while_slow_clk;
+    //wire  button1, button2,
+    wire button1_response, button2_response, spike_out;
     spike_counter count_test
     (           .spike(spike), 
                 .int_cnt_out(int_cnt_out), 
@@ -138,7 +143,12 @@ module spikecnt_xem6010(
                 .slow_clk_bar(slow_clk_bar), 
                 .slow_clk_reg(slow_clk_reg), 
                 .slow_clk_up(slow_clk_up), 
-                .spike_while_slow_clk(spike_while_slow_clk));            
+                .spike_while_slow_clk(spike_while_slow_clk),
+                .button1(button1),
+                .button2(button2), 
+                .button1_response(button1_response),
+                .button2_response(button2_response),
+                .spike_out(spike_out));            
                 
     
             
@@ -147,12 +157,12 @@ module spikecnt_xem6010(
     assign led[0] = ~reset_global;
     assign led[1] = ~reset_sim;
     assign led[2] = ~spike;
-    assign led[3] = 1'b1;
+    assign led[3] = ~spike_out;
     assign led[4] = ~spike_while_slow_clk;
     assign spike  = (i_current_spikes != 32'd0);
     //assign led[5] = ~spike;
-    assign led[5] = ~sim_clk;
-    assign led[6] = ~spindle_clk;
+    assign led[5] = ~button1_response;
+    assign led[6] = ~button2_response;
     //assign led[6] = ~reset_sim;
     assign led[7] = ~slow_clk_up;
     //assign led[6] = ~execute; // When execute==1, led lits         
@@ -185,6 +195,7 @@ module spikecnt_xem6010(
     okWireIn     wi00 (.ok1(ok1),                           .ep_addr(8'h00), .ep_dataout(ep00wire));
     okWireIn     wi01 (.ok1(ok1),                           .ep_addr(8'h01), .ep_dataout(ep01wire));
     okWireIn     wi02 (.ok1(ok1),                           .ep_addr(8'h02), .ep_dataout(ep02wire));
+    //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep001wire));
 
     okWireOut    wo20 (.ok1(ok1), .ok2(ok2x[ 0*17 +: 17 ]), .ep_addr(8'h20), .ep_datain(ep20wire));
     okWireOut    wo21 (.ok1(ok1), .ok2(ok2x[ 1*17 +: 17 ]), .ep_addr(8'h21), .ep_datain(ep21wire));

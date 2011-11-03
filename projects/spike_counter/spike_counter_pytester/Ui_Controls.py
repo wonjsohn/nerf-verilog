@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/projects/spike_counter/spike_counter_pytester/Controls.ui'
 #
-# Created: Tue Nov  1 17:05:52 2011
+# Created: Thu Nov  3 14:11:59 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -473,12 +473,45 @@ class Ui_Dialog(object):
         self.doubleSpinBox_17.setProperty(_fromUtf8("value"), 80.0)
         self.doubleSpinBox_17.setObjectName(_fromUtf8("doubleSpinBox_17"))
         self.formLayout_17.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_17)
+        self.pushButton_6 = QtGui.QPushButton(Dialog)
+        self.pushButton_6.setGeometry(QtCore.QRect(20, 430, 105, 30))
+        self.pushButton_6.setCheckable(True)
+        self.pushButton_6.setObjectName(_fromUtf8("pushButton_6"))
+        self.pushButton_7 = QtGui.QPushButton(Dialog)
+        self.pushButton_7.setGeometry(QtCore.QRect(20, 470, 105, 30))
+        self.pushButton_7.setCheckable(True)
+        self.pushButton_7.setObjectName(_fromUtf8("pushButton_7"))
 
         self.retranslateUi(Dialog)
         QtCore.QObject.connect(self.horizontalSlider, QtCore.SIGNAL(_fromUtf8("valueChanged(int)")), self.lcdNumber.display)
         QtCore.QObject.connect(self.pushButton_2, QtCore.SIGNAL(_fromUtf8("clicked()")), Dialog.close)
         QtCore.QObject.connect(self.horizontalSlider, QtCore.SIGNAL(_fromUtf8("sliderMoved(int)")), self.lcdNumber.display)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
+        Dialog.setTabOrder(self.pushButton_2, self.pushButton_4)
+        Dialog.setTabOrder(self.pushButton_4, self.pushButton_5)
+        Dialog.setTabOrder(self.pushButton_5, self.comboBox)
+        Dialog.setTabOrder(self.comboBox, self.horizontalSlider)
+        Dialog.setTabOrder(self.horizontalSlider, self.pushButtonData)
+        Dialog.setTabOrder(self.pushButtonData, self.pushButton_6)
+        Dialog.setTabOrder(self.pushButton_6, self.pushButton_7)
+        Dialog.setTabOrder(self.pushButton_7, self.doubleSpinBox_1)
+        Dialog.setTabOrder(self.doubleSpinBox_1, self.doubleSpinBox_2)
+        Dialog.setTabOrder(self.doubleSpinBox_2, self.doubleSpinBox_3)
+        Dialog.setTabOrder(self.doubleSpinBox_3, self.doubleSpinBox_4)
+        Dialog.setTabOrder(self.doubleSpinBox_4, self.doubleSpinBox_5)
+        Dialog.setTabOrder(self.doubleSpinBox_5, self.doubleSpinBox_6)
+        Dialog.setTabOrder(self.doubleSpinBox_6, self.doubleSpinBox_7)
+        Dialog.setTabOrder(self.doubleSpinBox_7, self.doubleSpinBox_8)
+        Dialog.setTabOrder(self.doubleSpinBox_8, self.doubleSpinBox_0)
+        Dialog.setTabOrder(self.doubleSpinBox_0, self.doubleSpinBox_9)
+        Dialog.setTabOrder(self.doubleSpinBox_9, self.doubleSpinBox_10)
+        Dialog.setTabOrder(self.doubleSpinBox_10, self.doubleSpinBox_11)
+        Dialog.setTabOrder(self.doubleSpinBox_11, self.doubleSpinBox_12)
+        Dialog.setTabOrder(self.doubleSpinBox_12, self.doubleSpinBox_13)
+        Dialog.setTabOrder(self.doubleSpinBox_13, self.doubleSpinBox_14)
+        Dialog.setTabOrder(self.doubleSpinBox_14, self.doubleSpinBox_15)
+        Dialog.setTabOrder(self.doubleSpinBox_15, self.doubleSpinBox_16)
+        Dialog.setTabOrder(self.doubleSpinBox_16, self.doubleSpinBox_17)
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
@@ -508,6 +541,8 @@ class Ui_Dialog(object):
         self.label_15.setText(QtGui.QApplication.translate("Dialog", "B1damp", None, QtGui.QApplication.UnicodeUTF8))
         self.label_16.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
         self.label_17.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_6.setText(QtGui.QApplication.translate("Dialog", "button1", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_7.setText(QtGui.QApplication.translate("Dialog", "button2", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":
