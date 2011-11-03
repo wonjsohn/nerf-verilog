@@ -218,9 +218,9 @@ module spindle(
                                 );	
             
     	//integrate state variables (euler integration)
-	integrator x_0_integrator (	.x(dx_0), .int_x(x_0_in), .out(x_0_F0) );
-	integrator x_1_integrator (	.x(dx_1), .int_x(x_1_in), .out(x_1_F0) );
-	integrator x_2_integrator (	.x(dx_2), .int_x(x_2_in), .out(x_2_F0) );
+	integrator_trapezoid x_0_integrator (	.x(dx_0_in), .x_hat(dx_0), .int_x(x_0_in), .out(x_0_F0) );
+	integrator_trapezoid x_1_integrator (	.x(dx_1_in), .x_hat(dx_1), .int_x(x_1_in), .out(x_1_F0) );
+	integrator_trapezoid x_2_integrator (	.x(dx_2_in), .x_hat(dx_2), .int_x(x_2_in), .out(x_2_F0) );
 
 
 //BEGIN SEQUENTIAL LOGICS
