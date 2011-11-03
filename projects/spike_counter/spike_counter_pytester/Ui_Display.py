@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/projects/spike_counter/spike_counter_pytester/Display.ui'
 #
-# Created: Tue Nov  1 17:05:52 2011
+# Created: Thu Nov  3 14:12:00 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!

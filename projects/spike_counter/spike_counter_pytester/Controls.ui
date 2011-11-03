@@ -1168,7 +1168,67 @@
     </item>
    </layout>
   </widget>
+  <widget class="QPushButton" name="pushButton_6">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>430</y>
+     <width>105</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>button1</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_7">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>470</y>
+     <width>105</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>button2</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
+ <tabstops>
+  <tabstop>pushButton_2</tabstop>
+  <tabstop>pushButton_4</tabstop>
+  <tabstop>pushButton_5</tabstop>
+  <tabstop>comboBox</tabstop>
+  <tabstop>horizontalSlider</tabstop>
+  <tabstop>pushButtonData</tabstop>
+  <tabstop>pushButton_6</tabstop>
+  <tabstop>pushButton_7</tabstop>
+  <tabstop>doubleSpinBox_1</tabstop>
+  <tabstop>doubleSpinBox_2</tabstop>
+  <tabstop>doubleSpinBox_3</tabstop>
+  <tabstop>doubleSpinBox_4</tabstop>
+  <tabstop>doubleSpinBox_5</tabstop>
+  <tabstop>doubleSpinBox_6</tabstop>
+  <tabstop>doubleSpinBox_7</tabstop>
+  <tabstop>doubleSpinBox_8</tabstop>
+  <tabstop>doubleSpinBox_0</tabstop>
+  <tabstop>doubleSpinBox_9</tabstop>
+  <tabstop>doubleSpinBox_10</tabstop>
+  <tabstop>doubleSpinBox_11</tabstop>
+  <tabstop>doubleSpinBox_12</tabstop>
+  <tabstop>doubleSpinBox_13</tabstop>
+  <tabstop>doubleSpinBox_14</tabstop>
+  <tabstop>doubleSpinBox_15</tabstop>
+  <tabstop>doubleSpinBox_16</tabstop>
+  <tabstop>doubleSpinBox_17</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

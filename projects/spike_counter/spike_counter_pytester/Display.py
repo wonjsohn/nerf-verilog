@@ -145,7 +145,7 @@ class View(QMainWindow, Ui_Dialog):
 #                gp.drawLine(self.x-2,(winScale) - 24 - (neuronID/2),\
 #                                 self.x, (winScale) - 24 - (neuronID/2))
 #
-    def drawPoints(Fself, qp):
+    def drawPoints(self, qp):
         """ 
         Draw a line between previous and current data points.
         """

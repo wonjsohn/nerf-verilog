@@ -91,11 +91,23 @@ class Model:
             else :
                 self.xem.SetWireInValue(0x00, 0x00, 0x02)
             self.xem.UpdateWireIns()
-        elif evt == BUTTON_ENABLE_SIM:
+#        elif evt == BUTTON_ENABLE_SIM:
+#            if (buttonValue) :
+#                self.xem.SetWireInValue(0x00, 0x04, 0xff)
+#            else :
+#                self.xem.SetWireInValue(0x00, 0x00, 0x04)
+#            self.xem.UpdateWireIns()
+        elif evt == BUTTON_1:
             if (buttonValue) :
                 self.xem.SetWireInValue(0x00, 0x04, 0xff)
             else :
                 self.xem.SetWireInValue(0x00, 0x00, 0x04)
+            self.xem.UpdateWireIns()
+        elif evt == BUTTON_2:
+            if (buttonValue) :
+                self.xem.SetWireInValue(0x00, 0x08, 0xff)
+            else :
+                self.xem.SetWireInValue(0x00, 0x00, 0x08)
             self.xem.UpdateWireIns()
     def SendPipe(self, pipeInData):
         """ Send byte stream to OpalKelly board

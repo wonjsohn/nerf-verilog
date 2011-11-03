@@ -88,11 +88,11 @@ class User(QDialog, Ui_Dialog):
         
         for i in xrange(NUM_CHANNEL):
             newData[i] = self.nerfModel.ReadFPGA(DATA_OUT_ADDR[i], CH_TYPE[i])
-            if i == 3: 
-                newData[i] = newData[i] / 100
+#            if i == 3: 
+#                newData[i] = newData[i] / 100
 #            newData[i] = max(-65535, min(65535, self.nerfModel.ReadFPGA(DATA_OUT_ADDR[i], CH_TYPE[i])))
-#            if i == 3:
-#                print newData[i]
+            if i == 1:
+                print newData[i]
             
 #        newSpike = self.nerfModel.ReadPipe(0xA1, 4000) # read ## bytes
         
@@ -214,3 +214,19 @@ class User(QDialog, Ui_Dialog):
         Slot documentation goes here.
         """
         self.isLogData = checked
+    
+    @pyqtSignature("bool")
+    def on_pushButton_6_clicked(self, checked):
+        """
+        Slot documentation goes here.
+        """
+        newButton1 = checked
+        self.nerfModel.SendButton(newButton1, BUTTON_1)
+    
+    @pyqtSignature("bool")
+    def on_pushButton_7_clicked(self, checked):
+        """
+        Slot documentation goes here.
+        """
+        newButton2 = checked
+        self.nerfModel.SendButton(newButton2, BUTTON_2)
