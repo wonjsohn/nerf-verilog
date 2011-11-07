@@ -96,7 +96,7 @@ class User(QDialog, Ui_Dialog):
             
 #        newSpike = self.nerfModel.ReadPipe(0xA1, 4000) # read ## bytes
         
-#        self.dispView.newData(newData, newSpike)
+        self.dispView.newData(newData)
 #        if (self.isLogData):
 #            self.data.append(newData)
         
@@ -167,7 +167,7 @@ class User(QDialog, Ui_Dialog):
 #            pipeInData = gen_tri() 
             pipeInData = spike_train(firing_rate = 500) 
         
-        self.nerfModel.SendPipeInt(pipeInData)   # for spike_train()
+        self.nerfModel.SendPipeInt(pipeInData)   # for spike_train(),  SendPipeInt, SendPipe same result.
 
     
     @pyqtSignature("int")
