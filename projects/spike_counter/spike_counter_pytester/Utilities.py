@@ -7,8 +7,8 @@ PIPE_IN_ADDR = 0x80
 BUTTON_RESET = 0
 BUTTON_RESET_SIM = 1
 #BUTTON_ENABLE_SIM = 2
-BUTTON_1 = 2
-BUTTON_2 = 3
+#BUTTON_1 = 2
+#BUTTON_2 = 3
 
 
 #DATA_EVT_PPS_I_COEF = 2
@@ -19,7 +19,7 @@ SEND_TYPE = ['', '', 'float32', 'int32', 'float32', '', 'int32', 'int32', '', ''
 
 DISPLAY_SCALING =[10, 10,  10, 0.0001, 11,  0.2]
 DATA_OUT_ADDR = [0x20, 0x22, 0x24, 0x26, 0x28, 0x30]
-CH_TYPE = ['int32', 'int32', 'int32', 'int32', 'int32', 'float32']
+CH_TYPE = ['int32', 'int32', 'int32', 'int32', 'int32', 'int32']
 CHANNEL_COLOR = [Qt.blue, Qt.red, Qt.green, Qt.black, Qt.yellow, Qt.gray]
 ZERO_DATA = [0.0 for ix in xrange(NUM_CHANNEL)]
 BIT_FILE = "../spike_counter_xem6010.bit"

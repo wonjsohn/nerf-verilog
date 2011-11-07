@@ -2,7 +2,7 @@ module spike_counter(spike, int_cnt_out, slow_clk, clk, reset, cnt, slow_clk_bar
 //module spike_counter(spike, int_cnt_out, slow_clk, clk, reset, cnt, slow_clk_bar, slow_clk_reg, slow_clk_up, spike_while_slow_clk, button1, button2, button1_response, button2_response, spike_out);
     input   spike, slow_clk, clk, reset;
     //input  button1, button2; // testing sensitivity list
-    output  reg[31:0] int_cnt_out;
+    output  reg    [31:0]  int_cnt_out;
 	output slow_clk_bar, slow_clk_up, slow_clk_reg, spike_while_slow_clk;
     //output reg  button1_response, button2_response, 
     output reg spike_out;
@@ -17,22 +17,20 @@ module spike_counter(spike, int_cnt_out, slow_clk, clk, reset, cnt, slow_clk_bar
      
     always @(posedge reset or posedge spike_while_slow_clk or posedge slow_clk_up or posedge spike) begin
         if (reset) begin
-				cnt <= 32'b0;
-				int_cnt_out <= 32'b0;	
+				cnt <= 32'd0;
+				int_cnt_out <= 32'd0;	
                 spike_out <= 1'b0;
         end
 		else if (spike_while_slow_clk) begin   // SPIKE HIGH and SLOW_CLK UP.
-				int_cnt_out <= cnt;
-				cnt <= 1'b1;  // add one spike  
-				//cnt <= 32'b1;  //  count from 1. 
+                int_cnt_out <= cnt;
+				cnt <= 32'd1;  // add one spike                 
                 spike_out <= 1'b0;
 		  end
         
         else if (slow_clk_up) begin  // SLOW CLK UP, NO SPIKE
-		//  else begin
-				int_cnt_out <= cnt;
-				cnt <= 32'b0;  
-                spike_out <= 1'b1;
+                int_cnt_out <= cnt;
+				cnt <= 32'd0;    // count being renewed at every posedge of slow clock = read.
+                spike_out <= 1'b1; // simple indicator
 		end
         else begin//if (spike) begin //   SPIKE HIGH ONLY
 				int_cnt_out <= int_cnt_out;
@@ -41,6 +39,9 @@ module spike_counter(spike, int_cnt_out, slow_clk, clk, reset, cnt, slow_clk_bar
 		end
      end  
 	 
+   
+     
+     
 //    always @(posedge reset or posedge button1 or posedge button2 or posedge spike) begin
 //             if (reset) begin
 //                button1_response <= 1'b0;
