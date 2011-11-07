@@ -63,7 +63,7 @@ module integrator_trapezoid
 	
 	always @ (x_plus_x_hat)
 	begin
-		if ( x_plus_x_hat[30:23]<= 8'd11 )
+		if ( x_plus_x_hat[30:23]<= 8'd10 )
 			begin
 				x_by_dt = 0;
 				x_by_dt_underflow=1;

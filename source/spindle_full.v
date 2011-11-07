@@ -225,13 +225,14 @@ module spindle(
 
 //BEGIN SEQUENTIAL LOGICS
 
+/*
 	always @ (posedge clk or posedge reset)
 	begin
 		state <= state+1;
 		if (reset) state <= 0;		
 		else if (state == 2'd2) state <= 0;
 	end
-
+*/
 	always @ (posedge clk or posedge reset)
 	begin
 		if (reset) begin
@@ -250,6 +251,15 @@ module spindle(
 			dx_3_prev <= 32'd0;
 			dx_4_prev <= 32'd0;
 			dx_5_prev <= 32'd0;
+			x_6 <= 32'd0;
+			x_7 <= 32'd0;
+			x_8 <= 32'd0;
+			dx_6_prev <= 32'd0;
+			dx_7_prev <= 32'd0;
+			dx_8_prev <= 32'd0;
+			Ia_muscle <= 32'd0;
+			II_muscle <= 32'd0;
+			state <= 0;
 		end
 		else if (state == 2'd0) begin //bag1
 		    		x_0 <= x_0_F0;
@@ -260,7 +270,26 @@ module spindle(
 				dx_2_prev <= dx_2;
 				//Ia fiber output	
 		        Ia_fiber_1 <=Ia_fiber_F0;
-              end
+				  state <= 2'd1;
+				  
+				//latch prevention  
+            Ia_fiber_2 <= Ia_fiber_2;
+            II_fiber_2 <= II_fiber_2;				  
+            x_3 <= x_3;
+            x_4 <= x_4;
+            x_5 <= x_5;
+            dx_3_prev <= dx_3_prev;
+            dx_4_prev <= dx_4_prev;
+            dx_5_prev <= dx_5_prev;
+				x_6 <= x_6;
+            x_7 <= x_7;
+            x_8 <= x_8;
+            dx_6_prev <= dx_6_prev;
+            dx_7_prev <= dx_7_prev;
+            dx_8_prev <= dx_8_prev;
+				II_muscle <= II_muscle;
+				Ia_muscle <= Ia_muscle;
+             end
 			else if (state == 2'd1) begin //bag2
 		    		x_3 <= x_0_F0;
 		    		x_4 <= x_1_F0;
@@ -272,6 +301,24 @@ module spindle(
 		        Ia_fiber_2 <=Ia_fiber_F0;
 				// II fiber output	
 		        II_fiber_2 <=II_fiber_F0;
+				  state <= 2'd2;
+				 
+				//latch prevention
+            Ia_fiber_1 <= Ia_fiber_1;
+            x_0 <= x_0;
+            x_1 <= x_1;
+            x_2 <= x_2;
+            dx_0_prev <= dx_0_prev;
+            dx_1_prev <= dx_1_prev;
+            dx_2_prev <= dx_2_prev;
+				x_6 <= x_6;
+            x_7 <= x_7;
+            x_8 <= x_8;
+            dx_6_prev <= dx_6_prev;
+            dx_7_prev <= dx_7_prev;
+            dx_8_prev <= dx_8_prev;
+				II_muscle <= II_muscle;
+				Ia_muscle <= Ia_muscle;				
               end
            else if (state == 2'd2) begin //chain
                 x_6 <= x_0_F0;
@@ -282,6 +329,24 @@ module spindle(
                 dx_8_prev <= dx_2;
                 II_muscle <= II_muscle_F0;
                 Ia_muscle <= Ia_muscle_F0;
+					 state <= 2'd0;
+				
+				//latch prevention
+				Ia_fiber_1 <= Ia_fiber_1;
+            Ia_fiber_2 <= Ia_fiber_2;
+            II_fiber_2 <= II_fiber_2;
+            x_0 <= x_0;
+            x_1 <= x_1;
+            x_2 <= x_2;
+            dx_0_prev <= dx_0_prev;
+            dx_1_prev <= dx_1_prev;
+            dx_2_prev <= dx_2_prev;
+            x_3 <= x_3;
+            x_4 <= x_4;
+            x_5 <= x_5;
+            dx_3_prev <= dx_3_prev;
+            dx_4_prev <= dx_4_prev;
+            dx_5_prev <= dx_5_prev;
            end
            else begin
             Ia_fiber_1 <= Ia_fiber_1;
@@ -299,6 +364,15 @@ module spindle(
             dx_3_prev <= dx_3_prev;
             dx_4_prev <= dx_4_prev;
             dx_5_prev <= dx_5_prev;
+				x_6 <= x_6;
+            x_7 <= x_7;
+            x_8 <= x_8;
+            dx_6_prev <= dx_6_prev;
+            dx_7_prev <= dx_7_prev;
+            dx_8_prev <= dx_8_prev;
+				II_muscle <= II_muscle;
+				Ia_muscle <= Ia_muscle;
+				state<=state;
         end
        end
 endmodule
