@@ -10,18 +10,43 @@ module spike_counter(spike, int_cnt_out, slow_clk, clk, reset, cnt, slow_clk_bar
    // output  clear_ut;
           
     output reg     [31:0]  cnt;
-    assign slow_clk_up = (slow_clk && ~slow_clk_reg)? 1'b1 : 1'b0;
-	assign spike_while_slow_clk = (spike && slow_clk_up )? 1'b1 : 1'b0;
+    //assign slow_clk_up = (slow_clk && ~slow_clk_reg)? 1'b1 : 1'b0;  // I feel I should make this a reg.
+	//assign spike_while_slow_clk = (spike && slow_clk_up )? 1'b1 : 1'b0;
 	 
+    reg slow_clk_up; 
+    always @(posedge reset or posedge slow_clk or posedge slow_clk_up) begin
+        if (reset) begin 
+            slow_clk_up <= 1'b0;
+        end 
+        else if (slow_clk) begin
+            slow_clk_up <= 1'b1;
+        end
+        else begin
+            slow_clk_up <= 1'b0;
+        end
+    end 
 
+//    reg spike_while_slow_clk;
+//    always @(posedge reset or posedge slow_clk_up or posedge spike or posedge spike_while_slow_clk) begin
+//        if (reset) begin
+//            spike_while_slow_clk <= 1'b0;
+//        end
+//        else if (slow_clk_up && spike) begin
+//            spike_while_slow_clk <= 1'b1;
+//        end
+//        else begin (spike_while_slow_clk) begin
+//            spike_while_slow_clk <= 1'b0;
+//        end
+//    end
+//            
      
-    always @(posedge reset or posedge spike_while_slow_clk or posedge slow_clk_up or posedge spike) begin
+    always @(posedge reset or posedge slow_clk_up or posedge spike) begin
         if (reset) begin
 				cnt <= 32'd0;
 				int_cnt_out <= 32'd0;	
                 spike_out <= 1'b0;
         end
-		else if (spike_while_slow_clk) begin   // SPIKE HIGH and SLOW_CLK UP.
+		else if (slow_clk_up && spike) begin   // SPIKE HIGH and SLOW_CLK UP.
                 int_cnt_out <= cnt;
 				cnt <= 32'd1;  // add one spike                 
                 spike_out <= 1'b0;
