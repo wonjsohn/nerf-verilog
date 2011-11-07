@@ -132,7 +132,8 @@ module spike_counter_xem6010(
     wire [31:0]  cnt, int_cnt_out;
     wire slow_clk_bar, slow_clk_reg, slow_clk_up, spike_while_slow_clk;
     //wire  button1, button2,
-    wire button1_response, button2_response, spike_out;
+    //wire button1_response, button2_response, 
+    wire spike_out;
     spike_counter count_test
     (           .spike(spike), 
                 .int_cnt_out(int_cnt_out), 
@@ -144,10 +145,10 @@ module spike_counter_xem6010(
                 .slow_clk_reg(slow_clk_reg), 
                 .slow_clk_up(slow_clk_up), 
                 .spike_while_slow_clk(spike_while_slow_clk),
-                .button1(button1),
-                .button2(button2), 
-                .button1_response(button1_response),
-                .button2_response(button2_response),
+                ///.button1(button1),
+                //.button2(button2), 
+                //.button1_response(button1_response),
+                //.button2_response(button2_response),
                 .spike_out(spike_out));            
                 
     
@@ -160,9 +161,11 @@ module spike_counter_xem6010(
     assign led[3] = ~spike_out;
     assign led[4] = ~spike_while_slow_clk;
     assign spike  = (i_current_spikes != 32'd0);
+    assign led[5] = ~sim_clk; //fast clock
+    assign led[6] = ~spindle_clk; // slow clock
     //assign led[5] = ~spike;
-    assign led[5] = ~button1_response;
-    assign led[6] = ~button2_response;
+    //assign led[5] = ~button1_response;
+    //assign led[6] = ~button2_response;
     //assign led[6] = ~reset_sim;
     assign led[7] = ~slow_clk_up;
     //assign led[6] = ~execute; // When execute==1, led lits         
@@ -177,14 +180,14 @@ module spike_counter_xem6010(
     // *** Endpoint connections:
     assign ep20wire = int_cnt_out[15:0];
     assign ep21wire = int_cnt_out[31:16];
-    assign ep22wire = cnt[15:0];
+    assign ep22wire = cnt[15:0]; 
     assign ep23wire = cnt[31:16];
-    assign ep24wire = {15'b0, spike_while_slow_clk};
-    assign ep25wire = 16'b0;
+    assign ep24wire = {15'b0, spike_while_slow_clk}; 
+    assign ep25wire = {15'b0, spike_while_slow_clk};
     assign ep26wire = i_current_spikes[15:0];
     assign ep27wire = i_current_spikes[31:16];
-//    assign ep28wire = x_2[15:0];
-//    assign ep29wire = x_2[31:16];
+    assign ep28wire = {15'b0, slow_clk_up};
+    assign ep29wire = {15'b0, slow_clk_up};
       
     okHost okHI(
         .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),

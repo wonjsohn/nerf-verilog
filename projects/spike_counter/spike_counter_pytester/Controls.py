@@ -160,12 +160,12 @@ class User(QDialog, Ui_Dialog):
             pipeInData = spike_train(firing_rate = 1) 
 #            pipeInData = gen_sin(F = 1.0, AMP = 0.3)
         elif choice == "Spike Train 10Hz":
-            pipeInData = spike_train(firing_rate = 10)      
+            pipeInData = spike_train(firing_rate = 100)      
 #            pipeInData = gen_sin(F = 4.0, AMP = 0.3)
             
         elif choice == "Spike Train 20Hz":
 #            pipeInData = gen_tri() 
-            pipeInData = spike_train(firing_rate = 100) 
+            pipeInData = spike_train(firing_rate = 500) 
         
         self.nerfModel.SendPipeInt(pipeInData)   # for spike_train()
 
