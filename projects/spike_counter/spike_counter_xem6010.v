@@ -130,7 +130,7 @@ module spike_counter_xem6010(
 
 
     wire [31:0]  cnt, int_cnt_out;
-    wire slow_clk_bar, slow_clk_reg, slow_clk_up, spike_while_slow_clk;
+    wire slow_clk_up, spike_while_slow_clk;
     //wire  button1, button2,
     //wire button1_response, button2_response, 
     wire spike_out;
@@ -141,15 +141,10 @@ module spike_counter_xem6010(
                 .clk(sim_clk), 
                 .reset(reset_global),  //? 
                 .cnt(cnt), 
-                .slow_clk_bar(slow_clk_bar), 
-                .slow_clk_reg(slow_clk_reg), 
+                //.slow_clk_bar(slow_clk_bar), 
+                //.slow_clk_reg(slow_clk_reg), 
                 .slow_clk_up(slow_clk_up), 
-                .spike_while_slow_clk(spike_while_slow_clk),
-                ///.button1(button1),
-                //.button2(button2), 
-                //.button1_response(button1_response),
-                //.button2_response(button2_response),
-                .spike_out(spike_out));            
+                .spike_while_slow_clk(spike_while_slow_clk));           
                 
     
             
@@ -158,22 +153,20 @@ module spike_counter_xem6010(
     assign led[0] = ~reset_global;
     assign led[1] = ~reset_sim;
     assign led[2] = ~spike;
-    assign led[3] = ~spike_out;
+    assign led[3] = 1'b1;
     assign led[4] = ~spike_while_slow_clk;
     assign spike  = (i_current_spikes != 32'd0);
     assign led[5] = ~sim_clk; //fast clock
     assign led[6] = ~spindle_clk; // slow clock
     //assign led[5] = ~spike;
-    //assign led[5] = ~button1_response;
-    //assign led[6] = ~button2_response;
     //assign led[6] = ~reset_sim;
     assign led[7] = ~slow_clk_up;
     //assign led[6] = ~execute; // When execute==1, led lits         
 	      
           
     // *** Endpoint connections:
-    assign pin0 = neuron_clk;
-    assign pin1 = sim_clk;
+    assign pin0 = spike_while_slow_clk;
+    assign pin1 = slow_clk_up;
     assign pin2 = spindle_clk;
     // Instantiate the okHost and connect endpoints.
     // Host interface
