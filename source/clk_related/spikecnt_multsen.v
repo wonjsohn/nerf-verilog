@@ -1,21 +1,20 @@
-module spike_counter(spike, int_cnt_out, slow_clk, clk, reset, cnt, slow_clk_up, spike_while_slow_clk);
-//module spike_counter(spike, int_cnt_out, slow_clk, clk, reset, cnt, slow_clk_bar, slow_clk_reg, slow_clk_up, spike_while_slow_clk, spike_out);
-
-	input   spike, slow_clk, clk, reset;
-   output  reg    [31:0]  int_cnt_out;
-	output slow_clk_up, spike_while_slow_clk;   
-   output reg     [31:0]  cnt;
-	 
+module spike_counter(spike, int_cnt_out, slow_clk, reset, clear_out);
+    input   spike, slow_clk, reset;
+    output  reg    [31:0]  int_cnt_out;
+    reg     [31:0]  cnt;
 	reg slow_clk_up; 
-   always @(posedge reset or posedge slow_clk or posedge slow_clk_up) begin
-	  if (reset) begin 
-			slow_clk_up <= 1'b0;
-	  end 
-	  else if (slow_clk) begin
-			slow_clk_up <= 1'b1;
+    output clear_out;
+    assign clear_out = slow_clk_up;
+	 
+    always @(posedge reset or posedge slow_clk or posedge slow_clk_up) begin
+        if (reset) begin 
+            slow_clk_up <= 1'b0;
+        end 
+        else if (slow_clk) begin
+            slow_clk_up <= 1'b1;
         end
-	  else begin
-			slow_clk_up <= 1'b0;
+        else begin
+            slow_clk_up <= 1'b0;
         end
     end 
 
