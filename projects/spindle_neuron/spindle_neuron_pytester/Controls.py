@@ -11,6 +11,7 @@ from Utilities import *
 from generate_sin import gen as gen_sin
 from generate_tri import gen as gen_tri
 from generate_spikes import spike_train
+from generate_sequence import gen as gen_seq
 from math import floor
 
 from Fpga import Model
@@ -149,7 +150,9 @@ class User(QDialog, Ui_Dialog):
             pipeInData = gen_sin(F = 4.0, AMP = 0.3)
             
         elif choice == "Spike Train 20Hz":
-            pipeInData = gen_tri() 
+#            pipeInData = gen_tri() 
+            pipeInData = gen_seq(T = [0.0, 0.1, 0.2, 0.8, 0.9, 1.0], L = [1.0, 1.0, 1.2, 1.2, 1.0, 1.0], FILT = True)
+
 #            pipeInData = spike_train(firing_rate = 100) 
         
         self.nerfModel.SendPipe(pipeInData)

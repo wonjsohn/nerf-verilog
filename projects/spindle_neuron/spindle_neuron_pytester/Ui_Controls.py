@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog_cmn/projects/spindle_neuron/spindle_neuron_pytester/Controls.ui'
+# Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog/projects/spindle_neuron/spindle_neuron_pytester/Controls.ui'
 #
-# Created: Fri Oct 21 16:02:10 2011
+# Created: Mon Nov  7 19:02:01 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -274,7 +274,7 @@ class Ui_Dialog(object):
         self.formLayout_5.setWidget(0, QtGui.QFormLayout.FieldRole, self.label_5)
         self.doubleSpinBox_5 = QtGui.QDoubleSpinBox(self.layoutWidget_5)
         self.doubleSpinBox_5.setMaximum(200.0)
-        self.doubleSpinBox_5.setProperty(_fromUtf8("value"), 80.0)
+        self.doubleSpinBox_5.setProperty(_fromUtf8("value"), 40.0)
         self.doubleSpinBox_5.setObjectName(_fromUtf8("doubleSpinBox_5"))
         self.formLayout_5.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_5)
         self.layoutWidget_6 = QtGui.QWidget(Dialog)
@@ -441,7 +441,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_15.setObjectName(_fromUtf8("doubleSpinBox_15"))
         self.formLayout_15.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_15)
         self.layoutWidget_17 = QtGui.QWidget(Dialog)
-        self.layoutWidget_17.setGeometry(QtCore.QRect(230, 670, 203, 29))
+        self.layoutWidget_17.setGeometry(QtCore.QRect(230, 670, 203, 34))
         self.layoutWidget_17.setObjectName(_fromUtf8("layoutWidget_17"))
         self.formLayout_16 = QtGui.QFormLayout(self.layoutWidget_17)
         self.formLayout_16.setMargin(0)
@@ -456,7 +456,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_16.setObjectName(_fromUtf8("doubleSpinBox_16"))
         self.formLayout_16.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_16)
         self.layoutWidget_18 = QtGui.QWidget(Dialog)
-        self.layoutWidget_18.setGeometry(QtCore.QRect(230, 705, 203, 29))
+        self.layoutWidget_18.setGeometry(QtCore.QRect(230, 705, 203, 34))
         self.layoutWidget_18.setObjectName(_fromUtf8("layoutWidget_18"))
         self.formLayout_17 = QtGui.QFormLayout(self.layoutWidget_18)
         self.formLayout_17.setMargin(0)
@@ -491,7 +491,7 @@ class Ui_Dialog(object):
         self.label_2.setText(QtGui.QApplication.translate("Dialog", "pps/I", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("Dialog", "GammaDyn", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setText(QtGui.QApplication.translate("Dialog", "GammaSta", None, QtGui.QApplication.UnicodeUTF8))
         self.label_6.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
         self.label_7.setText(QtGui.QApplication.translate("Dialog", "GammaSta", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
