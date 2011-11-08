@@ -218,9 +218,9 @@ module spindle(
                                 );	
             
     	//integrate state variables (euler integration)
-	integrator_trapezoid x_0_integrator (	.x(dx_0_in), .x_hat(dx_0), .int_x(x_0_in), .out(x_0_F0) );
-	integrator_trapezoid x_1_integrator (	.x(dx_1_in), .x_hat(dx_1), .int_x(x_1_in), .out(x_1_F0) );
-	integrator_trapezoid x_2_integrator (	.x(dx_2_in), .x_hat(dx_2), .int_x(x_2_in), .out(x_2_F0) );
+	integrator x_0_integrator (	.x(dx_0), .int_x(x_0_in), .out(x_0_F0) );
+	integrator x_1_integrator (	.x(dx_1), .int_x(x_1_in), .out(x_1_F0) );
+	integrator x_2_integrator (	.x(dx_2), .int_x(x_2_in), .out(x_2_F0) );
 
 
 //BEGIN SEQUENTIAL LOGICS
@@ -323,7 +323,7 @@ module spindle_derivatives(		input [1:0] state,
 	assign IEEE_FOUR_POINT_EIGHT_SEVEN_EIGHT = 32'h409C1893;//bag2
 	reg [31:0] gamma;
 	reg [31:0] dx_0_CONSTANT;
-    reg [31:0] BDAMP;
+    reg [31:0] BDAMP, B0;
 	//wire [31:0] BDAMP_1, BDAMP_2, BDAMP_chain;	
 	//assign BDAMP_1 = 32'h3E71_4120;//bag 1 BDAMP = 0.2356	 
 	//assign BDAMP_2 = 32'h3D14_4674; //bag 2 BDAMP = 0.0362
@@ -334,6 +334,8 @@ module spindle_derivatives(		input [1:0] state,
 	assign C_KSR_P_KPR_1 = 32'h41293DD9;// bag 1 KSR[j]+KPR[j] = 10.4649 + 0.1127 = 10.5776
 	assign C_KSR_P_KPR_2 = 32'h412A0903;// bag 2 KSR[j]+KPR[j] = 10.4649 + 0.1623 = 10.6272
     assign C_KSR_P_KPR_chain = C_KSR_P_KPR_2; // chain has same constants as bag2 here
+    reg [31:0] F, F0;
+
     
     reg [31:0] fs_sqr;
 	wire [31:0] IEEE_3600, IEEE_0_01, IEEE_8100;
@@ -347,6 +349,8 @@ module spindle_derivatives(		input [1:0] state,
 				gamma = gamma_dyn;
 				dx_0_CONSTANT = IEEE_SIX_POINT_SEVEN_ONE_ONE;
 				BDAMP = BDAMP_1;
+                B0 = 32'h3D77CED9;
+                F = 32'h3CECBFB1;
 				C_KSR_P_KPR = C_KSR_P_KPR_1;
                 fs_sqr = IEEE_3600;
 				end
@@ -354,6 +358,8 @@ module spindle_derivatives(		input [1:0] state,
 				gamma = gamma_sta;
 				dx_0_CONSTANT = IEEE_FOUR_POINT_EIGHT_SEVEN_EIGHT;
 				BDAMP = BDAMP_2;
+                B0 = 32'h3DA85879;
+                F = 32'h3D8240B8;
 				C_KSR_P_KPR = C_KSR_P_KPR_2;
                 fs_sqr = IEEE_3600;
 				end
@@ -361,6 +367,8 @@ module spindle_derivatives(		input [1:0] state,
 				gamma = gamma_sta;
 				dx_0_CONSTANT = 0; // not used in chain
 				BDAMP = BDAMP_chain;
+                B0 = 32'h3DA85879;
+                F = 32'h3DC36113;
 				C_KSR_P_KPR = C_KSR_P_KPR_chain;
                 fs_sqr = IEEE_8100;
 				end
@@ -368,6 +376,8 @@ module spindle_derivatives(		input [1:0] state,
 					gamma = 0;
 					dx_0_CONSTANT = 0;
 					BDAMP = 0;
+                    B0 = 0;
+                    F = 0;
 					C_KSR_P_KPR = 0;
                     fs_sqr = 0;
 				end
@@ -433,65 +443,78 @@ module spindle_derivatives(		input [1:0] state,
 	//From spindle.py
 	//dx_2 = (1/MASS) * (KSR*lce - (KSR+KPR)*x_1 - CSS*(BDAMP*x_0)*(abs(x_2)**0.25) - 0.4)
 	//
-	wire [31:0] C_REV_M, C_KSR, C_KPR_M_LSR0, C_KSR_M_LSR0;
+	wire [31:0] C_REV_M, C_KSR, C_KPR_M_LPR0, C_KSR_M_LSR0;
 	wire [31:0] abs_x2_pow_25, abs_x2_pow_25_unchk;
 
-	wire [31:0] dx_2_RRRRR5, dx_2_RRRRLR6, dx_2_RRRRL5, dx_2_RRRR4;
-	wire [31:0] dx_2_RRRLRR6, dx_2_RRRLRLR7, dx_2_RRRLRL6, dx_2_RRRLR5;
-	wire [31:0] dx_2_RRRL4, dx_2_RRR3, dx_2_RRL3, dx_2_RR2, dx_2_RL2;
-	wire [31:0] dx_2_R1, dx_2_F0;
 	wire [31:0] IEEE_ZERO_POINT_FOUR;
-	wire [31:0] dx_2_RRLL4;
-
 	assign IEEE_ZERO_POINT_FOUR = 32'h3ECCCCCC;// 0.4
 
 	assign C_REV_M = 32'h459C4000;//1/M[j] = 1 / 0.0002 = 5000
 	assign C_KSR = 32'h4127703B; //KSR=10.4649
 
 	assign C_KSR_M_LSR0 = 32'h3ED652BD;//KSR[j]*LSR0[j] = 10.4649*0.04 = 0.4186
-	assign C_KPR_M_LSR0 = 32'h3DAF6944;//KPR[j]*LPR0[j] = 0.1127*0.76= 0.08565
+	assign C_KPR_M_LPR0 = 32'h3DAF6944;//KPR[j]*LPR0[j] = 0.1127*0.76= 0.08565
     wire [31:0] flag_abs_x2_pow_25;
+	pow_25	abs_dx_2_p1( .x({1'b0, x_2[30:0]}), .out(abs_x2_pow_25) );
+    
 	
-    wire [31:0] beta_abs_x2, beta_abs_x2_alpha;
-    wire [7:0] beta_abs_x2_exp;
-    wire [31:0] IEEE_1;
-    
-    assign IEEE_1 = 32'h3F800000;
-    
-    assign beta_abs_x2_exp = x_2[30:23] + 8'd3;
-    assign beta_abs_x2 = {1'b0, beta_abs_x2_exp, x_2[22:0]};
-    
-    add alpha_A1 ( .x(beta_abs_x2) , .y(IEEE_1), .out(beta_abs_x2_alpha));
-    
-	//pow_25	dx_2_p1(	.x({1'b0, x_2[30:0]}), .out(abs_x2_pow_25) );
-	pow_25	dx_2_p1(	.x(beta_abs_x2_alpha), .out(abs_x2_pow_25) );
-    
-    wire [31:0] abs_x2_pow_25_alpha;
-    
-    sub alpha_S1( .x(abs_x2_pow_25), .y(IEEE_1), .out(abs_x2_pow_25_alpha) );
-    
-	wire [31:0] css_bdamp;
-	assign css_bdamp = {x_2[31], BDAMP[30:0]};
+    wire [31:0] IEEE_1 = 32'h3F800000;
+        
 
-    wire [31:0] x_0_in;
-    assign x_0_in = (state == 2'd2) ? min_gamma : x_0; //chain fiber x_6
-    
-	mult dx_2_RRRLRL6_mult( .x(css_bdamp), .y(x_0_in), .out(dx_2_RRRLRL6) );
+    //     C_KSR 	****	lce    =>    dx_2_RLLLLL6
+    wire [31:0] dx_2_RLLLLL6;
+    mult dx_2_RLLLLL6_mult( .x(C_KSR), .y(lce), .out(dx_2_RLLLLL6) );
 
-	mult dx_2_RRRLR5_mult( .x(dx_2_RRRLRL6), .y(abs_x2_pow_25_alpha), .out(dx_2_RRRL4) );
+    //     C_KSR_P_KPR 	****	x_1    =>    dx_2_RLLLLR6
+    wire [31:0] dx_2_RLLLLR6;
+    mult dx_2_RLLLLR6_mult( .x(C_KSR_P_KPR), .y(x_1), .out(dx_2_RLLLLR6) );
 
-	add dx_2_RRR3_add( .x(dx_2_RRRL4), .y(IEEE_ZERO_POINT_FOUR), .out(dx_2_RRR3) );
+    //     dx_2_RLLLLL6 	----	dx_2_RLLLLR6    =>    dx_2_RLLLL5
+    wire [31:0] dx_2_RLLLL5;
+    sub dx_2_RLLLL5_sub( .x(dx_2_RLLLLL6), .y(dx_2_RLLLLR6), .out(dx_2_RLLLL5) );
 
+    //     BDAMP 	****	x_0    =>    dx_2_RLLLRLRR8
+    wire [31:0] dx_2_RLLLRLRR8;
+    mult dx_2_RLLLRLRR8_mult( .x(BDAMP), .y(x_0), .out(dx_2_RLLLRLRR8) );
 
-	mult dx_2_RRL3_mult( .x(C_KSR_P_KPR), .y(x_1), .out(dx_2_RRL3) );
-	//     - dx_2_RRL3  @@@@  dx_2_RRR3    =>    dx_2_RR2
-	add dx_2_RR2_add( .x(dx_2_RRL3), .y(dx_2_RRR3), .out(dx_2_RR2) );
-	//     * KSR_0  @@@@  LCE_0    =>    dx_2_RL2
-	mult dx_2_RL2_mult( .x(C_KSR), .y(lce), .out(dx_2_RL2) );
-	//     - dx_2_RL2  @@@@  dx_2_RR2    =>    dx_2_R1
-	sub dx_2_R1_sub( .x(dx_2_RL2), .y(dx_2_RR2), .out(dx_2_R1) );
-	//     * C_REV_M  @@@@  dx_2_R1    =>    dx_2
-	mult dx_2_F0_mult( .x(C_REV_M), .y(dx_2_R1), .out(dx_2) );
+    //     B0 	++++	dx_2_RLLLRLRR8    =>    dx_2_RLLLRLR7
+    wire [31:0] dx_2_RLLLRLR7;
+    add dx_2_RLLLRLR7_add( .x(B0), .y(dx_2_RLLLRLRR8), .out(dx_2_RLLLRLR7) );
+
+    //     CSS 	****	dx_2_RLLLRLR7    =>    dx_2_RLLLRL6
+    wire [31:0] dx_2_RLLLRL6;
+    mult dx_2_RLLLRL6_mult( .x(CSS), .y(dx_2_RLLLRLR7), .out(dx_2_RLLLRL6) );
+
+    //     dx_2_RLLLRL6 	****	abs_x2_pow_25    =>    dx_2_RLLLR5
+    wire [31:0] dx_2_RLLLR5;
+    mult dx_2_RLLLR5_mult( .x(dx_2_RLLLRL6), .y(abs_x2_pow_25), .out(dx_2_RLLLR5) );
+
+    //     dx_2_RLLLL5 	----	dx_2_RLLLR5    =>    dx_2_RLLL4
+    wire [31:0] dx_2_RLLL4;
+    sub dx_2_RLLL4_sub( .x(dx_2_RLLLL5), .y(dx_2_RLLLR5), .out(dx_2_RLLL4) );
+
+    //     F 	****	x_0    =>    dx_2_RLLR4
+    wire [31:0] dx_2_RLLR4;
+    mult dx_2_RLLR4_mult( .x(F), .y(x_0), .out(dx_2_RLLR4) );
+
+    //     dx_2_RLLL4 	----	dx_2_RLLR4    =>    dx_2_RLL3
+    wire [31:0] dx_2_RLL3;
+    sub dx_2_RLL3_sub( .x(dx_2_RLLL4), .y(dx_2_RLLR4), .out(dx_2_RLL3) );
+
+    //     dx_2_RLL3 	----	C_KSR_M_LSR0    =>    dx_2_RL2
+    wire [31:0] dx_2_RL2;
+    sub dx_2_RL2_sub( .x(dx_2_RLL3), .y(C_KSR_M_LSR0), .out(dx_2_RL2) );
+
+    //     dx_2_RL2 	++++	C_KPR_M_LPR0    =>    dx_2_R1
+    wire [31:0] dx_2_R1;
+    add dx_2_R1_add( .x(dx_2_RL2), .y(C_KPR_M_LPR0), .out(dx_2_R1) );
+
+    //     C_REV_M 	****	dx_2_R1    =>    dx_2_F0
+    wire [31:0] dx_2_F0;
+    mult dx_2_F0_mult( .x(C_REV_M), .y(dx_2_R1), .out(dx_2_F0) );
+
+    assign dx_2 = dx_2_F0;
+
 endmodule
 
 
