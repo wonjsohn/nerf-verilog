@@ -73,8 +73,17 @@ module spindle_neuron_xem6010(
             gamma_dyn <= 32'h42A0_0000; // gamma_dyn reset to 80
         else
             gamma_dyn <= {ep02wire, ep01wire};  //firing rate
-    end  
-    
+    end 
+	 
+    reg [31:0] gamma_sta;
+    always @(posedge ep50trig[5] or posedge reset_global)
+    begin
+        if (reset_global)
+            gamma_sta <= 32'h42A0_0000; // gamma_sta reset to 80
+        else
+            gamma_sta <= {ep02wire, ep01wire};  //firing rate
+    end
+	 
     reg [31:0] BDAMP_1, BDAMP_2, BDAMP_chain, GI, GII;
     always @(posedge ep50trig[15] or posedge reset_global)
     begin
@@ -140,7 +149,7 @@ module spindle_neuron_xem6010(
     // *** Spindle: current_lce => Ia_fr
     spindle bag1_bag2_chain
     (	.gamma_dyn(gamma_dyn), // 32'h42A0_0000
-        .gamma_sta(gamma_dyn),
+        .gamma_sta(gamma_sta),
         .lce(current_lce),
         .clk(spindle_clk),
         .reset(reset_sim),
@@ -228,9 +237,9 @@ module spindle_neuron_xem6010(
     assign reset_sim = ep00wire[1];
     
     // *** Endpoint connections:
-    assign pin0 = neuron_clk;
-    assign pin1 = sim_clk;
-    assign pin2 = spindle_clk;
+    assign pin0 = sim_clk;
+    assign pin1 = Ia_spike;
+    assign pin2 = II_spike;
     
     assign ep20wire = Ia_fr[15:0];
     assign ep21wire = Ia_fr[31:16];
