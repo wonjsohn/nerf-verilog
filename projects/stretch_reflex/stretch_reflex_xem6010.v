@@ -282,20 +282,20 @@ module stretch_reflex_xem6010(
     // *** Count the spikes: rawspikes -> spike -> spike_count_out
 	wire    [31:0] i_MN_spk_cnt;
     wire    clear_out;
-//    spikecnt count_rawspikes
-//	 (		.spike(MN_spike), 
-//			.slow_clk(sim_clk), 
-//			.fast_clk(neuron_clk),
-//            .int_cnt_out(i_MN_spk_cnt),
-//			.reset(reset_sim),
-//            .clear_out(clear_out) );   
+    spikecnt count_rawspikes
+	 (		.spike(MN_spike), 
+			.slow_clk(sim_clk), 
+			.fast_clk(neuron_clk),
+            .int_cnt_out(i_MN_spk_cnt),
+			.reset(reset_sim),
+            .clear_out(clear_out) );   
 
-    spike_counter count_rawspikes
-    (   .spike(MN_spike), 
-        .slow_clk(sim_clk), 
-        .reset(reset_sim),
-        .int_cnt_out(i_MN_spk_cnt),
-        .clear_out(clear_out) );
+//    spike_counter count_rawspikes
+//    (   .spike(MN_spike), 
+//        .slow_clk(sim_clk), 
+//        .reset(reset_sim),
+//        .int_cnt_out(i_MN_spk_cnt),
+//        .clear_out(clear_out) );
             
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_total_force, f_active_state, f_MN_spk_cnt;
