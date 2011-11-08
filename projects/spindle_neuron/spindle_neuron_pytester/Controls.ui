@@ -733,7 +733,7 @@
     <item row="0" column="1">
      <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>unused</string>
+       <string>GammaSta</string>
       </property>
      </widget>
     </item>
@@ -743,7 +743,7 @@
        <double>200.000000000000000</double>
       </property>
       <property name="value">
-       <double>80.000000000000000</double>
+       <double>40.000000000000000</double>
       </property>
      </widget>
     </item>
@@ -1101,7 +1101,7 @@
      <x>230</x>
      <y>670</y>
      <width>203</width>
-     <height>29</height>
+     <height>34</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout_16">
@@ -1133,7 +1133,7 @@
      <x>230</x>
      <y>705</y>
      <width>203</width>
-     <height>29</height>
+     <height>34</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout_17">
@@ -1159,33 +1159,6 @@
     </item>
    </layout>
   </widget>
-  <zorder>pushButton_2</zorder>
-  <zorder>pushButton_4</zorder>
-  <zorder>pushButton_5</zorder>
-  <zorder>comboBox</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>horizontalSlider</zorder>
-  <zorder>lcdNumber</zorder>
-  <zorder>label_RT</zorder>
-  <zorder>pushButtonData</zorder>
-  <zorder>layoutWidget_2</zorder>
-  <zorder>layoutWidget_3</zorder>
-  <zorder>layoutWidget_4</zorder>
-  <zorder>layoutWidget_5</zorder>
-  <zorder>layoutWidget_6</zorder>
-  <zorder>layoutWidget_7</zorder>
-  <zorder>layoutWidget_8</zorder>
-  <zorder>layoutWidget_9</zorder>
-  <zorder>layoutWidget_10</zorder>
-  <zorder>layoutWidget_11</zorder>
-  <zorder>layoutWidget_12</zorder>
-  <zorder>layoutWidget_13</zorder>
-  <zorder>layoutWidget_14</zorder>
-  <zorder>layoutWidget_15</zorder>
-  <zorder>layoutWidget_16</zorder>
-  <zorder>layoutWidget_17</zorder>
-  <zorder>layoutWidget_18</zorder>
-  <zorder>doubleSpinBox_11</zorder>
  </widget>
  <resources/>
  <connections>
