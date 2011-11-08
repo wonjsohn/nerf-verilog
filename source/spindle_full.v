@@ -465,6 +465,10 @@ module spindle_derivatives(		input [1:0] state,
     sub sig_rldfv_sub( .x(x_1), .y(rldfv), .out(x1_rldfv) );
     assign sig = x1_rldfv[31] ? 0 : x1_rldfv;
 
+
+	wire [31:0] x_0_in;
+	assign x_0_in = (state == 2'd2) ? min_gamma : x_0;
+	
     //     C_KSR 	****	lce    =>    dx_2_RLLLLL6
     wire [31:0] dx_2_RLLLLL6;
     mult dx_2_RLLLLL6_mult( .x(C_KSR), .y(lce), .out(dx_2_RLLLLL6) );
@@ -479,7 +483,7 @@ module spindle_derivatives(		input [1:0] state,
 
     //     BDAMP 	****	x_0    =>    dx_2_RLLLRLLRR9
     wire [31:0] dx_2_RLLLRLLRR9;
-    mult dx_2_RLLLRLLRR9_mult( .x(BDAMP), .y(x_0), .out(dx_2_RLLLRLLRR9) );
+    mult dx_2_RLLLRLLRR9_mult( .x(BDAMP), .y(x_0_in), .out(dx_2_RLLLRLLRR9) );
 
     //     B0 	++++	dx_2_RLLLRLLRR9    =>    dx_2_RLLLRLLR8
     wire [31:0] dx_2_RLLLRLLR8;
@@ -503,7 +507,7 @@ module spindle_derivatives(		input [1:0] state,
 
     //     F 	****	x_0    =>    dx_2_RLLRR5
     wire [31:0] dx_2_RLLRR5;
-    mult dx_2_RLLRR5_mult( .x(F), .y(x_0), .out(dx_2_RLLRR5) );
+    mult dx_2_RLLRR5_mult( .x(F), .y(x_0_in), .out(dx_2_RLLRR5) );
 
     //     F0 	++++	dx_2_RLLRR5    =>    dx_2_RLLR4
     wire [31:0] dx_2_RLLR4;
