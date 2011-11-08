@@ -460,6 +460,10 @@ module spindle_derivatives(		input [1:0] state,
 	
     wire [31:0] IEEE_1 = 32'h3F800000;
         
+    wire [31:0] sig, rldfv, x1_rldfv;
+    assign rldfv = 32'h3EEB851F;
+    sub sig_rldfv_sub( .x(x_1), .y(rldfv), .out(x1_rldfv) );
+    assign sig = x1_rldfv[31] ? 0 : x1_rldfv;
 
     //     C_KSR 	****	lce    =>    dx_2_RLLLLL6
     wire [31:0] dx_2_RLLLLL6;
@@ -473,17 +477,21 @@ module spindle_derivatives(		input [1:0] state,
     wire [31:0] dx_2_RLLLL5;
     sub dx_2_RLLLL5_sub( .x(dx_2_RLLLLL6), .y(dx_2_RLLLLR6), .out(dx_2_RLLLL5) );
 
-    //     BDAMP 	****	x_0    =>    dx_2_RLLLRLRR8
-    wire [31:0] dx_2_RLLLRLRR8;
-    mult dx_2_RLLLRLRR8_mult( .x(BDAMP), .y(x_0), .out(dx_2_RLLLRLRR8) );
+    //     BDAMP 	****	x_0    =>    dx_2_RLLLRLLRR9
+    wire [31:0] dx_2_RLLLRLLRR9;
+    mult dx_2_RLLLRLLRR9_mult( .x(BDAMP), .y(x_0), .out(dx_2_RLLLRLLRR9) );
 
-    //     B0 	++++	dx_2_RLLLRLRR8    =>    dx_2_RLLLRLR7
-    wire [31:0] dx_2_RLLLRLR7;
-    add dx_2_RLLLRLR7_add( .x(B0), .y(dx_2_RLLLRLRR8), .out(dx_2_RLLLRLR7) );
+    //     B0 	++++	dx_2_RLLLRLLRR9    =>    dx_2_RLLLRLLR8
+    wire [31:0] dx_2_RLLLRLLR8;
+    add dx_2_RLLLRLLR8_add( .x(B0), .y(dx_2_RLLLRLLRR9), .out(dx_2_RLLLRLLR8) );
 
-    //     CSS 	****	dx_2_RLLLRLR7    =>    dx_2_RLLLRL6
+    //     CSS 	****	dx_2_RLLLRLLR8    =>    dx_2_RLLLRLL7
+    wire [31:0] dx_2_RLLLRLL7;
+    mult dx_2_RLLLRLL7_mult( .x(CSS), .y(dx_2_RLLLRLLR8), .out(dx_2_RLLLRLL7) );
+
+    //     dx_2_RLLLRLL7 	****	sig    =>    dx_2_RLLLRL6
     wire [31:0] dx_2_RLLLRL6;
-    mult dx_2_RLLLRL6_mult( .x(CSS), .y(dx_2_RLLLRLR7), .out(dx_2_RLLLRL6) );
+    mult dx_2_RLLLRL6_mult( .x(dx_2_RLLLRLL7), .y(sig), .out(dx_2_RLLLRL6) );
 
     //     dx_2_RLLLRL6 	****	abs_x2_pow_25    =>    dx_2_RLLLR5
     wire [31:0] dx_2_RLLLR5;
@@ -493,9 +501,13 @@ module spindle_derivatives(		input [1:0] state,
     wire [31:0] dx_2_RLLL4;
     sub dx_2_RLLL4_sub( .x(dx_2_RLLLL5), .y(dx_2_RLLLR5), .out(dx_2_RLLL4) );
 
-    //     F 	****	x_0    =>    dx_2_RLLR4
+    //     F 	****	x_0    =>    dx_2_RLLRR5
+    wire [31:0] dx_2_RLLRR5;
+    mult dx_2_RLLRR5_mult( .x(F), .y(x_0), .out(dx_2_RLLRR5) );
+
+    //     F0 	++++	dx_2_RLLRR5    =>    dx_2_RLLR4
     wire [31:0] dx_2_RLLR4;
-    mult dx_2_RLLR4_mult( .x(F), .y(x_0), .out(dx_2_RLLR4) );
+    add dx_2_RLLR4_add( .x(F0), .y(dx_2_RLLRR5), .out(dx_2_RLLR4) );
 
     //     dx_2_RLLL4 	----	dx_2_RLLR4    =>    dx_2_RLL3
     wire [31:0] dx_2_RLL3;
@@ -512,6 +524,7 @@ module spindle_derivatives(		input [1:0] state,
     //     C_REV_M 	****	dx_2_R1    =>    dx_2_F0
     wire [31:0] dx_2_F0;
     mult dx_2_F0_mult( .x(C_REV_M), .y(dx_2_R1), .out(dx_2_F0) );
+
 
     assign dx_2 = dx_2_F0;
 
