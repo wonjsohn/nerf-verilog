@@ -203,7 +203,7 @@ module spindle(
 	integrator x_2_hat_integrator (	.x(dx_2_in), .int_x(x_2_in), .out(x_2_hat) );
 	//loeb spindle bag1 derivatives
 	spindle_derivatives derivatives(    .state(state),	
-                                 .gamma_dyn(gamma_sta),
+                                .gamma_dyn(gamma_dyn),
                                 .gamma_sta(gamma_sta),                                 
             					.lce(lce), 
 				            	.x_0(x_0_hat), 

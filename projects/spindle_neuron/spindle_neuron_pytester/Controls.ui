@@ -656,7 +656,7 @@
        <double>1000000.000000000000000</double>
       </property>
       <property name="value">
-       <double>200.000000000000000</double>
+       <double>0.300000000000000</double>
       </property>
      </widget>
     </item>
@@ -791,7 +791,7 @@
     <item row="0" column="1">
      <widget class="QLabel" name="label_7">
       <property name="text">
-       <string>GammaSta</string>
+       <string>unused</string>
       </property>
      </widget>
     </item>

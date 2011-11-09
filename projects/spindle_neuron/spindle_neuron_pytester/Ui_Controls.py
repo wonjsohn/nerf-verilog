@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog/projects/spindle_neuron/spindle_neuron_pytester/Controls.ui'
 #
-# Created: Mon Nov  7 19:02:01 2011
+# Created: Tue Nov  8 13:33:05 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -232,7 +232,7 @@ class Ui_Dialog(object):
         self.formLayout_2.setWidget(0, QtGui.QFormLayout.FieldRole, self.label_2)
         self.doubleSpinBox_2 = QtGui.QDoubleSpinBox(self.layoutWidget_2)
         self.doubleSpinBox_2.setMaximum(1000000.0)
-        self.doubleSpinBox_2.setProperty(_fromUtf8("value"), 200.0)
+        self.doubleSpinBox_2.setProperty(_fromUtf8("value"), 0.3)
         self.doubleSpinBox_2.setObjectName(_fromUtf8("doubleSpinBox_2"))
         self.formLayout_2.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_2)
         self.layoutWidget_3 = QtGui.QWidget(Dialog)
@@ -493,7 +493,7 @@ class Ui_Dialog(object):
         self.label_4.setText(QtGui.QApplication.translate("Dialog", "GammaDyn", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("Dialog", "GammaSta", None, QtGui.QApplication.UnicodeUTF8))
         self.label_6.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_7.setText(QtGui.QApplication.translate("Dialog", "GammaSta", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_7.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))
         self.label_0.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
         self.label_9.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog_cmn/projects/stretch_reflex/stretch_reflex_pytester/Display.ui'
+# Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog/projects/stretch_reflex/stretch_reflex_pytester/Display.ui'
 #
-# Created: Tue Oct 25 10:56:23 2011
+# Created: Tue Nov  8 13:34:49 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
