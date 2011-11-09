@@ -11,7 +11,7 @@ BUTTON_ENABLE_SIM = 2
 #DATA_EVT_PPS_I_COEF = 2
 #DATA_EVT_GAMMA_DYN = 5
 DATA_EVT_CLKRATE = 7
-SEND_TYPE = ['', '', 'float32', 'int32', 'float32', 'float32', 'int32', 'int32', '', '', \
+SEND_TYPE = ['', 'float32', 'float32', 'int32', 'float32', 'float32', 'int32', 'int32', '', '', \
              '', '', '', '', 'float32', 'float32']
 
 DISPLAY_SCALING =[50, 0.11,  0.11, 10, 11,  0.2]
