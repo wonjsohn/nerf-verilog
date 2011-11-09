@@ -235,7 +235,7 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1320808114" xil_pn:in_ck="-8521690384309681644" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="-4646808239967013263" xil_pn:start_ts="1320807592">
+    <transform xil_pn:end_ts="1320861954" xil_pn:in_ck="-8521690384309681644" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="-4646808239967013263" xil_pn:start_ts="1320861426">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -257,31 +257,33 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1320856823" xil_pn:in_ck="8373971530665345248" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="7435360667942660035" xil_pn:start_ts="1320856790">
+    <transform xil_pn:end_ts="1320861991" xil_pn:in_ck="6335854773655770425" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="7435360667942660035" xil_pn:start_ts="1320861954">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputRemoved"/>
+      <outfile xil_pn:name="_ngo"/>
+      <outfile xil_pn:name="_xmsgs/ngdbuild.xmsgs"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010.bld"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010.ngd"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010_ngdbuild.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1320857514" xil_pn:in_ck="6935684168676283138" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1320856823">
+    <transform xil_pn:end_ts="1320863040" xil_pn:in_ck="-3535857426230732809" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1320861991">
       <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="NotReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputRemoved"/>
+      <status xil_pn:value="ReadyToRun"/>
+      <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010.pcf"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010_map.map"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010_map.mrp"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010_map.ncd"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010_map.ngm"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010_map.xrpt"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010_summary.xml"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010_usage.xml"/>
     </transform>
-    <transform xil_pn:end_ts="1320858140" xil_pn:in_ck="8343654693398690527" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1320857514">
+    <transform xil_pn:end_ts="1320863583" xil_pn:in_ck="-9221770322154180912" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1320863040">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
-      <status xil_pn:value="NotReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="_xmsgs/par.xmsgs"/>
       <outfile xil_pn:name="stretch_reflex_xem6010.ncd"/>
       <outfile xil_pn:name="stretch_reflex_xem6010.pad"/>
@@ -293,11 +295,10 @@
       <outfile xil_pn:name="stretch_reflex_xem6010_pad.txt"/>
       <outfile xil_pn:name="stretch_reflex_xem6010_par.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1320858255" xil_pn:in_ck="-5709237203896183243" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="396117104113915555" xil_pn:start_ts="1320858140">
+    <transform xil_pn:end_ts="1320863696" xil_pn:in_ck="-5709237203896183243" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="396117104113915555" xil_pn:start_ts="1320863583">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
       <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
       <outfile xil_pn:name="stretch_reflex_xem6010.bgn"/>
       <outfile xil_pn:name="stretch_reflex_xem6010.bit"/>
@@ -307,13 +308,12 @@
       <outfile xil_pn:name="webtalk.log"/>
       <outfile xil_pn:name="webtalk_pn.xml"/>
     </transform>
-    <transform xil_pn:end_ts="1320787690" xil_pn:in_ck="5905000252395952755" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1320787633">
-      <status xil_pn:value="AbortedRun"/>
+    <transform xil_pn:end_ts="1320863583" xil_pn:in_ck="5905000252395952755" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1320863526">
+      <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="InputChanged"/>
-      <status xil_pn:value="InputRemoved"/>
+      <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010.twr"/>
+      <outfile xil_pn:name="stretch_reflex_xem6010.twx"/>
     </transform>
   </transforms>
 
