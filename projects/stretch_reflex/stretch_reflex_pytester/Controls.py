@@ -11,6 +11,7 @@ from Utilities import *
 from generate_sin import gen as gen_sin
 from generate_tri import gen as gen_tri
 from generate_spikes import spike_train
+from generate_sequence import gen as gen_ramp
 from math import floor
 
 from Fpga import Model
@@ -120,6 +121,7 @@ class User(QDialog, Ui_Dialog):
     def onNewWireIn4(self):
         newWireIn = self.doubleSpinBox_4.value()
         if SEND_TYPE[4] == 'int32': newWireIn = int(newWireIn)
+        print newWireIn, 
         self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 4)
 
     def onNewWireIn5(self):
@@ -161,10 +163,13 @@ class User(QDialog, Ui_Dialog):
             pipeInData = gen_sin(F = 1.0, AMP = 0.3)
         elif choice == "Spike Train 10Hz":
 #            pipeInData = spike_train(firing_rate = 10)      
-            pipeInData = gen_sin(F = 4.0, AMP = 0.3)
+#            pipeInData = gen_sin(F = 4.0, AMP = 0.3)
+            pipeInData = gen_tri() 
+
             
         elif choice == "Spike Train 20Hz":
-            pipeInData = gen_tri() 
+#            pipeInData = gen_tri() 
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 1.0], L = [1.0, 1.0, 1.2, 1.2, 1.0, 1.0], FILT = True)
 #            pipeInData = spike_train(firing_rate = 100) 
         
         self.nerfModel.SendPipe(pipeInData)

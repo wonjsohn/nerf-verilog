@@ -137,7 +137,7 @@ class User(QDialog, Ui_Dialog):
                 subplot(NUM_CHANNEL, 1, i+1)
                 plot(forplot[:, i])
             show()
-        savemat("./matlab_cmn.mat", {"lce": forplot[:, 0]})
+            savemat("./matlab_cmn.mat", {"lce": forplot[:, 0]})
    
     @pyqtSignature("QString")
     def on_comboBox_activated(self, p0):
