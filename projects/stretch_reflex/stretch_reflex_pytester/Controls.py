@@ -50,6 +50,9 @@ class User(QDialog, Ui_Dialog):
 #        self.connect(self.doubleSpinBox_1, SIGNAL("editingFinished()"), self.onNewWire01In)
 #        self.connect(self.doubleSpinBox_1, SIGNAL("valueChanged(double)"), self.onNewWire01In)
 
+        self.connect(self.doubleSpinBox_1, SIGNAL("editingFinished()"), self.onNewWireIn1)
+        self.connect(self.doubleSpinBox_1, SIGNAL("valueChanged(double)"), self.onNewWireIn1)
+        
         self.connect(self.doubleSpinBox_2, SIGNAL("editingFinished()"), self.onNewWireIn2)
         self.connect(self.doubleSpinBox_2, SIGNAL("valueChanged(double)"), self.onNewWireIn2)
 
@@ -95,8 +98,8 @@ class User(QDialog, Ui_Dialog):
 #            if i == 3:
 #                print newData[i]
             
-        #newSpike = self.nerfModel.ReadPipe(0xA1, 1000) # read ## bytes
-        newSpike = "" # read ## bytes
+        newSpike = self.nerfModel.ReadPipe(0xA2, 4000) # read ## bytes
+        #newSpike = "" # read ## bytes
 
         
         self.dispView.newData(newData, newSpike)
@@ -112,9 +115,15 @@ class User(QDialog, Ui_Dialog):
 #    def onNewWireIn(self, evt):
 #        newWireIn = eval('self.doubleSpinBox_'+str(evt)+u'.value()')
 #        self.nerfModel.SendPara(newVal = newWireIn, trigEvent = evt)
-   
+
+    def onNewWireIn1(self):
+        newWireIn = self.doubleSpinBox_1.value()
+        if SEND_TYPE[1] == 'int32': newWireIn = int(newWireIn)
+        self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 1)
+           
     def onNewWireIn2(self):
         newWireIn = eval('self.doubleSpinBox_'+str(2)+u'.value()')
+        if SEND_TYPE[2] == 'int32': newWireIn = int(newWireIn)
         self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 2)
 
     def onNewWireIn3(self):

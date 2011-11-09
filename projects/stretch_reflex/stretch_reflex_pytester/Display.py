@@ -125,7 +125,7 @@ class View(QMainWindow, Ui_Dialog):
         spikeSeq = unpack("%d" % len(self.spike) + "b", self.spike)
         
         size = self.size()
-        winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 6;
+        winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 4;
         self.pen.setStyle(Qt.SolidLine)
         self.pen.setWidth(10)
         self.pen.setBrush(Qt.blue)
@@ -137,13 +137,13 @@ class View(QMainWindow, Ui_Dialog):
             neuronID = spikeSeq[i+1]
             rawspikes = spikeSeq[i]
             ## flexors
-#            if (rawspikes & 64) : ## Ia
-#                gp.drawLine(self.x-4,(winScale) - 28 - (neuronID/4),\
-#                                 self.x, (winScale) -  28 - (neuronID/4))
+            if (rawspikes & 64) : ## Ia
+                gp.drawLine(self.x-2,(winScale) - 22 ,\
+                                 self.x, (winScale) -  22)
             if (rawspikes & 128) : ## MN
 #                gp.drawPoint(self.x, (winScale) - 24 - (neuronID/4)   ) 
-                gp.drawLine(self.x-2,(winScale) - 24 - (neuronID/2),\
-                                 self.x, (winScale) - 24 - (neuronID/2))
+                gp.drawLine(self.x-2,(winScale) - 24 ,\
+                                 self.x, (winScale) - 24)
 
     def drawPoints(self, qp):
         """ 
