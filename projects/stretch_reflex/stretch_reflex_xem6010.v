@@ -184,9 +184,7 @@ module stretch_reflex_xem6010(
         .out3(f_rawfr_Ia),
         .BDAMP_1(BDAMP_1),
         .BDAMP_2(BDAMP_2),
-        .BDAMP_chain(BDAMP_chain),
-        .GI(GI),
-        .GII(GII)
+        .BDAMP_chain(BDAMP_chain)
 		);
 
     // *** Izhikevich: float_fr_Ia => spikes
