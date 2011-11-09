@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog/projects/stretch_reflex/stretch_reflex_pytester/Controls.ui'
 #
-# Created: Tue Nov  8 13:34:48 2011
+# Created: Wed Nov  9 09:23:23 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -53,15 +53,17 @@ class Ui_Dialog(object):
         self.horizontalSlider = QtGui.QSlider(Dialog)
         self.horizontalSlider.setGeometry(QtCore.QRect(21, 281, 171, 25))
         self.horizontalSlider.setMinimum(1)
-        self.horizontalSlider.setMaximum(1000)
-        self.horizontalSlider.setTracking(False)
+        self.horizontalSlider.setMaximum(100)
+        self.horizontalSlider.setProperty(_fromUtf8("value"), 5)
+        self.horizontalSlider.setSliderPosition(5)
+        self.horizontalSlider.setTracking(True)
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider.setInvertedControls(True)
         self.horizontalSlider.setTickPosition(QtGui.QSlider.TicksBelow)
         self.horizontalSlider.setTickInterval(10)
         self.horizontalSlider.setObjectName(_fromUtf8("horizontalSlider"))
         self.lcdNumber = QtGui.QLCDNumber(Dialog)
-        self.lcdNumber.setGeometry(QtCore.QRect(0, 300, 81, 40))
+        self.lcdNumber.setGeometry(QtCore.QRect(-30, 300, 81, 40))
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -209,10 +211,10 @@ class Ui_Dialog(object):
         self.lcdNumber.setLineWidth(0)
         self.lcdNumber.setMidLineWidth(8)
         self.lcdNumber.setSegmentStyle(QtGui.QLCDNumber.Flat)
-        self.lcdNumber.setProperty(_fromUtf8("intValue"), 1)
+        self.lcdNumber.setProperty(_fromUtf8("intValue"), 5)
         self.lcdNumber.setObjectName(_fromUtf8("lcdNumber"))
         self.label_RT = QtGui.QLabel(Dialog)
-        self.label_RT.setGeometry(QtCore.QRect(90, 310, 87, 22))
+        self.label_RT.setGeometry(QtCore.QRect(60, 310, 121, 22))
         self.label_RT.setObjectName(_fromUtf8("label_RT"))
         self.pushButtonData = QtGui.QPushButton(Dialog)
         self.pushButtonData.setGeometry(QtCore.QRect(20, 360, 105, 30))
@@ -234,7 +236,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_2.setDecimals(5)
         self.doubleSpinBox_2.setMaximum(1000000.0)
         self.doubleSpinBox_2.setSingleStep(0.1)
-        self.doubleSpinBox_2.setProperty(_fromUtf8("value"), 0.35)
+        self.doubleSpinBox_2.setProperty(_fromUtf8("value"), 0.5)
         self.doubleSpinBox_2.setObjectName(_fromUtf8("doubleSpinBox_2"))
         self.formLayout_2.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_2)
         self.layoutWidget_3 = QtGui.QWidget(Dialog)
@@ -261,7 +263,7 @@ class Ui_Dialog(object):
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.formLayout_4.setWidget(0, QtGui.QFormLayout.FieldRole, self.label_4)
         self.doubleSpinBox_4 = QtGui.QDoubleSpinBox(self.layoutWidget_4)
-        self.doubleSpinBox_4.setDecimals(5)
+        self.doubleSpinBox_4.setDecimals(2)
         self.doubleSpinBox_4.setMaximum(200.0)
         self.doubleSpinBox_4.setProperty(_fromUtf8("value"), 80.0)
         self.doubleSpinBox_4.setObjectName(_fromUtf8("doubleSpinBox_4"))
@@ -489,7 +491,7 @@ class Ui_Dialog(object):
         self.comboBox.setItemText(1, QtGui.QApplication.translate("Dialog", "Spike Train 10Hz", None, QtGui.QApplication.UnicodeUTF8))
         self.comboBox.setItemText(2, QtGui.QApplication.translate("Dialog", "Spike Train 20Hz", None, QtGui.QApplication.UnicodeUTF8))
         self.label_1.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_RT.setText(QtGui.QApplication.translate("Dialog", "x Real-time", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_RT.setText(QtGui.QApplication.translate("Dialog", "x 0.1 Real-time", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButtonData.setText(QtGui.QApplication.translate("Dialog", "Log Data", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("Dialog", "pps coef", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("Dialog", "Close loop", None, QtGui.QApplication.UnicodeUTF8))

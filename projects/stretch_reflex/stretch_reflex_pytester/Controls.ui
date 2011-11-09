@@ -128,10 +128,16 @@
     <number>1</number>
    </property>
    <property name="maximum">
-    <number>1000</number>
+    <number>100</number>
+   </property>
+   <property name="value">
+    <number>5</number>
+   </property>
+   <property name="sliderPosition">
+    <number>5</number>
    </property>
    <property name="tracking">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -149,7 +155,7 @@
   <widget class="QLCDNumber" name="lcdNumber">
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>-30</x>
      <y>300</y>
      <width>81</width>
      <height>40</height>
@@ -592,20 +598,20 @@
     <enum>QLCDNumber::Flat</enum>
    </property>
    <property name="intValue" stdset="0">
-    <number>1</number>
+    <number>5</number>
    </property>
   </widget>
   <widget class="QLabel" name="label_RT">
    <property name="geometry">
     <rect>
-     <x>90</x>
+     <x>60</x>
      <y>310</y>
-     <width>87</width>
+     <width>121</width>
      <height>22</height>
     </rect>
    </property>
    <property name="text">
-    <string>x Real-time</string>
+    <string>x 0.1 Real-time</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButtonData">
@@ -662,7 +668,7 @@
        <double>0.100000000000000</double>
       </property>
       <property name="value">
-       <double>0.350000000000000</double>
+       <double>0.500000000000000</double>
       </property>
      </widget>
     </item>
@@ -1182,7 +1188,7 @@
      <y>291</y>
     </hint>
     <hint type="destinationlabel">
-     <x>57</x>
+     <x>27</x>
      <y>317</y>
     </hint>
    </hints>
