@@ -73,7 +73,7 @@ class User(QDialog, Ui_Dialog):
 #
 #        self.connect(self.doubleSpinBox_9, SIGNAL("editingFinished()"), self.onNewWire09In)
 #        self.connect(self.doubleSpinBox_9, SIGNAL("valueChanged(double)"), self.onNewWire09In)
-        
+
         self.connect(self.doubleSpinBox_14, SIGNAL("editingFinished()"), self.onNewWireIn14)
         self.connect(self.doubleSpinBox_14, SIGNAL("valueChanged(double)"), self.onNewWireIn14)
         
@@ -128,13 +128,16 @@ class User(QDialog, Ui_Dialog):
 
     def plotData(self, data):
         from pylab import plot, show, subplot
+        from scipy.io import savemat, loadmat
         import numpy as np
+        
         if (data != []):
             forplot = np.array(data)
             for i in xrange(NUM_CHANNEL):
                 subplot(NUM_CHANNEL, 1, i+1)
                 plot(forplot[:, i])
             show()
+            savemat("./matlab_cmn.mat", {"lce": forplot[:, 0]})
    
     @pyqtSignature("QString")
     def on_comboBox_activated(self, p0):

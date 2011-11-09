@@ -136,6 +136,9 @@ module spindle(
 	wire [31:0] LSR0_0;	
 	assign LSR0_0	= 32'h3D23D70A;
 
+	wire [31:0] GI_0;
+	assign GI_0 = GI;
+    //assign GI_0	    = 32'h469C4000;
 
 	
 	

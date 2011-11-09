@@ -717,7 +717,7 @@
     <item row="0" column="0">
      <widget class="QDoubleSpinBox" name="doubleSpinBox_4">
       <property name="decimals">
-       <number>5</number>
+       <number>2</number>
       </property>
       <property name="maximum">
        <double>200.000000000000000</double>
@@ -742,7 +742,7 @@
     <item row="0" column="1">
      <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>unused</string>
+       <string>GammaSta</string>
       </property>
      </widget>
     </item>
@@ -752,7 +752,7 @@
        <double>200.000000000000000</double>
       </property>
       <property name="value">
-       <double>80.000000000000000</double>
+       <double>40.000000000000000</double>
       </property>
      </widget>
     </item>
@@ -800,7 +800,7 @@
     <item row="0" column="1">
      <widget class="QLabel" name="label_7">
       <property name="text">
-       <string>GammaSta</string>
+       <string>unused</string>
       </property>
      </widget>
     </item>
