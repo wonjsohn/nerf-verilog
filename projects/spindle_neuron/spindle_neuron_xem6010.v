@@ -70,7 +70,7 @@ module spindle_neuron_xem6010(
     always @(posedge ep50trig[4] or posedge reset_global)
     begin
         if (reset_global)
-            gamma_dyn <= 32'h42A0_0000; // gamma_dyn reset to 80
+            gamma_dyn <= 32'h4220_0000; // gamma_dyn reset to 80
         else
             gamma_dyn <= {ep02wire, ep01wire};  //firing rate
     end 
@@ -79,7 +79,7 @@ module spindle_neuron_xem6010(
     always @(posedge ep50trig[5] or posedge reset_global)
     begin
         if (reset_global)
-            gamma_sta <= 32'h42A0_0000; // gamma_sta reset to 80
+            gamma_sta <= 32'h4220_0000; // gamma_sta reset to 80
         else
             gamma_sta <= {ep02wire, ep01wire};  //firing rate
     end
@@ -159,9 +159,7 @@ module spindle_neuron_xem6010(
         .out3(Ia_fr),
         .BDAMP_1(BDAMP_1),
         .BDAMP_2(BDAMP_2),
-        .BDAMP_chain(BDAMP_chain),
-        .GI(GI),
-        .GII(GII)
+        .BDAMP_chain(BDAMP_chain)
 		);
 
     // *** Izhikevich: Ia_fr => spikes

@@ -10,9 +10,7 @@ module spindle(
     output [31:0] out3,
     input   [31:0] BDAMP_1,
     input   [31:0] BDAMP_2,
-    input   [31:0] BDAMP_chain,
-    input   [31:0] GI,
-    input   [31:0] GII
+    input   [31:0] BDAMP_chain
     );
 
 
@@ -71,7 +69,13 @@ module spindle(
     reg [31:0] dx_6_prev;
     reg [31:0] dx_7_prev;
     reg [31:0] dx_8_prev;
-    
+   
+	wire [31:0] GI_0, GI_2_chain;
+	//assign GI_0 = GI;
+   assign GI_0	    = 32'h469C4000;		//20000
+	assign GI_2_chain = 32'h461C4000;	//10000
+	
+	reg [31:0] GI_in;
 	always @ (state) begin
 		case (state) 
 			0: begin //bag1
@@ -81,6 +85,7 @@ module spindle(
 				dx_0_in = dx_0_prev;
 				dx_1_in = dx_1_prev;
 				dx_2_in = dx_2_prev;
+				GI_in = GI_0;
 				end
 			1: begin //bag2
 				x_0_in = x_3;
@@ -89,6 +94,7 @@ module spindle(
 				dx_0_in = dx_3_prev;
 				dx_1_in = dx_4_prev;
 				dx_2_in = dx_5_prev;
+				GI_in = GI_2_chain;
 				end
 			2: begin //chain
 				x_0_in = x_6;
@@ -97,6 +103,7 @@ module spindle(
 				dx_0_in = dx_6_prev;
 				dx_1_in = dx_7_prev;
 				dx_2_in = dx_8_prev;
+				GI_in = GI_2_chain;
 				end
 			default: begin
 					x_0_in = 0;
@@ -105,6 +112,7 @@ module spindle(
 					dx_0_in = 0;
 					dx_1_in = 0;
 					dx_2_in = 0;
+					GI_in = 0;
 					end
 		endcase
 	end
@@ -128,14 +136,13 @@ module spindle(
 	wire [31:0] LSR0_0;	
 	assign LSR0_0	= 32'h3D23D70A;
 
-	wire [31:0] GI_0;
-	assign GI_0 = GI;
-    //assign GI_0	    = 32'h469C4000;
 
+	
+	
 	wire [31:0] Ia_fiber_RR2, Ia_fiber_R1, Ia_fiber_F0, Ia_fiber_F2;
 	add Ia_fiber_a1( .x(x_1_F0), .y(LSR0_0), .out(Ia_fiber_RR2) );
 	sub Ia_fiber_s1( .x(lce), .y(Ia_fiber_RR2), .out(Ia_fiber_R1) );
-    mult Ia_fiber_m1( .x(GI_0), .y(Ia_fiber_R1), .out(Ia_fiber_F2) );
+    mult Ia_fiber_m1( .x(GI_in), .y(Ia_fiber_R1), .out(Ia_fiber_F2) );
 
 	wire [31:0] Ia_max_flag;
 	sub Ia_fiber_max( .x(IEEE_100000), .y(Ia_fiber_F2), .out(Ia_max_flag));
@@ -144,8 +151,8 @@ module spindle(
                             (Ia_fiber_F2[31]) ? 32'd0 : 
                             Ia_fiber_F2;
 	//II fiber pps calculation
-	//wire [31:0] GII;
-	//assign GII = 32'h45E2_9000; //7250
+	wire [31:0] GII;
+	assign GII = 32'h45E2_9000; //7250
 	
 	wire [31:0] C0; // X[j] * L2nd[j]/LSR0[j] = 0.7
 	assign C0 = 32'h3F33_3333; //0.7
@@ -203,7 +210,7 @@ module spindle(
 	integrator x_2_hat_integrator (	.x(dx_2_in), .int_x(x_2_in), .out(x_2_hat) );
 	//loeb spindle bag1 derivatives
 	spindle_derivatives derivatives(    .state(state),	
-                                 .gamma_dyn(gamma_sta),
+                                 .gamma_dyn(gamma_dyn),
                                 .gamma_sta(gamma_sta),                                 
             					.lce(lce), 
 				            	.x_0(x_0_hat), 
