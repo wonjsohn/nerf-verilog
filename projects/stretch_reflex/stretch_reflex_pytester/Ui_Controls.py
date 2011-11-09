@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog/projects/stretch_reflex/stretch_reflex_pytester/Controls.ui'
 #
-# Created: Wed Nov  9 09:23:23 2011
+# Created: Wed Nov  9 11:47:21 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -47,7 +47,7 @@ class Ui_Dialog(object):
         self.formLayout_1.setWidget(0, QtGui.QFormLayout.FieldRole, self.label_1)
         self.doubleSpinBox_1 = QtGui.QDoubleSpinBox(self.layoutWidget)
         self.doubleSpinBox_1.setMaximum(200.0)
-        self.doubleSpinBox_1.setProperty(_fromUtf8("value"), 80.0)
+        self.doubleSpinBox_1.setProperty(_fromUtf8("value"), 0.5)
         self.doubleSpinBox_1.setObjectName(_fromUtf8("doubleSpinBox_1"))
         self.formLayout_1.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_1)
         self.horizontalSlider = QtGui.QSlider(Dialog)
@@ -233,7 +233,7 @@ class Ui_Dialog(object):
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.formLayout_2.setWidget(0, QtGui.QFormLayout.FieldRole, self.label_2)
         self.doubleSpinBox_2 = QtGui.QDoubleSpinBox(self.layoutWidget_2)
-        self.doubleSpinBox_2.setDecimals(5)
+        self.doubleSpinBox_2.setDecimals(2)
         self.doubleSpinBox_2.setMaximum(1000000.0)
         self.doubleSpinBox_2.setSingleStep(0.1)
         self.doubleSpinBox_2.setProperty(_fromUtf8("value"), 0.5)
@@ -490,10 +490,10 @@ class Ui_Dialog(object):
         self.comboBox.setItemText(0, QtGui.QApplication.translate("Dialog", "Spike Train 1Hz", None, QtGui.QApplication.UnicodeUTF8))
         self.comboBox.setItemText(1, QtGui.QApplication.translate("Dialog", "Spike Train 10Hz", None, QtGui.QApplication.UnicodeUTF8))
         self.comboBox.setItemText(2, QtGui.QApplication.translate("Dialog", "Spike Train 20Hz", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_1.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_1.setText(QtGui.QApplication.translate("Dialog", "pps Ia", None, QtGui.QApplication.UnicodeUTF8))
         self.label_RT.setText(QtGui.QApplication.translate("Dialog", "x 0.1 Real-time", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButtonData.setText(QtGui.QApplication.translate("Dialog", "Log Data", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("Dialog", "pps coef", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("Dialog", "pps II", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("Dialog", "Close loop", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("Dialog", "GammaDyn", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("Dialog", "GammaSta", None, QtGui.QApplication.UnicodeUTF8))
