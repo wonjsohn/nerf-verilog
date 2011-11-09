@@ -99,7 +99,7 @@
     <item row="0" column="1">
      <widget class="QLabel" name="label_1">
       <property name="text">
-       <string>unused</string>
+       <string>pps Ia</string>
       </property>
      </widget>
     </item>
@@ -109,7 +109,7 @@
        <double>200.000000000000000</double>
       </property>
       <property name="value">
-       <double>80.000000000000000</double>
+       <double>0.500000000000000</double>
       </property>
      </widget>
     </item>
@@ -652,14 +652,14 @@
     <item row="0" column="1">
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>pps coef</string>
+       <string>pps II</string>
       </property>
      </widget>
     </item>
     <item row="0" column="0">
      <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
       <property name="decimals">
-       <number>5</number>
+       <number>2</number>
       </property>
       <property name="maximum">
        <double>1000000.000000000000000</double>

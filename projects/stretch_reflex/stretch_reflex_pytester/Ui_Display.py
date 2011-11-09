@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog/projects/stretch_reflex/stretch_reflex_pytester/Display.ui'
 #
-# Created: Wed Nov  9 09:23:23 2011
+# Created: Wed Nov  9 11:47:21 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!

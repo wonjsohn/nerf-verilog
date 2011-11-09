@@ -95,7 +95,9 @@ class User(QDialog, Ui_Dialog):
 #            if i == 3:
 #                print newData[i]
             
-        newSpike = self.nerfModel.ReadPipe(0xA1, 4000) # read ## bytes
+        #newSpike = self.nerfModel.ReadPipe(0xA1, 1000) # read ## bytes
+        newSpike = "" # read ## bytes
+
         
         self.dispView.newData(newData, newSpike)
         if (self.isLogData):
@@ -171,7 +173,7 @@ class User(QDialog, Ui_Dialog):
             
         elif choice == "Spike Train 20Hz":
 #            pipeInData = gen_tri() 
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 1.0], L = [1.0, 1.0, 1.2, 1.2, 1.0, 1.0], FILT = True)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 1.0], L = [1.0, 1.0, 1.1, 1.1, 1.0, 1.0], FILT = True)
 #            pipeInData = spike_train(firing_rate = 100) 
         
         self.nerfModel.SendPipe(pipeInData)
