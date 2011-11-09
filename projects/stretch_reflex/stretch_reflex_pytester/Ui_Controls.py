@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog_cmn/projects/stretch_reflex/stretch_reflex_pytester/Controls.ui'
+# Form implementation generated from reading ui file '/home/minos001/nerf_project/nerf_verilog/projects/stretch_reflex/stretch_reflex_pytester/Controls.ui'
 #
-# Created: Tue Oct 25 10:56:22 2011
+# Created: Tue Nov  8 13:34:48 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -277,7 +277,7 @@ class Ui_Dialog(object):
         self.formLayout_5.setWidget(0, QtGui.QFormLayout.FieldRole, self.label_5)
         self.doubleSpinBox_5 = QtGui.QDoubleSpinBox(self.layoutWidget_5)
         self.doubleSpinBox_5.setMaximum(200.0)
-        self.doubleSpinBox_5.setProperty(_fromUtf8("value"), 80.0)
+        self.doubleSpinBox_5.setProperty(_fromUtf8("value"), 40.0)
         self.doubleSpinBox_5.setObjectName(_fromUtf8("doubleSpinBox_5"))
         self.formLayout_5.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_5)
         self.layoutWidget_6 = QtGui.QWidget(Dialog)
@@ -494,9 +494,9 @@ class Ui_Dialog(object):
         self.label_2.setText(QtGui.QApplication.translate("Dialog", "pps coef", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("Dialog", "Close loop", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("Dialog", "GammaDyn", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setText(QtGui.QApplication.translate("Dialog", "GammaSta", None, QtGui.QApplication.UnicodeUTF8))
         self.label_6.setText(QtGui.QApplication.translate("Dialog", "gain_MN", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_7.setText(QtGui.QApplication.translate("Dialog", "GammaSta", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_7.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("Dialog", "N/A", None, QtGui.QApplication.UnicodeUTF8))
         self.label_0.setText(QtGui.QApplication.translate("Dialog", "unused", None, QtGui.QApplication.UnicodeUTF8))
         self.label_9.setText(QtGui.QApplication.translate("Dialog", "Clkrate", None, QtGui.QApplication.UnicodeUTF8))

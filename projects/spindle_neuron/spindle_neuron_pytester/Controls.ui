@@ -656,7 +656,7 @@
        <double>1000000.000000000000000</double>
       </property>
       <property name="value">
-       <double>200.000000000000000</double>
+       <double>0.300000000000000</double>
       </property>
      </widget>
     </item>
@@ -711,7 +711,7 @@
     <item row="0" column="0">
      <widget class="QDoubleSpinBox" name="doubleSpinBox_4">
       <property name="maximum">
-       <double>10000.000000000000000</double>
+       <double>200.000000000000000</double>
       </property>
       <property name="value">
        <double>80.000000000000000</double>
@@ -791,7 +791,7 @@
     <item row="0" column="1">
      <widget class="QLabel" name="label_7">
       <property name="text">
-       <string>GammaSta</string>
+       <string>unused</string>
       </property>
      </widget>
     </item>
@@ -942,20 +942,20 @@
     <item row="0" column="1">
      <widget class="QLabel" name="label_11">
       <property name="text">
-       <string>GI</string>
+       <string>Clkrate</string>
       </property>
      </widget>
     </item>
     <item row="0" column="0">
      <widget class="QDoubleSpinBox" name="doubleSpinBox_11">
       <property name="decimals">
-       <number>2</number>
+       <number>5</number>
       </property>
       <property name="maximum">
        <double>2000000.000000000000000</double>
       </property>
       <property name="value">
-       <double>20000.000000000000000</double>
+       <double>80.000000000000000</double>
       </property>
      </widget>
     </item>
@@ -974,7 +974,7 @@
     <item row="0" column="1">
      <widget class="QLabel" name="label_12">
       <property name="text">
-       <string>GII</string>
+       <string>Clkrate</string>
       </property>
      </widget>
     </item>
@@ -987,7 +987,7 @@
        <double>2000000.000000000000000</double>
       </property>
       <property name="value">
-       <double>7250.000000000000000</double>
+       <double>80.000000000000000</double>
       </property>
      </widget>
     </item>
