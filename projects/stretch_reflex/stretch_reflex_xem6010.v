@@ -306,9 +306,9 @@ module stretch_reflex_xem6010(
 
     // *** EMG
     wire [17:0] si_emg;
-    emg muscle_emg
+    emg #(.NN(NN)) muscle_emg
     (   .emg_out(si_emg), 
-        .i_spk_cnt(i_MN_spk_cnt), 
+        .i_spk_cnt(i_MN_spk_cnt[NN:0]), 
         .clk(sim_clk), 
         .reset(reset_sim) );
         
