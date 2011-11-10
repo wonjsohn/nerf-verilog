@@ -54,9 +54,10 @@ class Model:
             intValLo = self.xem.GetWireOutValue(getAddr) & 0xffff # length = 16-bit
             intValHi = self.xem.GetWireOutValue(getAddr + 0x01) & 0x0003 # length = 2-bit
             intVal = ((intValHi << 16) + intValLo) & 0xFFFFFFFF
+#            intVal = ConvertType(intVal, 'I', 'i')
             if intVal > 0x1FFFF:
                 intVal = -(0x3FFFF - intVal + 0x1)
-            outVal = float(intVal) / 0xFFFF # in mV De-Scaling factor = 0xFFFF
+            outVal = float(intVal) # in mV De-Scaling factor = 0xFFFF
 
         ## Read 32-bit float
         elif type == "float32" :
