@@ -302,7 +302,15 @@ module stretch_reflex_xem6010(
         .total_force_out(f_total_force),
         .current_A(f_active_state),
         .current_fp_spikes(f_MN_spk_cnt)
-    );                    
+    );       
+
+    // *** EMG
+    wire [17:0] si_emg;
+    emg muscle_emg
+    (   .emg_out(si_emg), 
+        .i_spk_cnt(i_MN_spk_cnt), 
+        .clk(sim_clk), 
+        .reset(reset_sim) );
         
     // ** LEDs 0 = ON    
     assign led[4:2] = 3'b111;
@@ -318,9 +326,9 @@ module stretch_reflex_xem6010(
     assign reset_sim = ep00wire[1];
     
     // *** Endpoint connections:
-    assign pin0 = neuron_clk;
-    assign pin1 = sim_clk;
-    assign pin2 = spindle_clk;
+    assign pin0 = Ia_spike;
+    assign pin1 = II_spike;
+    assign pin2 = MN_spike;
 
     // *** OpalKelly XEM interface
     okHost okHI(
@@ -340,10 +348,10 @@ module stretch_reflex_xem6010(
     okWireOut    wo23 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(f_rawfr_II[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
     okWireOut    wo25 (.ep_datain(f_rawfr_II[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-    okWireOut    wo26 (.ep_datain(raw_Ia_spikes[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-    okWireOut    wo27 (.ep_datain(raw_Ia_spikes[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-    okWireOut    wo28 (.ep_datain(raw_II_spikes[15:0]), .ok1(ok1), .ok2(ok2x[  8*17 +: 17 ]), .ep_addr(8'h28) );
-    okWireOut    wo29 (.ep_datain(raw_II_spikes[31:16]), .ok1(ok1), .ok2(ok2x[  9*17 +: 17 ]), .ep_addr(8'h29) );
+    okWireOut    wo26 (.ep_datain(si_emg[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain({{14{si_emg[17]}},si_emg[17:16]}), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo28 (.ep_datain(i_MN_spk_cnt[15:0]), .ok1(ok1), .ok2(ok2x[  8*17 +: 17 ]), .ep_addr(8'h28) );
+    okWireOut    wo29 (.ep_datain(i_MN_spk_cnt[31:16]), .ok1(ok1), .ok2(ok2x[  9*17 +: 17 ]), .ep_addr(8'h29) );
     okWireOut    wo30 (.ep_datain(raw_MN_spikes[15:0]), .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
     okWireOut    wo31 (.ep_datain(raw_MN_spikes[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
     okWireOut    wo32 (.ep_datain(f_total_force[15:0]), .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
