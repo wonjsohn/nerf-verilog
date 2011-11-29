@@ -10,6 +10,7 @@ from pylab import figure, plot, show, xlabel, ylabel, subplot, grid, title, \
 ## Using poly1d function (3rd order polynomial  that imitates sine wave) and sample the points where the sign of a slope change to make spike
 
 def chirping_spike_train(filename=None, coeff_a = 20,  fig_size=(9.5, 8.5)):
+    t1 = 2.0   # get 2 seconds from polynomial function
     coeff_2a = coeff_a*2  # to prevent negative firing rate
     p = poly1d([coeff_2a*1.0, coeff_2a*(-3.0), coeff_2a*2.0, coeff_a*1.0])
     t = np.linspace(0, t1, 1024)
@@ -31,9 +32,21 @@ def chirping_spike_train(filename=None, coeff_a = 20,  fig_size=(9.5, 8.5)):
             spike = 0x0
         d2train.append(spike)
     
+    return d2train
+    
+
+if __name__ == "__main__":
+    coeff_a = 40  # decides spike density 
+    d2train = chirping_spike_train(coeff_a)
+    fig_size=(9.5, 8.5)
     figure(1, figsize=fig_size)
     clf()
     
+    t1 = 2.0   # get 2 seconds from polynomial function
+    coeff_2a = coeff_a*2  # to prevent negative firing rate
+    p = poly1d([coeff_2a*1.0, coeff_2a*(-3.0), coeff_2a*2.0, coeff_a*1.0])
+    t = np.linspace(0, t1, 1024)
+    w = sweep_poly(t, p)
     subplot(3,1,1)
     plot(t, w)
     tstr = "Sweep Poly, $f(t) = 2a*(t^3 - 3t^2 + 2t) + a*1 )$"
@@ -51,9 +64,5 @@ def chirping_spike_train(filename=None, coeff_a = 20,  fig_size=(9.5, 8.5)):
     ylabel('height')
     xlabel('polynocial function used for chirping')
     show()
-
-if __name__ == "__main__":
-    t1 = 2.0   # get 2 seconds from polynomial function
-    chirping_spike_train(coeff_a = 40)
 
 
