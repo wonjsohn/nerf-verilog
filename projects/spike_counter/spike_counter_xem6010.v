@@ -149,10 +149,11 @@ module spike_counter_xem6010(
     
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_total_force, f_active_state, f_MN_spk_cnt;
-    assign f_muscle_len = IEEE_1;
+    //wire    [31:0]   f_muscle_len;
+    //assign f_muscle_len = IEEE_1;
     shadmehr_muscle muscle_for_test
     (   .spike_cnt(i_MN_spk_cnt*gain),
-        .pos(f_muscle_len),  // muscle length
+        .pos(IEEE_1),  // muscle length
         //.vel(current_vel),
         .vel(32'd0),
         .clk(sim_clk),
@@ -191,8 +192,8 @@ module spike_counter_xem6010(
     assign ep23wire = f_total_force[31:16];
     assign ep24wire = f_active_state[15:0]; 
     assign ep25wire = f_active_state[31:16];
-    assign ep26wire = i_current_spikes[15:0];
-    assign ep27wire = i_current_spikes[31:16];
+    assign ep26wire = gain[15:0];
+    assign ep27wire = gain[31:16];
     //assign ep28wire = {15'b0, slow_clk_up};
     //assign ep29wire = {15'b0, slow_clk_up};
       
