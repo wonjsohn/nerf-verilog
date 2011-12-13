@@ -79,12 +79,10 @@
     <file xil_pn:fileType="FILE_CMD_LOG" xil_pn:name="spikecnt_xem6010.cmd_log"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_DRC" xil_pn:name="spikecnt_xem6010.drc" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_LSO" xil_pn:name="spikecnt_xem6010.lso"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NCD" xil_pn:name="spikecnt_xem6010.ncd" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGC" xil_pn:name="spikecnt_xem6010.ngc"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGD" xil_pn:name="spikecnt_xem6010.ngd"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGR" xil_pn:name="spikecnt_xem6010.ngr"/>
     <file xil_pn:fileType="FILE_PAD_MISC" xil_pn:name="spikecnt_xem6010.pad"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAR_REPORT" xil_pn:name="spikecnt_xem6010.par" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PCF" xil_pn:name="spikecnt_xem6010.pcf" xil_pn:subbranch="Map"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="spikecnt_xem6010.prj"/>
     <file xil_pn:fileType="FILE_TRCE_MISC" xil_pn:name="spikecnt_xem6010.ptwx"/>
@@ -92,7 +90,6 @@
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_REPORT" xil_pn:name="spikecnt_xem6010.syr"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_TIMING_TXT_REPORT" xil_pn:name="spikecnt_xem6010.twr" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_TIMING_XML_REPORT" xil_pn:name="spikecnt_xem6010.twx" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_UNROUTES" xil_pn:name="spikecnt_xem6010.unroutes" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_REPORT" xil_pn:name="spikecnt_xem6010.ut" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:fileType="FILE_XPI" xil_pn:name="spikecnt_xem6010.xpi"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST" xil_pn:name="spikecnt_xem6010.xst"/>
@@ -104,8 +101,6 @@
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGM" xil_pn:name="spikecnt_xem6010_map.ngm" xil_pn:subbranch="Map"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="spikecnt_xem6010_map.xrpt"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="spikecnt_xem6010_ngdbuild.xrpt"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAD_EXCEL_REPORT" xil_pn:name="spikecnt_xem6010_pad.csv" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAD_TXT_REPORT" xil_pn:name="spikecnt_xem6010_pad.txt" xil_pn:subbranch="Par"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="spikecnt_xem6010_par.xrpt"/>
     <file xil_pn:fileType="FILE_HTML" xil_pn:name="spikecnt_xem6010_summary.html"/>
     <file xil_pn:fileType="FILE_FITTER_REPORT" xil_pn:name="spikecnt_xem6010_summary.xml"/>
@@ -129,14 +124,11 @@
       <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputAdded"/>
       <status xil_pn:value="InputChanged"/>
+      <status xil_pn:value="InputRemoved"/>
       <status xil_pn:value="OutputChanged"/>
-      <outfile xil_pn:name="../../../nerf_eric/source/waveform_from_pipe.v"/>
-      <outfile xil_pn:name="../../source/clk_related/gen_clk.v"/>
-      <outfile xil_pn:name="../../source/spike_counter.v"/>
-      <outfile xil_pn:name="../../source/xem6010/okLibrary.v"/>
-      <outfile xil_pn:name="../../source/xem6010/okLibrary.vhd"/>
-      <outfile xil_pn:name="spike_counter_xem6010.v"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1320640301" xil_pn:name="TRAN_xawsToSimhdl" xil_pn:prop_ck="1268561802822205026" xil_pn:start_ts="1320640301">
       <status xil_pn:value="SuccessfullyRun"/>
@@ -149,6 +141,7 @@
     <transform xil_pn:end_ts="1320640301" xil_pn:name="TRAN_regenerateCoresSim" xil_pn:prop_ck="-2492023197927295620" xil_pn:start_ts="1320640301">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForProperties"/>
     </transform>
     <transform xil_pn:end_ts="1320640301" xil_pn:in_ck="-5343523834466951488" xil_pn:name="TRAN_copyPostAbstractToPreSimulation" xil_pn:start_ts="1320640301">
       <status xil_pn:value="SuccessfullyRun"/>
@@ -157,13 +150,9 @@
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputChanged"/>
+      <status xil_pn:value="InputRemoved"/>
       <status xil_pn:value="OutputChanged"/>
-      <outfile xil_pn:name="../../../nerf_eric/source/waveform_from_pipe.v"/>
-      <outfile xil_pn:name="../../source/clk_related/gen_clk.v"/>
-      <outfile xil_pn:name="../../source/spike_counter.v"/>
-      <outfile xil_pn:name="../../source/xem6010/okLibrary.v"/>
-      <outfile xil_pn:name="../../source/xem6010/okLibrary.vhd"/>
-      <outfile xil_pn:name="spike_counter_xem6010.v"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1320640305" xil_pn:in_ck="-5343523834466951488" xil_pn:name="TRAN_ISimulateBehavioralModelRunFuse" xil_pn:prop_ck="-6818980933895451261" xil_pn:start_ts="1320640301">
       <status xil_pn:value="SuccessfullyRun"/>
@@ -172,47 +161,48 @@
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputChanged"/>
+      <status xil_pn:value="InputRemoved"/>
       <status xil_pn:value="OutputChanged"/>
       <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1320640305" xil_pn:in_ck="-2732270651474635462" xil_pn:name="TRAN_ISimulateBehavioralModel" xil_pn:prop_ck="-2283824070794958138" xil_pn:start_ts="1320640305">
       <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputRemoved"/>
       <status xil_pn:value="OutputRemoved"/>
     </transform>
-    <transform xil_pn:end_ts="1320194837" xil_pn:name="TRAN_copyInitialToXSTAbstractSynthesis" xil_pn:start_ts="1320194837">
+    <transform xil_pn:end_ts="1322603264" xil_pn:name="TRAN_copyInitialToXSTAbstractSynthesis" xil_pn:start_ts="1322603264">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1320344684" xil_pn:name="TRAN_schematicsToHdl" xil_pn:prop_ck="5092906239286847776" xil_pn:start_ts="1320344684">
+    <transform xil_pn:end_ts="1322603264" xil_pn:name="TRAN_schematicsToHdl" xil_pn:prop_ck="5092906239286847776" xil_pn:start_ts="1322603264">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1320344684" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="-2492023197927295620" xil_pn:start_ts="1320344684">
+    <transform xil_pn:end_ts="1322604010" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="2644221869354444059" xil_pn:start_ts="1322604010">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1320344684" xil_pn:name="TRAN_SubProjectAbstractToPreProxy" xil_pn:start_ts="1320344684">
+    <transform xil_pn:end_ts="1322603264" xil_pn:name="TRAN_SubProjectAbstractToPreProxy" xil_pn:start_ts="1322603264">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1320344684" xil_pn:name="TRAN_xawsTohdl" xil_pn:prop_ck="1268561802822205026" xil_pn:start_ts="1320344684">
+    <transform xil_pn:end_ts="1322603264" xil_pn:name="TRAN_xawsTohdl" xil_pn:prop_ck="1268561802822205026" xil_pn:start_ts="1322603264">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1320344684" xil_pn:name="TRAN_SubProjectPreToStructuralProxy" xil_pn:prop_ck="-2098939838453108159" xil_pn:start_ts="1320344684">
+    <transform xil_pn:end_ts="1322603264" xil_pn:name="TRAN_SubProjectPreToStructuralProxy" xil_pn:prop_ck="-2098939838453108159" xil_pn:start_ts="1322603264">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1320344684" xil_pn:name="TRAN_platgen" xil_pn:prop_ck="6004610087589370886" xil_pn:start_ts="1320344684">
+    <transform xil_pn:end_ts="1322604010" xil_pn:name="TRAN_platgen" xil_pn:prop_ck="-7305888918838441051" xil_pn:start_ts="1322604010">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1320706149" xil_pn:in_ck="-5343523834466951488" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="6451937775677490315" xil_pn:start_ts="1320706140">
+    <transform xil_pn:end_ts="1322613597" xil_pn:in_ck="-168664495616294078" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="-6753375550676436278" xil_pn:start_ts="1322613438">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -226,15 +216,16 @@
       <outfile xil_pn:name="spike_counter_xem6010.stx"/>
       <outfile xil_pn:name="spike_counter_xem6010.syr"/>
       <outfile xil_pn:name="spike_counter_xem6010.xst"/>
+      <outfile xil_pn:name="spike_counter_xem6010_beh.prj"/>
       <outfile xil_pn:name="spike_counter_xem6010_xst.xrpt"/>
       <outfile xil_pn:name="webtalk_pn.xml"/>
       <outfile xil_pn:name="xst"/>
     </transform>
-    <transform xil_pn:end_ts="1320344690" xil_pn:in_ck="-7512006029974822633" xil_pn:name="TRAN_compileBCD2" xil_pn:prop_ck="-261625662477502451" xil_pn:start_ts="1320344690">
+    <transform xil_pn:end_ts="1322603410" xil_pn:in_ck="-7512006029974822633" xil_pn:name="TRAN_compileBCD2" xil_pn:prop_ck="-261625662477502451" xil_pn:start_ts="1322603410">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1320706153" xil_pn:in_ck="2398556818434808267" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-392354758943887107" xil_pn:start_ts="1320706149">
+    <transform xil_pn:end_ts="1322613605" xil_pn:in_ck="2398556818434808267" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-6092734226025705124" xil_pn:start_ts="1322613597">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -244,7 +235,7 @@
       <outfile xil_pn:name="spike_counter_xem6010.ngd"/>
       <outfile xil_pn:name="spike_counter_xem6010_ngdbuild.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1320706200" xil_pn:in_ck="-2824224324799138519" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-1012449745606653236" xil_pn:start_ts="1320706153">
+    <transform xil_pn:end_ts="1322613749" xil_pn:in_ck="-2824224324799138519" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1322613605">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
@@ -257,7 +248,7 @@
       <outfile xil_pn:name="spike_counter_xem6010_summary.xml"/>
       <outfile xil_pn:name="spike_counter_xem6010_usage.xml"/>
     </transform>
-    <transform xil_pn:end_ts="1320706264" xil_pn:in_ck="136713711855429730" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1320706200">
+    <transform xil_pn:end_ts="1322613868" xil_pn:in_ck="136713711855429730" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1322613749">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -272,7 +263,7 @@
       <outfile xil_pn:name="spike_counter_xem6010_pad.txt"/>
       <outfile xil_pn:name="spike_counter_xem6010_par.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1320706287" xil_pn:in_ck="-7512006029974830258" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="396117104113915555" xil_pn:start_ts="1320706264">
+    <transform xil_pn:end_ts="1322613899" xil_pn:in_ck="-7512006029974830258" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="396117104113915555" xil_pn:start_ts="1322613868">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -285,7 +276,7 @@
       <outfile xil_pn:name="webtalk.log"/>
       <outfile xil_pn:name="webtalk_pn.xml"/>
     </transform>
-    <transform xil_pn:end_ts="1320706264" xil_pn:in_ck="3610776962759399461" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416185" xil_pn:start_ts="1320706252">
+    <transform xil_pn:end_ts="1322613868" xil_pn:in_ck="3610776962759399461" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1322613852">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>

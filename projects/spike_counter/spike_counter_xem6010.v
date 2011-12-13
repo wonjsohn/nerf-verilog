@@ -87,7 +87,15 @@ module spike_counter_xem6010(
 //        else
 //            gamma_dyn <= {ep02wire, ep01wire};  //firing rate
 //    end    
-       
+    reg [31:0] gain;
+    always @(posedge ep50trig[3] or posedge reset_global)
+    begin
+        if (reset_global)
+            gain <= 32'd0;
+        else
+            gain <= {ep02wire, ep01wire};  //firing rate
+    end        
+    
 
     
       // *** Deriving clocks from on-board clk1:
@@ -129,24 +137,31 @@ module spike_counter_xem6010(
 //		);
 
 
-    wire [31:0]  cnt, int_cnt_out;
-    wire slow_clk_up, spike_while_slow_clk;
-    //wire  button1, button2,
-    //wire button1_response, button2_response, 
-    wire spike_out;
+    wire [31:0]  clear_out, i_MN_spk_cnt;
     spike_counter count_test
-    (           .spike(spike), 
-                .int_cnt_out(int_cnt_out), 
-                .slow_clk(spindle_clk),
-                .clk(sim_clk), 
-                .reset(reset_global),  //? 
-                .cnt(cnt), 
-                //.slow_clk_bar(slow_clk_bar), 
-                //.slow_clk_reg(slow_clk_reg), 
-                .slow_clk_up(slow_clk_up), 
-                .spike_while_slow_clk(spike_while_slow_clk));           
+    (   .spike(spike), 
+        .slow_clk(sim_clk), 
+        .reset(reset_sim),
+        .int_cnt_out(i_MN_spk_cnt),
+        .clear_out(clear_out) );
+        
                 
     
+    // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
+    wire    [31:0]  f_total_force, f_active_state, f_MN_spk_cnt;
+    //wire    [31:0]   f_muscle_len;
+    //assign f_muscle_len = IEEE_1;
+    shadmehr_muscle muscle_for_test
+    (   .spike_cnt(i_MN_spk_cnt*gain),
+        .pos(IEEE_1),  // muscle length
+        //.vel(current_vel),
+        .vel(32'd0),
+        .clk(sim_clk),
+        .reset(reset_sim),
+        .total_force_out(f_total_force),
+        .current_A(f_active_state),
+        .current_fp_spikes(f_MN_spk_cnt)
+    );       
             
 
     // ** LEDs
@@ -154,33 +169,33 @@ module spike_counter_xem6010(
     assign led[1] = ~reset_sim;
     assign led[2] = ~spike;
     assign led[3] = 1'b1;
-    assign led[4] = ~spike_while_slow_clk;
+    assign led[4] = 1'b1;
     assign spike  = (i_current_spikes != 32'd0);
     assign led[5] = ~sim_clk; //fast clock
     assign led[6] = ~spindle_clk; // slow clock
     //assign led[5] = ~spike;
     //assign led[6] = ~reset_sim;
-    assign led[7] = ~slow_clk_up;
+    assign led[7] = 1'b1;
     //assign led[6] = ~execute; // When execute==1, led lits         
 	      
           
     // *** Endpoint connections:
-    assign pin0 = spike_while_slow_clk;
-    assign pin1 = slow_clk_up;
+    assign pin0 = 1'b1;
+    assign pin1 = 1'b1;
     assign pin2 = spindle_clk;
     // Instantiate the okHost and connect endpoints.
     // Host interface
     // *** Endpoint connections:
-    assign ep20wire = int_cnt_out[15:0];
-    assign ep21wire = int_cnt_out[31:16];
-    assign ep22wire = cnt[15:0]; 
-    assign ep23wire = cnt[31:16];
-    assign ep24wire = {15'b0, spike_while_slow_clk}; 
-    assign ep25wire = {15'b0, spike_while_slow_clk};
-    assign ep26wire = i_current_spikes[15:0];
-    assign ep27wire = i_current_spikes[31:16];
-    assign ep28wire = {15'b0, slow_clk_up};
-    assign ep29wire = {15'b0, slow_clk_up};
+    assign ep20wire = i_MN_spk_cnt[15:0];
+    assign ep21wire = i_MN_spk_cnt[31:16];
+    assign ep22wire = f_total_force[15:0]; 
+    assign ep23wire = f_total_force[31:16];
+    assign ep24wire = f_active_state[15:0]; 
+    assign ep25wire = f_active_state[31:16];
+    assign ep26wire = gain[15:0];
+    assign ep27wire = gain[31:16];
+    //assign ep28wire = {15'b0, slow_clk_up};
+    //assign ep29wire = {15'b0, slow_clk_up};
       
     okHost okHI(
         .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
