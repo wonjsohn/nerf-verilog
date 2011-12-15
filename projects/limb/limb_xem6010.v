@@ -15,7 +15,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module spindle_neuron_xem6010(
+module limb_xem6010(
 	input  wire [7:0]  hi_in,
 	output wire [1:0]  hi_out,
 	inout  wire [15:0] hi_inout,
@@ -42,7 +42,7 @@ module spindle_neuron_xem6010(
     wire [15:0]  ep00wire, ep01wire, ep02wire, ep50trig, ep20wire, ep21wire, ep22wire, ep23wire;
     wire [15:0]  ep24wire, ep25wire, ep26wire, ep27wire, ep28wire, ep29wire, ep30wire, ep31wire;
     wire reset_global, reset_sim;
-    wire        is_pipe_being_written, is_lce_valid;
+    wire        is_pipe_being_written, is_hex_valid;
 
     wire [31:0] current_lce;
     wire [15:0] hex_from_py;
@@ -135,90 +135,32 @@ module spindle_neuron_xem6010(
                 
     
     // *** Generating waveform to stimulate the spindle
+    wire    [31:0] f_ext_trq;
 	waveform_from_pipe gen(	
         .ti_clk(ti_clk),
         .reset(reset_global),
         .repop(reset_sim),
         .feed_data_valid(is_pipe_being_written),
         .feed_data(hex_from_py),
-        .current_element(current_lce),
+        .current_element(f_ext_trq),
         .test_clk(sim_clk),
-        .done_feeding(is_lce_valid)
+        .done_feeding(is_hex_valid)
     );        
 
-    // *** Spindle: current_lce => Ia_fr
-    spindle bag1_bag2_chain
-    (	.gamma_dyn(gamma_dyn), // 32'h42A0_0000
-        .gamma_sta(gamma_sta),
-        .lce(current_lce),
-        .clk(spindle_clk),
-        .reset(reset_sim),
-        .out0(x_0),
-        .out1(x_1),
-        .out2(II_fr),
-        .out3(Ia_fr),
-        .BDAMP_1(BDAMP_1),
-        .BDAMP_2(BDAMP_2),
-        .BDAMP_chain(BDAMP_chain)
-		);
-
-    // *** Izhikevich: Ia_fr => spikes
-        // *** Convert float_fr to int_I1
-	/*
-    wire [31:0] float_I1;
-    wire [17:0] int_I1;
-
-	mult pps_to_I( .x(Ia_fr), .y(32'h438C_E666), .out(float_I1));
-	floor float_to_int( .in(float_I1), .out(int_I1) );
-    */
-    spindle_neuron Ia_neuron(	.pps(Ia_fr),
-								.clk(sim_clk),
-                                .reset(reset_sim),
-								.spike(Ia_spike)
-    );
-    spindle_neuron II_neuron(	.pps(II_fr),
-								.clk(sim_clk),
-                                .reset(reset_sim),
-								.spike(II_spike)
-    );
     
-    
-    // *** Create 1 Izh-neuron
-    
-	wire [3:0] a, b, tau;
-	wire [17:0] c, d, v1, u1, s1;
-	assign a = 3 ;  // bits for shifting, a = 0.125
-	assign b =  2 ;  // bits for shifting, b = 0.25
-	assign c =  18'sh3_599A ; // -0.65  = dec2hex(1+bitcmp(ceil(0.65 * hex2dec('ffff')),18)) = 3599A
-	assign d =  18'sh0_147A ; // 0.08 = dec2hex(floor(0.08 * hex2dec('ffff'))) = 147A
-	assign tau = 4'h2;
-	
-			
-	wire [1:0] state;
-	assign state = neuronCounter[1:0];
-    
-	wire [NN:0] neuronIndex;
-	assign neuronIndex = neuronCounter[NN+2:2];
-	
-	wire state1, state2, state3, state4;
-	assign state1 = (state == 2'h0);
-	assign state2 = (state == 2'h1);
-	assign state3 = (state == 2'h2);
-	assign state4 = (state == 2'h3);
-	
-	wire neuronWriteCount, readClock, neuronWriteEnable, dataValid;
-	
-	assign neuronWriteCount = state1;	//increment neuronID (ram address)
-	assign readClock = state2;				//read RAM
-	assign neuronWriteEnable = state4; //(state3 | state4);	//write RAM
-	assign dataValid = (neuronCounter == 32'd0);  //(neuronIndex ==0) & state2; //(neuronIndex == 1);   //slight delay of positive edge to allow latch set-up times
-		
-//            reg [15:0] rawspikes;
-
-	//Iz_neuron #(.NN(NN),.DELAY(10)) neuIa(v1,s1, a,b,c,d, int_I1[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, spike);
-//	always @(negedge neuronIndex[0]) rawspikes <= {1'b0, neuronIndex[NN:2], spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
-    // Instantiate the okHost and connect endpoints.
-    // Host interface
+    // *** Limb dynamics
+    wire    [31:0]  f_trq_elbow, f_pos_elbow, f_vel_elbow, f_acc_elbow;
+    limb elbow( .trq1(32'd0), 
+                .trq2(32'd0), 
+                .ext_trq(f_ext_trq), 
+                .pos_default(32'd0), 
+                .vel_default(32'd0), 
+                .reset(reset_sim), 
+                .clk(sim_clk), 
+                .trq_out(f_trq_elbow), 
+                .pos_out(f_pos_elbow), 
+                .vel_out(f_vel_elbow), 
+                .acc_out(f_acc_elbow) );
     
     
     // ** LEDs 0 = ON    
@@ -236,21 +178,21 @@ module spindle_neuron_xem6010(
     
     // *** Endpoint connections:
     assign pin0 = sim_clk;
-    assign pin1 = Ia_spike;
-    assign pin2 = II_spike;
+    assign pin1 = 0;//Ia_spike;
+    assign pin2 = 0;//II_spike;
     
-    assign ep20wire = Ia_fr[15:0];
-    assign ep21wire = Ia_fr[31:16];
-    assign ep22wire = current_lce[15:0];
-    assign ep23wire = current_lce[31:16];
-    assign ep24wire = v1[15:0];
-    assign ep25wire = {16'b0, v1[17:16]};
-    assign ep26wire = x_1[15:0];
-    assign ep27wire = x_1[31:16];
-//    assign ep28wire = spike_count_out[15:0];
-//    assign ep29wire = spike_count_out[31:16];
-    assign ep30wire = II_fr[15:0];
-    assign ep31wire = II_fr[31:16];
+//    assign ep20wire = Ia_fr[15:0];
+//    assign ep21wire = Ia_fr[31:16];
+    assign ep22wire = f_ext_trq[15:0];
+    assign ep23wire = f_ext_trq[31:16];
+//    assign ep24wire = v1[15:0];
+//    assign ep25wire = {16'b0, v1[17:16]};
+    assign ep26wire = f_acc_elbow[15:0];
+    assign ep27wire = f_acc_elbow[31:16];
+    assign ep28wire = f_vel_elbow[15:0];
+    assign ep29wire = f_vel_elbow[31:16];
+    assign ep30wire = f_pos_elbow[15:0];
+    assign ep31wire = f_pos_elbow[31:16];
       
     okHost okHI(
         .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),

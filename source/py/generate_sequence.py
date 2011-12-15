@@ -19,7 +19,7 @@ def gen(T = [0.0, 0.1, 0.9, 1.0], L = [0.0, 0.0, 200.0, 200.0], SAMPLING_RATE = 
        x = x + ([l1 + i*(l2-l1)/n_seg for i in xrange(n_seg)])
 
    if (FILT):
-      b, a = butter(N=3, Wn=2*pi*5/SAMPLING_RATE , btype='low', analog=0, output='ba')
+      b, a = butter(N=3, Wn=2*pi*10/SAMPLING_RATE , btype='low', analog=0, output='ba')
       x = filtfilt(b=b, a=a, x=x)
 
    return x
@@ -27,7 +27,8 @@ def gen(T = [0.0, 0.1, 0.9, 1.0], L = [0.0, 0.0, 200.0, 200.0], SAMPLING_RATE = 
 
 if __name__ == '__main__':
    from pylab import *
-   x = gen(T = [0.0, 0.1, 0.2, 0.8, 0.9, 1.0], L = [1.0, 1.0, 1.2, 1.2, 1.0, 1.0], FILT = True)
+   x = gen(T =  [0.0, 0.06, 0.07,  0.24,  0.26,  0.43,  0.44,  0.5, 0.5,  0.56, 0.57,  0.74,  0.76,  0.93,  0.94,  1.0],\
+            L = [0.0,  0.0,  1.0,  1.0,  -1.0,  -1.0,  0.0,  0.0,  0.0,  0.0,  -1.0,  -1.0,  1.0,  1.0,  0.0,  0.0], FILT = True)
    plot(x)
    show()
    print "len_x = %d" % len(x)

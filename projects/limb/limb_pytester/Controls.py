@@ -154,7 +154,8 @@ class User(QDialog, Ui_Dialog):
             
         elif choice == "Spike Train 20Hz":
 #            pipeInData = gen_tri() 
-            pipeInData = gen_seq(T = [0.0, 0.1, 0.2, 0.8, 0.9, 1.0], L = [1.0, 1.0, 1.2, 1.2, 1.0, 1.0], FILT = True)
+            pipeInData = gen_seq(T =  [0.0, 0.06, 0.07,  0.24,  0.26,  0.43,  0.44,  0.5, 0.5,  0.56, 0.57,  0.74,  0.76,  0.93,  0.94,  1.0],\
+                                 L = [0.0,  0.0,  1.0,  1.0,  -1.0,  -1.0,  0.0,  0.0,  0.0,  0.0,  -1.0,  -1.0,  1.0,  1.0,  0.0,  0.0], FILT = True)
 
 #            pipeInData = spike_train(firing_rate = 100) 
         
