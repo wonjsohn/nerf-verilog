@@ -104,7 +104,7 @@ class DESTester
     for i in (1..512) do
       write_array+=[i]
     end
-    buf = write_array.pack("l*")
+    buf = write_array.pack("f*")
     write_array.each { |i| print i.to_s + " " }
     puts ""
     @xem.WriteToPipeIn(0x80, buf)
@@ -117,7 +117,7 @@ class DESTester
     end
   
     @xem.ReadFromPipeOut(0xa0, buf)
-    read_array = buf.unpack("l*")
+    read_array = buf.unpack("f*")
     read_array.each { |i| print i.to_s+" " }
     puts ""
   end
