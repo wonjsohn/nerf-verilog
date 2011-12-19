@@ -227,7 +227,13 @@ module black_box_compute #(
     output  signed  [DATA-1:0]  b_out
     );
 
-assign a_out = a_in + 1;
+//assign a_out = a_in + 1;
+
+//add add1( .x(a_in), .y(32'h4000_000), .out(a_out) ); //floating point add 2
+wire signed [8:0] new_exp;
+assign new_exp = a_in[30:23] + 1;
+
+assign a_out = {a_in[31], new_exp, a_in[22:0]};
 assign b_out = b_in << 2;
 
 endmodule
