@@ -94,13 +94,13 @@ always @ (negedge clk1) begin
     end else begin
         compute_index <= compute_index;
         if (read_complete == 1'b1 && execute == 1'b1) compute_index <= compute_index + 1'b1;
-        if (compute_index[9] == 1'b1) compute_index <= compute_index;
+        //if (compute_index[9] == 1'b1) compute_index <= compute_index;
     end
 end
 
 
-wire [17:0] bbc_a_data;
-wire [17:0] bbc_a_out;
+wire [31:0] bbc_a_data;
+wire [31:0] bbc_a_out;
 assign led = 8'b10101010;
 reg [9:0] ramI_addrA, ramO_addrA;
 always @(posedge ti_clk) begin
@@ -109,44 +109,51 @@ always @(posedge ti_clk) begin
 		ramO_addrA <= 10'd0;
 	end else begin
 		if (pipe_in_write == 1'b1)
-            begin
 			ramI_addrA <= ramI_addrA + 1;
-            if (ramI_addrA >= 10'd512) ramI_addrA <= 0;
-            end
-
 		if (pipe_out_read == 1'b1)
-            begin
 			ramO_addrA <= ramO_addrA + 1;
-            if (ramO_addrA >= 10'd512) ramO_addrA <= 0;
-            end
 	end
 end
 
-wire [10:0] pipe_addr;
+wire [9:0] pipe_addr;
 assign pipe_addr = pipe_in_write ? ramI_addrA : ramO_addrA;
 
 /*
-RAMB16_S18_S18 ram_O(.CLKA(ti_clk), .SSRA(reset), .ENA(1'b1),
-                     .WEA(pipe_in_write), .ADDRA(ramI_addrA),
-                     .DIA(pipe_in_data), .DIPA(2'b0), .DOA(), .DOPA(),
-                     .CLKB(ti_clk), .SSRB(reset), .ENB(1'b1),
-                     .WEB(1'b0), .ADDRB(ramO_addrA),
-                     .DIB(), .DIPB(), .DOB(pipe_out_data), .DOPB());
-*/
-
+// 16-bit wide data
 RAMB16_S18_S18 ram_O(.CLKA(ti_clk), .SSRA(reset), .ENA(1'b1),
                      .WEA(pipe_in_write), .ADDRA(pipe_addr),
                      .DIA(pipe_in_data), .DIPA(2'b0), .DOA(pipe_out_data), .DOPA(),
                      .CLKB(clk1), .SSRB(reset), .ENB(1'b1),
                      .WEB(write), .ADDRB(compute_index),
                      .DIB(bbc_a_out[15:0]), .DIPB(2'b0), .DOB(bbc_a_data[15:0]), .DOPB());      
+*/
+// 32-bit wide data
+RAMB16_S18_S36 ram_O(.CLKA(ti_clk), .SSRA(reset), .ENA(1'b1),
+                     .WEA(pipe_in_write), .ADDRA(pipe_addr),
+                     .DIA(pipe_in_data), .DIPA(2'b0), .DOA(pipe_out_data), .DOPA(),
+                     .CLKB(clk1), .SSRB(reset), .ENB(1'b1),
+                     .WEB(write), .ADDRB(compute_index),
+                     .DIB(bbc_a_out), .DIPB(2'b0), .DOB(bbc_a_data), .DOPB()); 
+/*
+bram_tdp #( .DATA(16), .ADDR(9) ) RAM_0(    .a_clk(ti_clk),
+                                            .a_wr(pipe_in_write),
+                                            .a_addr(pipe_addr[8:0]),
+                                            .a_din(pipe_in_data),
+                                            .a_dout(pipe_out_data),
+                                            
+                                            .b_clk(clk1),
+                                            .b_wr(write),
+                                            .b_addr(compute_index[8:0]),
+                                            .b_din(bbc_a_out[15:0]),
+                                            .b_dout(bbc_a_data[15:0])
+                                            );
 
-                     
-black_box_compute bbc0( .a_in(bbc_a_data), 
-                        .b_in(), 
-                        .a_out(bbc_a_out), 
-                        .b_out() 
-                        );
+*/                     
+black_box_compute #( .DATA(32) ) bbc0 (     .a_in(bbc_a_data), 
+                                            .b_in(), 
+                                            .a_out(bbc_a_out), 
+                                            .b_out() 
+                                            );
                                           
 // Instantiate the okHost and connect endpoints.
 // Host interface
@@ -211,14 +218,16 @@ end
 
 endmodule
 
-module black_box_compute(
-    input   [17:0]  a_in,
-    input   [17:0]  b_in,
-    output  [17:0]  a_out,
-    output  [17:0]  b_out
+module black_box_compute #(
+    parameter DATA = 18
+    ) (
+    input   signed  [DATA-1:0]  a_in,
+    input   signed  [DATA-1:0]  b_in,
+    output  signed  [DATA-1:0]  a_out,
+    output  signed  [DATA-1:0]  b_out
     );
 
-assign a_out = a_in << 1;
+assign a_out = a_in + 1;
 assign b_out = b_in << 2;
 
 endmodule

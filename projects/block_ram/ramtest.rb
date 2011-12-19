@@ -101,23 +101,25 @@ class DESTester
 
   def WriteRAM
     write_array = []
-    for i in (1..100) do
+    for i in (1..512) do
       write_array+=[i]
     end
-    buf = write_array.pack("s*")
+    buf = write_array.pack("l*")
     write_array.each { |i| print i.to_s + " " }
+    puts ""
     @xem.WriteToPipeIn(0x80, buf)
   end
 
   def ReadRAM
     buf = ""
-    for i in (1..1024) do
-      buf+= "\x00"
+    for i in (1..512) do
+      buf+= "\x00\x00\x00\x00"	#32-bit data
     end
   
     @xem.ReadFromPipeOut(0xa0, buf)
-    read_array = buf.unpack("s*")
+    read_array = buf.unpack("l*")
     read_array.each { |i| print i.to_s+" " }
+    puts ""
   end
 
   def Compute
