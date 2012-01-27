@@ -31,14 +31,14 @@ module SPI_singleboard_test_xem6010(
 	output wire pin0,
     output wire pin1,
     output wire pin2,
-    output wire pin_jp2_41,
-    output wire pin_jp2_42, 
-    output wire pin_jp2_50, 
-    output wire pin_jp2_49,
-    input wire pin_jp1_41,
-    input wire pin_jp1_42,
-    input wire pin_jp1_50,
-    input wire pin_jp1_49
+    output wire pin_jp1_41,
+    output wire pin_jp1_42, 
+    output wire pin_jp1_50, 
+    output wire pin_jp1_49,
+    input wire pin_jp2_41,
+    input wire pin_jp2_42,
+    input wire pin_jp2_50,
+    input wire pin_jp2_49
     
   	//  output wire  spike,
    	// output wire clk_out
@@ -221,16 +221,16 @@ module SPI_singleboard_test_xem6010(
     assign pin2 = spindle_clk;
     
     //output SPI pins
-    assign pin_jp2_41 = XLXN_3;  //SCK
-    assign pin_jp2_42 = XLXN_1;   //MOSI
-    assign pin_jp2_50 = XLXN_4;   //MISO
-    assign pin_jp2_49 = XLXN_2;   //SSEL
+    assign pin_jp1_41 = XLXN_3;  //SCK
+    assign pin_jp1_42 = XLXN_1;   //MOSI
+    assign pin_jp1_50 = XLXN_4;   //MISO
+    assign pin_jp1_49 = XLXN_2;   //SSEL
 
     //input SPI pins   
-    assign XLXN_7 = pin_jp1_41;  //SCK
-    assign XLXN_5 = pin_jp1_42;   //MOSI
-    assign XLXN_8 = pin_jp1_50;   //MISO
-    assign XLXN_6 = pin_jp1_49;   //SSEL
+    assign XLXN_7 = pin_jp2_41;  //SCK
+    assign XLXN_5 = pin_jp2_42;   //MOSI
+    assign XLXN_8 = pin_jp2_50;   //MISO
+    assign XLXN_6 = pin_jp2_49;   //SSEL
     
     // Instantiate the okHost and connect endpoints.
     // Host interface

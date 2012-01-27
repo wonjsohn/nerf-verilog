@@ -17,8 +17,8 @@ DATA_EVT_CLKRATE = 7
 SEND_TYPE = ['', '', 'float32', 'int32', 'float32', '', 'int32', 'int32', '', '', \
              '', '', '', '', 'float32', 'float32']
 
-DISPLAY_SCALING =[0.01, 50,  50, 50, 11,  0.2]
-DATA_OUT_ADDR = [0x20,  0x22, 0x24, 0x26, 0x28, 0x30]
+DISPLAY_SCALING =[0.01, 0.01,  50, 50, 11,  0.2]
+DATA_OUT_ADDR = [0x20, 0x20, 0x24, 0x26, 0x28, 0x30]
 CH_TYPE = ['int32', 'float32', 'float32', 'int32', 'int32', 'int32']
 CHANNEL_COLOR = [Qt.blue, Qt.red, Qt.green, Qt.black, Qt.yellow, Qt.gray]
 ZERO_DATA = [0.0 for ix in xrange(NUM_CHANNEL)]
