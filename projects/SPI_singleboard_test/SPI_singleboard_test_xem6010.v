@@ -31,13 +31,15 @@ module SPI_singleboard_test_xem6010(
 	output wire pin0,
     output wire pin1,
     output wire pin2,
-    output wire pin3,
-    output wire pin4, 
-    output wire pin5, 
-    output wire pin6, 
-    output wire pin7, 
-    output wire pin8, 
-    input wire pin10
+    output wire pin_jp2_41,
+    output wire pin_jp2_42, 
+    output wire pin_jp2_50, 
+    output wire pin_jp2_49,
+    input wire pin_jp1_41,
+    input wire pin_jp1_42,
+    input wire pin_jp1_50,
+    input wire pin_jp1_49
+    
   	//  output wire  spike,
    	// output wire clk_out
    );
@@ -146,11 +148,18 @@ module SPI_singleboard_test_xem6010(
     wire [31:0] master_out;
     wire rdy;
     wire [31:0] slave_out;
-   
+     
+    //master sending out     
     wire XLXN_1;  //mosi
     wire XLXN_2;   //ssel
     wire XLXN_3;  //sck
-    wire XLXN_15; //miso
+    wire XLXN_4; //miso
+    
+    //slave receiving in
+    wire XLXN_5;  //mosi
+    wire XLXN_6;   //ssel
+    wire XLXN_7;  //sck
+    wire XLXN_8; //miso
    
    
     assign en = 1'b1;
@@ -161,7 +170,7 @@ module SPI_singleboard_test_xem6010(
                       .clkdiv(clkdiv[23:0]), 
                       .data32(wave_from_py), 
                       .en(en), 
-                      .MISO(XLXN_15), 
+                      .MISO(XLXN_4), 
                       .reset(reset_global), 
                       .SIMCK(sim_clk), 
                       .MOSI(XLXN_1), 
@@ -175,11 +184,11 @@ module SPI_singleboard_test_xem6010(
     //slave module
     spi_slave  XLXI_2 (.clk(clk1), 
                      .en(en), 
-                     .MOSI(XLXN_1), 
+                     .MOSI(XLXN_5), 
                      .reset(reset_global), 
-                     .SCK(XLXN_3), 
-                     .SSEL(XLXN_2), 
-                     .MISO(XLXN_15), 
+                     .SCK(XLXN_7), 
+                     .SSEL(XLXN_6), 
+                     .MISO(XLXN_8), 
                      .rdy(rdy), 
                      .rx_out(slave_out[31:0]));
 
@@ -210,12 +219,18 @@ module SPI_singleboard_test_xem6010(
     assign pin0 = clk1;   
     assign pin1 = sim_clk;
     assign pin2 = spindle_clk;
-    assign pin3 = XLXN_3;  //SCK
-    assign pin4 = XLXN_1;   //MOSI
-    assign pin5 = XLXN_15;   //MISO
-    assign pin6 = XLXN_2;   //SSEL
-    assign pin7 = rdy;
-    assign pin8 = slave_out[0];
+    
+    //output SPI pins
+    assign pin_jp2_41 = XLXN_3;  //SCK
+    assign pin_jp2_42 = XLXN_1;   //MOSI
+    assign pin_jp2_50 = XLXN_4;   //MISO
+    assign pin_jp2_49 = XLXN_2;   //SSEL
+
+    //input SPI pins   
+    assign XLXN_7 = pin_jp1_41;  //SCK
+    assign XLXN_5 = pin_jp1_42;   //MOSI
+    assign XLXN_8 = pin_jp1_50;   //MISO
+    assign XLXN_6 = pin_jp1_49;   //SSEL
     
     // Instantiate the okHost and connect endpoints.
     // Host interface
