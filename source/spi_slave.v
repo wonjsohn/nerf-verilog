@@ -98,7 +98,12 @@ module spi_slave(
 	//MISO
 	//******************************************************//
 	reg [31:0] ack = 0;
-	always @ (posedge clk) if(SSEL_startmessage) ack <= ack+1;	//just ack with cnt
+	always @ (posedge clk) 
+        begin 
+            if(SSEL_startmessage) ack <= ack+1;	//just ack with cnt
+            else if(reset) ack <= 0;
+        end
+    
 	
 	always @ (posedge clk)
 		if(SSEL_active)
