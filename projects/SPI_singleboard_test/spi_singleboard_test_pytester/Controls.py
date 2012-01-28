@@ -92,7 +92,7 @@ class User(QDialog, Ui_Dialog):
             #if i == 3: 
                 #newData[i] = newData[i] / 100
             #newData[i] = max(-65535, min(65535, self.nerfModel.ReadFPGA(DATA_OUT_ADDR[i], CH_TYPE[i])))
-            if i == 1:
+            if i == 0:
                 print newData[i]
             
 #        newSpike = self.nerfModel.ReadPipe(0xA1, 4000) # read ## bytes
@@ -159,8 +159,7 @@ class User(QDialog, Ui_Dialog):
         choice = p0
         if choice == "Spike Train 1Hz":
 #            pipeInData = spike_train(firing_rate = 1) 
-#            pipeInData = gen_sin(F = 1.0, AMP = 0.3)
-            pipeInData = gen_tri() 
+            pipeInData = gen_sin(F = 1.0, AMP = 0.3)
 #           pipeInData = chirping_spike_train(coeff_a = 20)
         elif choice == "Spike Train 10Hz":
 #            pipeInData = spike_train(firing_rate = 100)      
