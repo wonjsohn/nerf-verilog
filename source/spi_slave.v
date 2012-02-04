@@ -26,6 +26,7 @@ module spi_slave(
     input SCK,
     input SSEL,
 	 input clk,
+     input [31:0] data32,   //added feb03
 	 
     output MISO,
     output [31:0] rx_out,
@@ -104,12 +105,11 @@ module spi_slave(
             else if(reset) ack <= 0;
         end
     
-	
 	always @ (posedge clk)
 		if(SSEL_active)
 			begin
 				if(SSEL_startmessage)
-					data_sent <=ack;
+					data_sent <=data32;
 				else
 					if(SCK_fallingedge)
 					begin

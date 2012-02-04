@@ -24,18 +24,18 @@
 module spi_master(
     input reset,
     input en,
-	 input clk,
+	input clk,
     input SIMCK,
-	 input MISO,
-	 input [31:0] data32,
-	 input [23:0] clkdiv,
+	input MISO,
+	input [31:0] data32,
+	input [23:0] clkdiv,
 	 
     output MOSI,
     output SSEL,
     output SCK,
-	 output [31:0] rx_data,
-     output MISO_data,  //debug
-     output endmsg
+	output [31:0] rx_data,
+    output MISO_data,  //debug
+    output endmsg
     );
 	 
 	 //define wires and regs
