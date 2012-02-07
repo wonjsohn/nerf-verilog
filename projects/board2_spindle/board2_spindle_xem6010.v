@@ -165,13 +165,29 @@ module board2_spindle_xem6010(
     wire neuron_clk, sim_clk, spindle_clk;
     wire [NN+2:0] neuronCounter;
 
-    gen_clk #(.NN(NN)) useful_clocks
+//    gen_clk #(.NN(NN)) useful_clocks
+//    (   .rawclk(clk1), 
+//        .half_cnt(delay_cnt_max), 
+//        .clk_out1(neuron_clk), 
+//        .clk_out2(sim_clk_old), 
+//        .clk_out3(spindle_clk),
+//        .int_neuron_cnt_out(neuronCounter) );
+
+    reg [2:0] SSELr;
+    wire SSEL_startmessage;
+	assign SSEL_startmessage = (SSELr[2:0] == 3'b100);
+
+    gen_SPI_slave_clk #(.NN(NN)) useful_clocks
     (   .rawclk(clk1), 
         .half_cnt(delay_cnt_max), 
+        .SSEL_startmessage(SSEL_startmessage),
         .clk_out1(neuron_clk), 
-        .clk_out2(sim_clk_old), 
+        //.clk_out2(sim_clk_old), 
         .clk_out3(spindle_clk),
         .int_neuron_cnt_out(neuronCounter) );
+
+
+
 //                
 //    
 //    // *** Generating waveform to stimulate the spindle
@@ -308,20 +324,20 @@ module board2_spindle_xem6010(
     // GET f_muscle_len FROM BOARD1!!!
 
 
-    spindle bag1_bag2_chain
-    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-        .gamma_sta(f_gamma_sta),
-        .lce(f_muscle_len),
-        .clk(spindle_clk),
-        .reset(reset_sim),
-        .out0(x_0),
-        .out1(x_1),
-        .out2(f_rawfr_II),
-        .out3(f_rawfr_Ia),
-        .BDAMP_1(BDAMP_1),
-        .BDAMP_2(BDAMP_2),
-        .BDAMP_chain(BDAMP_chain)
-		);
+//    spindle bag1_bag2_chain
+//    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
+//        .gamma_sta(f_gamma_sta),
+//        .lce(f_muscle_len),
+//        .clk(spindle_clk),
+//        .reset(reset_sim),
+//        .out0(x_0),
+//        .out1(x_1),
+//        .out2(f_rawfr_II),
+//        .out3(f_rawfr_Ia),
+//        .BDAMP_1(BDAMP_1),
+//        .BDAMP_2(BDAMP_2),
+//        .BDAMP_chain(BDAMP_chain)
+//		);
 
 
 
