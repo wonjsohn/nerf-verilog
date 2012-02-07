@@ -174,6 +174,12 @@ module board2_spindle_xem6010(
 //        .int_neuron_cnt_out(neuronCounter) );
 
     reg [2:0] SSELr;
+    always @ (negedge clk1)
+		begin
+			//keep track of SPI signals
+			SSELr <= {SSELr[1:0], XLXN_6};   //XLXN_6 is SSEL
+		end
+    
     wire SSEL_startmessage;
 	assign SSEL_startmessage = (SSELr[2:0] == 3'b100);
 
