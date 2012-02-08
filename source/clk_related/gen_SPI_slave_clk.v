@@ -27,15 +27,21 @@ module gen_SPI_slave_clk(rawclk, SSEL_startmessage, half_cnt, clk_out1, //clk_ou
 	wire [NN:0] neuronIndex;
 
 	assign neuronIndex = neuronCounter[NN+2:2];
-
-	always @ (posedge clk_out1)
+    
+/*    always @ (posedge rawclk or clk_out1) begin
+        if (SSEL_startmessage) begin
+            if (clk_out1) begin
+                SSEL_startmessage_clk_out1 <= 1'b1;
+            
+*/
+	always @ (posedge rawclk)
 	begin
         if (SSEL_startmessage) begin
             neuronCounter <= 0;
-            clk_out3 <= {(neuronIndex == 0) || (neuronIndex == 9'd85) || 
-                (neuronIndex == 9'd170)};
+//            clk_out3 <= {(neuronIndex == 0) || (neuronIndex == 9'd85) || 
+//                (neuronIndex == 9'd170)};
         end 
-        else begin 
+        else if(clk_out1) begin 
            neuronCounter <= neuronCounter + 1'b1;
             //clk_out2 <= {neuronCounter == 0};
            clk_out3 <= {(neuronIndex == 0) || (neuronIndex == 9'd85) || 

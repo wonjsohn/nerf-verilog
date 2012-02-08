@@ -329,21 +329,21 @@ module board2_spindle_xem6010(
 
     // GET f_muscle_len FROM BOARD1!!!
 
-
-    spindle bag1_bag2_chain
-    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-        .gamma_sta(f_gamma_sta),
-        .lce(f_muscle_len),
-        .clk(spindle_clk),
-        .reset(reset_sim),
-        .out0(x_0),
-        .out1(x_1),
-        .out2(f_rawfr_II),
-        .out3(f_rawfr_Ia),
-        .BDAMP_1(BDAMP_1),
-        .BDAMP_2(BDAMP_2),
-        .BDAMP_chain(BDAMP_chain)
-		);
+//
+//    spindle bag1_bag2_chain
+//    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
+//        .gamma_sta(f_gamma_sta),
+//        .lce(f_muscle_len),
+//        .clk(spindle_clk),
+//        .reset(reset_sim),
+//        .out0(x_0),
+//        .out1(x_1),
+//        .out2(f_rawfr_II),
+//        .out3(f_rawfr_Ia),
+//        .BDAMP_1(BDAMP_1),
+//        .BDAMP_2(BDAMP_2),
+//        .BDAMP_chain(BDAMP_chain)
+//		);
 
 
 
