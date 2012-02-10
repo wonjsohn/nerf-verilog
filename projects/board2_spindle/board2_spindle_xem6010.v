@@ -43,15 +43,15 @@ module board2_spindle_xem6010(
     input wire pin_jp2_41,
     input wire pin_jp2_42,
     output wire pin_jp2_50,
-    input wire pin_jp2_49,
+    input wire pin_jp2_49
 //    input wire pin_jp2_51,
 //    input wire pin_jp2_52,
 //    output wire pin_jp2_60,
 //    input wire pin_jp2_59,
     
     //sim_clk
-    output wire pin_jp1_sim_clk,
-    input wire pin_jp2_sim_clk
+    //output wire pin_jp1_sim_clk,
+    //input wire pin_jp2_sim_clk
    );
    
     parameter NN = 8;
@@ -65,7 +65,6 @@ module board2_spindle_xem6010(
     wire reset_global, reset_sim;
     wire        is_pipe_being_written, is_lce_valid;
 
-    wire [31:0] f_muscle_len;
     wire [15:0] hex_from_py;
  
     // *** Target interface bus:
@@ -165,13 +164,13 @@ module board2_spindle_xem6010(
     wire neuron_clk, sim_clk, spindle_clk;
     wire [NN+2:0] neuronCounter;
 
-//    gen_clk #(.NN(NN)) useful_clocks
-//    (   .rawclk(clk1), 
-//        .half_cnt(delay_cnt_max), 
-//        .clk_out1(neuron_clk), 
-//        .clk_out2(sim_clk_old), 
-//        .clk_out3(spindle_clk),
-//        .int_neuron_cnt_out(neuronCounter) );
+    gen_clk #(.NN(NN)) useful_clocks
+    (   .rawclk(clk1), 
+        .half_cnt(delay_cnt_max), 
+        .clk_out1(neuron_clk), 
+        .clk_out2(sim_clk), 
+        .clk_out3(spindle_clk),
+        .int_neuron_cnt_out(neuronCounter) );
 
     reg [2:0] SSELr;
     always @ (negedge clk1)
@@ -183,28 +182,28 @@ module board2_spindle_xem6010(
     wire SSEL_startmessage;
 	assign SSEL_startmessage = (SSELr[2:0] == 3'b100);
 
-    gen_SPI_slave_clk #(.NN(NN)) useful_clocks
-    (   .rawclk(clk1), 
-        .half_cnt(delay_cnt_max), 
-        .SSEL_startmessage(SSEL_startmessage),
-        .clk_out1(neuron_clk), 
-        //.clk_out2(sim_clk_old), 
-        .clk_out3(spindle_clk),
-        .int_neuron_cnt_out(neuronCounter) );
+//    gen_SPI_slave_clk #(.NN(NN)) useful_clocks
+//    (   .rawclk(clk1), 
+//        .half_cnt(delay_cnt_max), 
+//        .SSEL_startmessage(SSEL_startmessage),
+//        .clk_out1(neuron_clk), 
+//        //.clk_out2(sim_clk_old), 
+//        .clk_out3(spindle_clk),
+//        .int_neuron_cnt_out(neuronCounter) );
 
 
 
 //                
 //    
-//    // *** Generating waveform to stimulate the spindle
-//    // THIS MODULE SHOULD PROBABLY BE TRIMMED
+    // *** Generating waveform to stimulate the spindle
+    // THIS MODULE SHOULD PROBABLY BE TRIMMED
 //	waveform_from_pipe gen(	
 //        .ti_clk(ti_clk),
 //        .reset(reset_global),
 //        .repop(reset_sim),
 //        .feed_data_valid(is_pipe_being_written),
 //        .feed_data(hex_from_py),
-//        .current_element(f_muscle_len),
+//        .current_element(f_muscle_len_slave),
 //        .test_clk(sim_clk),
 //        .done_feeding(is_lce_valid)
 //    );        
@@ -257,6 +256,7 @@ module board2_spindle_xem6010(
 
     
     //slave module
+    wire [31:0] f_data_from_spi;
     spi_slave  sipndle_slave (.clk(clk1), 
                      .en(en), 
                      .MOSI(XLXN_5), 
@@ -266,9 +266,23 @@ module board2_spindle_xem6010(
                      .MISO(XLXN_8), 
                      .rdy(rdy), 
                      .data32(f_rawfr_Ia),   //input 
-                     .rx_out(f_muscle_len[31:0]));
+                     .rx_out(f_data_from_spi));
+                     
+    reg [31:0] f_muscle_len;
 
-
+    always @(posedge sim_clk or posedge reset_global) begin
+        if (reset_global) begin
+            f_muscle_len <= 32'd0;
+        end
+        else begin
+            if (rdy) begin // Metastable
+                f_muscle_len <= f_muscle_len;
+            end
+            else begin
+                f_muscle_len <= f_data_from_spi;
+            end
+        end
+    end
 //
 //    //Master module 1
 //    spi_master  spindle_master (.clk(clk1), 
@@ -313,39 +327,44 @@ module board2_spindle_xem6010(
 //    assign pin_jp1_59 = XLXN_14;   //SSEL
 //    
     //sim_clk 
-    assign sim_clk = pin_jp2_sim_clk; 
-    assign pin_jp1_sim_clk = sim_clk;
+    //assign sim_clk = pin_jp2_sim_clk; 
+    //assign pin_jp1_sim_clk = sim_clk;
     
 
 
 
 //**  end of spi communication
-
-
-
-
-
-
-
     // GET f_muscle_len FROM BOARD1!!!
 
 
-    spindle bag1_bag2_chain
-    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-        .gamma_sta(f_gamma_sta),
-        .lce(f_muscle_len),
-        .clk(spindle_clk),
-        .reset(reset_sim),
-        .out0(x_0),
-        .out1(x_1),
-        .out2(f_rawfr_II),
-        .out3(f_rawfr_Ia),
-        .BDAMP_1(BDAMP_1),
-        .BDAMP_2(BDAMP_2),
-        .BDAMP_chain(BDAMP_chain)
-		);
+//
+//    spindle bag1_bag2_chain
+//    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
+//        .gamma_sta(f_gamma_sta),
+//        .lce(f_muscle_len),
+//        .clk(spindle_clk),
+//        .reset(reset_sim),
+//        .out0(x_0),
+//        .out1(x_1),
+//        .out2(f_rawfr_II),
+//        .out3(f_rawfr_Ia),
+//        .BDAMP_1(BDAMP_1),
+//        .BDAMP_2(BDAMP_2),
+//        .BDAMP_chain(BDAMP_chain)
+//		);
 
+    reg [31:0] f_i_length;
+    wire [31:0] f_i_length_F0;
+	integrator lce_integrator (	.x(f_muscle_len), .int_x(f_i_length), .out(f_i_length_F0) );
 
+    always @(posedge sim_clk or posedge reset_sim) begin
+        if (reset_sim) begin
+            f_i_length <= 32'd0;
+        end
+        else begin
+            f_i_length <= f_i_length_F0;
+        end 
+    end
 
 
     // ** LEDs 0 = ON    
@@ -380,12 +399,12 @@ module board2_spindle_xem6010(
     
     okWireOut    wo20 (.ep_datain(f_muscle_len[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
     okWireOut    wo21 (.ep_datain(f_muscle_len[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-    okWireOut    wo22 (.ep_datain(f_rawfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-    okWireOut    wo23 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+    okWireOut    wo22 (.ep_datain(f_i_length[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+    okWireOut    wo23 (.ep_datain(f_i_length[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(f_rawfr_II[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
     okWireOut    wo25 (.ep_datain(f_rawfr_II[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-//    okWireOut    wo26 (.ep_datain(si_emg[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-//    okWireOut    wo27 (.ep_datain({{14{si_emg[17]}},si_emg[17:16]}), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+//    okWireOut    wo26 (.ep_datain(f_muscle_len_slave[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+//    okWireOut    wo27 (.ep_datain(f_muscle_len_slave[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
 //    okWireOut    wo28 (.ep_datain(i_MN_spk_cnt[15:0]), .ok1(ok1), .ok2(ok2x[  8*17 +: 17 ]), .ep_addr(8'h28) );
 //    okWireOut    wo29 (.ep_datain(i_MN_spk_cnt[31:16]), .ok1(ok1), .ok2(ok2x[  9*17 +: 17 ]), .ep_addr(8'h29) );
 //    okWireOut    wo30 (.ep_datain(raw_MN_spikes[15:0]), .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
