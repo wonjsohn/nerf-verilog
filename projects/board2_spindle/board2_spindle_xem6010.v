@@ -31,9 +31,9 @@ module board2_spindle_xem6010(
     output wire pin0,
     output wire pin1,
     output wire pin2,
-    output wire pin_jp1_41,  // SPI pins
+    output wire pin_jp1_41,  //
+//    output wire pin_jp1_42, 
     output wire pin_jp1_42, 
-    input wire pin_jp1_50, 
     output wire pin_jp1_49,
 //    output wire pin_jp1_51,  // SPI pins
 //    output wire pin_jp1_52, 
@@ -42,7 +42,7 @@ module board2_spindle_xem6010(
 //    
     input wire pin_jp2_41,
     input wire pin_jp2_42,
-    output wire pin_jp2_50,
+ //   output wire pin_jp2_50,
     input wire pin_jp2_49
 //    input wire pin_jp2_51,
 //    input wire pin_jp2_52,
@@ -314,8 +314,9 @@ module board2_spindle_xem6010(
 
     //output SPI pins  (1)
     assign pin_jp1_41 = SCK_s;  //SCK
+    assign pin_jp1_42 = DATA_s;     //MISO
     assign pin_jp1_49 = SSEL_s;   //SSEL  
-    assign pin_jp1_50 = DATA_s;     //MISO
+
 
 //    //output SPI pins (2)
 //    assign pin_jp1_51 = XLXN_15;  //SCK
