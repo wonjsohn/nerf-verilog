@@ -33,7 +33,7 @@ module board1_muscle_neuron_limb_xem6010(
     output wire pin2,
     output wire pin_jp1_41, //SPI pins
     output wire pin_jp1_42, 
-    input wire pin_jp1_50, 
+//    input wire pin_jp1_50, 
     output wire pin_jp1_49,
 //    output wire pin_jp1_51,  // SPI pins
 //    output wire pin_jp1_52, 
@@ -42,15 +42,15 @@ module board1_muscle_neuron_limb_xem6010(
     
     input wire pin_jp2_41,
     input wire pin_jp2_42,
-    output wire pin_jp2_50,
-    input wire pin_jp2_49,
+//    output wire pin_jp2_50,
+    input wire pin_jp2_49
 //    input wire pin_jp2_51,
 //    input wire pin_jp2_52,
 //    output wire pin_jp2_60,
 //    input wire pin_jp2_59,
     
     //sim_clk
-    output wire pin_jp1_sim_clk
+    //output wire pin_jp1_sim_clk
     //input wire pin_jp2_sim_clk
    );
    
@@ -212,7 +212,7 @@ module board1_muscle_neuron_limb_xem6010(
     );    
 
     // *** Spindle: f_muscle_len => f_rawfr_Ia
-    wire [31:0] f_rawfr_Ia, x_0, x_1, f_rawfr_II;
+    wire [31:0] x_0, x_1, f_rawfr_II;
     
 
 //** SPI communication (soon to be modularized after initial test)
@@ -231,66 +231,79 @@ module board1_muscle_neuron_limb_xem6010(
     wire [31:0] slave_out;
      
     //master sending out     
-    wire XLXN_1;  //mosi
-    wire XLXN_2;   //ssel
-    wire XLXN_3;  //sck
-    wire XLXN_4; //miso
+    wire DATA_s;  //mosi
+    wire SSEL_s;   //ssel
+    wire SCK_s;  //sck
+    //wire XLXN_4; //miso
     
     //slave receiving in
-    wire XLXN_5;  //mosi
-    wire XLXN_6;   //ssel
-    wire XLXN_7;  //sck
-    wire XLXN_8; //miso
+    //wire XLXN_5;  //mosi
+    wire SSEL_r;   //ssel
+    wire SCK_r;  //sck
+    wire DATA_r; //miso
    
-    //more wires for multi transfer
-    wire XLXN_9;  //mosi
-    wire XLXN_10;   //ssel
-    wire XLXN_11;  //sck
-    wire XLXN_12; //miso
+//    //more wires for multi transfer
+//    wire XLXN_9;  //mosi
+//    wire XLXN_10;   //ssel
+//    wire XLXN_11;  //sck
+//    wire XLXN_12; //miso
+//    
+//    wire XLXN_13;  //mosi
+//    wire XLXN_14;   //ssel
+//    wire XLXN_15;  //sck
+//    wire XLXN_16; //miso
     
-    wire XLXN_13;  //mosi
-    wire XLXN_14;   //ssel
-    wire XLXN_15;  //sck
-    wire XLXN_16; //miso
-    
-    assign en = 1'b1;
+
     
      wire MISO_data, endmsg;
     //Master module
     spi_master  bodymaster (.clk(clk1), 
                       .clkdiv(clkdiv[23:0]), 
                       .data32(f_muscle_len), 
-                      .en(en), 
-                      .MISO(XLXN_4), 
+                      .en(1'b1), 
                       .reset(reset_global), 
                       .SIMCK(sim_clk), 
-                      .MOSI(XLXN_1), 
+                      .DATA_OUT(DATA_s), 
                       .rx_data(master_out[31:0]), 
-                      .SCK(XLXN_3), 
-                      .MISO_data(MISO_data), //debug
-                      .endmsg(endmsg),   //debug
-                      .SSEL(XLXN_2));
+                      .SCK(SCK_s), 
+                      .SSEL(SSEL_s));
 
 //
-//    //slave module
-//    spi_slave  bodyslave (.clk(clk1), 
-//                     .en(en), 
-//                     .MOSI(XLXN_9), 
-//                     .reset(reset_global), 
-//                     .SCK(XLXN_11), 
-//                     .SSEL(XLXN_10), 
-//                     .MISO(XLXN_12), 
-//                     .rdy(rdy), 
-//                     .rx_out(f_rawfr_Ia[31:0]));
-//                     
+    //slave module
+	wire [31:0] f_rawfr_Ia_spi;
+    spi_slave  bodyslave (.clk(clk1), 
+                     .en(1'b1), 
+                     .reset(reset_global), 
+                     .SCK(SCK_r), 
+                     .SSEL(SSEL_r), 
+                     .DATA_IN(DATA_r), 
+                     .rdy(rdy), 
+                     .rx_out(f_rawfr_Ia_spi));
+                    
+    reg [31:0] f_rawfr_Ia, f_rawfr_Ia_safe_spi;
+    always @(negedge spindle_clk or posedge reset_global) begin
+        if (reset_global) begin
+            f_rawfr_Ia_safe_spi <= 32'd0;
+        end
+        else begin
+            f_rawfr_Ia_safe_spi <= f_rawfr_Ia_spi;
+        end
+    end
+    always @(posedge sim_clk or posedge reset_global) begin
+        if (reset_global) begin
+            f_rawfr_Ia <= 32'd0;
+        end
+        else begin
+            f_rawfr_Ia <= f_rawfr_Ia_safe_spi;
+        end
+    end
 
 
 
   //output SPI pins
-    assign pin_jp1_41 = XLXN_3;  //SCK
-    assign pin_jp1_42 = XLXN_1;   //MOSI
-    assign XLXN_4 = pin_jp1_50;    //MISO
-    assign pin_jp1_49 = XLXN_2;   //SSEL
+    assign pin_jp1_41 = SCK_s;  //SCK
+    assign pin_jp1_42 = DATA_s;   //MOSI
+    assign pin_jp1_49 = SSEL_s;   //SSEL
     
 //    assign pin_jp1_51 = XLXN_15;
 //    assign pin_jp1_52 = XLXN_13;
@@ -304,14 +317,15 @@ module board1_muscle_neuron_limb_xem6010(
 //    assign XLXN_6 = pin_jp2_59;   //SSEL
     
      //input SPI pins (2)
-    assign XLXN_11 = pin_jp2_41;  //SCK
-    assign XLXN_9 = pin_jp2_42;   //MOSI
-    assign pin_jp2_50 = XLXN_12;    //MISO
-    assign XLXN_10 = pin_jp2_49;   //SSEL
-
+    assign SCK_r = pin_jp2_41;  //SCK
+    assign DATA_r = pin_jp2_42;   //MOSI
+    //assign pin_jp2_50 = XLXN_12;    //MISO
+    assign SSEL_r = pin_jp2_49;   //SSEL
+	
+    //assign XLXN_4 = pin_jp1_50;    //MISO
     //sim_clk 
     //assign sim_clk = pin_jp2_sim_clk; 
-    assign pin_jp1_sim_clk = sim_clk;
+    //assign pin_jp1_sim_clk = sim_clk;
     
     
 //**  end of spi communication
