@@ -172,15 +172,15 @@ module board2_spindle_xem6010(
         .clk_out3(spindle_clk),
         .int_neuron_cnt_out(neuronCounter) );
 
-    reg [2:0] SSELr;
-    always @ (negedge clk1)
-		begin
-			//keep track of SPI signals
-			SSELr <= {SSELr[1:0], XLXN_6};   //XLXN_6 is SSEL
-		end
-    
-    wire SSEL_startmessage;
-	assign SSEL_startmessage = (SSELr[2:0] == 3'b100);
+//    reg [2:0] SSELr;
+//    always @ (negedge clk1)
+//		begin
+//			//keep track of SPI signals
+//			SSELr <= {SSELr[1:0], XLXN_6};   //XLXN_6 is SSEL
+//		end
+//    
+//    wire SSEL_startmessage;
+//	assign SSEL_startmessage = (SSELr[2:0] == 3'b100);
 
 //    gen_SPI_slave_clk #(.NN(NN)) useful_clocks
 //    (   .rawclk(clk1), 
@@ -197,16 +197,17 @@ module board2_spindle_xem6010(
 //    
     // *** Generating waveform to stimulate the spindle
     // THIS MODULE SHOULD PROBABLY BE TRIMMED
-//	waveform_from_pipe gen(	
-//        .ti_clk(ti_clk),
-//        .reset(reset_global),
-//        .repop(reset_sim),
-//        .feed_data_valid(is_pipe_being_written),
-//        .feed_data(hex_from_py),
-//        .current_element(f_muscle_len_slave),
-//        .test_clk(sim_clk),
-//        .done_feeding(is_lce_valid)
-//    );        
+    wire [31:0] f_muscle_len_pipe;
+	waveform_from_pipe gen(	
+        .ti_clk(ti_clk),
+        .reset(reset_global),
+        .repop(reset_sim),
+        .feed_data_valid(is_pipe_being_written),
+        .feed_data(hex_from_py),
+        .current_element(f_muscle_len_pipe),
+        .test_clk(sim_clk),
+        .done_feeding(is_lce_valid)
+    );        
 
 
 //** SPI communication (soon to be modularized after initial test)
@@ -225,30 +226,29 @@ module board2_spindle_xem6010(
     wire [31:0] slave_out;
      
     //master sending out     
-    wire XLXN_1;  //mosi
-    wire XLXN_2;   //ssel
-    wire XLXN_3;  //sck
-    wire XLXN_4; //miso
+    wire MISO_s;  //mosi
+    wire SSEL_s;   //ssel
+    wire SCK_s;  //sck
+    wire DATA_s; //miso
     
     //slave receiving in
-    wire XLXN_5;  //mosi
-    wire XLXN_6;   //ssel
-    wire XLXN_7;  //sck
-    wire XLXN_8; //miso
+    wire MOSI_r;  //mosi
+    wire SSEL_r;   //ssel
+    wire SCK_r;  //sck
+    wire DATA_r; //miso
    
-    //more wires for multi transfer
+    //more wires for slave to master
     wire XLXN_9;  //mosi
     wire XLXN_10;   //ssel
     wire XLXN_11;  //sck
     wire XLXN_12; //miso
     
-    wire XLXN_13;  //mosi
-    wire XLXN_14;   //ssel
-    wire XLXN_15;  //sck
-    wire XLXN_16; //miso
+    //wire XLXN_13;  //mosi
+    //wire XLXN_14;   //ssel
+    //wire XLXN_15;  //sck
+    //wire XLXN_16; //miso
     
-   
-    assign en = 1'b1;
+
     
      wire MISO_data, endmsg;
          // *** Spindle: f_muscle_len => f_rawfr_Ia
@@ -257,62 +257,52 @@ module board2_spindle_xem6010(
     
     //slave module
     wire [31:0] f_data_from_spi;
-    spi_slave  sipndle_slave (.clk(clk1), 
-                     .en(en), 
-                     .MOSI(XLXN_5), 
+    spi_slave  board2_receiver (.clk(clk1), 
+                     .en(1'b1), 
                      .reset(reset_global), 
-                     .SCK(XLXN_7), 
-                     .SSEL(XLXN_6), 
-                     .MISO(XLXN_8), 
+                     .SCK(SCK_r), 
+                     .SSEL(SSEL_r), 
+                     .DATA_IN(DATA_r), 
                      .rdy(rdy), 
-                     .data32(f_rawfr_Ia),   //input 
+                     //.data32(f_rawfr_Ia),   //input 
                      .rx_out(f_data_from_spi));
                      
-    reg [31:0] f_muscle_len;
-
-//    always @(posedge sim_clk or posedge reset_global) begin
-//        if (reset_global) begin
-//            f_muscle_len <= 32'd0;
-//        end
-//        else begin
-//            if (rdy) begin // Metastable
-//                f_muscle_len <= f_muscle_len;
-//            end
-//            else begin
-//                f_muscle_len <= f_data_from_spi;
-//            end
-//        end
-//    end
-    always @(negedge rdy or posedge reset_global) begin
+    reg [31:0] f_muscle_len, f_safe_data_spi;
+    always @(negedge spindle_clk or posedge reset_global) begin
+        if (reset_global) begin
+            f_safe_data_spi <= 32'd0;
+        end
+        else begin
+            f_safe_data_spi <= f_data_from_spi;
+        end
+    end
+    always @(posedge sim_clk or posedge reset_global) begin
         if (reset_global) begin
             f_muscle_len <= 32'd0;
         end
         else begin
-            f_muscle_len <= f_data_from_spi;
+            f_muscle_len <= f_safe_data_spi;
         end
     end
+
 //
-//    //Master module 1
-//    spi_master  spindle_master (.clk(clk1), 
-//                      .clkdiv(clkdiv[23:0]),  
-//                      .data32(f_rawfr_Ia),  
-//                      .en(en), 
-//                      .MISO(XLXN_16), 
-//                      .reset(reset_global), 
-//                      .SIMCK(sim_clk), 
-//                      .MOSI(XLXN_13), 
-//                      .rx_data(master_out[31:0]), 
-//                      .SCK(XLXN_15), 
-//                      .MISO_data(MISO_data), //debug
-//                      .endmsg(endmsg),   //debug
-//                      .SSEL(XLXN_14));
+//    //board2 sender 
+    spi_master  board2_sender (.clk(clk1), 
+                      .clkdiv(clkdiv[23:0]),  
+                      .data32(f_rawfr_Ia),  
+                      .en(1'b1), 
+                      .reset(reset_global), 
+                      .SIMCK(sim_clk), 
+                      .DATA_OUT(DATA_s), 
+                      .rx_data(master_out[31:0]), 
+                      .SCK(SCK_s), 
+                      .SSEL(SSEL_s));
 
 
     //input SPI pins (1)
-    assign XLXN_7 = pin_jp2_41;  //SCK
-    assign XLXN_5 = pin_jp2_42;   //MOSI
-    assign pin_jp2_50 = XLXN_8;     //MISO
-    assign XLXN_6 = pin_jp2_49;   //SSEL
+    assign SCK_r = pin_jp2_41;  //SCK
+    assign DATA_r = pin_jp2_42;   //MOSI
+    assign SSEL_r = pin_jp2_49;   //SSEL
     
    
 //    //input SPI pins (2)
@@ -323,11 +313,10 @@ module board2_spindle_xem6010(
 
 
     //output SPI pins  (1)
-    assign pin_jp1_41 = XLXN_3;  //SCK
-    assign pin_jp1_42 = XLXN_1;   //MOSI
-    assign XLXN_4 = pin_jp1_50;     //MISO
-    assign pin_jp1_49 = XLXN_2;   //SSEL
-    
+    assign pin_jp1_41 = SCK_s;  //SCK
+    assign pin_jp1_49 = SSEL_s;   //SSEL  
+    assign pin_jp1_50 = DATA_s;     //MISO
+
 //    //output SPI pins (2)
 //    assign pin_jp1_51 = XLXN_15;  //SCK
 //    assign pin_jp1_52 = XLXN_13;   //MOSI
@@ -347,7 +336,7 @@ module board2_spindle_xem6010(
     spindle bag1_bag2_chain
     (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
         .gamma_sta(f_gamma_sta),
-        .lce(f_muscle_len),
+        .lce((gain==32'd0) ? f_muscle_len : f_muscle_len_pipe),
         .clk(spindle_clk),
         .reset(reset_sim),
         .out0(x_0),
@@ -409,8 +398,8 @@ module board2_spindle_xem6010(
     okWireOut    wo23 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(f_rawfr_II[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
     okWireOut    wo25 (.ep_datain(f_rawfr_II[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-//    okWireOut    wo26 (.ep_datain(f_muscle_len_slave[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-//    okWireOut    wo27 (.ep_datain(f_muscle_len_slave[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo26 (.ep_datain(f_muscle_len_pipe[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(f_muscle_len_pipe[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
 //    okWireOut    wo28 (.ep_datain(i_MN_spk_cnt[15:0]), .ok1(ok1), .ok2(ok2x[  8*17 +: 17 ]), .ep_addr(8'h28) );
 //    okWireOut    wo29 (.ep_datain(i_MN_spk_cnt[31:16]), .ok1(ok1), .ok2(ok2x[  9*17 +: 17 ]), .ep_addr(8'h29) );
 //    okWireOut    wo30 (.ep_datain(raw_MN_spikes[15:0]), .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
