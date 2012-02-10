@@ -270,17 +270,25 @@ module board2_spindle_xem6010(
                      
     reg [31:0] f_muscle_len;
 
-    always @(posedge sim_clk or posedge reset_global) begin
+//    always @(posedge sim_clk or posedge reset_global) begin
+//        if (reset_global) begin
+//            f_muscle_len <= 32'd0;
+//        end
+//        else begin
+//            if (rdy) begin // Metastable
+//                f_muscle_len <= f_muscle_len;
+//            end
+//            else begin
+//                f_muscle_len <= f_data_from_spi;
+//            end
+//        end
+//    end
+    always @(negedge rdy or posedge reset_global) begin
         if (reset_global) begin
             f_muscle_len <= 32'd0;
         end
         else begin
-            if (rdy) begin // Metastable
-                f_muscle_len <= f_muscle_len;
-            end
-            else begin
-                f_muscle_len <= f_data_from_spi;
-            end
+            f_muscle_len <= f_data_from_spi;
         end
     end
 //
@@ -336,35 +344,33 @@ module board2_spindle_xem6010(
 //**  end of spi communication
     // GET f_muscle_len FROM BOARD1!!!
 
+    spindle bag1_bag2_chain
+    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
+        .gamma_sta(f_gamma_sta),
+        .lce(f_muscle_len),
+        .clk(spindle_clk),
+        .reset(reset_sim),
+        .out0(x_0),
+        .out1(x_1),
+        .out2(f_rawfr_II),
+        .out3(f_rawfr_Ia),
+        .BDAMP_1(BDAMP_1),
+        .BDAMP_2(BDAMP_2),
+        .BDAMP_chain(BDAMP_chain)
+		);
 
+//    reg [31:0] f_i_length;
+//    wire [31:0] f_i_length_F0;
+//	integrator lce_integrator (	.x(f_muscle_len), .int_x(f_i_length), .out(f_i_length_F0) );
 //
-//    spindle bag1_bag2_chain
-//    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-//        .gamma_sta(f_gamma_sta),
-//        .lce(f_muscle_len),
-//        .clk(spindle_clk),
-//        .reset(reset_sim),
-//        .out0(x_0),
-//        .out1(x_1),
-//        .out2(f_rawfr_II),
-//        .out3(f_rawfr_Ia),
-//        .BDAMP_1(BDAMP_1),
-//        .BDAMP_2(BDAMP_2),
-//        .BDAMP_chain(BDAMP_chain)
-//		);
-
-    reg [31:0] f_i_length;
-    wire [31:0] f_i_length_F0;
-	integrator lce_integrator (	.x(f_muscle_len), .int_x(f_i_length), .out(f_i_length_F0) );
-
-    always @(posedge sim_clk or posedge reset_sim) begin
-        if (reset_sim) begin
-            f_i_length <= 32'd0;
-        end
-        else begin
-            f_i_length <= f_i_length_F0;
-        end 
-    end
+//    always @(posedge sim_clk or posedge reset_sim) begin
+//        if (reset_sim) begin
+//            f_i_length <= 32'd0;
+//        end
+//        else begin
+//            f_i_length <= f_i_length_F0;
+//        end 
+//    end
 
 
     // ** LEDs 0 = ON    
@@ -399,8 +405,8 @@ module board2_spindle_xem6010(
     
     okWireOut    wo20 (.ep_datain(f_muscle_len[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
     okWireOut    wo21 (.ep_datain(f_muscle_len[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-    okWireOut    wo22 (.ep_datain(f_i_length[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-    okWireOut    wo23 (.ep_datain(f_i_length[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+    okWireOut    wo22 (.ep_datain(f_rawfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+    okWireOut    wo23 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(f_rawfr_II[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
     okWireOut    wo25 (.ep_datain(f_rawfr_II[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
 //    okWireOut    wo26 (.ep_datain(f_muscle_len_slave[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
