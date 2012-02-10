@@ -22,13 +22,13 @@
 module spi_slave(
     input reset,
     input en,
-    input MOSI,
+    input DATA_IN,
     input SCK,
     input SSEL,
 	 input clk,
-     input [31:0] data32,   //added feb03
+    // input [31:0] data32,   //added feb03
 	 
-    output MISO,
+    //output MISO,
     output [31:0] rx_out,
     output rdy
     );
@@ -66,11 +66,11 @@ module spi_slave(
 			//keep track of SPI signals
 			SCKr <= {SCKr[1:0], SCK};
 			SSELr <= {SSELr[1:0], SSEL};
-			MOSIr <= {MOSIr[0], MOSI};
+			MOSIr <= {MOSIr[0], DATA_IN};
 		end
 	
 	//******************************************************//
-	//MOSI
+	//DATA_IN
 	//******************************************************//
 	always @ (posedge clk)
 		begin
@@ -104,21 +104,21 @@ module spi_slave(
             if(SSEL_startmessage) ack <= ack+1;	//just ack with cnt
             else if(reset) ack <= 0;
         end
-    
-	always @ (posedge clk)
-		if(SSEL_active)
-			begin
-				if(SSEL_startmessage)
-					data_sent <=data32;
-				else
-					if(SCK_fallingedge)
-					begin
-						if(bitcnt==5'b00000)
-							data_sent <= 32'h00000000;
-						else
-							data_sent <= {data_sent[30:0], 1'b0};
-					end
-			end
+//    
+//	always @ (posedge clk)
+//		if(SSEL_active)
+//			begin
+//				if(SSEL_startmessage)
+//					data_sent <=data32;
+//				else
+//					if(SCK_fallingedge)
+//					begin
+//						if(bitcnt==5'b00000)
+//							data_sent <= 32'h00000000;
+//						else
+//							data_sent <= {data_sent[30:0], 1'b0};
+//					end
+//			end
 	
 	assign MISO = data_sent[31];  // send MSB first
 	assign rx_out = data_received;

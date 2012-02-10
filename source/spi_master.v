@@ -26,24 +26,23 @@ module spi_master(
     input en,
 	input clk,
     input SIMCK,
-	input MISO,
+	//input MISO,
 	input [31:0] data32,
 	input [23:0] clkdiv,
 	 
-    output MOSI,
+    output DATA_OUT,
     output SSEL,
     output SCK,
-	output [31:0] rx_data,
-    output MISO_data,  //debug
-    output endmsg
+	output [31:0] rx_data
     );
 	 
+//     assign MISO = 0;
 	 //define wires and regs
 	 reg [2:0] SIMCKr; always @(negedge clk) SIMCKr <= {SIMCKr[1:0], SIMCK};	//trigger SIM CLK
 	 wire SIMCK_risingedge;
 	 assign SIMCK_risingedge = (SIMCKr[2:0] == 3'b011);
 	 
-	 reg [1:0] MISOr; always @(negedge clk) MISOr <= {MISOr[0], MISO};
+	 reg [1:0] MISOr; always @(negedge clk) MISOr <= {MISOr[0], 0};
 	 wire MISO_data;
 	 assign MISO_data = MISOr[1];
 	 
@@ -66,7 +65,7 @@ module spi_master(
 	 reg SSEL_active = 0;
 		 
 	 //******************************************************// 
-	 //shiftout sending (MOSI)
+	 //shiftout sending (DATA_OUT)
 	 //make SSEL signal
 	 //start pre-counter
 	 //******************************************************//
@@ -128,7 +127,7 @@ module spi_master(
 		end
 
 	 assign SSEL = SSEL_gen;
-	 assign MOSI = data_sent[31];	//send MSB --> LSB
+	 assign DATA_OUT = data_sent[31];	//send MSB --> LSB
 		 
 		 
 	 //******************************************************//	
