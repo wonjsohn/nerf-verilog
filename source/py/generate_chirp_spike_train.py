@@ -1,6 +1,6 @@
 #!/usr/bin/python2.5
 import numpy as np
-from scipy.signal.waveforms import chirp, sweep_poly
+#from scipy.signal.waveforms import chirp, sweep_poly
 from numpy import poly1d
 from pylab import figure, plot, show, xlabel, ylabel, subplot, grid, title, \
                     yscale, savefig, clf
