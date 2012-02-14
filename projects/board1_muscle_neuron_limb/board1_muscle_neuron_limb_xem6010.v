@@ -31,27 +31,13 @@ module board1_muscle_neuron_limb_xem6010(
     output wire pin0,
     output wire pin1,
     output wire pin2,
-    output wire pin_jp1_41, //SPI pins
-    output wire pin_jp1_42, 
-//    input wire pin_jp1_50, 
-    output wire pin_jp1_49,
-//    output wire pin_jp1_51,  // SPI pins
-//    output wire pin_jp1_52, 
-//    input wire pin_jp1_60, 
-//    output wire pin_jp1_59,
-    
-    input wire pin_jp2_41,
-    input wire pin_jp2_42,
-//    output wire pin_jp2_50,
-    input wire pin_jp2_49
-//    input wire pin_jp2_51,
-//    input wire pin_jp2_52,
-//    output wire pin_jp2_60,
-//    input wire pin_jp2_59,
-    
-    //sim_clk
-    //output wire pin_jp1_sim_clk
-    //input wire pin_jp2_sim_clk
+    input wire pin_jp1_41,  //
+    input wire pin_jp1_42, 
+    input wire pin_jp1_43,
+  
+    output wire pin_jp1_44,
+    output wire pin_jp1_45,
+    output wire pin_jp1_46
    );
    
     parameter NN = 8;
@@ -301,26 +287,14 @@ module board1_muscle_neuron_limb_xem6010(
 
 
   //output SPI pins
-    assign pin_jp1_41 = SCK_s;  //SCK
-    assign pin_jp1_42 = DATA_s;   //MOSI
-    assign pin_jp1_49 = SSEL_s;   //SSEL
-    
-//    assign pin_jp1_51 = XLXN_15;
-//    assign pin_jp1_52 = XLXN_13;
-//    assign XLXN_16 = pin_jp1_60;
-//    assign pin_jp1_59 = XLXN_14;
-
-////    //input SPI pins (1)  
-//    assign XLXN_7 = pin_jp2_51;  //SCK
-//    assign XLXN_5 = pin_jp2_52;   //MOSI
-//    assign pin_jp2_60 = XLXN_8;   //MISO
-//    assign XLXN_6 = pin_jp2_59;   //SSEL
-    
+    assign pin_jp1_44 = SCK_s;  //SCK
+    assign pin_jp1_45 = DATA_s;   //MOSI
+    assign pin_jp1_46 = SSEL_s;   //SSEL
+        
      //input SPI pins (2)
-    assign SCK_r = pin_jp2_41;  //SCK
-    assign DATA_r = pin_jp2_42;   //MOSI
-    //assign pin_jp2_50 = XLXN_12;    //MISO
-    assign SSEL_r = pin_jp2_49;   //SSEL
+    assign SCK_r = pin_jp1_41;  //SCK
+    assign DATA_r = pin_jp1_42;   //MOSI
+    assign SSEL_r = pin_jp1_43;   //SSEL
 	
     //assign XLXN_4 = pin_jp1_50;    //MISO
     //sim_clk 
