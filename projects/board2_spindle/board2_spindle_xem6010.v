@@ -31,13 +31,13 @@ module board2_spindle_xem6010(
     output wire pin0,
     output wire pin1,
     output wire pin2,
-    input wire pin_jp1_41,  //
-    input wire pin_jp1_42, 
-    input wire pin_jp1_43,
+    output wire pin_jp1_41,  //
+    output wire pin_jp1_42, 
+    output wire pin_jp1_43,
   
-    output wire pin_jp1_44,
-    output wire pin_jp1_45,
-    output wire pin_jp1_46
+    input wire pin_jp1_44,
+    input wire pin_jp1_45,
+    input wire pin_jp1_46
    );
    
     parameter NN = 8;
@@ -286,9 +286,9 @@ module board2_spindle_xem6010(
 
 
     //input SPI pins (1)
-    assign SCK_r = pin_jp1_41;  //SCK
-    assign DATA_r = pin_jp1_42;   //MOSI
-    assign SSEL_r = pin_jp1_43;   //SSEL
+    assign SCK_r = pin_jp1_44;  //SCK
+    assign DATA_r = pin_jp1_45;   //MOSI
+    assign SSEL_r = pin_jp1_46;   //SSEL
     
    
 //    //input SPI pins (2)
@@ -299,9 +299,9 @@ module board2_spindle_xem6010(
 
 
     //output SPI pins  (1)
-    assign pin_jp1_44 = SCK_s;  //SCK
-    assign pin_jp1_45 = DATA_s;     //MISO
-    assign pin_jp1_46 = SSEL_s;   //SSEL  
+    assign pin_jp1_41 = SCK_s;  //SCK
+    assign pin_jp1_42 = DATA_s;     //MISO
+    assign pin_jp1_43 = SSEL_s;   //SSEL  
 
 
 //    //output SPI pins (2)

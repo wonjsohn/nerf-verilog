@@ -67,8 +67,7 @@ module board1_muscle_neuron_limb_xem6010(
     // *** Reset & Enable signals
     assign reset_global = ep00wire[0];
     assign reset_sim = ep00wire[1];
-    assign button1 = ep00wire[2];  // testing sensitivity list
-    assign button2 = ep00wire[3];
+
     //assign enable_sim = is_waveform_valid;
     wire    [31:0]  IEEE_1, IEEE_0;
 	assign IEEE_1 = 32'h3F800000;
@@ -313,27 +312,10 @@ module board1_muscle_neuron_limb_xem6010(
     // SPINDLE NOT AVAILABLE ON THIS CHIP!!!
     // GET f_rawfr_Ia AND f_rawfr_II FROM BOARD2!!!
 
-/*
-    spindle bag1_bag2_chain
-    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-        .gamma_sta(f_gamma_sta),
-        .lce(f_muscle_len),
-        .clk(spindle_clk),
-        .reset(reset_sim),
-        .out0(x_0),
-        .out1(x_1),
-        .out2(f_rawfr_II),
-        .out3(f_rawfr_Ia),
-        .BDAMP_1(BDAMP_1),
-        .BDAMP_2(BDAMP_2),
-        .BDAMP_chain(BDAMP_chain)
-		);
-
-*/
 
     // *** Izhikevich: f_fr_Ia => spikes
         // *** Convert float_fr to int_I1
-	/*
+	
     wire [31:0] f_fr_Ia;
     wire [31:0] i_synI_Ia;
 	mult scale_pps_Ia( .x(f_rawfr_Ia), .y(f_pps_coef_Ia), .out(f_fr_Ia));
@@ -343,33 +325,22 @@ module board1_muscle_neuron_limb_xem6010(
     wire signed [17:0] v_Ia;   // cell potentials
     Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
     (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
-
-    wire [31:0] f_fr_II;
-    wire [31:0] i_synI_II;
-    mult scale_pps_II( .x(f_rawfr_II), .y(f_pps_coef_II), .out(f_fr_II));
-    floor float_to_int_II( .in(f_fr_II), .out(i_synI_II) );
-    wire II_spike, s_II;
-    wire signed [17:0] v_II;   // cell potentials
-    Iz_neuron #(.NN(NN),.DELAY(10)) II_neuron
-    (v_II,s_II, a,b,c,d, i_synI_II, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, II_spike);
+//
+//    wire [31:0] f_fr_II;
+//    wire [31:0] i_synI_II;
+//    mult scale_pps_II( .x(f_rawfr_II), .y(f_pps_coef_II), .out(f_fr_II));
+//    floor float_to_int_II( .in(f_fr_II), .out(i_synI_II) );
+//    wire II_spike, s_II;
+//    wire signed [17:0] v_II;   // cell potentials
+//    Iz_neuron #(.NN(NN),.DELAY(10)) II_neuron
+//    (v_II,s_II, a,b,c,d, i_synI_II, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, II_spike);
 
     //*** Synapse:: spike -> I   
 	wire [17:0]  I_out;
 	wire [17:0]	w1, w2, w3;
 	wire spk1, spk2, spk3;
     wire [31:0] i_postsyn_I;
-    
-//	synapse_int syn1(
-//			.I_out(I_out),
-//			.spk1(1'b0),
-//			.w1(18'd1),
-//			.spk2(Ia_spike),
-//			.w2(18'd1),
-//			.spk3(1'b0),
-//			.w3(18'd1),
-//			.clk(sim_clk),
-//			.reset(reset_sim)
-//	);
+  
 	wire signed [17:0] Ia_w1, Ia_w2;  //learned synaptic weights
 
 	synapse   #(.NN(NN)) synIa(I_out, 	Ia_spike, 18'sh01000, 	1'b0, 	18'h0, 			1'b0, 	18'h0, 1'b0, 
@@ -413,7 +384,7 @@ module board1_muscle_neuron_limb_xem6010(
     reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
 	always @(negedge ti_clk) raw_MN_spikes <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
 	always @(negedge ti_clk) raw_Ia_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
-    always @(negedge ti_clk) raw_II_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, 1'b0, II_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
+//    always @(negedge ti_clk) raw_II_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, 1'b0, II_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
 
 //
 //    assign raw_MN_spikes = {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
@@ -453,13 +424,13 @@ module board1_muscle_neuron_limb_xem6010(
     );       
 
     // *** EMG
-    wire [17:0] si_emg;
-    emg #(.NN(NN)) muscle_emg
-    (   .emg_out(si_emg), 
-        .i_spk_cnt(i_MN_spk_cnt[NN:0]), 
-        .clk(sim_clk), 
-        .reset(reset_sim) );
-    */
+//    wire [17:0] si_emg;
+//    emg #(.NN(NN)) muscle_emg
+//    (   .emg_out(si_emg), 
+//        .i_spk_cnt(i_MN_spk_cnt[NN:0]), 
+//        .clk(sim_clk), 
+//        .reset(reset_sim) );
+//    */
 
 
     
@@ -469,7 +440,6 @@ module board1_muscle_neuron_limb_xem6010(
     assign led[2] = ~clk1;
     assign led[3] = ~rdy;
     assign led[4] = 1'b1;
-    assign spike  = 1'b1;
     assign led[5] = ~sim_clk; //fast clock
     assign led[6] = ~spindle_clk; // slow clock
     //assign led[5] = ~spike;
@@ -492,16 +462,7 @@ module board1_muscle_neuron_limb_xem6010(
   // Instantiate the okHost and connect endpoints.
     // Host interface
     // *** Endpoint connections:
-    assign ep20wire = master_out[15:0];
-    assign ep21wire = master_out[31:16];
-    assign ep22wire = f_rawfr_Ia[15:0]; 
-    assign ep23wire = f_rawfr_Ia[31:16];
-    assign ep24wire = f_muscle_len[15:0];
-    assign ep25wire = f_muscle_len[31:16];
-    assign ep26wire = clkdiv[15:0];
-    assign ep27wire = clkdiv[31:16];
-    //assign ep28wire = gain[15:0];
-    //assign ep29wire = gain[31:16];;    
+  
     okHost okHI(
         .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
         .ok1(ok1), .ok2(ok2));
@@ -513,14 +474,15 @@ module board1_muscle_neuron_limb_xem6010(
     okWireIn     wi02 (.ok1(ok1),                           .ep_addr(8'h02), .ep_dataout(ep02wire));
     //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep001wire));
 
-    okWireOut    wo20 (.ok1(ok1), .ok2(ok2x[ 0*17 +: 17 ]), .ep_addr(8'h20), .ep_datain(ep20wire));
-    okWireOut    wo21 (.ok1(ok1), .ok2(ok2x[ 1*17 +: 17 ]), .ep_addr(8'h21), .ep_datain(ep21wire));
-    okWireOut    wo22 (.ok1(ok1), .ok2(ok2x[ 2*17 +: 17 ]), .ep_addr(8'h22), .ep_datain(ep22wire));
-    okWireOut    wo23 (.ok1(ok1), .ok2(ok2x[ 3*17 +: 17 ]), .ep_addr(8'h23), .ep_datain(ep23wire));
-    okWireOut    wo24 (.ok1(ok1), .ok2(ok2x[ 4*17 +: 17 ]), .ep_addr(8'h24), .ep_datain(ep24wire));
-    okWireOut    wo25 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'h25), .ep_datain(ep25wire));
-    okWireOut    wo26 (.ok1(ok1), .ok2(ok2x[ 6*17 +: 17 ]), .ep_addr(8'h26), .ep_datain(ep26wire));
-    okWireOut    wo27 (.ok1(ok1), .ok2(ok2x[ 7*17 +: 17 ]), .ep_addr(8'h27), .ep_datain(ep27wire));
+
+    okWireOut    wo20 (.ep_datain(f_muscle_len[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
+    okWireOut    wo21 (.ep_datain(f_muscle_len[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
+    okWireOut    wo22 (.ep_datain(f_rawfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+    okWireOut    wo23 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+    okWireOut    wo24 (.ep_datain(f_rawfr_II[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(f_rawfr_II[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo26 (.ep_datain(f_total_force[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(f_total_force[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
     okWireOut    wo28 (.ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28), .ep_datain(ep28wire));
     okWireOut    wo29 (.ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29), .ep_datain(ep29wire));
      //ep_ready = 1 (always ready to receive)
