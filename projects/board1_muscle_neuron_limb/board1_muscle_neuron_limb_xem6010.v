@@ -313,18 +313,18 @@ module board1_muscle_neuron_limb_xem6010(
     // GET f_rawfr_Ia AND f_rawfr_II FROM BOARD2!!!
 
 
-    // *** Izhikevich: f_fr_Ia => spikes
+    // *** Izhikevich: f_fr_Ia_bic => spikes
         // *** Convert float_fr to int_I1
 	
-    wire [31:0] f_fr_Ia;
-    wire [31:0] i_synI_Ia;
-	mult scale_pps_Ia( .x(f_rawfr_Ia), .y(f_pps_coef_Ia), .out(f_fr_Ia));
-    floor float_to_int_Ia( .in(f_fr_Ia), .out(i_synI_Ia) );
+    wire [31:0] f_fr_Ia_bic;
+    wire [31:0] i_synI_Ia_bic;
+	mult scale_pps_Ia( .x(f_rawfr_Ia), .y(f_pps_coef_Ia), .out(f_fr_Ia_bic));
+    floor float_to_int_Ia( .in(f_fr_Ia_bic), .out(i_synI_Ia_bic) );
     
     wire Ia_spike, s_Ia;
     wire signed [17:0] v_Ia;   // cell potentials
     Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
-    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
+    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia_bic, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
 //
 //    wire [31:0] f_fr_II;
 //    wire [31:0] i_synI_II;
