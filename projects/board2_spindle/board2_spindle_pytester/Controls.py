@@ -102,7 +102,7 @@ class User(QDialog, Ui_Dialog):
 #            self.data.append(newData)
         
     def onClkRate(self, value):   
-        newHalfCnt = 200 * (10 **6) / SAMPLING_RATE / NUM_NEURON / value / 2 / 4
+        newHalfCnt = 100 * (10 **6) / SAMPLING_RATE / NUM_NEURON / value / 2 / 4
         self.nerfModel.SendPara(newVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
         
 #    def onNewWireIn(self, evt):
