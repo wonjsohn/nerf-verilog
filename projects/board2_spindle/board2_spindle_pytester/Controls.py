@@ -29,21 +29,21 @@ class User(QDialog, Ui_Dialog):
 #        QDialog.__init__(self, parent, Qt.FramelessWindowHint)
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        
+
         self.nerfModel = Model()
         self.dispView = View(None, NUM_CHANNEL, DISPLAY_SCALING, VIEWER_REFRESH_RATE, \
                              CHANNEL_COLOR)
-                             
+
 
         self.dispView.show()
         self.data = []
         self.isLogData = False
-        
+
         self.connect(self.dispView.timer, SIGNAL("timeout()"), self.onCheckMoney)
 #        self.connect(self, SIGNAL("initRT"), self.on_horizontalSlider_sliderMoved)
 #        self.emit(SIGNAL("initRT"), 1)
         self.on_horizontalSlider_valueChanged(1)
-        
+
 #        self.connect(self.doubleSpinBox_0, SIGNAL("editingFinished()"), self.onNewWire00In)
 #        self.connect(self.doubleSpinBox_0, SIGNAL("valueChanged(double)"), self.onNewWire00In)
 #
@@ -76,7 +76,7 @@ class User(QDialog, Ui_Dialog):
 
         self.connect(self.doubleSpinBox_14, SIGNAL("editingFinished()"), self.onNewWireIn14)
         self.connect(self.doubleSpinBox_14, SIGNAL("valueChanged(double)"), self.onNewWireIn14)
-        
+
         self.connect(self.doubleSpinBox_15, SIGNAL("editingFinished()"), self.onNewWireIn15)
         self.connect(self.doubleSpinBox_15, SIGNAL("valueChanged(double)"), self.onNewWireIn15)
 
@@ -86,29 +86,29 @@ class User(QDialog, Ui_Dialog):
         This method is the handler for "WANT MONEY" messages,
         """
         newData = [0.0 for ix in range(NUM_CHANNEL)]
-        
+
         for i in xrange(NUM_CHANNEL):
             newData[i] = self.nerfModel.ReadFPGA(DATA_OUT_ADDR[i], CH_TYPE[i])
             #if i == 3: 
                 #newData[i] = newData[i] / 100
             #newData[i] = max(-65535, min(65535, self.nerfModel.ReadFPGA(DATA_OUT_ADDR[i], CH_TYPE[i])))
-            if i == 1:
-                print newData[i]
-            
+#            if i == 1:
+#                print newData[i]
+
 #        newSpike = self.nerfModel.ReadPipe(0xA1, 4000) # read ## bytes
-        
+
         self.dispView.newData(newData)
 #        if (self.isLogData):
 #            self.data.append(newData)
-        
+
     def onClkRate(self, value):   
         newHalfCnt = 100 * (10 **6) / SAMPLING_RATE / NUM_NEURON / value / 2 / 4
         self.nerfModel.SendPara(newVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
-        
+
 #    def onNewWireIn(self, evt):
 #        newWireIn = eval('self.doubleSpinBox_'+str(evt)+u'.value()')
 #        self.nerfModel.SendPara(newVal = newWireIn, trigEvent = evt)
-   
+
     def onNewWireIn2(self):
         newWireIn = eval('self.doubleSpinBox_'+str(2)+u'.value()')
         self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 2)
@@ -117,7 +117,7 @@ class User(QDialog, Ui_Dialog):
         newWireIn = self.doubleSpinBox_3.value()
         if SEND_TYPE[3] == 'int32': newWireIn = int(newWireIn)
         self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 3)
-        
+
     def onNewWireIn4(self):
         newWireIn = self.doubleSpinBox_4.value()
         if SEND_TYPE[4] == 'int32': newWireIn = int(newWireIn)
@@ -136,7 +136,7 @@ class User(QDialog, Ui_Dialog):
     def onNewWireIn14(self):
         newWireIn = self.doubleSpinBox_14.value()
         self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 14)
-        
+
     def onNewWireIn15(self):
         newWireIn = self.doubleSpinBox_15.value()
         self.nerfModel.SendPara(newVal = newWireIn, trigEvent = 15)
@@ -150,7 +150,7 @@ class User(QDialog, Ui_Dialog):
                 subplot(NUM_CHANNEL, 1, i+1)
                 plot(forplot[:, i])
             show()
-   
+
     @pyqtSignature("QString")
     def on_comboBox_activated(self, p0):
         """
@@ -165,22 +165,22 @@ class User(QDialog, Ui_Dialog):
 #            pipeInData = spike_train(firing_rate = 100)      
             pipeInData = gen_sin(F = 4.0, AMP = 0.3)
 #            pipeInData = chirping_spike_train(coeff_a = 40)
-            
+
         elif choice == "Spike Train 20Hz":
 #            pipeInData = gen_tri() 
 #            pipeInData = spike_train(firing_rate = 500) 
             pipeInData = chirping_spike_train(coeff_a =60)
-            
+
         #self.nerfModel.SendPipeInt(pipeInData)   # for spike_train(),  SendPipeInt, SendPipe same result.
         self.nerfModel.SendPipe(pipeInData)
-    
+
     @pyqtSignature("int")
     def on_horizontalSlider_sliderMoved(self, position):
         """
         Slot documentation goes here.
         """
         self.onClkRate(position)
-            
+
     @pyqtSignature("bool")
     def on_pushButton_2_clicked(self, checked):
         """
@@ -188,14 +188,14 @@ class User(QDialog, Ui_Dialog):
         """
         self.dispView.close()
         self.plotData(self.data)
-    
+
     @pyqtSignature("int")
     def on_horizontalSlider_valueChanged(self, value):
         """
         Slot documentation goes here.
         """
         self.onClkRate(value)
-    
+
     @pyqtSignature("bool")
     def on_pushButton_5_clicked(self, checked):
         """
@@ -203,7 +203,7 @@ class User(QDialog, Ui_Dialog):
         """
         newResetSim = checked
         self.nerfModel.SendButton(newResetSim, BUTTON_RESET_SIM)
-    
+
     @pyqtSignature("bool")
     def on_pushButton_4_clicked(self, checked):
         """
@@ -211,14 +211,14 @@ class User(QDialog, Ui_Dialog):
         """
         newResetGlobal = checked
         self.nerfModel.SendButton(newResetGlobal, BUTTON_RESET)
-    
+
     @pyqtSignature("bool")
     def on_pushButtonData_clicked(self, checked):
         """
         Slot documentation goes here.
         """
         self.isLogData = checked
-    
+
     @pyqtSignature("bool")
     def on_pushButton_6_clicked(self, checked):
         """
@@ -226,7 +226,7 @@ class User(QDialog, Ui_Dialog):
         """
         newButton1 = checked
         self.nerfModel.SendButton(newButton1, BUTTON_1)
-    
+
     @pyqtSignature("bool")
     def on_pushButton_7_clicked(self, checked):
         """

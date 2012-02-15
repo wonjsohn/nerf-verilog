@@ -24,7 +24,10 @@ class Model:
         assert os.path.exists(bitfile.encode('utf-8')), ".bit file NOT found!"
             
         self.xem = ok.FrontPanel()
-        self.xem.OpenBySerial("")
+        print "count = ",  self.xem.GetDeviceCount()
+        serX = self.xem.GetDeviceListSerial(1)
+        print "serial = ",  serX
+        self.xem.OpenBySerial(serX)
         assert self.xem.IsOpen(), "OpalKelly board NOT found!"
 
         self.xem.LoadDefaultPLLConfiguration()
