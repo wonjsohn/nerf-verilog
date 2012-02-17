@@ -1,4 +1,6 @@
 `timescale 1ns / 1ps
+`default_nettype none
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: USC
 // Engineer: JFS
@@ -22,18 +24,18 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module spi_master(
-    input reset,
-    input en,
-	input clk,
-    input SIMCK,
+    input  wire reset,
+    input  wire en,
+	input  wire clk,
+    input  wire SIMCK,
 	//input MISO,
-	input [31:0] data32,
-	input [23:0] clkdiv,
+	input  wire [31:0] data32,
+	input  wire [23:0] clkdiv,
 	 
-    output DATA_OUT,
-    output SSEL,
-    output SCK,
-	output [31:0] rx_data
+    output  wire DATA_OUT,
+    output  wire SSEL,
+    output  wire SCK,
+	output  wire [31:0] rx_data
     );
 	 
 //     assign MISO = 0;
