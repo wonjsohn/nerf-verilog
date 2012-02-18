@@ -112,6 +112,7 @@
     <file xil_pn:fileType="FILE_HTML" xil_pn:name="okHost_summary.html"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="okHost_xst.xrpt"/>
     <file xil_pn:fileType="FILE_DIRECTORY" xil_pn:name="planAhead_run_1"/>
+    <file xil_pn:fileType="FILE_DIRECTORY" xil_pn:name="planAhead_run_2"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_REPORT" xil_pn:name="spindle_bag1_neuron_xem6010.bgn" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BIT" xil_pn:name="spindle_bag1_neuron_xem6010.bit" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGDBUILD_LOG" xil_pn:name="spindle_bag1_neuron_xem6010.bld"/>
@@ -305,19 +306,18 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1328307857" xil_pn:name="TRAN_SubProjectPreToStructuralProxy" xil_pn:prop_ck="-2098939838453108159" xil_pn:start_ts="1328307857">
+    <transform xil_pn:end_ts="1329516407" xil_pn:name="TRAN_SubProjectPreToStructuralProxy" xil_pn:prop_ck="-2098939838453108159" xil_pn:start_ts="1329516407">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1328307857" xil_pn:name="TRAN_platgen" xil_pn:prop_ck="-6677335439170471612" xil_pn:start_ts="1328307857">
+    <transform xil_pn:end_ts="1329516407" xil_pn:name="TRAN_platgen" xil_pn:prop_ck="-6677335439170471612" xil_pn:start_ts="1329516407">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1329265481" xil_pn:in_ck="874857247659811184" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="856923298161671561" xil_pn:start_ts="1329265340">
+    <transform xil_pn:end_ts="1329524396" xil_pn:in_ck="3486822374246832219" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="856923298161671561" xil_pn:start_ts="1329524283">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="_xmsgs/xst.xmsgs"/>
@@ -332,57 +332,69 @@
       <outfile xil_pn:name="webtalk_pn.xml"/>
       <outfile xil_pn:name="xst"/>
     </transform>
-    <transform xil_pn:end_ts="1329253467" xil_pn:in_ck="3842830536569481238" xil_pn:name="TRAN_compileBCD2" xil_pn:prop_ck="-5626435652390106484" xil_pn:start_ts="1329253467">
+    <transform xil_pn:end_ts="1329517690" xil_pn:in_ck="3842830536569481238" xil_pn:name="TRAN_compileBCD2" xil_pn:prop_ck="-5626435652390106484" xil_pn:start_ts="1329517690">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1329265492" xil_pn:in_ck="4507125651157238375" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="1404795935116193339" xil_pn:start_ts="1329265481">
+    <transform xil_pn:end_ts="1329524405" xil_pn:in_ck="4507125651157238375" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="1404795935116193339" xil_pn:start_ts="1329524396">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputRemoved"/>
+      <outfile xil_pn:name="_ngo"/>
+      <outfile xil_pn:name="_xmsgs/ngdbuild.xmsgs"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.bld"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.ngd"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010_ngdbuild.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1329265620" xil_pn:in_ck="-496526998460347450" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1329265492">
+    <transform xil_pn:end_ts="1329524525" xil_pn:in_ck="-496526998460347450" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1329524405">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputRemoved"/>
+      <status xil_pn:value="OutputChanged"/>
+      <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.pcf"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010_map.map"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010_map.mrp"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010_map.ncd"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010_map.ngm"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010_map.xrpt"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010_summary.xml"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010_usage.xml"/>
     </transform>
-    <transform xil_pn:end_ts="1329265756" xil_pn:in_ck="-3585573022808288448" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1329265620">
-      <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="WarningsGenerated"/>
-      <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputRemoved"/>
-    </transform>
-    <transform xil_pn:end_ts="1329265792" xil_pn:in_ck="3842830536569473613" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="396117104113915555" xil_pn:start_ts="1329265756">
+    <transform xil_pn:end_ts="1329524660" xil_pn:in_ck="-3585573022808288448" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1329524525">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputRemoved"/>
+      <outfile xil_pn:name="_xmsgs/par.xmsgs"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.ncd"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.pad"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.par"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.ptwx"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.unroutes"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.xpi"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010_pad.csv"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010_pad.txt"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010_par.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1329265756" xil_pn:in_ck="-6251128941973561725" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1329265738">
+    <transform xil_pn:end_ts="1329524696" xil_pn:in_ck="3842830536569473613" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="396117104113915555" xil_pn:start_ts="1329524660">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="WarningsGenerated"/>
+      <status xil_pn:value="ReadyToRun"/>
+      <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.bgn"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.bit"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.drc"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.ut"/>
+      <outfile xil_pn:name="usage_statistics_webtalk.html"/>
+      <outfile xil_pn:name="webtalk.log"/>
+      <outfile xil_pn:name="webtalk_pn.xml"/>
+    </transform>
+    <transform xil_pn:end_ts="1329524660" xil_pn:in_ck="-6251128941973561725" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1329524643">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputRemoved"/>
+      <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.twr"/>
+      <outfile xil_pn:name="board1_muscle_neuron_limb_xem6010.twx"/>
     </transform>
   </transforms>
 

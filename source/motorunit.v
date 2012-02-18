@@ -26,18 +26,30 @@ module motorunit (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk, 
     //input   [31:0]  vel,            // change of muscle length
     input   wire [31:0]  f_rawfr_Ia,     //
     input   wire [31:0]  f_pps_coef_Ia,  //
-    input   wire sim_clk,
-    input   wire neuron_clk,
+    input   wire [31:0]  half_cnt,
+    input   wire clk,
+    //input   wire sim_clk,
+    //input   wire neuron_clk,
     input   wire ti_clk,
     input   wire reset_sim,
     input   wire [31:0]  gain,           // gain 
     input   wire [31:0] i_gain_MN,
 
-    output  [31:0]  f_total_force  // output muscle force 
+    output  wire [31:0]  f_total_force  // output muscle force 
     );
 
     parameter NN = 8; // 2^(NN+1) = NUM_NEURON
+    wire neuron_clk, sim_clk, spindle_clk;
     wire [NN+2:0] neuronCounter;
+    
+    gen_clk #(.NN(NN)) local_clocks
+    (   .rawclk(clk), 
+        .half_cnt(half_cnt), 
+        .clk_out1(neuron_clk), 
+        .clk_out2(sim_clk), 
+        .clk_out3(spindle_clk),
+        .int_neuron_cnt_out(neuronCounter) );
+                
 
     // *** Izhikevich: f_fr_Ia => spikes
     // *** Convert float_fr to int_I1
@@ -137,7 +149,7 @@ module motorunit (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk, 
         .clear_out(clear_out) );
             
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
-    wire    [31:0]  f_total_force, f_active_state, f_MN_spk_cnt;
+    wire    [31:0]  f_active_state, f_MN_spk_cnt;
     shadmehr_muscle muscle_for_test
     (   .spike_cnt(i_MN_spk_cnt*gain),
         .pos(f_muscle_length),  // muscle length
