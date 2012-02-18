@@ -60,7 +60,7 @@ module shadmehr_active_force(spikes, active_force_out, fp_spikes_out, clk, reset
 	input  clk, reset;
 
     reg [31:0]  spikes_i1, spikes_i2, h_i1, h_i2; 
-    wire    [31:0]  spikes_i, h_i;
+    wire    [31:0]  spikes_i, h_i, emg_out;
     //assign  spikes_i = spikes * 32'sd1024;// 32'sd128;
 	int_to_float get_fp_spike(.out(spikes_i), .in(spikes * 32'd1024));
 	 
