@@ -1,16 +1,16 @@
 module spindle(
-    input [31:0] gamma_dyn,
-    input [31:0] gamma_sta,
-    input [31:0] lce,
-    input clk,
-    input reset,
-    output [31:0] out0,
-    output [31:0] out1,
-    output [31:0] out2,
-    output [31:0] out3,
-    input   [31:0] BDAMP_1,
-    input   [31:0] BDAMP_2,
-    input   [31:0] BDAMP_chain
+    input wire [31:0] gamma_dyn,
+    input wire [31:0] gamma_sta,
+    input wire [31:0] lce,
+    input wire clk,
+    input wire reset,
+    output wire [31:0] out0,
+    output wire [31:0] out1,
+    output wire [31:0] out2,
+    output wire [31:0] out3,
+    input   wire [31:0] BDAMP_1,
+    input   wire [31:0] BDAMP_2,
+    input   wire [31:0] BDAMP_chain
     );
 
 
@@ -311,19 +311,19 @@ module spindle(
 endmodule
 
 
-module spindle_derivatives(		input [1:0] state,
-					input [31:0]gamma_dyn,
-					input [31:0]gamma_sta, 
-					input [31:0]lce, 
-					input [31:0]x_0, 
-					input [31:0]x_1, 
-					input [31:0]x_2,
-					output [31:0] dx_0,
-					output [31:0] dx_1,
-					output [31:0] dx_2,
-                    input [31:0] BDAMP_1,
-                    input [31:0] BDAMP_2,
-                    input [31:0] BDAMP_chain
+module spindle_derivatives(		input wire [1:0] state,
+					input wire [31:0]gamma_dyn,
+					input wire [31:0]gamma_sta, 
+					input wire [31:0]lce, 
+					input wire [31:0]x_0, 
+					input wire [31:0]x_1, 
+					input wire [31:0]x_2,
+					output wire [31:0] dx_0,
+					output wire [31:0] dx_1,
+					output wire [31:0] dx_2,
+                    input wire [31:0] BDAMP_1,
+                    input wire [31:0] BDAMP_2,
+                    input wire [31:0] BDAMP_chain
 					);
 	wire [31:0] IEEE_SIX_POINT_SEVEN_ONE_ONE, IEEE_FOUR_POINT_EIGHT_SEVEN_EIGHT;
 	assign IEEE_SIX_POINT_SEVEN_ONE_ONE = 32'h40D6C083; //bag1
