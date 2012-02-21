@@ -146,11 +146,13 @@ module stretch_reflex_xem6010(
 
     gen_clk #(.NN(NN)) useful_clocks
     (   .rawclk(clk1), 
-        .half_cnt(delay_cnt_max), 
+        .half_cnt(delay_cnt_max),
+        .reset(reset_sim),
         .clk_out1(neuron_clk), 
         .clk_out2(sim_clk), 
         .clk_out3(spindle_clk),
-        .int_neuron_cnt_out(neuronCounter) );
+        .int_neuron_cnt_out(neuronCounter)
+        );
                 
     
     // *** Generating waveform to stimulate the spindle
@@ -183,6 +185,45 @@ module stretch_reflex_xem6010(
         .BDAMP_chain(BDAMP_chain)
 		);
 
+	wire [3:0] a, b, tau;
+	wire [17:0] c, d, v1, u1, s1;
+	assign a = 3 ;  // bits for shifting, a = 0.125
+	assign b =  2 ;  // bits for shifting, b = 0.25
+	assign c =  18'sh3_599A ; // -0.65  = dec2hex(1+bitcmp(ceil(0.65 * hex2dec('ffff')),18)) = 3599A
+	assign d =  18'sh0_147A ; // 0.08 = dec2hex(floor(0.08 * hex2dec('ffff'))) = 147A
+	assign tau = 4'h2;
+	
+    wire [1:0] state;
+	assign state = neuronCounter[1:0];
+    
+	wire [NN:0] neuronIndex;
+	assign neuronIndex = neuronCounter[NN+2:2];
+	
+	wire state1, state2, state3, state4;
+	assign state1 = (state == 2'h0);
+	assign state2 = (state == 2'h1);
+	assign state3 = (state == 2'h2);
+	assign state4 = (state == 2'h3);
+	
+	wire neuronWriteCount, readClock, neuronWriteEnable, dataValid;
+	assign neuronWriteCount = state1;	//increment neuronID (ram address)
+	assign readClock = state2;				//read RAM
+	assign neuronWriteEnable = state4; //(state3 | state4);	//write RAM
+	assign dataValid = (neuronCounter == 32'd0);  //(neuronIndex ==0) & state2; //(neuronIndex == 1);   //slight delay of positive edge to allow latch set-up times
+		
+    wire [31:0] f_fr_II;
+    wire [31:0] i_synI_II;
+    mult scale_pps_II( .x(f_rawfr_II), .y(f_pps_coef_II), .out(f_fr_II));
+    floor float_to_int_II( .in(f_fr_II), .out(i_synI_II) );
+    wire II_spike, s_II;
+    wire signed [17:0] v_II;   // cell potentials
+    Iz_neuron #(.NN(NN),.DELAY(10)) II_neuron
+    (v_II,s_II, a,b,c,d, i_synI_II, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, II_spike);
+    
+    reg [15:0] raw_II_spikes;
+    always @(negedge ti_clk) raw_II_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, 1'b0, II_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
+    
+/*
     // *** Izhikevich: f_fr_Ia => spikes
         // *** Convert float_fr to int_I1
 	
@@ -303,6 +344,32 @@ module stretch_reflex_xem6010(
         .current_A(f_active_state),
         .current_fp_spikes(f_MN_spk_cnt)
     );       
+*/
+
+    wire [15:0] raw_Ia_spikes, raw_MN_spikes;
+    wire [31:0] f_total_force;
+    wire [31:0] i_MN_spk_cnt;
+    wire Ia_spike;
+    wire MN_spike;
+    motorunit extensor(
+                        .f_muscle_length(f_muscle_len),  // muscle length
+                        .f_rawfr_Ia(f_rawfr_Ia),     //
+                        .f_pps_coef_Ia(f_pps_coef_Ia),  //
+                        .half_cnt(delay_cnt_max),
+                        .clk(clk1),
+                        
+                        .ti_clk(ti_clk),
+                        .reset_sim(reset_sim),
+                        .gain(gain),           // gain 
+                        .i_gain_MN(i_gain_MN),
+
+                        .f_total_force(f_total_force),  // output muscle force 
+                        .i_MN_spk_cnt(i_MN_spk_cnt),
+                        .raw_Ia_spikes(raw_Ia_spikes),
+                        .raw_MN_spikes(raw_MN_spikes),
+                        .Ia_spike(Ia_spike),
+                        .MN_spike(MN_spike)
+    );
 
     // *** EMG
     wire [17:0] si_emg;
