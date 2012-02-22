@@ -175,14 +175,14 @@ module board1_muscle_neuron_limb_xem6010(
     wire neuron_clk, sim_clk, spindle_clk;
     wire [NN+2:0] neuronCounter;
 
-    gen_clk #(.NN(NN)) useful_clocks
-    (   .rawclk(clk1), 
-        .half_cnt(delay_cnt_max), 
-        .clk_out1(neuron_clk), 
-        .clk_out2(sim_clk), 
-        .clk_out3(spindle_clk),
-        .int_neuron_cnt_out(neuronCounter) );
-                
+//    gen_clk #(.NN(NN)) useful_clocks
+//    (   .rawclk(clk1), 
+//        .half_cnt(delay_cnt_max), 
+//        .clk_out1(neuron_clk), 
+//        .clk_out2(sim_clk), 
+//        .clk_out3(spindle_clk),
+//        .int_neuron_cnt_out(neuronCounter) );
+//                
     
     // *** Generating waveform to stimulate the spindle
      wire    [31:0] f_muscle_len;
@@ -306,7 +306,7 @@ module board1_muscle_neuron_limb_xem6010(
                                 .f_pps_coef_Ia(f_pps_coef_Ia),
                                 .half_cnt(delay_cnt_max), 
                                 .clk(clk1),   // raw clk
-                                //.sim_clk(sim_clk),
+                                .sim_clk(sim_clk),                  // output sim_clk
                                 //.neuron_clk(neuron_clk),
                                 .ti_clk(ti_clk),
                                 .reset_sim(reset_sim),

@@ -28,7 +28,7 @@ module motorunit (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk, 
     input   wire [31:0]  f_pps_coef_Ia,  //
     input   wire [31:0]  half_cnt,
     input   wire clk,
-    //input   wire sim_clk,
+    output  wire sim_clk,
     //input   wire neuron_clk,
     input   wire ti_clk,
     input   wire reset_sim,
@@ -39,7 +39,7 @@ module motorunit (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk, 
     );
 
     parameter NN = 8; // 2^(NN+1) = NUM_NEURON
-    wire neuron_clk, sim_clk, spindle_clk;
+    wire neuron_clk, spindle_clk;
     wire [NN+2:0] neuronCounter;
     
     gen_clk #(.NN(NN)) local_clocks
