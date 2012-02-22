@@ -319,8 +319,7 @@ module board1_muscle_neuron_limb_xem6010(
     wire MN_spike;
 
     neuron_pool #(.NN(NN)) np1
-    (   .f_muscle_length(f_muscle_len),  // muscle length
-        .f_rawfr_Ia(f_rawfr_Ia),     //
+    (   .f_rawfr_Ia(f_rawfr_Ia),     //
         .f_pps_coef_Ia(f_pps_coef_Ia), //
         .half_cnt(delay_cnt_max),
         .rawclk(clk1),

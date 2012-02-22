@@ -22,7 +22,6 @@
 
 // 
 module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk, neuron_clk, reset_sim, f_total_force);
-    input   wire [31:0]  f_muscle_length,  // muscle length
     //input   [31:0]  vel,            // change of muscle length
     input   wire [31:0]  f_rawfr_Ia,     //
     input   wire [31:0]  f_pps_coef_Ia,  //
