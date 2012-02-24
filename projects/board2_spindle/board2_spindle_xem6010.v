@@ -397,9 +397,9 @@ module board2_spindle_xem6010(
     //ep_ready = 1 (always ready to receive)
     wire pipe_out_read0, pipe_out_read1, pipe_out_read2;
     okBTPipeIn   ep80 (.ep_dataout(hex_from_py), .ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_ready(1'b1));
-    okBTPipeOut  epA0 (.ep_datain(raw_Ia_spikes), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read0),  .ep_blockstrobe(), .ep_ready(1'b1));
-    okBTPipeOut  epA1 (.ep_datain(raw_II_spikes), .ok1(ok1), .ok2(ok2x[ 16*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read1),  .ep_blockstrobe(), .ep_ready(1'b1));
-    okBTPipeOut  epA2 (.ep_datain(raw_MN_spikes), .ok1(ok1), .ok2(ok2x[ 17*17 +: 17 ]), .ep_addr(8'ha2), .ep_read(pipe_out_read2),  .ep_blockstrobe(), .ep_ready(1'b1));
+//    okBTPipeOut  epA0 (.ep_datain(raw_Ia_spikes), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read0),  .ep_blockstrobe(), .ep_ready(1'b1));
+//    okBTPipeOut  epA1 (.ep_datain(raw_II_spikes), .ok1(ok1), .ok2(ok2x[ 16*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read1),  .ep_blockstrobe(), .ep_ready(1'b1));
+//    okBTPipeOut  epA2 (.ep_datain(raw_MN_spikes), .ok1(ok1), .ok2(ok2x[ 17*17 +: 17 ]), .ep_addr(8'ha2), .ep_read(pipe_out_read2),  .ep_blockstrobe(), .ep_ready(1'b1));
 
     wire [15:0] ep50trig;
     okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
