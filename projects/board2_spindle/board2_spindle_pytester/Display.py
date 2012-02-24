@@ -142,7 +142,6 @@ class View(QMainWindow, Ui_Dialog):
 ##                                 self.x, (winScale) -  28 - (neuronID/4))
 #            if (rawspikes & 128) : ## MN
 ##                gp.drawPoint(self.x, (winScale) - 24 - (neuronID/4)   ) 
-
 #                gp.drawLine(self.x-2,(winScale) - 24 - (neuronID/2),\
 #                                 self.x, (winScale) - 24 - (neuronID/2))
 #
