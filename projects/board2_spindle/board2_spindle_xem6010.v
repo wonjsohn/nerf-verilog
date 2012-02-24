@@ -268,78 +268,76 @@ module board2_spindle_xem6010(
 
 
     // **************  triceps  ********************
-
-    wire rdy_tri;
-    //wire [31:0] slave_out;
-     
-    //master sending out Biceps    
-   // wire MISO_s;  //mosi
+//
+//    wire rdy_tri;
+//    //wire [31:0] slave_out;
+//     
+//    //master sending out Biceps    
     wire SSEL_tri_s;   //ssel
     wire SCK_tri_s;  //sck
     wire DATA_tri_s; //miso
-    
-    //slave receiving in
-    //wire MOSI_r;  //mosi
+//    
+//    //slave receiving in
     wire SSEL_tri_r;   //ssel
     wire SCK_tri_r;  //sck
     wire DATA_tri_r; //miso
-    wire [31:0] rx_data_tri;
-   
-     
-    // *** Spindle: f_muscle_len => f_rawfr_Ia
-    wire [31:0] f_tricepsfr_Ia, x_0_tri, x_1_tri, f_tricepsfr_II;
-
-    
-    //slave module biceps
-    wire [31:0] f_tricepsdata_from_spi;
-    spi_slave  triceps_receiver (.clk(clk1), 
-                     .en(1'b1), 
-                     .reset(reset_global), 
-                     .SCK(SCK_tri_r), 
-                     .SSEL(SSEL_tri_r), 
-                     .DATA_IN(DATA_tri_r), 
-                     .rdy(rdy_tri), 
-                     //.data32(f_rawfr_Ia),   //input 
-                     .rx_out(f_tricepsdata_from_spi));
-                     
-    reg [31:0] f_triceps_muscle_len, f_safe_tricepsdata_spi;
-    always @(negedge spindle_clk or posedge reset_global) begin
-        if (reset_global) begin
-            f_safe_tricepsdata_spi <= 32'd0;
-        end
-        else begin
-            f_safe_tricepsdata_spi <= f_tricepsdata_from_spi;
-        end
-    end
-    always @(posedge sim_clk or posedge reset_global) begin
-        if (reset_global) begin
-            f_triceps_muscle_len <= 32'd0;
-        end
-        else begin
-            f_triceps_muscle_len <= f_safe_tricepsdata_spi;
-        end
-    end
-
-
-//    //tricep sender 
-    spi_master  triceps_sender (.clk(clk1), 
-                      .clkdiv(clkdiv[23:0]),  
-                      .data32(f_tricepsfr_Ia),  
-                      .en(1'b1), 
-                      .reset(reset_global), 
-                      .SIMCK(sim_clk), 
-                      .DATA_OUT(DATA_tri_s), 
-                      .rx_data(rx_data_tri[31:0]), 
-                      .SCK(SCK_tri_s), 
-                      .SSEL(SSEL_tri_s));
-
-
-    //input SPI pins (1)
-    assign SCK_tri_r = pin_jp1_50;  //SCK
-    assign DATA_tri_r = pin_jp1_51;   //MOSI
-    assign SSEL_tri_r = pin_jp1_52;   //SSEL
-   
-
+//    wire [31:0] rx_data_tri;
+//   
+//     
+//    // *** Spindle: f_muscle_len => f_rawfr_Ia
+//    wire [31:0] f_tricepsfr_Ia, x_0_tri, x_1_tri, f_tricepsfr_II;
+//
+//    
+//    //slave module biceps
+//    wire [31:0] f_tricepsdata_from_spi;
+//    spi_slave  triceps_receiver (.clk(clk1), 
+//                     .en(1'b1), 
+//                     .reset(reset_global), 
+//                     .SCK(SCK_tri_r), 
+//                     .SSEL(SSEL_tri_r), 
+//                     .DATA_IN(DATA_tri_r), 
+//                     .rdy(rdy_tri), 
+//                     //.data32(f_rawfr_Ia),   //input 
+//                     .rx_out(f_tricepsdata_from_spi));
+//                     
+//    reg [31:0] f_triceps_muscle_len, f_safe_tricepsdata_spi;
+//    always @(negedge spindle_clk or posedge reset_global) begin
+//        if (reset_global) begin
+//            f_safe_tricepsdata_spi <= 32'd0;
+//        end
+//        else begin
+//            f_safe_tricepsdata_spi <= f_tricepsdata_from_spi;
+//        end
+//    end
+//    always @(posedge sim_clk or posedge reset_global) begin
+//        if (reset_global) begin
+//            f_triceps_muscle_len <= 32'd0;
+//        end
+//        else begin
+//            f_triceps_muscle_len <= f_safe_tricepsdata_spi;
+//        end
+//    end
+//
+//
+////    //tricep sender 
+//    spi_master  triceps_sender (.clk(clk1), 
+//                      .clkdiv(clkdiv[23:0]),  
+//                      .data32(f_tricepsfr_Ia),  
+//                      .en(1'b1), 
+//                      .reset(reset_global), 
+//                      .SIMCK(sim_clk), 
+//                      .DATA_OUT(DATA_tri_s), 
+//                      .rx_data(rx_data_tri[31:0]), 
+//                      .SCK(SCK_tri_s), 
+//                      .SSEL(SSEL_tri_s));
+//
+//
+//    //input SPI pins (1)
+//    assign SCK_tri_r = pin_jp1_50;  //SCK
+//    assign DATA_tri_r = pin_jp1_51;   //MOSI
+//    assign SSEL_tri_r = pin_jp1_52;   //SSEL
+//   
+//
     //output SPI pins  (1)
     assign pin_jp1_47 = SCK_tri_s;  //SCK
     assign pin_jp1_48 = DATA_tri_s;     //MISO
@@ -366,20 +364,20 @@ module board2_spindle_xem6010(
 
 
 
-    spindle tri_bag1_bag2_chain
-    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-        .gamma_sta(f_gamma_sta),
-        .lce((gain==32'd0) ? f_triceps_muscle_len : f_muscle_len_pipe),
-        .clk(spindle_clk),
-        .reset(reset_sim),
-        .out0(x_0_tri),
-        .out1(x_1_tri),
-        .out2(f_tricepsfr_II),
-        .out3(f_tricepsfr_Ia),
-        .BDAMP_1(BDAMP_1),
-        .BDAMP_2(BDAMP_2),
-        .BDAMP_chain(BDAMP_chain)
-		);
+//    spindle tri_bag1_bag2_chain
+//    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
+//        .gamma_sta(f_gamma_sta),
+//        .lce((gain==32'd0) ? f_triceps_muscle_len : f_muscle_len_pipe),
+//        .clk(spindle_clk),
+//        .reset(reset_sim),
+//        .out0(x_0_tri),
+//        .out1(x_1_tri),
+//        .out2(f_tricepsfr_II),
+//        .out3(f_tricepsfr_Ia),
+//        .BDAMP_1(BDAMP_1),
+//        .BDAMP_2(BDAMP_2),
+//        .BDAMP_chain(BDAMP_chain)
+//		);
 
 
 
@@ -415,12 +413,12 @@ module board2_spindle_xem6010(
     
     okWireOut    wo20 (.ep_datain(f_biceps_muscle_len[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
     okWireOut    wo21 (.ep_datain(f_biceps_muscle_len[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-    okWireOut    wo22 (.ep_datain(f_triceps_muscle_len[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-    okWireOut    wo23 (.ep_datain(f_triceps_muscle_len[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+//    okWireOut    wo22 (.ep_datain(f_triceps_muscle_len[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+//    okWireOut    wo23 (.ep_datain(f_triceps_muscle_len[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
     okWireOut    wo25 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-    okWireOut    wo26 (.ep_datain(f_tricepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-    okWireOut    wo27 (.ep_datain(f_tricepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+//    okWireOut    wo26 (.ep_datain(f_tricepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+//    okWireOut    wo27 (.ep_datain(f_tricepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
     okWireOut    wo28 (.ep_datain(f_muscle_len_pipe[15:0]), .ok1(ok1), .ok2(ok2x[  8*17 +: 17 ]), .ep_addr(8'h28) );
     okWireOut    wo29 (.ep_datain(f_muscle_len_pipe[31:16]), .ok1(ok1), .ok2(ok2x[  9*17 +: 17 ]), .ep_addr(8'h29) );
 //    okWireOut    wo30 (.ep_datain(raw_MN_spikes[15:0]), .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );

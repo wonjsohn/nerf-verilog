@@ -300,7 +300,7 @@ module board1_muscle_neuron_limb_xem6010(
 //                      .SCK(SCK_tri_s), 
 //                      .SSEL(SSEL_tri_s));                                        
 //
-//  //output SPI pins triceps
+  //output SPI pins triceps
     assign pin_jp1_50 = SCK_tri_s;  //SCK
     assign pin_jp1_51 = DATA_tri_s;   //MOSI
     assign pin_jp1_52 = SSEL_tri_s;   //SSEL    
