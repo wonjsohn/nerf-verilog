@@ -31,8 +31,6 @@ module emg_xem6010(
     output wire pin0,
     output wire pin1,
     output wire pin2
-  //  output wire  spike,
-   // output wire clk_out
    );
    
     parameter NN = 8;
