@@ -2,7 +2,7 @@ from struct import pack, unpack
 from PyQt4.QtCore import Qt
 
 VIEWER_REFRESH_RATE = 10 # in ms, This the T for calculating digital freq
-NUM_CHANNEL = 6 # Number of channels
+NUM_CHANNEL = 1 # Number of channels
 PIPE_IN_ADDR = 0x80
 BUTTON_RESET = 0
 BUTTON_RESET_SIM = 1
@@ -17,9 +17,10 @@ DATA_EVT_CLKRATE = 7
 SEND_TYPE = ['', '', 'float32', 'int32', 'float32', '', 'int32', 'int32', '', '', \
              '', '', '', '', 'float32', 'float32']
 
+#DISPLAY_SCALING =[20, 0.1,  0.5, 0.5, 0.1,  0.2]
 DISPLAY_SCALING =[20, 0.1,  0.5, 0.5, 0.1,  0.2]
 DATA_OUT_ADDR = [0x20, 0x22, 0x24, 0x26, 0x28, 0x30]
-CH_TYPE = ['float32', 'float32', 'float32', 'float32', 'float32', 'int32']
+CH_TYPE = ['float32', 'float32', 'float32', 'float32', 'float32', 'float32']
 CHANNEL_COLOR = [Qt.blue, Qt.red, Qt.green, Qt.black, Qt.yellow, Qt.gray]
 ZERO_DATA = [0.0 for ix in xrange(NUM_CHANNEL)]
 BIT_FILE = "../double_muscle_1chip_xem6010.bit"
