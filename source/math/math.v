@@ -96,6 +96,33 @@ module fp_mult(out, mult_error, in1, in2);
 
 endmodule
 
+module fp_bitmult(y,a,b);
+output [47:0] y;
+input [23:0] a, b;
+
+wire [17:0] short_a, short_b;
+wire [35:0] short_y;
+
+assign short_a = a[23:6];
+assign short_b = b[23:6];
+
+assign short_y = short_a * short_b;
+
+assign y = {short_y, 12'h000};
+
+endmodule
+
+/*
+module fp_bitmult(y,a,b);
+output [47:0] y;
+input [23:0] a, b;
+
+assign y = a * b;
+
+endmodule
+*/
+
+/*
 module fp_bitmult(y, a, b);
 	output [47:0] y;
 	input [23:0] a, b;
@@ -125,6 +152,7 @@ module fp_bitmult(y, a, b);
 					((b[22] == 1) ? a <<< 22 : 48'h000000000000) + 
 					((b[23] == 1) ? a <<< 23 : 48'h000000000000);
 endmodule
+*/
 
 module exp_math( 
 	output [31:0] exp_x,
