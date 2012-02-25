@@ -41,13 +41,13 @@ module board1_muscle_neuron_limb_xem6010(
     output wire pin_jp1_45,
     output wire pin_jp1_46,
     
-    input wire pin_jp1_47,  //
-    input wire pin_jp1_48, 
-    input wire pin_jp1_49,
+    input wire pin_jp2_41,  //
+    input wire pin_jp2_42, 
+    input wire pin_jp2_43,
   
-    output wire pin_jp1_50,
-    output wire pin_jp1_51,
-    output wire pin_jp1_52
+    output wire pin_jp2_44,
+    output wire pin_jp2_45,
+    output wire pin_jp2_46
    );
    
     parameter NN = 8;
@@ -56,6 +56,7 @@ module board1_muscle_neuron_limb_xem6010(
     wire         ti_clk;
     wire [30:0]  ok1;
     wire [16:0]  ok2;   
+
     wire [15:0]  ep00wire, ep01wire, ep02wire, ep50trig, ep20wire, ep21wire, ep22wire, ep23wire;
     wire [15:0]  ep24wire, ep25wire, ep26wire, ep27wire, ep28wire, ep29wire, ep30wire, ep31wire;
     wire reset_global, reset_sim;
@@ -255,9 +256,9 @@ module board1_muscle_neuron_limb_xem6010(
         
 
   //output SPI pins triceps
-    assign pin_jp1_50 = SCK_tri_s;  //SCK
-    assign pin_jp1_51 = DATA_tri_s;   //MOSI
-    assign pin_jp1_52 = SSEL_tri_s;   //SSEL    
+    assign pin_jp2_44 = SCK_tri_s;  //SCK
+    assign pin_jp2_45 = DATA_tri_s;   //MOSI
+    assign pin_jp2_46 = SSEL_tri_s;   //SSEL    
 //
     //slave module biceps
     
@@ -304,9 +305,9 @@ module board1_muscle_neuron_limb_xem6010(
     wire SCK_tri_r;  //sck
     wire DATA_tri_r; //miso   
      //input SPI pins (2)
-    assign SCK_tri_r = pin_jp1_47;  //SCK
-    assign DATA_tri_r = pin_jp1_48;   //MOSI
-    assign SSEL_tri_r = pin_jp1_49;   //SSEL
+    assign SCK_tri_r = pin_jp2_41;  //SCK
+    assign DATA_tri_r = pin_jp2_42;   //MOSI
+    assign SSEL_tri_r = pin_jp2_43;   //SSEL
 
 	wire [31:0] f_tricepsfr_Ia_spi;
     spi_slave  triceps_receiver (.clk(clk1), 
