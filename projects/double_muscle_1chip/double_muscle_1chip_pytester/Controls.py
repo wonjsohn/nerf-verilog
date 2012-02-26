@@ -163,7 +163,7 @@ class User(QDialog, Ui_Dialog):
 #           pipeInData = chirping_spike_train(coeff_a = 20)
         elif choice == "Spike Train 10Hz":
 #            pipeInData = spike_train(firing_rate = 100)      
-            pipeInData = gen_sin(F = 4.0, AMP = 0.3,  BIAS = 1.0)
+            pipeInData = gen_sin(F = 4.0, AMP = 0.3,  BIAS = 1.57)
 #            pipeInData = chirping_spike_train(coeff_a = 40)
             
         elif choice == "Spike Train 20Hz":

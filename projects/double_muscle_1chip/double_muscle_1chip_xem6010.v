@@ -178,14 +178,14 @@ module double_muscle_1chip_xem6010(
                 
     
     // *** Generating waveform to stimulate the spindle
-     wire    [31:0] f_muscle_len;
+     wire    [31:0] f_elbow_pos;
 	waveform_from_pipe gen(	
         .ti_clk(ti_clk),
         .reset(reset_global),
         .repop(reset_sim),
         .feed_data_valid(is_pipe_being_written),
         .feed_data(hex_from_py),
-        .current_element(f_muscle_len),
+        .current_element(f_elbow_pos),
         .test_clk(sim_clk),
         .done_feeding(is_lce_valid)
     );    
@@ -196,7 +196,7 @@ module double_muscle_1chip_xem6010(
     spindle bic_bag1_bag2_chain
     (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
         .gamma_sta(f_gamma_sta),
-        .lce(f_muscle_len),
+        .lce(f_bic_len),
         .clk(spindle_clk),
         .reset(reset_sim),
         .out0(x_0_bic),
@@ -212,7 +212,7 @@ module double_muscle_1chip_xem6010(
     spindle tri_bag1_bag2_chain
     (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
         .gamma_sta(f_gamma_sta),
-        .lce(f_muscle_len),
+        .lce(f_tri_len),
         .clk(spindle_clk),
         .reset(reset_sim),
         .out0(x_0_tri),
@@ -274,29 +274,35 @@ module double_muscle_1chip_xem6010(
             
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_bic_active_state, f_bic_MN_spk_cnt; 
-    wire    [31:0]  f_bicep_force;
+    wire    [31:0]  f_bic_force, f_bic_len, IEEE_1p57, IEEE_2p77;
+    assign IEEE_1p57 = 32'h3FC8F5C3; 
+    assign IEEE_2p77 = 32'h403147AE;
+    // Get biceps muscle length from joint angle
+    sub get_bic_len(.x(IEEE_2p77), .y(f_elbow_pos), .out(f_bic_len));  
     shadmehr_muscle biceps
     (   .spike_cnt(i_bic_MN_spk_cnt*gain),
-        .pos(f_muscle_len),  // muscle length
+        .pos(f_bic_len),  // muscle length
         //.vel(current_vel),
         .vel(32'd0),
         .clk(sim_clk),
         .reset(reset_sim),
-        .total_force_out(f_bicep_force),
+        .total_force_out(f_bic_force),
         .current_A(f_bic_active_state),
         .current_fp_spikes(f_bic_MN_spk_cnt)
     );       
     
     wire    [31:0]  f_tri_active_state, f_tri_MN_spk_cnt; 
-    wire    [31:0]  f_tricep_force;
+    wire    [31:0]  f_tri_force, f_tri_len, IEEE_0p47;
+    assign IEEE_0p47 = 32'h3EF0A3D7;
+    sub get_tri_len(.x(f_elbow_pos), .y(IEEE_0p47), .out(f_tri_len));
     shadmehr_muscle triceps
     (   .spike_cnt(i_tri_MN_spk_cnt*gain),
-        .pos(f_muscle_len),  // muscle length
+        .pos(f_tri_len),  // muscle length
         //.vel(current_vel),
         .vel(32'd0),
         .clk(sim_clk),
         .reset(reset_sim),
-        .total_force_out(f_tricep_force),
+        .total_force_out(f_tri_force),
         .current_A(f_tri_active_state),
         .current_fp_spikes(f_tri_MN_spk_cnt)
     );     
@@ -346,7 +352,7 @@ module double_muscle_1chip_xem6010(
         .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
         .ok1(ok1), .ok2(ok2));
 
-    wire [17*13-1:0]  ok2x;
+    wire [17*14-1:0]  ok2x;
     okWireOR # (.N(11)) wireOR (ok2, ok2x);
     okWireIn     wi00 (.ok1(ok1),                           .ep_addr(8'h00), .ep_dataout(ep00wire));
     okWireIn     wi01 (.ok1(ok1),                           .ep_addr(8'h01), .ep_dataout(ep01wire));
@@ -354,22 +360,23 @@ module double_muscle_1chip_xem6010(
     //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep001wire));
 
 
-    okWireOut    wo20 (.ep_datain(f_muscle_len[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
-    okWireOut    wo21 (.ep_datain(f_muscle_len[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
+    okWireOut    wo20 (.ep_datain(f_bic_len[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
+    okWireOut    wo21 (.ep_datain(f_bic_len[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
     okWireOut    wo22 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
     okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-    okWireOut    wo24 (.ep_datain(f_bicep_force[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-    okWireOut    wo25 (.ep_datain(f_bicep_force[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-    okWireOut    wo26 (.ep_datain(f_tricep_force[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-    okWireOut    wo27 (.ep_datain(f_tricep_force[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo24 (.ep_datain(f_bic_force[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(f_bic_force[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo26 (.ep_datain(f_tri_force[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(f_tri_force[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
     okWireOut    wo28 (.ep_datain(f_tricepsfr_Ia[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
     okWireOut    wo29 (.ep_datain(f_tricepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
-     //ep_ready = 1 (always ready to receive)
-    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
-    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
+    okWireOut    wo30 (.ep_datain(f_tri_len[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
+    okWireOut    wo31 (.ep_datain(f_tri_len[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
+    //ep_ready = 1 (always ready to receive)
+    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
-    okWireOut    wo30 (.ep_datain(f_tricepsfr_Ia[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h30) );
-    okWireOut    wo31 (.ep_datain(f_tricepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h31) );
+    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
+
     okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
 endmodule
 
