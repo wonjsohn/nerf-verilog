@@ -29,25 +29,19 @@ module board1_muscle_neuron_limb_xem6010(
 	input  wire        clk2,
 	
 	output wire [7:0]  led,
-    output wire pin0,
-    output wire pin1,
-    output wire pin2,
+   output wire pin0,
+   output wire pin1,
+   output wire pin2,
+   
+	input wire SCK_r,	    //pin_jp1_41    SCK_r
+   input wire SSEL_r,	    //pin_jp1_42    SSEL_r
+   input wire DATA_bic_r,  //pin_jp1_43    Data_bic_r
+	input wire DATA_tri_r,  //pin_jp1_44    Data_tri_r
+   output wire  SCK_s,	    //pin_jp2_41    SCK_s
+   output wire  SSEL_s, 	     //pin_jp2_42	  SSEL_s
+   output wire  DATA_bic_s, 	//pin_jp2_43   DATA_bic_s
+   output wire  DATA_tri_s	   //pin_jp2_43 DATA_tri_s
     
-    input wire pin_jp1_41,  //
-    input wire pin_jp1_42, 
-    input wire pin_jp1_43,
-  
-    output wire pin_jp1_44,
-    output wire pin_jp1_45,
-    output wire pin_jp1_46,
-    
-    input wire pin_jp2_41,  //
-    input wire pin_jp2_42, 
-    input wire pin_jp2_43,
-  
-    output wire pin_jp2_44,
-    output wire pin_jp2_45,
-    output wire pin_jp2_46
    );
    
     parameter NN = 8;
@@ -211,14 +205,12 @@ module board1_muscle_neuron_limb_xem6010(
 
     wire [23:0] clkdiv;
     assign clkdiv = 24'hD;  //13
-    reg   [31:0] data32;
-
     wire [31:0] rx_data_bic;
      
     //master sending out     
-    wire DATA_bic_s;  //mosi
-    wire SSEL_bic_s;   //ssel
-    wire SCK_bic_s;  //sck     
+//    wire DATA_bic_s;  //mosi
+//    wire SSEL_bic_s;   //ssel
+//    wire SCK_bic_s;  //sck     
     //Master module Biceps
     spi_master  biceps_sender (.clk(clk1), 
                       .clkdiv(clkdiv[23:0]), 
@@ -228,15 +220,16 @@ module board1_muscle_neuron_limb_xem6010(
                       .SIMCK(sim_clk), 
                       .DATA_OUT(DATA_bic_s), 
                       .rx_data(rx_data_bic[31:0]), 
-                      .SCK(SCK_bic_s), 
-                      .SSEL(SSEL_bic_s));
+                      .SCK(SCK_s), 
+                      .SSEL(SSEL_s));
                       
     //Master module Triceps
     wire [31:0] rx_data_tri;
         
-    wire DATA_tri_s;  //mosi
-    wire SSEL_tri_s;   //ssel
-    wire SCK_tri_s;  //sck  
+//    wire DATA_tri_s;  //mosi
+//    wire SSEL_tri_s;   //ssel
+//    wire SCK_tri_s;  //sck  
+
     spi_master  triceps_sender (.clk(clk1), 
                       .clkdiv(clkdiv[23:0]), 
                       .data32(f_muscle_len), 
@@ -244,39 +237,40 @@ module board1_muscle_neuron_limb_xem6010(
                       .reset(reset_global), 
                       .SIMCK(sim_clk), 
                       .DATA_OUT(DATA_tri_s), 
-                      .rx_data(rx_data_tri[31:0]), 
-                      .SCK(SCK_tri_s), 
-                      .SSEL(SSEL_tri_s));                    
+                      .rx_data(rx_data_tri[31:0])
+                      //.SCK(SCK_s), 
+                      //.SSEL(SSEL_s)
+							 );                    
 
 
-  //output SPI pins bicpes
-    assign pin_jp1_44 = SCK_bic_s;  //SCK
-    assign pin_jp1_45 = DATA_bic_s;   //MOSI
-    assign pin_jp1_46 = SSEL_bic_s;   //SSEL
-        
-
-  //output SPI pins triceps
-    assign pin_jp2_44 = SCK_tri_s;  //SCK
-    assign pin_jp2_45 = DATA_tri_s;   //MOSI
-    assign pin_jp2_46 = SSEL_tri_s;   //SSEL    
+//  //output SPI pins bicpes
+//    assign pin_jp1_44 = SCK_bic_s;  //SCK
+//    assign pin_jp1_45 = DATA_bic_s;   //MOSI
+//    assign pin_jp1_46 = SSEL_bic_s;   //SSEL
+//        
+//
+//  //output SPI pins triceps
+//    assign pin_jp2_44 = SCK_tri_s;  //SCK
+//    assign pin_jp2_45 = DATA_tri_s;   //MOSI
+//    assign pin_jp2_46 = SSEL_tri_s;   //SSEL    
 //
     //slave module biceps
     
     wire rdy_bic;
-    wire SSEL_bic_r;   //ssel
-    wire SCK_bic_r;  //sck
-    wire DATA_bic_r; //miso   
-     //input SPI pins 
-    assign SCK_bic_r = pin_jp1_41;  //SCK
-    assign DATA_bic_r = pin_jp1_42;   //MOSI
-    assign SSEL_bic_r = pin_jp1_43;   //SSEL
+//    wire SSEL_bic_r;   //ssel
+//    wire SCK_bic_r;  //sck
+//    wire DATA_bic_r; //miso   
+//     //input SPI pins 
+//    assign SCK_bic_r = pin_jp1_41;  //SCK
+//    assign DATA_bic_r = pin_jp1_42;   //MOSI
+//    assign SSEL_bic_r = pin_jp1_43;   //SSEL
 
 	wire [31:0] f_bicepsfr_Ia_spi;
     spi_slave  biceps_receiver (.clk(clk1), 
                      .en(1'b1), 
                      .reset(reset_global), 
-                     .SCK(SCK_bic_r), 
-                     .SSEL(SSEL_bic_r), 
+                     .SCK(SCK_r), 
+                     .SSEL(SSEL_r), 
                      .DATA_IN(DATA_bic_r), 
                      .rdy(rdy_bic), 
                      .rx_out(f_bicepsfr_Ia_spi));
@@ -301,20 +295,20 @@ module board1_muscle_neuron_limb_xem6010(
     end    
                      
     wire rdy_tri;
-    wire SSEL_tri_r;   //ssel
-    wire SCK_tri_r;  //sck
-    wire DATA_tri_r; //miso   
-     //input SPI pins (2)
-    assign SCK_tri_r = pin_jp2_41;  //SCK
-    assign DATA_tri_r = pin_jp2_42;   //MOSI
-    assign SSEL_tri_r = pin_jp2_43;   //SSEL
+//    wire SSEL_tri_r;   //ssel
+//    wire SCK_tri_r;  //sck
+//    wire DATA_tri_r; //miso   
+//     //input SPI pins (2)
+//    assign SCK_tri_r = pin_jp2_41;  //SCK
+//    assign DATA_tri_r = pin_jp2_42;   //MOSI
+//    assign SSEL_tri_r = pin_jp2_43;   //SSEL
 
 	wire [31:0] f_tricepsfr_Ia_spi;
     spi_slave  triceps_receiver (.clk(clk1), 
                      .en(1'b1), 
                      .reset(reset_global), 
-                     .SCK(SCK_tri_r), 
-                     .SSEL(SSEL_tri_r), 
+                     .SCK(SCK_r), 
+                     .SSEL(SSEL_r), 
                      .DATA_IN(DATA_tri_r), 
                      .rdy(rdy_tri), 
                      .rx_out(f_tricepsfr_Ia_spi));                     
