@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
+`default_nettype none
+/////////////////////////////////////////////////////////
 // Creator: C. Minos Niu
 // 
 // Module Name:    
@@ -210,15 +211,17 @@ module board2_spindle_xem6010(
     
     //slave module biceps
     wire [31:0] f_bicepsdata_from_spi;
-    spi_slave  biceps_receiver (.clk(clk1), 
+    spi_slave  board2_receiver (.clk(clk1), 
                      .en(1'b1), 
                      .reset(reset_global), 
                      .SCK(SCK_r), 
                      .SSEL(SSEL_r), 
-                     .DATA_IN(DATA_bic_r), 
+                     .DATA_IN0(DATA_bic_r),
+							.DATA_IN1(DATA_tri_r),							
                      .rdy(rdy_bic), 
                      //.data32(f_rawfr_Ia),   //input 
-                     .rx_out(f_bicepsdata_from_spi));
+                     .rx_out0(f_bicepsdata_from_spi),
+							.rx_out1(f_tricepsdata_from_spi));
                      
     reg [31:0] f_biceps_muscle_len, f_safe_bicepsdata_spi;
     always @(negedge spindle_clk or posedge reset_global) begin
@@ -239,13 +242,15 @@ module board2_spindle_xem6010(
     end
 
 //    //bicep sender 
-    spi_master  biceps_sender (.clk(clk1), 
+    spi_master  board2_sender (.clk(clk1), 
                       .clkdiv(clkdiv[23:0]),  
-                      .data32(f_bicepsfr_Ia),  
+                      .data32_0(f_bicepsfr_Ia),
+							 .data32_1(f_tricepsfr_Ia),							 
                       .en(1'b1), 
                       .reset(reset_global), 
                       .SIMCK(sim_clk), 
-                      .DATA_OUT(DATA_bic_s), 
+                      .DATA_OUT0(DATA_bic_s), 
+							 .DATA_OUT1(DATA_tri_s), 
                       .rx_data(rx_data_bic[31:0]), 
                       .SCK(SCK_s), 
                       .SSEL(SSEL_s));
@@ -286,15 +291,15 @@ module board2_spindle_xem6010(
     
     //slave module biceps
     wire [31:0] f_tricepsdata_from_spi;
-    spi_slave  triceps_receiver (.clk(clk1), 
-                     .en(1'b1), 
-                     .reset(reset_global), 
-                     .SCK(SCK_r), 
-                     .SSEL(SSEL_r), 
-                     .DATA_IN(DATA_tri_r), 
-                     .rdy(rdy_tri), 
-                     //.data32(f_rawfr_Ia),   //input 
-                     .rx_out(f_tricepsdata_from_spi));
+//    spi_slave  triceps_receiver (.clk(clk1), 
+//                     .en(1'b1), 
+//                     .reset(reset_global), 
+//                     .SCK(SCK_r), 
+//                     .SSEL(SSEL_r), 
+//                     .DATA_IN(DATA_tri_r), 
+//                     .rdy(rdy_tri), 
+//                     //.data32(f_rawfr_Ia),   //input 
+//                     .rx_out(f_tricepsdata_from_spi));
                      
     reg [31:0] f_triceps_muscle_len, f_safe_tricepsdata_spi;
     always @(negedge spindle_clk or posedge reset_global) begin
@@ -315,18 +320,18 @@ module board2_spindle_xem6010(
     end
 
 
-//    //tricep sender 
-    spi_master  triceps_sender (.clk(clk1), 
-                      .clkdiv(clkdiv[23:0]),  
-                      .data32(f_tricepsfr_Ia),  
-                      .en(1'b1), 
-                      .reset(reset_global), 
-                      .SIMCK(sim_clk), 
-                      .DATA_OUT(DATA_tri_s), 
-                      .rx_data(rx_data_tri[31:0]) 
-                      //SCK(SCK_s), 
-                      //.SSEL(SSEL_s)
-							 );
+////    //tricep sender 
+//    spi_master  triceps_sender (.clk(clk1), 
+//                      .clkdiv(clkdiv[23:0]),  
+//                      .data32(f_tricepsfr_Ia),  
+//                      .en(1'b1), 
+//                      .reset(reset_global), 
+//                      .SIMCK(sim_clk), 
+//                      .DATA_OUT(DATA_tri_s), 
+//                      .rx_data(rx_data_tri[31:0]) 
+//                      //SCK(SCK_s), 
+//                      //.SSEL(SSEL_s)
+//							 );
 
 
 //    //input SPI pins (1)

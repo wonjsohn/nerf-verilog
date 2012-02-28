@@ -212,13 +212,15 @@ module board1_muscle_neuron_limb_xem6010(
 //    wire SSEL_bic_s;   //ssel
 //    wire SCK_bic_s;  //sck     
     //Master module Biceps
-    spi_master  biceps_sender (.clk(clk1), 
+    spi_master  board1_sender (.clk(clk1), 
                       .clkdiv(clkdiv[23:0]), 
-                      .data32(f_muscle_len), 
+                      .data32_0(f_muscle_len),
+							 .data32_1(f_muscle_len),
                       .en(1'b1), 
                       .reset(reset_global), 
                       .SIMCK(sim_clk), 
-                      .DATA_OUT(DATA_bic_s), 
+                      .DATA_OUT0(DATA_bic_s),
+							 .DATA_OUT1(DATA_tri_s), 
                       .rx_data(rx_data_bic[31:0]), 
                       .SCK(SCK_s), 
                       .SSEL(SSEL_s));
@@ -229,18 +231,18 @@ module board1_muscle_neuron_limb_xem6010(
 //    wire DATA_tri_s;  //mosi
 //    wire SSEL_tri_s;   //ssel
 //    wire SCK_tri_s;  //sck  
-
-    spi_master  triceps_sender (.clk(clk1), 
-                      .clkdiv(clkdiv[23:0]), 
-                      .data32(f_muscle_len), 
-                      .en(1'b1), 
-                      .reset(reset_global), 
-                      .SIMCK(sim_clk), 
-                      .DATA_OUT(DATA_tri_s), 
-                      .rx_data(rx_data_tri[31:0])
-                      //.SCK(SCK_s), 
-                      //.SSEL(SSEL_s)
-							 );                    
+//
+//    spi_master  triceps_sender (.clk(clk1), 
+//                      .clkdiv(clkdiv[23:0]), 
+//                      .data32(f_muscle_len), 
+//                      .en(1'b1), 
+//                      .reset(reset_global), 
+//                      .SIMCK(sim_clk), 
+//                      .DATA_OUT(DATA_tri_s), 
+//                      .rx_data(rx_data_tri[31:0])
+//                      //.SCK(SCK_s), 
+//                      //.SSEL(SSEL_s)
+//							 );                    
 
 
 //  //output SPI pins bicpes
@@ -271,9 +273,11 @@ module board1_muscle_neuron_limb_xem6010(
                      .reset(reset_global), 
                      .SCK(SCK_r), 
                      .SSEL(SSEL_r), 
-                     .DATA_IN(DATA_bic_r), 
+                     .DATA_IN0(DATA_bic_r), 
+							.DATA_IN1(DATA_tri_r),
                      .rdy(rdy_bic), 
-                     .rx_out(f_bicepsfr_Ia_spi));
+							.rx_out0(f_bicepsfr_Ia_spi),
+                     .rx_out1(f_tricepsfr_Ia_spi));
                     
     reg [31:0] f_bicepsfr_Ia, f_bicepsfr_Ia_safe_spi;
     always @(negedge spindle_clk or posedge reset_global) begin
@@ -304,14 +308,14 @@ module board1_muscle_neuron_limb_xem6010(
 //    assign SSEL_tri_r = pin_jp2_43;   //SSEL
 
 	wire [31:0] f_tricepsfr_Ia_spi;
-    spi_slave  triceps_receiver (.clk(clk1), 
-                     .en(1'b1), 
-                     .reset(reset_global), 
-                     .SCK(SCK_r), 
-                     .SSEL(SSEL_r), 
-                     .DATA_IN(DATA_tri_r), 
-                     .rdy(rdy_tri), 
-                     .rx_out(f_tricepsfr_Ia_spi));                     
+//    spi_slave  triceps_receiver (.clk(clk1), 
+//                     .en(1'b1), 
+//                     .reset(reset_global), 
+//                     .SCK(SCK_r), 
+//                     .SSEL(SSEL_r), 
+//                     .DATA_IN(DATA_tri_r), 
+//                     .rdy(rdy_tri), 
+//                     .rx_out(f_tricepsfr_Ia_spi));                     
 
     reg [31:0] f_tricepsfr_Ia, f_tricepsfr_Ia_safe_spi;
     always @(negedge spindle_clk or posedge reset_global) begin
