@@ -146,13 +146,11 @@ module stretch_reflex_xem6010(
 
     gen_clk #(.NN(NN)) useful_clocks
     (   .rawclk(clk1), 
-        .half_cnt(delay_cnt_max),
-        .reset(reset_sim),
+        .half_cnt(delay_cnt_max), 
         .clk_out1(neuron_clk), 
         .clk_out2(sim_clk), 
         .clk_out3(spindle_clk),
-        .int_neuron_cnt_out(neuronCounter)
-        );
+        .int_neuron_cnt_out(neuronCounter) );
                 
     
     // *** Generating waveform to stimulate the spindle
@@ -185,7 +183,6 @@ module stretch_reflex_xem6010(
         .BDAMP_chain(BDAMP_chain)
 		);
 
-
     // *** Izhikevich: f_fr_Ia => spikes
         // *** Convert float_fr to int_I1
 	
@@ -196,9 +193,19 @@ module stretch_reflex_xem6010(
     
     wire Ia_spike, s_Ia;
     wire signed [17:0] v_Ia;   // cell potentials
-    Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
-    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
-
+   // Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
+   // (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
+    neuron Ia_neuron(
+                .clk(clk1),
+                .reset(reset_sim),
+                .half_cnt(delay_cnt_max),
+                .I_in(i_synI_Ia),
+                
+                .spike_out(Ia_spike),
+                .delayed_spike()
+                
+    );
+    
     wire [31:0] f_fr_II;
     wire [31:0] i_synI_II;
     mult scale_pps_II( .x(f_rawfr_II), .y(f_pps_coef_II), .out(f_fr_II));
@@ -225,13 +232,29 @@ module stretch_reflex_xem6010(
 //			.clk(sim_clk),
 //			.reset(reset_sim)
 //	);
+
+/*
 	wire signed [17:0] Ia_w1, Ia_w2;  //learned synaptic weights
 
-	synapse   #(.NN(NN)) synIa(I_out, 	Ia_spike, 18'sh01000, 	1'b0, 	18'h0, 			1'b0, 	18'h0, 1'b0, 
+	synapse_v   #(.NN(NN)) synIa(I_out, 	Ia_spike, 18'sh01000, 	1'b0, 	18'h0, 			1'b0, 	18'h0, 1'b0, 
 								neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 0, 0, Ia_w1, Ia_w2, 
 								0, 0);    
     
 	assign i_postsyn_I = {14'h0, I_out};
+*/
+    synapse     synIa(
+                    .clk(clk1),
+                    .reset(reset_sim),
+                    .half_cnt(delay_cnt_max),
+                    .spike1(Ia_spike),
+                    .spike2(1'b0),
+                    .spike3(1'b0),
+                    
+                    .I_out(i_postsyn_I)
+
+    );
+
+
     
     // *** izh-Motoneuron :: i_postsyn_I -> (MN_spike, rawspike)
     
@@ -277,7 +300,7 @@ module stretch_reflex_xem6010(
     
     // *** Count the spikes: rawspikes -> spike -> spike_count_out
 	wire    [31:0] i_MN_spk_cnt;
-    wire    clear_out;
+//    wire    clear_out;
 //    spikecnt count_rawspikes
 //	 (		.spike(MN_spike), 
 //			.slow_clk(sim_clk), 
@@ -290,8 +313,9 @@ module stretch_reflex_xem6010(
     (   .spike(MN_spike), 
         .slow_clk(sim_clk), 
         .reset(reset_sim),
-        .int_cnt_out(i_MN_spk_cnt),
-        .clear_out(clear_out) );
+        .int_cnt_out(i_MN_spk_cnt)
+//        .clear_out(clear_out) 
+        );
             
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_total_force, f_active_state, f_MN_spk_cnt;
@@ -307,33 +331,6 @@ module stretch_reflex_xem6010(
         .current_fp_spikes(f_MN_spk_cnt)
     );       
 
-
-/*
-    wire [15:0] raw_Ia_spikes, raw_MN_spikes;
-    wire [31:0] f_total_force;
-    wire [31:0] i_MN_spk_cnt;
-    wire Ia_spike;
-    wire MN_spike;
-    motorunit extensor(
-                        .f_muscle_length(f_muscle_len),  // muscle length
-                        .f_rawfr_Ia(f_rawfr_Ia),     //
-                        .f_pps_coef_Ia(f_pps_coef_Ia),  //
-                        .half_cnt(delay_cnt_max),
-                        .clk(clk1),
-                        
-                        .ti_clk(ti_clk),
-                        .reset_sim(reset_sim),
-                        .gain(gain),           // gain 
-                        .i_gain_MN(i_gain_MN),
-
-                        .f_total_force(f_total_force),  // output muscle force 
-                        .i_MN_spk_cnt(i_MN_spk_cnt),
-                        .raw_Ia_spikes(raw_Ia_spikes),
-                        .raw_MN_spikes(raw_MN_spikes),
-                        .Ia_spike(Ia_spike),
-                        .MN_spike(MN_spike)
-    );
-*/
     // *** EMG
     wire [17:0] si_emg;
     emg #(.NN(NN)) muscle_emg
