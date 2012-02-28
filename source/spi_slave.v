@@ -1,4 +1,6 @@
 `timescale 1ns / 1ps
+`default_nettype none
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: USC
 // Engineer: JFS
@@ -20,17 +22,19 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module spi_slave(
-    input reset,
-    input en,
-    input DATA_IN,
-    input SCK,
-    input SSEL,
-	 input clk,
+    input wire reset,
+    input wire en,
+    input wire DATA_IN0,
+	 input wire DATA_IN1,
+    input wire SCK,
+    input wire SSEL,
+	 input wire clk,
     // input [31:0] data32,   //added feb03
 	 
     //output MISO,
-    output [31:0] rx_out,
-    output rdy
+    output wire [31:0] rx_out0,
+	 output wire [31:0] rx_out1,
+    output wire rdy
     );
 
 	//define wires and regs
@@ -41,14 +45,15 @@ module spi_slave(
 	wire SSEL_active, SSEL_startmessage;
 	//wire SSEL_endmessage;
 	
-	reg [1:0] MOSIr;
-	wire MOSI_data;
+	reg [1:0] MOSIr_0, MOSIr_1;
+	wire MOSI_data_0, MOSI_data_1;
 	
 	//counts 32 bits - need 5-bit counter
 	reg [4:0] bitcnt = 5'b00000;
 	
 	reg [31:0] data_sent = 32'hF0F0F0;
-	reg [31:0] data_received_internal =0, data_received =0;
+	reg [31:0] data_received_internal_0 =0, data_received_0 =0;
+	reg [31:0] data_received_internal_1 =0, data_received_1 =0;
 	reg rdy_internal =0;
 	
 	
@@ -58,7 +63,9 @@ module spi_slave(
 	assign SSEL_startmessage = (SSELr[2:0] == 3'b100);
 	//assign SSEL_endmessage = (SSELr[2:0] == 3'b011);
 	assign SSEL_active = ~SSELr[1];	//SSEL active low
-	assign MOSI_data = MOSIr[1];
+	
+	assign MOSI_data_0 = MOSIr_0[1];
+	assign MOSI_data_1 = MOSIr_1[1];
 	
 	
 	always @ (negedge clk)
@@ -66,7 +73,8 @@ module spi_slave(
 			//keep track of SPI signals
 			SCKr <= {SCKr[1:0], SCK};
 			SSELr <= {SSELr[1:0], SSEL};
-			MOSIr <= {MOSIr[0], DATA_IN};
+			MOSIr_0 <= {MOSIr_0[0], DATA_IN0};
+			MOSIr_1 <= {MOSIr_1[0], DATA_IN1};
 		end
 	
 	//******************************************************//
@@ -84,12 +92,15 @@ module spi_slave(
 				begin
 					bitcnt <= bitcnt + 5'b00001;
 					//shift-left reg (MSB --> LSB)
-					data_received_internal <= {data_received_internal[30:0], MOSI_data};
+					data_received_internal_0 <= {data_received_internal_0[30:0], MOSI_data_0};
+					data_received_internal_1 <= {data_received_internal_1[30:0], MOSI_data_1};
 				end	
 				
 			rdy_internal <= (bitcnt ==5'b11111) &&SSEL_active &&SCK_risingedge;
-            if(rdy_internal)
-                data_received <= data_received_internal;
+            if(rdy_internal) begin
+                data_received_0 <= data_received_internal_0;
+					 data_received_1 <= data_received_internal_1;
+			   end
 		end
 		
 	assign rdy = rdy_internal;
@@ -120,8 +131,9 @@ module spi_slave(
 //					end
 //			end
 	
-	assign MISO = data_sent[31];  // send MSB first
-	assign rx_out = data_received;
+	//assign MISO = data_sent[31];  // send MSB first
+	assign rx_out0 = data_received_0;
+	assign rx_out1 = data_received_1;
 
 
 

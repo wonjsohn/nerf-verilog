@@ -1,4 +1,6 @@
 `timescale 1ns / 1ps
+`default_nettype none
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: USC
 // Engineer: JFS
@@ -22,18 +24,20 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module spi_master(
-    input reset,
-    input en,
-	input clk,
-    input SIMCK,
-	//input MISO,
-	input [31:0] data32,
-	input [23:0] clkdiv,
-	 
-    output DATA_OUT,
-    output SSEL,
-    output SCK,
-	output [31:0] rx_data
+    input  wire reset,
+    input  wire en,
+	 input  wire clk,
+    input  wire SIMCK,
+	
+	 input  wire [23:0] clkdiv,
+	 output  wire DATA_OUT0,
+    output  wire DATA_OUT1,
+	 input  wire [31:0] data32_0,
+	 input  wire [31:0] data32_1,
+   
+	 output  wire SSEL,
+    output  wire SCK,
+	 output  wire [31:0] rx_data
     );
 	 
 //     assign MISO = 0;
@@ -56,7 +60,7 @@ module spi_master(
 	 
 	 //counts 32 bits - 5-bit counter
 	 reg [5:0] bitcnt = 6'b000000;
-	 reg [31:0] data_sent;
+	 reg [31:0] data_sent_0, data_sent_1;
 	 reg [31:0] data_received_internal =0, data_received = 0;
 	 
 	 //some pre/post counter for SPI timing
@@ -76,21 +80,24 @@ module spi_master(
 				begin
 					bitcnt <= 6'b000000;
 					SSEL_gen <= 1'b1;
-					data_sent <= 0;
+					data_sent_0 <= 0;
+					data_sent_1 <= 0;
 				end
 			
 			else if(SIMCK_risingedge && (bitcnt < 6'b100000 )) 	//detect SIMCK_risingedge
 				begin
 					SSEL_gen <= 0;
 					//pre-load data32
-					data_sent <= data32;
+					data_sent_0 <= data32_0;
+					data_sent_1 <= data32_1;
 					SSEL_active <= 1;	//set flag
 				end	
 		
 			else if(SCK_internal_fallingedge)		//sendout data in SCK clock
 				begin
 					bitcnt <= bitcnt + 6'b000001;
-					data_sent <= {data_sent[30:0], 1'b0};
+					data_sent_0 <= {data_sent_0[30:0], 1'b0};
+					data_sent_1 <= {data_sent_1[30:0], 1'b0};
 				end
 		
 			else if(endmsg)	//start post-counter
@@ -127,7 +134,8 @@ module spi_master(
 		end
 
 	 assign SSEL = SSEL_gen;
-	 assign DATA_OUT = data_sent[31];	//send MSB --> LSB
+	 assign DATA_OUT0 = data_sent_0[31];	//send MSB --> LSB
+	 assign DATA_OUT1 = data_sent_1[31];
 		 
 		 
 	 //******************************************************//	
