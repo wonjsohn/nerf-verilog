@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
+`default_nettype none
+/////////////////////////////////////////////////////////
 // Creator: C. Minos Niu
 // 
 // Module Name:    
@@ -31,21 +32,17 @@ module board2_spindle_xem6010(
     output wire pin0,
     output wire pin1,
     output wire pin2,
-    output wire pin_jp1_41,  //
-    output wire pin_jp1_42, 
-    output wire pin_jp1_43,
-  
-    input wire pin_jp1_44,
-    input wire pin_jp1_45,
-    input wire pin_jp1_46,
-    
-    output wire pin_jp1_47,  //
-    output wire pin_jp1_48, 
-    output wire pin_jp1_49,
-  
-    input wire pin_jp1_50,
-    input wire pin_jp1_51,
-    input wire pin_jp1_52
+
+
+	 output wire SCK_s,	    //pin_jp1_41    SCK_s
+    output wire SSEL_s,	    //pin_jp1_42    SSEL_s
+    output wire DATA_bic_s, //pin_jp1_43    Data_bic_s
+	 output wire DATA_tri_s, //pin_jp2_44    Data_tri_s
+    input wire  SCK_r,	   	//pin_jp2_41   SCK_r
+    input wire  SSEL_r, 	  //pin_jp2_42	   SSEL_r
+    input wire  DATA_bic_r, 	//pin_jp2_43   DATA_bic_r
+    input wire  DATA_tri_r 	//pin_jp2_44   DATA_tri_r
+
    );
    
     parameter NN = 8;
@@ -196,15 +193,15 @@ module board2_spindle_xem6010(
      
     //master sending out Biceps    
    // wire MISO_s;  //mosi
-    wire SSEL_bic_s;   //ssel
-    wire SCK_bic_s;  //sck
-    wire DATA_bic_s; //miso
-    
-    //slave receiving in
-    //wire MOSI_r;  //mosi
-    wire SSEL_bic_r;   //ssel
-    wire SCK_bic_r;  //sck
-    wire DATA_bic_r; //miso
+//    wire SSEL_bic_s;   //ssel
+//    wire SCK_bic_s;  //sck
+//    wire DATA_bic_s; //miso
+//    
+//    //slave receiving in
+//    //wire MOSI_r;  //mosi
+//    wire SSEL_bic_r;   //ssel
+//    wire SCK_bic_r;  //sck
+//    wire DATA_bic_r; //miso
     wire [31:0] rx_data_bic;
    
      
@@ -214,15 +211,17 @@ module board2_spindle_xem6010(
     
     //slave module biceps
     wire [31:0] f_bicepsdata_from_spi;
-    spi_slave  biceps_receiver (.clk(clk1), 
+    spi_slave  board2_receiver (.clk(clk1), 
                      .en(1'b1), 
                      .reset(reset_global), 
-                     .SCK(SCK_bic_r), 
-                     .SSEL(SSEL_bic_r), 
-                     .DATA_IN(DATA_bic_r), 
+                     .SCK(SCK_r), 
+                     .SSEL(SSEL_r), 
+                     .DATA_IN0(DATA_bic_r),
+							.DATA_IN1(DATA_tri_r),							
                      .rdy(rdy_bic), 
                      //.data32(f_rawfr_Ia),   //input 
-                     .rx_out(f_bicepsdata_from_spi));
+                     .rx_out0(f_bicepsdata_from_spi),
+							.rx_out1(f_tricepsdata_from_spi));
                      
     reg [31:0] f_biceps_muscle_len, f_safe_bicepsdata_spi;
     always @(negedge spindle_clk or posedge reset_global) begin
@@ -243,28 +242,30 @@ module board2_spindle_xem6010(
     end
 
 //    //bicep sender 
-    spi_master  biceps_sender (.clk(clk1), 
+    spi_master  board2_sender (.clk(clk1), 
                       .clkdiv(clkdiv[23:0]),  
-                      .data32(f_bicepsfr_Ia),  
+                      .data32_0(f_bicepsfr_Ia),
+							 .data32_1(f_tricepsfr_Ia),							 
                       .en(1'b1), 
                       .reset(reset_global), 
                       .SIMCK(sim_clk), 
-                      .DATA_OUT(DATA_bic_s), 
+                      .DATA_OUT0(DATA_bic_s), 
+							 .DATA_OUT1(DATA_tri_s), 
                       .rx_data(rx_data_bic[31:0]), 
-                      .SCK(SCK_bic_s), 
-                      .SSEL(SSEL_bic_s));
+                      .SCK(SCK_s), 
+                      .SSEL(SSEL_s));
 
 
-    //input SPI pins (1)
-    assign SCK_bic_r = pin_jp1_44;  //SCK
-    assign DATA_bic_r = pin_jp1_45;   //MOSI
-    assign SSEL_bic_r = pin_jp1_46;   //SSEL
+//    //input SPI pins (1)
+//    assign SCK_bic_r = pin_jp1_44;  //SCK
+//    assign DATA_bic_r = pin_jp1_45;   //MOSI
+//    assign SSEL_bic_r = pin_jp1_46;   //SSEL
    
 
-    //output SPI pins  (1)
-    assign pin_jp1_41 = SCK_bic_s;  //SCK
-    assign pin_jp1_42 = DATA_bic_s;     //MISO
-    assign pin_jp1_43 = SSEL_bic_s;   //SSEL  
+//    //output SPI pins  (1)
+//    assign pin_jp1_41 = SCK_bic_s;  //SCK
+//    assign pin_jp1_42 = DATA_bic_s;     //MISO
+//    assign pin_jp1_43 = SSEL_bic_s;   //SSEL  
 
 
     // **************  triceps  ********************
@@ -273,16 +274,14 @@ module board2_spindle_xem6010(
     //wire [31:0] slave_out;
      
     //master sending out Biceps    
-   // wire MISO_s;  //mosi
-    wire SSEL_tri_s;   //ssel
-    wire SCK_tri_s;  //sck
-    wire DATA_tri_s; //miso
+//    wire SSEL_tri_s;   //ssel
+//    wire SCK_tri_s;  //sck
+//    wire DATA_tri_s; //miso
     
     //slave receiving in
-    //wire MOSI_r;  //mosi
-    wire SSEL_tri_r;   //ssel
-    wire SCK_tri_r;  //sck
-    wire DATA_tri_r; //miso
+//    wire SSEL_tri_r;   //ssel
+//    wire SCK_tri_r;  //sck
+//    wire DATA_tri_r; //miso
     wire [31:0] rx_data_tri;
    
      
@@ -292,15 +291,15 @@ module board2_spindle_xem6010(
     
     //slave module biceps
     wire [31:0] f_tricepsdata_from_spi;
-    spi_slave  triceps_receiver (.clk(clk1), 
-                     .en(1'b1), 
-                     .reset(reset_global), 
-                     .SCK(SCK_tri_r), 
-                     .SSEL(SSEL_tri_r), 
-                     .DATA_IN(DATA_tri_r), 
-                     .rdy(rdy_tri), 
-                     //.data32(f_rawfr_Ia),   //input 
-                     .rx_out(f_tricepsdata_from_spi));
+//    spi_slave  triceps_receiver (.clk(clk1), 
+//                     .en(1'b1), 
+//                     .reset(reset_global), 
+//                     .SCK(SCK_r), 
+//                     .SSEL(SSEL_r), 
+//                     .DATA_IN(DATA_tri_r), 
+//                     .rdy(rdy_tri), 
+//                     //.data32(f_rawfr_Ia),   //input 
+//                     .rx_out(f_tricepsdata_from_spi));
                      
     reg [31:0] f_triceps_muscle_len, f_safe_tricepsdata_spi;
     always @(negedge spindle_clk or posedge reset_global) begin
@@ -321,29 +320,30 @@ module board2_spindle_xem6010(
     end
 
 
-//    //tricep sender 
-    spi_master  triceps_sender (.clk(clk1), 
-                      .clkdiv(clkdiv[23:0]),  
-                      .data32(f_tricepsfr_Ia),  
-                      .en(1'b1), 
-                      .reset(reset_global), 
-                      .SIMCK(sim_clk), 
-                      .DATA_OUT(DATA_tri_s), 
-                      .rx_data(rx_data_tri[31:0]), 
-                      .SCK(SCK_tri_s), 
-                      .SSEL(SSEL_tri_s));
+////    //tricep sender 
+//    spi_master  triceps_sender (.clk(clk1), 
+//                      .clkdiv(clkdiv[23:0]),  
+//                      .data32(f_tricepsfr_Ia),  
+//                      .en(1'b1), 
+//                      .reset(reset_global), 
+//                      .SIMCK(sim_clk), 
+//                      .DATA_OUT(DATA_tri_s), 
+//                      .rx_data(rx_data_tri[31:0]) 
+//                      //SCK(SCK_s), 
+//                      //.SSEL(SSEL_s)
+//							 );
 
 
-    //input SPI pins (1)
-    assign SCK_tri_r = pin_jp1_50;  //SCK
-    assign DATA_tri_r = pin_jp1_51;   //MOSI
-    assign SSEL_tri_r = pin_jp1_52;   //SSEL
-   
-
-    //output SPI pins  (1)
-    assign pin_jp1_47 = SCK_tri_s;  //SCK
-    assign pin_jp1_48 = DATA_tri_s;     //MISO
-    assign pin_jp1_49 = SSEL_tri_s;   //SSEL  
+//    //input SPI pins (1)
+//    assign SCK_tri_r = pin_jp2_44;  //SCK
+//    assign DATA_tri_r = pin_jp2_45;   //MOSI
+//    assign SSEL_tri_r = pin_jp2_46;   //SSEL
+//   
+//
+//    //output SPI pins  (1)
+//    assign pin_jp2_41 = SCK_tri_s;  //SCK
+//    assign pin_jp2_42 = DATA_tri_s;     //MISO
+//    assign pin_jp2_43 = SSEL_tri_s;   //SSEL  
 
 
 //**  end of spi communication
