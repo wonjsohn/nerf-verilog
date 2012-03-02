@@ -33,7 +33,7 @@ module double_muscle_board2_xem6010(
     output wire pin1,
     output wire pin2,
 	 
-	 output wire SCK_s,	    //pin_jp1_41    SCK_s
+	 output wire SCK_s,	    //JP1 pin 38 GCLK pin
     output wire SSEL_s,	    //pin_jp1_42    SSEL_s
     output wire DATA_0_s, //pin_jp1_43    Data_bic_s
 	 output wire DATA_1_s, //pin_jp1_44    Data_tri_s
@@ -351,11 +351,11 @@ module double_muscle_board2_xem6010(
                      .reset(reset_global), 
                      .SCK(SCK_r), 
                      .SSEL(SSEL_r), 
-                     .DATA_IN0(DATA_trilen_r),
-							.DATA_IN1(DATA_biclen_r),							
+                     .DATA_IN(DATA_trilen_r),
+					 //.DATA_IN1(DATA_biclen_r),							
                      .rdy(rdy), 
-                     .rx_out0(f_tricep_length_spi),
-							.rx_out1(f_bicep_length_spi));
+                     .rx_out(f_tricep_length_spi));
+					 //.rx_out1(f_bicep_length_spi));
                      
     reg [31:0] f_bic_len, f_bicep_length_safe_spi;
     always @(negedge spindle_clk or posedge reset_global) begin
@@ -397,13 +397,13 @@ module double_muscle_board2_xem6010(
 //    //bicep sender 
     spi_master  board2_sender (.clk(clk1), 
                       .clkdiv(clkdiv[23:0]),  
-                      .data32_0(f_tricepsfr_Ia),
-							 .data32_1(f_tri_force),							 
+                      .data32(f_tricepsfr_Ia),
+					  //.data32_1(f_tri_force),							 
                       .en(1'b1), 
                       .reset(reset_global), 
                       .SIMCK(sim_clk), 
-                      .DATA_OUT0(DATA_tricepsfr_Ia_s), 
-							 .DATA_OUT1(DATA_triforce_s), 
+                      .DATA_OUT(DATA_tricepsfr_Ia_s), 
+					  //.DATA_OUT1(DATA_triforce_s), 
                       .rx_data(rx_data_bic[31:0]), 
                       .SCK(SCK_s), 
                       .SSEL(SSEL_s));
@@ -431,7 +431,7 @@ module double_muscle_board2_xem6010(
     assign reset_sim = ep00wire[1];
     
     // *** Endpoint connections:
-    assign pin0 = clk1;   
+	assign pin0 = clk1;
     assign pin1 = sim_clk;
     assign pin2 = spindle_clk;
     
