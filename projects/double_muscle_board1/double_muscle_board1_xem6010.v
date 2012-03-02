@@ -44,6 +44,7 @@ module double_muscle_board1_xem6010(
    );
    
     parameter NN = 8;
+	 // Mapping to UCF files
 	 wire DATA_tricepsfr_Ia_r,DATA_triforce_r, DATA_trilen_s, DATA_biclen_s;
 	 assign DATA_tricepsfr_Ia_r = DATA_0_r;
 	 assign DATA_triforce_r = DATA_1_r;
@@ -341,13 +342,13 @@ module double_muscle_board1_xem6010(
     //Master send out
     spi_master  board1_sender (.clk(clk1), 
                       .clkdiv(clkdiv[23:0]), 
-                      .data32_0(f_tri_len),
-							 .data32_1(f_bic_len),
+                      .data32(f_tri_len),
+					  //.data32_1(f_bic_len),
                       .en(1'b1), 
                       .reset(reset_global), 
                       .SIMCK(sim_clk), 
-                      .DATA_OUT0(DATA_trilen_s),
-							 .DATA_OUT1(DATA_biclen_s), 
+                      .DATA_OUT(DATA_trilen_s),
+					  //.DATA_OUT1(DATA_biclen_s), 
                       .rx_data(rx_data_tri[31:0]), 
                       .SCK(SCK_s), 
                       .SSEL(SSEL_s));
@@ -363,11 +364,11 @@ module double_muscle_board1_xem6010(
                      .reset(reset_global), 
                      .SCK(SCK_r), 
                      .SSEL(SSEL_r), 
-                     .DATA_IN0(DATA_tricepsfr_Ia_r), 
-							.DATA_IN1(DATA_triforce_r),
+                     .DATA_IN(DATA_tricepsfr_Ia_r), 
+					 //.DATA_IN1(DATA_triforce_r),
                      .rdy(rdy), 
-							.rx_out0(f_tricepsfr_Ia_spi),
-                     .rx_out1(f_tricep_force_spi));
+					 .rx_out(f_tricepsfr_Ia_spi));
+                     //.rx_out1(f_tricep_force_spi));
                     
     reg [31:0] f_tricepsfr_Ia, f_tricepsfr_Ia_safe_spi;
     always @(negedge spindle_clk or posedge reset_global) begin
@@ -417,7 +418,7 @@ module double_muscle_board1_xem6010(
     assign led[2] = ~clk1;
     assign led[3] = ~0;
     assign led[4] = ~MN_bic_spike;
-	 assign led[5] = ~MN_bic_spike;
+	assign led[5] = ~MN_bic_spike;
 //    assign led[5] = ~MN_tri_spike;
     assign led[6] = ~spindle_clk; // slow clock
     //assign led[5] = ~spike;
@@ -461,8 +462,8 @@ module double_muscle_board1_xem6010(
     okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(f_bic_force[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
     okWireOut    wo25 (.ep_datain(f_bic_force[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-    okWireOut    wo26 (.ep_datain(f_tri_force[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-    okWireOut    wo27 (.ep_datain(f_tri_force[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+//    okWireOut    wo26 (.ep_datain(f_tri_force[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+//    okWireOut    wo27 (.ep_datain(f_tri_force[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
     okWireOut    wo28 (.ep_datain(f_tricepsfr_Ia[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
     okWireOut    wo29 (.ep_datain(f_tricepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
     okWireOut    wo30 (.ep_datain(f_tri_len[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
