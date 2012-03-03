@@ -36,20 +36,20 @@ module double_muscle_board2_xem6010(
 	 output wire SCK_s,	    //JP1 pin 38 GCLK pin
     output wire SSEL_s,	    //pin_jp1_42    SSEL_s
     output wire DATA_0_s, //pin_jp1_43    Data_bic_s
-	 output wire DATA_1_s, //pin_jp1_44    Data_tri_s
+	// output wire DATA_1_s, //pin_jp1_44    Data_tri_s
     input wire  SCK_r,	   	//pin_jp2_41   SCK_r
     input wire  SSEL_r, 	  //pin_jp2_42	   SSEL_r
-    input wire  DATA_0_r, 	//pin_jp2_43   DATA_bic_r
-    input wire  DATA_1_r 	//pin_jp2_44   DATA_tri_r
+    input wire  DATA_0_r 	//pin_jp2_43   DATA_bic_r
+   // input wire  DATA_1_r 	//pin_jp2_44   DATA_tri_r
    );
    
     parameter NN = 8;
 	 // Mapping to UCF files
 	 wire DATA_trilen_r, DATA_biclen_r, DATA_tricepsfr_Ia_s, DATA_triforce_s;
 	 assign DATA_trilen_r = DATA_0_r;
-	 assign DATA_biclen_r = DATA_1_r;
+	// assign DATA_biclen_r = DATA_1_r;
 	 assign DATA_0_s = DATA_tricepsfr_Ia_s;
-	 assign DATA_1_s = DATA_triforce_s;
+	// assign DATA_1_s = DATA_triforce_s;
 		
     // *** Dump all the declarations here:
     wire         ti_clk;
