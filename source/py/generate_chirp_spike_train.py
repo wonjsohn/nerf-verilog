@@ -9,7 +9,7 @@ from pylab import figure, plot, show, xlabel, ylabel, subplot, grid, title, \
 ## Chirp spike train using peudo-sine wave
 ## Using poly1d function (3rd order polynomial  that imitates sine wave) and sample the points where the sign of a slope change to make spike
 
-def chirping_spike_train(filename=None, coeff_a = 20,  fig_size=(9.5, 8.5)):
+def chirping_spike_train(filename=None,a coeff_a = 20,  fig_size=(9.5, 8.5)):
     t1 = 2.0   # get 2 seconds from polynomial function
     coeff_2a = coeff_a*2  # to prevent negative firing rate
     p = poly1d([coeff_2a*1.0, coeff_2a*(-3.0), coeff_2a*2.0, coeff_a*1.0])
