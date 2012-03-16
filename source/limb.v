@@ -24,7 +24,7 @@ assign Iinv=32'h41d7_0a3d; //I=0.0372, 1/I=26.88
 // *** Trq -> Acc
 wire [31:0] trq_1_2, trq_F0;
 wire [31:0] acc_F0, vel_F0, pos_F0;
-//wire [31:0] vel_raw, acc_raw;
+
 
 sub sub1(.x(trq1), .y(trq2), .out(trq_1_2));
 add add1(.x(ext_trq), .y(trq_1_2), .out(trq_F0));
@@ -40,13 +40,10 @@ sub sub3(.x(pos_raw), .y(32'd0), .out(min_detection));
 sub sub4(.x(POSMAX), .y(pos_raw), .out(max_detection));
 assign pos_F0 = (min_detection[31]) ? 32'd0 : ((max_detection[31]) ? POSMAX : pos_raw);
 
-//assign vel_F0 = (max_detection[31]) ? 32'd0 : vel_raw;
-//assign acc_F0 = (max_detection[31]) ? 32'd0 : acc_raw;
-
+//
 //assign vel1=vel_out;
 //assign vel2={~vel1[31], vel1[30:0]};
 
-reg max_detection_sign;
 
 // *** outputs
 always @(posedge clk or posedge reset) begin
@@ -55,22 +52,12 @@ always @(posedge clk or posedge reset) begin
         vel_out <= vel_default;
         pos_out <= pos_default;
         trq_out <= 32'd0;
-		  //max_detection_sign <= 1'd0;
     end
     else begin
-		if (pos_raw >= POSMAX) begin
-			acc_out <= 32'd0;
-			vel_out <= 32'd0;
-			pos_out <= pos_F0;
-			trq_out <= trq_F0;
-		end
-		else begin
-			acc_out <= acc_F0;
-			vel_out <= vel_F0;
-			pos_out <= pos_F0;
-			trq_out <= trq_F0;
-		end
-		//max_detection_sign <= max_detection[31];
+        acc_out <= acc_F0;
+        vel_out <= vel_F0;
+        pos_out <= pos_F0;
+        trq_out <= trq_F0;
     end
 end
 

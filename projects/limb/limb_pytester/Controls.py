@@ -90,8 +90,8 @@ class User(QDialog, Ui_Dialog):
         for i in xrange(NUM_CHANNEL):
             #newVal[i] = self.nerfModel.ReadFPGA(DATA_OUT_ADDR[i])
             newData[i] = max(-65535, min(65535, self.nerfModel.ReadFPGA(DATA_OUT_ADDR[i], CH_TYPE[i])))
-            if i == 4:
-                print newData[i]
+#            if i == 0:
+#                print newData[i]
             
         self.dispView.newData(newData)
         if (self.isLogData):
