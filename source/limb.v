@@ -48,7 +48,7 @@ assign pos_F0 = (min_detection[31]) ? 32'd0 : ((max_detection[31]) ? POSMAX : po
 // *** outputs
 always @(posedge clk or posedge reset) begin
     if (reset) begin
-        acc_out <= 32'd0;
+         acc_out <= 32'd0;
         vel_out <= vel_default;
         pos_out <= pos_default;
         trq_out <= 32'd0;
