@@ -1,7 +1,7 @@
 module add(x, y, out);
 
-input [31:0] x, y;
-output [31:0] out;
+input wire [31:0] x, y;
+output wire [31:0] out;
 wire [4:0] flags;
 
 fpadd add1( .a(x), .b(y), .result(out), .control(5'h00), .flags(flags) );
@@ -10,8 +10,8 @@ endmodule
 
 module sub(x, y, out);
 
-input [31:0] x, y;
-output [31:0] out;
+input wire [31:0] x, y;
+output wire [31:0] out;
 wire [4:0] flags;
 
 fpadd sub1( .a(x), .b(y), .result(out), .control(5'h10), .flags(flags) );
@@ -20,8 +20,8 @@ endmodule
 
 module mult(x, y, out);
 
-input [31:0] x, y;
-output [31:0] out;
+input wire [31:0] x, y;
+output wire [31:0] out;
 wire [4:0] flags;
 
 fp_mult mult1(.in1(x), .in2(y), .out(out), .mult_error(flags) );
@@ -30,8 +30,8 @@ endmodule
 
 module div(x, y, out);
 
-input [31:0] x, y;
-output [31:0] out;
+input wire [31:0] x, y;
+output wire [31:0] out;
 wire [1:0] flags;
 
 fp_div div1(.x(x), .y(y), .quotient(out), .div_error(flags) );
@@ -40,8 +40,8 @@ endmodule
 
 module exp(x, out);
 
-input [31:0] x;
-output [31:0] out;
+input wire [31:0] x;
+output wire [31:0] out;
 wire [4:0] flags;
 
 exp_math exp1( .x(x), .exp_x(out));
@@ -49,9 +49,9 @@ exp_math exp1( .x(x), .exp_x(out));
 endmodule
 
 module fp_mult(out, mult_error, in1, in2);
-	input	 [31:0]	in1, in2;
-	output [31:0] 	out;
-	output [1:0] 	mult_error;
+	input	 wire [31:0]	in1, in2;
+	output wire [31:0] 	out;
+	output wire [1:0] 	mult_error;
 
 	wire 			sign_out;
 	wire [23:0] mant1;
@@ -97,8 +97,8 @@ module fp_mult(out, mult_error, in1, in2);
 endmodule
 
 module fp_bitmult(y,a,b);
-output [47:0] y;
-input [23:0] a, b;
+output wire [47:0] y;
+input wire [23:0] a, b;
 
 wire [17:0] short_a, short_b;
 wire [35:0] short_y;
@@ -155,8 +155,8 @@ endmodule
 */
 
 module exp_math( 
-	output [31:0] exp_x,
-	input [31:0] x
+	output wire [31:0] exp_x,
+	input wire [31:0] x
 	);
 	
 	wire [31:0] k_n_r, y, exp_y, round_k_by_ln2, round_k_fp, round_k_int; 	//k not rounded
@@ -195,8 +195,8 @@ module exp_math(
 endmodule
 
 module floor(
-	input [31:0] in, //float
-	output [31:0] out //long int
+	input wire [31:0] in, //float
+	output wire [31:0] out //long int
 	);
 	
 	wire [31:0] floor_a;
@@ -218,8 +218,8 @@ module floor(
 endmodule
 
 module int_to_float(
-	output [31:0] out,
-	input [31:0] in
+	output wire [31:0] out,
+	input wire [31:0] in
 );
 wire [31:0] fp_shift;
 wire [24:0] fp_mantissa;
@@ -261,8 +261,8 @@ endmodule
 
 
 module taylor_exp(
-	output [31:0] exp_x,
-	input [31:0] x
+	output wire [31:0] exp_x,
+	input wire [31:0] x
 );
 	wire [4:0] x_flags;
 	
@@ -272,10 +272,10 @@ endmodule
 
 
 module fp_div(
-	output [31:0] quotient,
-	output [1:0] div_error,
-	input [31:0] x,
-	input [31:0] y
+	output wire [31:0] quotient,
+	output wire [1:0] div_error,
+	input wire [31:0] x,
+	input wire [31:0] y
 	);
 	
 	wire [31:0] y2, one_y;
@@ -288,8 +288,8 @@ module fp_div(
 endmodule
 
 module rsqrt(
-    output [31:0] sqrt,
-    input [31:0] x
+    output wire [31:0] sqrt,
+    input wire [31:0] x
     );
 
 	wire [31:0] onehalf, threehalfs, magicnumber, y, x2;
@@ -314,8 +314,8 @@ module rsqrt(
 endmodule
 
 
-module pow_25( 	output [31:0] out,
-		input [31:0] x
+module pow_25( 	output wire [31:0] out,
+		input wire [31:0] x
 		);
 
 	wire [31:0] inv_sqrt;
