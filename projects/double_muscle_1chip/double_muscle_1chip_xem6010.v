@@ -227,7 +227,8 @@ module double_muscle_1chip_xem6010(
     
     wire MN_bic_spike;
 
-    neuron_pool #(.NN(NN)) pool_bic
+// *** Biceps: Slow, medium and fast MN pools
+    neuron_pool #(.NN(NN)) pool_bic_slow
     (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
         .f_pps_coef_Ia(f_pps_coef_Ia), //
         .half_cnt(delay_cnt_max),
@@ -238,6 +239,30 @@ module double_muscle_1chip_xem6010(
         .neuronCounter(neuronCounter),
         .MN_spike(MN_bic_spike)
     );       
+	 
+    neuron_pool #(.NN(NN)) bic_pool_med
+    (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
+        .f_pps_coef_Ia(f_pps_coef_Ia), //
+        .half_cnt(delay_cnt_max),
+        .rawclk(clk1),
+        .ti_clk(ti_clk),
+        .reset_sim(reset_sim),
+        .i_gain_MN(i_gain_MN),
+        .neuronCounter(neuronCounter),
+        .MN_spike(MN_bic_spike)
+    );  
+
+    neuron_pool #(.NN(NN)) bic_pool_fast
+    (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
+        .f_pps_coef_Ia(f_pps_coef_Ia), //
+        .half_cnt(delay_cnt_max),
+        .rawclk(clk1),
+        .ti_clk(ti_clk),
+        .reset_sim(reset_sim),
+        .i_gain_MN(i_gain_MN),
+        .neuronCounter(neuronCounter),
+        .MN_spike(MN_bic_spike)
+    );  	 
     
     wire MN_tri_spike;
 
