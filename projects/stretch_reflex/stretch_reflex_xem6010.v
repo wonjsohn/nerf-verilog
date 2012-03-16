@@ -193,8 +193,19 @@ module stretch_reflex_xem6010(
     
     wire Ia_spike, s_Ia;
     wire signed [17:0] v_Ia;   // cell potentials
-    Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
-    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
+//    Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
+//    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
+    neuron Ia_neuron(
+                .neuron_clk(neuron_clk),
+                .reset(reset_sim),
+                .half_cnt(delay_cnt_max),
+                .I_in(i_synI_Ia),
+                
+                .spike_out(Ia_spike),
+                .delayed_spike()
+                
+    );
+
 
     wire [31:0] f_fr_II;
     wire [31:0] i_synI_II;
@@ -224,7 +235,7 @@ module stretch_reflex_xem6010(
 //	);
 	wire signed [17:0] Ia_w1, Ia_w2;  //learned synaptic weights
 
-	synapse   #(.NN(NN)) synIa(I_out, 	Ia_spike, 18'sh01000, 	1'b0, 	18'h0, 			1'b0, 	18'h0, 1'b0, 
+	synapse_v   #(.NN(NN)) synIa(I_out, 	Ia_spike, 18'sh01000, 	1'b0, 	18'h0, 			1'b0, 	18'h0, 1'b0, 
 								neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 0, 0, Ia_w1, Ia_w2, 
 								0, 0);    
     
@@ -260,8 +271,18 @@ module stretch_reflex_xem6010(
 		
     wire MN_spike;
 
-	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_postsyn_I[17:0] * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike);
-    
+	//Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_postsyn_I[17:0] * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike);
+    neuron MN_neuron(
+                .neuron_clk(neuron_clk),
+                .reset(reset_sim),
+                .half_cnt(delay_cnt_max),
+                .I_in(i_postsyn_I[17:0] * i_gain_MN[17:0]),
+                
+                .spike_out(MN_spike),
+                .delayed_spike()
+                
+    );
+  
     reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
 	always @(negedge ti_clk) raw_MN_spikes <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
 	always @(negedge ti_clk) raw_Ia_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
