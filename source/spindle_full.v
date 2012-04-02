@@ -237,9 +237,14 @@ module spindle(
 
 	always @ (posedge clk or posedge reset)
 	begin
-		state <= state+1;
-		if (reset) state <= 0;		
-		else if (state == 2'd2) state <= 0;
+		if (reset) begin 
+            state <= 0;	
+            state <= state+1;
+        end            
+		else begin
+            state <= state+1;
+            if (state == 2'd2) state <= 0;
+        end
 	end
 
 	always @ (posedge clk or posedge reset)
