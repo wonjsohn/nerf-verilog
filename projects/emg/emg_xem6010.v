@@ -63,14 +63,25 @@ module emg_xem6010(
     // *** Reset & Enable signals
     assign reset_global = ep00wire[0];
     assign reset_sim = ep00wire[1];
-    assign button1 = ep00wire[2];  // testing sensitivity list
-    assign button2 = ep00wire[3];
+    wire button1 = ep00wire[2];  // testing sensitivity list
+    wire button2 = ep00wire[3];
     //assign enable_sim = is_waveform_valid;
     wire    [31:0]  IEEE_1, IEEE_0;
 	assign IEEE_1 = 32'h3F800000;
 	assign IEEE_0 = 32'd0;
         
     // *** Triggered input from Python
+
+        
+    reg [31:0] i_gain_MN;
+    always @(posedge ep50trig[6] or posedge reset_global)
+    begin
+        if (reset_global)
+            i_gain_MN <= 32'd1; // gamma_sta reset to 80
+        else
+            i_gain_MN <= {ep02wire, ep01wire};  
+    end    
+       
     always @(posedge ep50trig[7] or posedge reset_global)
     begin
         if (reset_global)
@@ -78,16 +89,6 @@ module emg_xem6010(
         else
             delay_cnt_max <= {2'b00, ep01wire};  //firing rate
     end
-    
-//    always @(posedge ep50trig[4] or posedge reset_global)
-//    begin
-//        if (reset_global)
-//            gamma_dyn <= 32'h42A0_0000; // gamma_dyn reset to 80
-//        else
-//            gamma_dyn <= {ep02wire, ep01wire};  //firing rate
-//    end    
-       
-
     
       // *** Deriving clocks from on-board clk1:
     wire neuron_clk, sim_clk, spindle_clk;
@@ -118,7 +119,7 @@ module emg_xem6010(
     wire MN_spike;
     neuron_pool #(.NN(NN)) pool_bic
     (   .f_rawfr_Ia(f_rawfr_Ia),     //
-        .f_pps_coef_Ia(f_pps_coef_Ia), //
+        .f_pps_coef_Ia(32'h3F66_6666), //
         .half_cnt(delay_cnt_max),
         .rawclk(clk1),
         .ti_clk(ti_clk),
@@ -131,12 +132,20 @@ module emg_xem6010(
     // *** spike counter 
     wire    [31:0] i_MN_spk_cnt;
     wire    clear_out;
-    spike_counter count_rawspikes
-    (   .spike(MN_spike), 
+//    spike_counter count_rawspikes
+//    (   .spike(MN_spike), 
+//        .slow_clk(sim_clk), 
+//        .reset(reset_sim),
+//        .int_cnt_out(i_MN_spk_cnt),
+//        .clear_out(clear_out) );
+  
+   spikecnt count_rawspikes
+   (    .spike(MN_spike), 
+        .int_cnt_out(i_MN_spk_cnt), 
+        .fast_clk(neuron_clk), 
         .slow_clk(sim_clk), 
-        .reset(reset_sim),
-        .int_cnt_out(i_MN_spk_cnt),
-        .clear_out(clear_out) );
+        .reset(reset_sim), 
+        .clear_out(clear_out));        
     
     // *** EMG
     wire [31:0] si_emg; // short integer, 18-bit

@@ -37,7 +37,14 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     );
 
     parameter NN = 8; // 2^(NN+1) = NUM_NEURON
+    wire [3:0] a, b, tau;  
+	wire [17:0] c, d;
     
+	assign a = 3 ;  // bits for shifting, a = 0.125
+	assign b =  2 ;  // bits for shifting, b = 0.25
+	assign c =  18'sh3_599A ; // -0.65  = dec2hex(1+bitcmp(ceil(0.65 * hex2dec('ffff')),18)) = 3599A
+	assign d =  18'sh0_147A ; // 0.08 = dec2hex(floor(0.08 * hex2dec('ffff'))) = 147A
+	assign tau = 4'h2;    
     
     
     //Locally generate neuron_clk
@@ -78,7 +85,7 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     wire Ia_spike, s_Ia;
     wire signed [17:0] v_Ia;   // cell potentials
     Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
-    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
+    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike, neuronWriteCount);
 //
 //    wire [31:0] f_fr_II;
 //    wire [31:0] i_synI_II;
@@ -105,14 +112,10 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     
     // *** izh-Motoneuron :: i_postsyn_I -> (MN_spike, rawspike)
     
-	wire [3:0] a, b, tau;
-	wire [17:0] c, d, v1, u1, s1;
-	assign a = 3 ;  // bits for shifting, a = 0.125
-	assign b =  2 ;  // bits for shifting, b = 0.25
-	assign c =  18'sh3_599A ; // -0.65  = dec2hex(1+bitcmp(ceil(0.65 * hex2dec('ffff')),18)) = 3599A
-	assign d =  18'sh0_147A ; // 0.08 = dec2hex(floor(0.08 * hex2dec('ffff'))) = 147A
-	assign tau = 4'h2;
+
+    wire [17:0] v1, u1, s1;
     
+   
 	wire [1:0] state;
 	assign state = neuronCounter[1:0];
     
@@ -133,7 +136,7 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 		
     //wire MN_spike;
 
-	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_postsyn_I[17:0] * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike);
+	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_postsyn_I[17:0] * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
     
     reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
 	always @(negedge ti_clk) raw_MN_spikes <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};

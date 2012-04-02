@@ -236,7 +236,7 @@ endmodule
 // treat the a input as value>>>a with a=1 to 7
 // treat the b input as value>>>b with b=1 to 3
 
-module Iz_neuron(out,spike_delayed,a,b,c,d,I,clk,reset,idx, enable, read, tau, spike);
+module Iz_neuron(out,spike_delayed,a,b,c,d,I,clk,reset,idx, enable, read, tau, spike, neuronWriteCount);
 	parameter NN = 8;  // (log2(neuronCount) - 1)
 	parameter DELAY = 18;  //1 to 18
 	output [17:0] out; 				//the simulated membrane voltage
@@ -246,6 +246,7 @@ module Iz_neuron(out,spike_delayed,a,b,c,d,I,clk,reset,idx, enable, read, tau, s
 	input clk, reset, enable, read;
 	input [NN:0] idx;		//TDS: neuron index (memory address)
 	input [3:0] tau;		//TDS: decay time constant = 2^tau timesteps
+    input wire neuronWriteCount;
 
 	wire signed	[17:0] spikes, u1;
 	wire signed	[17:0] u1reset, v1new, u1new, du1, v1, u1_mem, v1_mem, spike_list_mem;
@@ -268,7 +269,7 @@ module Iz_neuron(out,spike_delayed,a,b,c,d,I,clk,reset,idx, enable, read, tau, s
 									.wren(enable), .q1(spike_list_mem), .q2(epsp_mem));
 
 	assign out = v1_mem;
-	assign spike = (v1_mem > p) ? 1'b1 : 1'b0;
+	assign spike = ((v1_mem > p)&&~neuronWriteCount) ? 1'b1 : 1'b0;
 	assign spikes = spike_list_mem;
 	assign u1 = u1_mem;
 	assign v1 = out;  //to use single-step integration

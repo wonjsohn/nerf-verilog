@@ -225,10 +225,9 @@ module double_muscle_1chip_xem6010(
 		);
 
     
-    wire MN_bic_spike;
-
 // *** Biceps: Slow, medium and fast MN pools
-    neuron_pool #(.NN(NN)) pool_bic_slow
+    wire MN_bic_spike_slow, MN_bic_spike_med, MN_bic_spike_fast;
+    neuron_pool #(.NN(NN)) bic_pool_slow
     (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
         .f_pps_coef_Ia(f_pps_coef_Ia), //
         .half_cnt(delay_cnt_max),
@@ -237,8 +236,16 @@ module double_muscle_1chip_xem6010(
         .reset_sim(reset_sim),
         .i_gain_MN(i_gain_MN),
         .neuronCounter(neuronCounter),
-        .MN_spike(MN_bic_spike)
-    );       
+        .MN_spike(MN_bic_spike_slow)
+    );     
+    wire    [31:0] i_bic_MN_spk_slow_cnt;
+    wire    dummy_slow;
+    spike_counter count_bicspikes_slow
+    (   .spike(MN_bic_spike_slow), 
+        .slow_clk(sim_clk), 
+        .reset(reset_sim),
+        .int_cnt_out(i_bic_MN_spk_slow_cnt),
+        .clear_out(dummy_slow) );    
 	 
     neuron_pool #(.NN(NN)) bic_pool_med
     (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
@@ -249,8 +256,16 @@ module double_muscle_1chip_xem6010(
         .reset_sim(reset_sim),
         .i_gain_MN(i_gain_MN),
         .neuronCounter(neuronCounter),
-        .MN_spike(MN_bic_spike)
+        .MN_spike(MN_bic_spike_med)
     );  
+    wire    [31:0] i_bic_MN_spk_med_cnt;
+    wire    dummy_med;
+    spike_counter count_bicspikes_med
+    (   .spike(MN_bic_spike_med), 
+        .slow_clk(sim_clk), 
+        .reset(reset_sim),
+        .int_cnt_out(i_bic_MN_spk_med_cnt),
+        .clear_out(dummy_med) )  ;  
 
     neuron_pool #(.NN(NN)) bic_pool_fast
     (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
@@ -261,9 +276,22 @@ module double_muscle_1chip_xem6010(
         .reset_sim(reset_sim),
         .i_gain_MN(i_gain_MN),
         .neuronCounter(neuronCounter),
-        .MN_spike(MN_bic_spike)
-    );  	 
-    
+        .MN_spike(MN_bic_spike_fast)
+    );  
+    wire    [31:0] i_bic_MN_spk_fast_cnt;
+    wire    dummy_fast;
+    spike_counter count_bicspikes_fast
+    (   .spike(MN_bic_spike_fast), 
+        .slow_clk(sim_clk), 
+        .reset(reset_sim),
+        .int_cnt_out(i_bic_MN_spk_fast_cnt),
+        .clear_out(dummy_fast) );  
+
+    wire    [31:0] s1, i_bic_MN_spk_all_cnt;
+	add all_spike_counts0( .x(i_bic_MN_spk_slow_cnt), .y(i_bic_MN_spk_med_cnt), .out(s1) );
+	add all_spike_counts1( .x(s1), .y(i_bic_MN_spk_fast_cnt), .out(i_bic_MN_spk_all_cnt) );
+
+            
     wire MN_tri_spike;
 
     neuron_pool #(.NN(NN)) pool_tri
@@ -279,14 +307,6 @@ module double_muscle_1chip_xem6010(
     );   
      
     // *** spike counter 
-    wire    [31:0] i_bic_MN_spk_cnt;
-    wire    clear_out_bic;
-    spike_counter count_bicspikes
-    (   .spike(MN_bic_spike), 
-        .slow_clk(sim_clk), 
-        .reset(reset_sim),
-        .int_cnt_out(i_bic_MN_spk_cnt),
-        .clear_out(clear_out_bic) );
         
     wire    [31:0] i_tri_MN_spk_cnt;
     wire    clear_out_tri;
@@ -305,7 +325,7 @@ module double_muscle_1chip_xem6010(
     // Get biceps muscle length from joint angle
     sub get_bic_len(.x(IEEE_2p77), .y(f_elbow_pos), .out(f_bic_len));  
     shadmehr_muscle biceps
-    (   .spike_cnt(i_bic_MN_spk_cnt*gain),
+    (   .spike_cnt(i_bic_MN_spk_all_cnt*gain),
         .pos(f_bic_len),  // muscle length
         //.vel(current_vel),
         .vel(32'd0),
@@ -349,7 +369,7 @@ module double_muscle_1chip_xem6010(
     assign led[1] = ~reset_sim;
     assign led[2] = ~clk1;
     assign led[3] = ~0;
-    assign led[4] = ~MN_bic_spike;
+    assign led[4] = ~MN_bic_spike_slow;
     assign led[5] = ~MN_tri_spike;
     assign led[6] = ~spindle_clk; // slow clock
     //assign led[5] = ~spike;
