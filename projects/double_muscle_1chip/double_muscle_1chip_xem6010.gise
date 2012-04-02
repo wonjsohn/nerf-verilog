@@ -352,28 +352,29 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1330225171" xil_pn:in_ck="5330081917979684642" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="-6055387898439753274" xil_pn:start_ts="1330224761">
-      <status xil_pn:value="SuccessfullyRun"/>
+    <transform xil_pn:end_ts="1331931687" xil_pn:in_ck="5330081917979684642" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="-6055387898439753274" xil_pn:start_ts="1331931651">
+      <status xil_pn:value="AbortedRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="OutputChanged"/>
-      <status xil_pn:value="OutputRemoved"/>
+      <outfile xil_pn:name="_xmsgs/xst.xmsgs"/>
+      <outfile xil_pn:name="double_muscle_1chip_xem6010.lso"/>
+      <outfile xil_pn:name="double_muscle_1chip_xem6010.ngr"/>
+      <outfile xil_pn:name="double_muscle_1chip_xem6010.prj"/>
+      <outfile xil_pn:name="double_muscle_1chip_xem6010.syr"/>
+      <outfile xil_pn:name="double_muscle_1chip_xem6010.xst"/>
+      <outfile xil_pn:name="webtalk_pn.xml"/>
+      <outfile xil_pn:name="xst"/>
     </transform>
     <transform xil_pn:end_ts="1330200632" xil_pn:in_ck="-6900862455944257773" xil_pn:name="TRAN_compileBCD2" xil_pn:prop_ck="-8015259470399987319" xil_pn:start_ts="1330200632">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
     <transform xil_pn:end_ts="1330225188" xil_pn:in_ck="-6605103000945794173" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-4711132949671960168" xil_pn:start_ts="1330225171">
-      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="AbortedRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1330225518" xil_pn:in_ck="4922521852991919905" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1330225188">
       <status xil_pn:value="SuccessfullyRun"/>
