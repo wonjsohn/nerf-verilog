@@ -1,4 +1,6 @@
 `timescale 1ns / 1ps
+`default_nettype none
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: USC
 // Engineer: JFS
@@ -20,17 +22,17 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module spi_slave(
-    input reset,
-    input en,
-    input DATA_IN,
-    input SCK,
-    input SSEL,
-	 input clk,
+    input wire reset,
+    input wire en,
+    input wire DATA_IN,
+    input wire SCK,
+    input wire SSEL,
+	 input wire clk,
     // input [31:0] data32,   //added feb03
 	 
     //output MISO,
-    output [31:0] rx_out,
-    output rdy
+    output wire [31:0] rx_out,
+    output wire rdy
     );
 
 	//define wires and regs
@@ -120,7 +122,7 @@ module spi_slave(
 //					end
 //			end
 	
-	assign MISO = data_sent[31];  // send MSB first
+	//assign MISO = data_sent[31];  // send MSB first
 	assign rx_out = data_received;
 
 

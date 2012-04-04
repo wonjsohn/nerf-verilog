@@ -1,3 +1,6 @@
+`timescale 1ns / 1ps
+`default_nettype none
+
 module spindle(
     input wire [31:0] gamma_dyn,
     input wire [31:0] gamma_sta,
@@ -8,9 +11,9 @@ module spindle(
     output wire [31:0] out1,
     output wire [31:0] out2,
     output wire [31:0] out3,
-    input   wire [31:0] BDAMP_1,
-    input   wire [31:0] BDAMP_2,
-    input   wire [31:0] BDAMP_chain
+    input  wire [31:0] BDAMP_1,
+    input  wire [31:0] BDAMP_2,
+    input  wire [31:0] BDAMP_chain
     );
 
 

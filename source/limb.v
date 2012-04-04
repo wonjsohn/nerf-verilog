@@ -36,9 +36,9 @@ integrator int_acc(.x(acc_out), .int_x(vel_out), .out(vel_F0));
 // *** Vel -> Pos
 wire [31:0] pos_raw, min_detection, max_detection;
 integrator int_vel(.x(vel_out), .int_x(pos_out), .out(pos_raw));
-sub sub3(.x(32'd0), .y(pos_raw), .out(min_detection));
-sub sub4(.x(pos_raw), .y(POSMAX), .out(max_detection));
-assign pos_F0 = (min_detection[31]) ? 32'd0 : ((max_detection[31]) ? pos_raw : POSMAX);
+sub sub3(.x(pos_raw), .y(32'd0), .out(min_detection));
+sub sub4(.x(POSMAX), .y(pos_raw), .out(max_detection));
+assign pos_F0 = (min_detection[31]) ? 32'd0 : ((max_detection[31]) ? POSMAX : pos_raw);
 
 //
 //assign vel1=vel_out;
@@ -56,7 +56,7 @@ always @(posedge clk or posedge reset) begin
     else begin
         acc_out <= acc_F0;
         vel_out <= vel_F0;
-        pos_out <= pos_raw;
+        pos_out <= pos_F0;
         trq_out <= trq_F0;
     end
 end

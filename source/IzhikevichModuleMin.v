@@ -161,7 +161,7 @@ endmodule
 // Acts to create an exponentially falling current at the output 
 // from a spike input and a weight which can be +/-
 // up to three spike inputs are defined, each with its own weight
-module synapse(out,s1,w1,s2,w2,s3,w3,body,clk,reset,idx, enable, read, gamma_plus, gamma_minus, stdp_w1, stdp_w2, stdp_w1_reset, stdp_w2_reset);
+module synapse_v(out,s1,w1,s2,w2,s3,w3,body,clk,reset,idx, enable, read, gamma_plus, gamma_minus, stdp_w1, stdp_w2, stdp_w1_reset, stdp_w2_reset);
 	parameter NN = 8;  // (log2(neuronCount) - 1)
 	output [17:0] out; 				//the simulated current
 	input s1,s2,s3;     			// the action potential inputs

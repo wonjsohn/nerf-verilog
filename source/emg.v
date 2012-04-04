@@ -2,9 +2,9 @@
 
 module emg(emg_out, i_spk_cnt, clk, reset);
 	parameter NN = 8;  // (log2(neuronCount) - 1)
-	output signed  [17:0] emg_out;
-	input  [NN:0] i_spk_cnt;
-	input  clk, reset;
+	output wire signed  [17:0] emg_out;
+	input wire [NN:0] i_spk_cnt;
+	input wire  clk, reset;
 	
 	reg signed [35:0] emg_hp, emg_lp;
 	wire [35:0] stimulus, emg_stimulus;
@@ -12,6 +12,7 @@ module emg(emg_out, i_spk_cnt, clk, reset);
 	wire signed [35:0] emg_long;
 
 	assign emg_stimulus = (spikes_long <<< 7);  //{{(29-NN) {1'b0}}, spikes, 7'h00};
+	//assign emg_stimulus = (spikes_long);  //{{(29-NN) {1'b0}}, spikes, 7'h00};
 	assign stimulus = spikes_long;
 
 	assign emg_long = emg_lp - emg_hp;
