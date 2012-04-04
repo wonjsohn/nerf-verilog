@@ -121,10 +121,6 @@
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="207"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="15"/>
     </file>
-    <file xil_pn:name="../../source/clk_related/spikecnt_multsen.v" xil_pn:type="FILE_VERILOG">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="237"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="18"/>
-    </file>
     <file xil_pn:name="../../source/emg.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="217"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="17"/>
@@ -135,6 +131,14 @@
     </file>
     <file xil_pn:name="../../source/io/waveform_from_pipe_bram.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="221"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="0"/>
+    </file>
+    <file xil_pn:name="../../source/clk_related/spikecnt.v" xil_pn:type="FILE_VERILOG">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="222"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="18"/>
+    </file>
+    <file xil_pn:name="../../source/io/waveform_from_pipe_2k.v" xil_pn:type="FILE_VERILOG">
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="223"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="16"/>
     </file>
   </files>

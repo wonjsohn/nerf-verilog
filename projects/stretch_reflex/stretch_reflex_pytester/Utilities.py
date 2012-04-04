@@ -14,9 +14,9 @@ DATA_EVT_CLKRATE = 7
 SEND_TYPE = ['', 'float32', 'float32', 'int32', 'float32', 'float32', 'int32', 'int32', '', '', \
              '', '', '', '', 'float32', 'float32']
 
-DISPLAY_SCALING =[50, 0.11,  0.11, 10, 1,  0.2]
-DATA_OUT_ADDR = [0x20, 0x22, 0x24, 0x32, 0x26, 0x30]
-CH_TYPE = ['float32', 'float32', 'float32', 'float32', 'int18', 'float32']
+DISPLAY_SCALING =[50, 0.11,  0.005, 0.08, 0,  0]
+DATA_OUT_ADDR = [0x20, 0x22, 0x24, 0x26, 0x28,  0x30]
+CH_TYPE = ['float32', 'float32', 'float32', 'int32', 'float32', 'float32']
 CH_NAME = ['lce',  'fr_Ia', 'fr_II', 'force']
 CHANNEL_COLOR = [Qt.blue, Qt.red, Qt.green, Qt.black, Qt.yellow, Qt.gray]
 ZERO_DATA = [0.0 for ix in xrange(NUM_CHANNEL)]
