@@ -193,10 +193,10 @@ module stretch_reflex_xem6010(
     
     wire Ia_spike, s_Ia;
     wire signed [17:0] v_Ia;   // cell potentials
-   // Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
-   // (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
+//    Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
+//    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
     neuron Ia_neuron(
-                .clk(clk1),
+                .neuron_clk(neuron_clk),
                 .reset(reset_sim),
                 .half_cnt(delay_cnt_max),
                 .I_in(i_synI_Ia),
@@ -205,7 +205,8 @@ module stretch_reflex_xem6010(
                 .delayed_spike()
                 
     );
-    
+
+
     wire [31:0] f_fr_II;
     wire [31:0] i_synI_II;
     mult scale_pps_II( .x(f_rawfr_II), .y(f_pps_coef_II), .out(f_fr_II));
@@ -232,8 +233,6 @@ module stretch_reflex_xem6010(
 //			.clk(sim_clk),
 //			.reset(reset_sim)
 //	);
-
-/*
 	wire signed [17:0] Ia_w1, Ia_w2;  //learned synaptic weights
 
 	synapse_v   #(.NN(NN)) synIa(I_out, 	Ia_spike, 18'sh01000, 	1'b0, 	18'h0, 			1'b0, 	18'h0, 1'b0, 
@@ -241,20 +240,6 @@ module stretch_reflex_xem6010(
 								0, 0);    
     
 	assign i_postsyn_I = {14'h0, I_out};
-*/
-    synapse     synIa(
-                    .clk(clk1),
-                    .reset(reset_sim),
-                    .half_cnt(delay_cnt_max),
-                    .spike1(Ia_spike),
-                    .spike2(1'b0),
-                    .spike3(1'b0),
-                    
-                    .I_out(i_postsyn_I)
-
-    );
-
-
     
     // *** izh-Motoneuron :: i_postsyn_I -> (MN_spike, rawspike)
     
@@ -286,8 +271,18 @@ module stretch_reflex_xem6010(
 		
     wire MN_spike;
 
-	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_postsyn_I[17:0] * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike);
-    
+	//Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_postsyn_I[17:0] * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike);
+    neuron MN_neuron(
+                .neuron_clk(neuron_clk),
+                .reset(reset_sim),
+                .half_cnt(delay_cnt_max),
+                .I_in(i_postsyn_I[17:0] * i_gain_MN[17:0]),
+                
+                .spike_out(MN_spike),
+                .delayed_spike()
+                
+    );
+  
     reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
 	always @(negedge ti_clk) raw_MN_spikes <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
 	always @(negedge ti_clk) raw_Ia_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
@@ -300,7 +295,7 @@ module stretch_reflex_xem6010(
     
     // *** Count the spikes: rawspikes -> spike -> spike_count_out
 	wire    [31:0] i_MN_spk_cnt;
-//    wire    clear_out;
+    wire    clear_out;
 //    spikecnt count_rawspikes
 //	 (		.spike(MN_spike), 
 //			.slow_clk(sim_clk), 
@@ -313,9 +308,8 @@ module stretch_reflex_xem6010(
     (   .spike(MN_spike), 
         .slow_clk(sim_clk), 
         .reset(reset_sim),
-        .int_cnt_out(i_MN_spk_cnt)
-//        .clear_out(clear_out) 
-        );
+        .int_cnt_out(i_MN_spk_cnt),
+        .clear_out(clear_out) );
             
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_total_force, f_active_state, f_MN_spk_cnt;

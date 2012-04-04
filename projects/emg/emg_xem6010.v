@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+`default_nettype none
 //////////////////////////////////////////////////////////////////////////////////
 // Creator: C. Minos Niu
 // 
@@ -31,8 +32,6 @@ module emg_xem6010(
     output wire pin0,
     output wire pin1,
     output wire pin2
-  //  output wire  spike,
-   // output wire clk_out
    );
    
     parameter NN = 8;
@@ -104,24 +103,46 @@ module emg_xem6010(
                 
     
     // *** Generating waveform to stimulate the spindle
-    wire    [31:0]  i_current_spikes;
-	waveform_from_pipe gen(	
+    wire    [31:0] f_rawfr_Ia;
+    waveform_from_pipe gen(	
         .ti_clk(ti_clk),
         .reset(reset_global),
         .repop(reset_sim),
         .feed_data_valid(is_pipe_being_written),
         .feed_data(hex_from_py),
-        .current_element(i_current_spikes),
+        .current_element(f_rawfr_Ia),
         .test_clk(sim_clk),
         .done_feeding(is_lce_valid)
-    );        
+    );    
 
- 
+    wire MN_spike;
+    neuron_pool #(.NN(NN)) pool_bic
+    (   .f_rawfr_Ia(f_rawfr_Ia),     //
+        .f_pps_coef_Ia(f_pps_coef_Ia), //
+        .half_cnt(delay_cnt_max),
+        .rawclk(clk1),
+        .ti_clk(ti_clk),
+        .reset_sim(reset_sim),
+        .i_gain_MN(i_gain_MN),
+        .neuronCounter(neuronCounter),
+        .MN_spike(MN_spike)
+    );   
+
+    // *** spike counter 
+    wire    [31:0] i_MN_spk_cnt;
+    wire    clear_out;
+    spike_counter count_rawspikes
+    (   .spike(MN_spike), 
+        .slow_clk(sim_clk), 
+        .reset(reset_sim),
+        .int_cnt_out(i_MN_spk_cnt),
+        .clear_out(clear_out) );
     
-    wire [31:0] si_emg;
+    // *** EMG
+    wire [31:0] si_emg; // short integer, 18-bit
     emg #(.NN(NN)) muscle_emg
     (   .emg_out(si_emg), 
-        .i_spk_cnt(i_current_spikes), 
+        .i_spk_cnt(i_MN_spk_cnt[NN : 0]), 
         .clk(sim_clk), 
         .reset(reset_sim) );
             
@@ -129,35 +150,30 @@ module emg_xem6010(
     // ** LEDs
     assign led[0] = ~reset_global;
     assign led[1] = ~reset_sim;
-    assign led[2] = ~spike;
-    assign led[3] = 1'b1;
-    assign led[4] = ~1;
-    assign spike  = (i_current_spikes != 32'd0);
+    assign led[2] = ~clk1;
+    assign led[3] = ~0;
+    assign led[4] = ~MN_spike;
     assign led[5] = ~sim_clk; //fast clock
     assign led[6] = ~spindle_clk; // slow clock
     //assign led[5] = ~spike;
+    //assign led[5] = ~button1_response;
+    //assign led[6] = ~button2_response;
     //assign led[6] = ~reset_sim;
-    assign led[7] = ~1;
-    //assign led[6] = ~execute; // When execute==1, led lits         
-	      
-          
+    assign led[7] = 1'b1;
+    //assign led[6] = ~execute; // When execute==1, led lits      
+    // *** Buttons, physical on XEM3010, software on XEM3050 & XEM6010
+    assign reset_global = ep00wire[0];
+    assign reset_sim = ep00wire[1];
+    
     // *** Endpoint connections:
-    assign pin0 = 0;
-    assign pin1 = 0;
-    assign pin2 = 0;
+    assign pin0 = clk1;   
+    assign pin1 = sim_clk;
+    assign pin2 = spindle_clk;
+    
     // Instantiate the okHost and connect endpoints.
     // Host interface
     // *** Endpoint connections:
-    assign ep20wire = si_emg[15:0];
-    assign ep21wire = {{14{si_emg[17]}},si_emg[17:16]};
-//    assign ep22wire = cnt[15:0]; 
-//    assign ep23wire = cnt[31:16];
-//    assign ep24wire = {15'b0, spike_while_slow_clk}; 
-//    assign ep25wire = {15'b0, spike_while_slow_clk};
-    assign ep26wire = i_current_spikes[15:0];
-    assign ep27wire = i_current_spikes[31:16];
-//    assign ep28wire = {15'b0, slow_clk_up};
-//    assign ep29wire = {15'b0, slow_clk_up};
+
       
     okHost okHI(
         .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
@@ -170,19 +186,16 @@ module emg_xem6010(
     okWireIn     wi02 (.ok1(ok1),                           .ep_addr(8'h02), .ep_dataout(ep02wire));
     //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep001wire));
 
-    okWireOut    wo20 (.ok1(ok1), .ok2(ok2x[ 0*17 +: 17 ]), .ep_addr(8'h20), .ep_datain(ep20wire));
-    okWireOut    wo21 (.ok1(ok1), .ok2(ok2x[ 1*17 +: 17 ]), .ep_addr(8'h21), .ep_datain(ep21wire));
-    okWireOut    wo22 (.ok1(ok1), .ok2(ok2x[ 2*17 +: 17 ]), .ep_addr(8'h22), .ep_datain(ep22wire));
-    okWireOut    wo23 (.ok1(ok1), .ok2(ok2x[ 3*17 +: 17 ]), .ep_addr(8'h23), .ep_datain(ep23wire));
-    okWireOut    wo24 (.ok1(ok1), .ok2(ok2x[ 4*17 +: 17 ]), .ep_addr(8'h24), .ep_datain(ep24wire));
-    okWireOut    wo25 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'h25), .ep_datain(ep25wire));
-    okWireOut    wo26 (.ok1(ok1), .ok2(ok2x[ 6*17 +: 17 ]), .ep_addr(8'h26), .ep_datain(ep26wire));
-    okWireOut    wo27 (.ok1(ok1), .ok2(ok2x[ 7*17 +: 17 ]), .ep_addr(8'h27), .ep_datain(ep27wire));
-    okWireOut    wo28 (.ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28), .ep_datain(ep28wire));
-    okWireOut    wo29 (.ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29), .ep_datain(ep29wire));
+    okWireOut    wo20 (.ep_datain(si_emg[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
+    okWireOut    wo21 (.ep_datain({{14{si_emg[17]}},si_emg[17:16]}), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
+    okWireOut    wo22 (.ep_datain(f_rawfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+    okWireOut    wo23 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+    okWireOut    wo24 (.ep_datain(i_MN_spk_cnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(i_MN_spk_cnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+
      //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
-    okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
+    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
 
     okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
