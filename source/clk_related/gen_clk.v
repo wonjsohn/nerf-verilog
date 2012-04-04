@@ -28,8 +28,8 @@ module gen_clk(rawclk, half_cnt, clk_out1, clk_out2, clk_out3, int_neuron_cnt_ou
 	begin	
 		neuronCounter <= neuronCounter + 1'b1;
         clk_out2 <= {neuronCounter == 0};
-        clk_out3 <= {(neuronIndex == 0) || (neuronIndex == 9'd85) ||
-                    (neuronIndex == 9'd170)};
+        clk_out3 <= {(neuronIndex == 0) || (neuronIndex == 9'd170) ||
+                    (neuronIndex == 9'd340)};
 	end
 
     assign int_neuron_cnt_out = neuronCounter;
