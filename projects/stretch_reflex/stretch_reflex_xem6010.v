@@ -179,14 +179,25 @@ module stretch_reflex_xem6010(
     
     // *** Generating waveform to stimulate the spindle
     wire    [31:0] f_pos_elbow;
-    waveform_from_pipe_bram_2s    generator(
-                                .reset(reset_sim),
-                                .pipe_clk(ti_clk),
-                                .pipe_in_write(is_pipe_being_written),
-                                .pipe_in_data(hex_from_py),
-                                .pop_clk(sim_clk),
-                                .wave(f_pos_elbow)
-    );  
+//    waveform_from_pipe_bram_2s    generator(
+//                                .reset(reset_sim),
+//                                .pipe_clk(ti_clk),
+//                                .pipe_in_write(is_pipe_being_written),
+//                                .pipe_in_data(hex_from_py),
+//                                .pop_clk(sim_clk),
+//                                .wave(f_pos_elbow)
+//    );  
+
+    waveform_from_pipe_2k gen(	
+        .ti_clk(ti_clk),
+        .reset(reset_global),
+        .repop(reset_sim),
+        .feed_data_valid(is_pipe_being_written),
+        .feed_data(hex_from_py),
+        .current_element(f_pos_elbow),
+        .test_clk(sim_clk),
+        .done_feeding(is_lce_valid)
+    );      
 
     // *** Spindle: f_muscle_len => f_rawfr_Ia
     wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
@@ -219,13 +230,14 @@ module stretch_reflex_xem6010(
         .MN_spike(MN_spk_bic)
     );     
     wire    [31:0] i_MN_spkcnt_bic;
-    wire    dummy_slow;
-    spike_counter count_bicspikes
-    (   .spike(MN_spk_bic), 
+    wire    dummy_slow;        
+    spikecnt count_rawspikes
+    (    .spike(MN_spk_bic), 
+        .int_cnt_out(i_MN_spkcnt_bic), 
+        .fast_clk(neuron_clk), 
         .slow_clk(sim_clk), 
-        .reset(reset_sim),
-        .int_cnt_out(i_MN_spkcnt_bic),
-        .clear_out(dummy_slow) );   
+        .reset(reset_sim), 
+        .clear_out(dummy_slow));           
             
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_actstate_bic, f_MN_spkcnt_bic; 
