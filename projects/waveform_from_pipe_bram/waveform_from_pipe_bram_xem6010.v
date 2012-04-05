@@ -36,6 +36,8 @@ wire        pipe_in_write;
 wire        pipe_in_ready;
 wire [15:0] pipe_in_data;
 
+wire pipe_out_read;
+wire [15:0] pipe_out_data;
 
 wire [15:0] WireIn10;
 wire [15:0] TrigIn50;
@@ -73,11 +75,13 @@ wire [10:1] pop_addr;
 
 
 
- waveform_from_pipe_bram_2s    generator(
+ waveform_from_pipe_bram_16s    generator(
                                 .reset(reset),
                                 .pipe_clk(ti_clk),
                                 .pipe_in_write(pipe_in_write),
                                 .pipe_in_data(pipe_in_data),
+                                .pipe_out_read(pipe_out_read),
+                                .pipe_out_data(pipe_out_data),
                                 .pop_clk(pop_clk),
                                 .wave(wave)
 
