@@ -179,27 +179,37 @@ module stretch_reflex_xem6010(
     
     // *** Generating waveform to stimulate the spindle
     wire    [31:0] f_pos_elbow;
-//    waveform_from_pipe_bram_2s    generator(
-//                                .reset(reset_sim),
-//                                .pipe_clk(ti_clk),
-//                                .pipe_in_write(is_pipe_being_written),
-//                                .pipe_in_data(hex_from_py),
-//                                .pop_clk(sim_clk),
-//                                .wave(f_pos_elbow)
-//    );  
+    waveform_from_pipe_bram_2s    generator(
+                                .reset(reset_sim),
+                                .pipe_clk(ti_clk),
+                                .pipe_in_write(is_pipe_being_written),
+                                .pipe_in_data(hex_from_py),
+                                .pop_clk(sim_clk),
+                                .wave(f_pos_elbow)
+    );  
 
-    waveform_from_pipe_2k gen(	
-        .ti_clk(ti_clk),
-        .reset(reset_global),
-        .repop(reset_sim),
-        .feed_data_valid(is_pipe_being_written),
-        .feed_data(hex_from_py),
-        .current_element(f_pos_elbow),
-        .test_clk(sim_clk),
-        .done_feeding(is_lce_valid)
-    );      
+
+//    waveform_from_pipe_2k gen(	
+//        .ti_clk(ti_clk),
+//        .reset(reset_global),
+//        .repop(reset_sim),
+//        .feed_data_valid(is_pipe_being_written),
+//        .feed_data(hex_from_py),
+//        .current_element(f_pos_elbow),
+//        .test_clk(sim_clk),
+//        .done_feeding(is_lce_valid)
+//    );      
+
+
+
 
     // *** Spindle: f_muscle_len => f_rawfr_Ia
+    // Get biceps muscle length from joint angle
+    wire    [31:0]  f_force_bic, f_len_bic, IEEE_1p57, IEEE_2p77;
+    assign IEEE_1p57 = 32'h3FC8F5C3; 
+    assign IEEE_2p77 = 32'h403147AE;    
+    sub get_bic_len(.x(IEEE_2p77), .y(f_pos_elbow), .out(f_len_bic));  
+    
     wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
     spindle bic_bag1_bag2_chain
     (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
@@ -241,11 +251,6 @@ module stretch_reflex_xem6010(
             
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_actstate_bic, f_MN_spkcnt_bic; 
-    wire    [31:0]  f_force_bic, f_len_bic, IEEE_1p57, IEEE_2p77;
-    assign IEEE_1p57 = 32'h3FC8F5C3; 
-    assign IEEE_2p77 = 32'h403147AE;
-    // Get biceps muscle length from joint angle
-    sub get_bic_len(.x(IEEE_2p77), .y(f_pos_elbow), .out(f_len_bic));  
     shadmehr_muscle biceps
     (   .spike_cnt(i_MN_spkcnt_bic*gain),
         .pos(f_len_bic),  // muscle length
@@ -329,7 +334,7 @@ module stretch_reflex_xem6010(
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
-    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
+    //okBTPipeOut  epA1 (.ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
 
     okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
 endmodule

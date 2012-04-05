@@ -68,12 +68,33 @@
     <file xil_pn:fileType="FILE_WEBTALK" xil_pn:name="block_ram_test_usage.xml"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="block_ram_test_xst.xrpt"/>
     <file xil_pn:fileType="FILE_LOG" xil_pn:name="fuse.log"/>
+    <file xil_pn:fileType="FILE_SYMBOL" xil_pn:name="ipcore_dir/bram_16s.sym" xil_pn:origination="imported"/>
+    <file xil_pn:fileType="FILE_VEO" xil_pn:name="ipcore_dir/bram_16s.veo" xil_pn:origination="imported"/>
+    <file xil_pn:fileType="FILE_SYMBOL" xil_pn:name="ipcore_dir/bram_2048.sym" xil_pn:origination="imported"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_VERILOG" xil_pn:name="ipcore_dir/bram_2048.v" xil_pn:origination="imported"/>
+    <file xil_pn:fileType="FILE_VEO" xil_pn:name="ipcore_dir/bram_2048.veo" xil_pn:origination="imported"/>
+    <file xil_pn:fileType="FILE_LOG" xil_pn:name="ipcore_dir/coregen.log"/>
     <file xil_pn:fileType="FILE_DIRECTORY" xil_pn:name="isim"/>
     <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_CMD" xil_pn:name="isim.cmd"/>
     <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_LOG" xil_pn:name="isim.log"/>
-    <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="tb_waveform_from_pipe_bram_beh.prj"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGDBUILD_LOG" xil_pn:name="tb_waveform_from_pipe_bram.bld"/>
+    <file xil_pn:fileType="FILE_CMD_LOG" xil_pn:name="tb_waveform_from_pipe_bram.cmd_log"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_LSO" xil_pn:name="tb_waveform_from_pipe_bram.lso"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGC" xil_pn:name="tb_waveform_from_pipe_bram.ngc"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGD" xil_pn:name="tb_waveform_from_pipe_bram.ngd"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGR" xil_pn:name="tb_waveform_from_pipe_bram.ngr"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="tb_waveform_from_pipe_bram.prj"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_STX" xil_pn:name="tb_waveform_from_pipe_bram.stx"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_REPORT" xil_pn:name="tb_waveform_from_pipe_bram.syr"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST" xil_pn:name="tb_waveform_from_pipe_bram.xst"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="tb_waveform_from_pipe_bram_beh.prj"/>
     <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="tb_waveform_from_pipe_bram_isim_beh.exe"/>
     <file xil_pn:fileType="FILE_ISIM_MISC" xil_pn:name="tb_waveform_from_pipe_bram_isim_beh.wdb"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_MAP_REPORT" xil_pn:name="tb_waveform_from_pipe_bram_map.map" xil_pn:subbranch="Map"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_MAP_REPORT" xil_pn:name="tb_waveform_from_pipe_bram_map.mrp" xil_pn:subbranch="Map"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGM" xil_pn:name="tb_waveform_from_pipe_bram_map.ngm" xil_pn:subbranch="Map"/>
+    <file xil_pn:fileType="FILE_HTML" xil_pn:name="tb_waveform_from_pipe_bram_summary.html"/>
+    <file xil_pn:fileType="FILE_XRPT" xil_pn:name="tb_waveform_from_pipe_bram_xst.xrpt"/>
     <file xil_pn:fileType="FILE_HTML" xil_pn:name="usage_statistics_webtalk.html"/>
     <file xil_pn:fileType="FILE_CMD_LOG" xil_pn:name="waveform_from_pipe_bram.cmd_log"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_LSO" xil_pn:name="waveform_from_pipe_bram.lso"/>
@@ -84,44 +105,6 @@
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_REPORT" xil_pn:name="waveform_from_pipe_bram.syr"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST" xil_pn:name="waveform_from_pipe_bram.xst"/>
     <file xil_pn:fileType="FILE_HTML" xil_pn:name="waveform_from_pipe_bram_summary.html"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_REPORT" xil_pn:name="waveform_from_pipe_bram_xem6010.bgn" xil_pn:subbranch="FPGAConfiguration"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BIT" xil_pn:name="waveform_from_pipe_bram_xem6010.bit" xil_pn:subbranch="FPGAConfiguration"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGDBUILD_LOG" xil_pn:name="waveform_from_pipe_bram_xem6010.bld"/>
-    <file xil_pn:fileType="FILE_CMD_LOG" xil_pn:name="waveform_from_pipe_bram_xem6010.cmd_log"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_DRC" xil_pn:name="waveform_from_pipe_bram_xem6010.drc" xil_pn:subbranch="FPGAConfiguration"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_LSO" xil_pn:name="waveform_from_pipe_bram_xem6010.lso"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NCD" xil_pn:name="waveform_from_pipe_bram_xem6010.ncd" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGC" xil_pn:name="waveform_from_pipe_bram_xem6010.ngc"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGD" xil_pn:name="waveform_from_pipe_bram_xem6010.ngd"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGR" xil_pn:name="waveform_from_pipe_bram_xem6010.ngr"/>
-    <file xil_pn:fileType="FILE_PAD_MISC" xil_pn:name="waveform_from_pipe_bram_xem6010.pad"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAR_REPORT" xil_pn:name="waveform_from_pipe_bram_xem6010.par" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PCF" xil_pn:name="waveform_from_pipe_bram_xem6010.pcf" xil_pn:subbranch="Map"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="waveform_from_pipe_bram_xem6010.prj"/>
-    <file xil_pn:fileType="FILE_TRCE_MISC" xil_pn:name="waveform_from_pipe_bram_xem6010.ptwx"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_STX" xil_pn:name="waveform_from_pipe_bram_xem6010.stx"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_REPORT" xil_pn:name="waveform_from_pipe_bram_xem6010.syr"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_TIMING_TXT_REPORT" xil_pn:name="waveform_from_pipe_bram_xem6010.twr" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_TIMING_XML_REPORT" xil_pn:name="waveform_from_pipe_bram_xem6010.twx" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_UNROUTES" xil_pn:name="waveform_from_pipe_bram_xem6010.unroutes" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_REPORT" xil_pn:name="waveform_from_pipe_bram_xem6010.ut" xil_pn:subbranch="FPGAConfiguration"/>
-    <file xil_pn:fileType="FILE_XPI" xil_pn:name="waveform_from_pipe_bram_xem6010.xpi"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST" xil_pn:name="waveform_from_pipe_bram_xem6010.xst"/>
-    <file xil_pn:fileType="FILE_HTML" xil_pn:name="waveform_from_pipe_bram_xem6010_envsettings.html"/>
-    <file xil_pn:fileType="FILE_NCD" xil_pn:name="waveform_from_pipe_bram_xem6010_guide.ncd" xil_pn:origination="imported"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_MAP_REPORT" xil_pn:name="waveform_from_pipe_bram_xem6010_map.map" xil_pn:subbranch="Map"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_MAP_REPORT" xil_pn:name="waveform_from_pipe_bram_xem6010_map.mrp" xil_pn:subbranch="Map"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NCD" xil_pn:name="waveform_from_pipe_bram_xem6010_map.ncd" xil_pn:subbranch="Map"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGM" xil_pn:name="waveform_from_pipe_bram_xem6010_map.ngm" xil_pn:subbranch="Map"/>
-    <file xil_pn:fileType="FILE_XRPT" xil_pn:name="waveform_from_pipe_bram_xem6010_map.xrpt"/>
-    <file xil_pn:fileType="FILE_XRPT" xil_pn:name="waveform_from_pipe_bram_xem6010_ngdbuild.xrpt"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAD_EXCEL_REPORT" xil_pn:name="waveform_from_pipe_bram_xem6010_pad.csv" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAD_TXT_REPORT" xil_pn:name="waveform_from_pipe_bram_xem6010_pad.txt" xil_pn:subbranch="Par"/>
-    <file xil_pn:fileType="FILE_XRPT" xil_pn:name="waveform_from_pipe_bram_xem6010_par.xrpt"/>
-    <file xil_pn:fileType="FILE_HTML" xil_pn:name="waveform_from_pipe_bram_xem6010_summary.html"/>
-    <file xil_pn:fileType="FILE_FITTER_REPORT" xil_pn:name="waveform_from_pipe_bram_xem6010_summary.xml"/>
-    <file xil_pn:fileType="FILE_WEBTALK" xil_pn:name="waveform_from_pipe_bram_xem6010_usage.xml"/>
-    <file xil_pn:fileType="FILE_XRPT" xil_pn:name="waveform_from_pipe_bram_xem6010_xst.xrpt"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="waveform_from_pipe_bram_xst.xrpt"/>
     <file xil_pn:fileType="FILE_LOG" xil_pn:name="webtalk.log"/>
     <file xil_pn:fileType="FILE_FITTER_REPORT" xil_pn:name="webtalk_pn.xml"/>
@@ -157,7 +140,10 @@
     <transform xil_pn:end_ts="1333497003" xil_pn:name="TRAN_regenerateCoresSim" xil_pn:prop_ck="5282340054696396558" xil_pn:start_ts="1333497003">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForProperties"/>
+      <status xil_pn:value="InputAdded"/>
+      <status xil_pn:value="InputChanged"/>
     </transform>
     <transform xil_pn:end_ts="1333498530" xil_pn:in_ck="8634287967757509965" xil_pn:name="TRAN_copyPostAbstractToPreSimulation" xil_pn:start_ts="1333498530">
       <status xil_pn:value="SuccessfullyRun"/>
@@ -195,111 +181,109 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1333557038" xil_pn:name="TRAN_schematicsToHdl" xil_pn:prop_ck="3875167564045833613" xil_pn:start_ts="1333557038">
+    <transform xil_pn:end_ts="1333659347" xil_pn:name="TRAN_schematicsToHdl" xil_pn:prop_ck="-12825093886192418" xil_pn:start_ts="1333659347">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForProperties"/>
     </transform>
-    <transform xil_pn:end_ts="1333557515" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="-6834406225081453208" xil_pn:start_ts="1333557515">
+    <transform xil_pn:end_ts="1333659347" xil_pn:in_ck="7588429527703544248" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="1465150847296714906" xil_pn:start_ts="1333659347">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-    </transform>
-    <transform xil_pn:end_ts="1333499220" xil_pn:name="TRAN_SubProjectAbstractToPreProxy" xil_pn:start_ts="1333499220">
-      <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="ReadyToRun"/>
-    </transform>
-    <transform xil_pn:end_ts="1333557038" xil_pn:name="TRAN_xawsTohdl" xil_pn:prop_ck="-3274318978532580017" xil_pn:start_ts="1333557038">
-      <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="ReadyToRun"/>
-    </transform>
-    <transform xil_pn:end_ts="1333499220" xil_pn:name="TRAN_SubProjectPreToStructuralProxy" xil_pn:prop_ck="-2098939838453108159" xil_pn:start_ts="1333499220">
-      <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="ReadyToRun"/>
-    </transform>
-    <transform xil_pn:end_ts="1333557515" xil_pn:name="TRAN_platgen" xil_pn:prop_ck="-555685553146064782" xil_pn:start_ts="1333557515">
-      <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="ReadyToRun"/>
-    </transform>
-    <transform xil_pn:end_ts="1333557678" xil_pn:in_ck="-7688138743922332604" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="5694151934088915319" xil_pn:start_ts="1333557667">
-      <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="WarningsGenerated"/>
-      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForProperties"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="OutputChanged"/>
-      <outfile xil_pn:name="_xmsgs/xst.xmsgs"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.lso"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.ngc"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.ngr"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.prj"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.stx"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.syr"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.xst"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_xst.xrpt"/>
-      <outfile xil_pn:name="webtalk_pn.xml"/>
-      <outfile xil_pn:name="xst"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
-    <transform xil_pn:end_ts="1333557045" xil_pn:in_ck="-7290511359207221628" xil_pn:name="TRAN_compileBCD2" xil_pn:prop_ck="-9005935757240673926" xil_pn:start_ts="1333557045">
+    <transform xil_pn:end_ts="1333659347" xil_pn:in_ck="-3609558425406007114" xil_pn:name="TRAN_SubProjectAbstractToPreProxy" xil_pn:start_ts="1333659347">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1333557684" xil_pn:in_ck="-4746392905504010683" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="2518068765875714857" xil_pn:start_ts="1333557678">
+    <transform xil_pn:end_ts="1333659347" xil_pn:name="TRAN_xawsTohdl" xil_pn:prop_ck="-4672043045935206304" xil_pn:start_ts="1333659347">
       <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_ngo"/>
-      <outfile xil_pn:name="_xmsgs/ngdbuild.xmsgs"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.bld"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.ngd"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_ngdbuild.xrpt"/>
+      <status xil_pn:value="OutOfDateForProperties"/>
     </transform>
-    <transform xil_pn:end_ts="1333557724" xil_pn:in_ck="-7135619812935780509" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1333557684">
+    <transform xil_pn:end_ts="1333659347" xil_pn:in_ck="-3609558425406007114" xil_pn:name="TRAN_SubProjectPreToStructuralProxy" xil_pn:prop_ck="-2098939838453108159" xil_pn:start_ts="1333659347">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+    </transform>
+    <transform xil_pn:end_ts="1333659347" xil_pn:name="TRAN_platgen" xil_pn:prop_ck="-7757389983200213404" xil_pn:start_ts="1333659347">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForProperties"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+    </transform>
+    <transform xil_pn:end_ts="1333659362" xil_pn:in_ck="3270490259444160729" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="5732710305989950441" xil_pn:start_ts="1333659347">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForProperties"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputChanged"/>
+      <status xil_pn:value="InputRemoved"/>
       <status xil_pn:value="OutputChanged"/>
-      <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.pcf"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_map.map"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_map.mrp"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_map.ncd"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_map.ngm"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_map.xrpt"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_summary.xml"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_usage.xml"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
-    <transform xil_pn:end_ts="1333557768" xil_pn:in_ck="-7913343982704592420" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1333557724">
+    <transform xil_pn:end_ts="1333652636" xil_pn:in_ck="-80594156287294619" xil_pn:name="TRAN_compileBCD2" xil_pn:prop_ck="-8810405936602463989" xil_pn:start_ts="1333652636">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForProperties"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="InputRemoved"/>
+    </transform>
+    <transform xil_pn:end_ts="1333659369" xil_pn:in_ck="-8663789999661419506" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-1370784443403932741" xil_pn:start_ts="1333659362">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
-      <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/par.xmsgs"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.ncd"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.pad"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.par"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.ptwx"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.unroutes"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.xpi"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_pad.csv"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_pad.txt"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_par.xrpt"/>
+      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForProperties"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
-    <transform xil_pn:end_ts="1333557788" xil_pn:in_ck="-7290511359207229253" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1333557768">
+    <transform xil_pn:end_ts="1333659440" xil_pn:in_ck="1958272777121254073" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-1012449745606653236" xil_pn:start_ts="1333659369">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
+    </transform>
+    <transform xil_pn:end_ts="1333659512" xil_pn:in_ck="-4873551316573079218" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1333659440">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
-      <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.bgn"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.bit"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.drc"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.ut"/>
-      <outfile xil_pn:name="webtalk.log"/>
-      <outfile xil_pn:name="webtalk_pn.xml"/>
+      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
-    <transform xil_pn:end_ts="1333557768" xil_pn:in_ck="6765942414709998943" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1333557757">
+    <transform xil_pn:end_ts="1333659545" xil_pn:in_ck="-658220069583076084" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="396117104113915555" xil_pn:start_ts="1333659512">
       <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.twr"/>
-      <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.twx"/>
+      <status xil_pn:value="WarningsGenerated"/>
+      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForProperties"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
+    </transform>
+    <transform xil_pn:end_ts="1333659512" xil_pn:in_ck="6990146844987694961" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416185" xil_pn:start_ts="1333659495">
+      <status xil_pn:value="FailedRun"/>
+      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
   </transforms>
 
