@@ -255,6 +255,8 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
       <outfile xil_pn:name="waveform_from_pipe_bram_xem6010.pcf"/>
       <outfile xil_pn:name="waveform_from_pipe_bram_xem6010_map.map"/>

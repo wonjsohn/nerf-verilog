@@ -239,7 +239,6 @@ module spindle(
 	begin
 		if (reset) begin 
             state <= 0;	
-            state <= state+1;
         end            
 		else begin
             state <= state+1;

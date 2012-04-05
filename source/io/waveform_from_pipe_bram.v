@@ -56,6 +56,7 @@ wire [31:0] ram_low_data;
 wire [31:0] ram_high_data;
 assign wave = pop_addr[10] ? ram_high_data : ram_low_data;
 
+wire porta_out;
 RAMB16_S18_S36 ram_low_512(.CLKA(pipe_clk), .SSRA(1'b0), .ENA(~pipe_addr[10]),
                      .WEA(pipe_in_write), .ADDRA(pipe_addr[9:0]),
                      .DIA(pipe_in_data), .DIPA(2'b0), .DOA(porta_out), .DOPA(),
@@ -142,7 +143,7 @@ always @ (ram_enb)
                 default: wave = 0;
              endcase
 
-
+wire porta_out;
 RAMB16_S18_S36 ram_0(.CLKA(pipe_clk), .SSRA(1'b0), .ENA(ram_ena[0]),
                      .WEA(pipe_in_write), .ADDRA(pipe_addr[9:0]),
                      .DIA(pipe_in_data), .DIPA(2'b0), .DOA(porta_out), .DOPA(),
