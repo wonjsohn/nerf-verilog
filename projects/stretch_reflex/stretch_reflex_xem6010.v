@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+`default_nettype none
 //////////////////////////////////////////////////////////////////////////////////
 // Creator: C. Minos Niu
 // 
@@ -39,21 +40,44 @@ module stretch_reflex_xem6010(
     wire         ti_clk;
     wire [30:0]  ok1;
     wire [16:0]  ok2;   
-//    wire [15:0]  ep00wire, ep01wire, ep02wire, ep20wire, ep21wire, ep22wire, ep23wire;
-//    wire [15:0]  ep24wire, ep25wire, ep26wire, ep27wire, ep28wire, ep29wire, ep30wire, ep31wire;
+    wire [15:0]  ep00wire, ep01wire, ep02wire, ep50trig, ep20wire, ep21wire, ep22wire, ep23wire;
+    wire [15:0]  ep24wire, ep25wire, ep26wire, ep27wire, ep28wire, ep29wire, ep30wire, ep31wire;
     wire reset_global, reset_sim;
     wire        is_pipe_being_written, is_lce_valid;
-
-    wire [31:0] f_muscle_len;
+    
     wire [15:0] hex_from_py;
+    
+    reg [17:0] delay_cnt, delay_cnt_max;
+    
+    reg [15:0] rawspikes;
+    wire pipe_out_read;
  
     // *** Target interface bus:
     assign i2c_sda = 1'bz;
     assign i2c_scl = 1'bz;
     assign hi_muxsel = 1'b0;
 
+  // *** Buttons, physical on XEM3010, software on XEM3050 & XEM6010
+    // *** Reset & Enable signals
+    assign reset_global = ep00wire[0];
+    assign reset_sim = ep00wire[1];
+
+    //assign enable_sim = is_waveform_valid;
+    wire    [31:0]  IEEE_1, IEEE_0;
+	assign IEEE_1 = 32'h3F800000;
+	assign IEEE_0 = 32'd0;
+
     // *** Triggered input from Python
-   
+       // *** Triggered input from Python
+    always @(posedge ep50trig[7] or posedge reset_global)
+    begin
+        if (reset_global)
+            delay_cnt_max <= delay_cnt_max;
+        else
+            delay_cnt_max <= {2'b00, ep01wire};  //firing rate
+    end
+    
+    
     reg [31:0] f_pps_coef_Ia;
     always @(posedge ep50trig[1] or posedge reset_global)
     begin
@@ -107,16 +131,16 @@ module stretch_reflex_xem6010(
         else
             i_gain_MN <= {ep02wire, ep01wire};  
     end      
-    
-    reg [31:0] delay_cnt_max;
-    always @(posedge ep50trig[7] or posedge reset_global)
-    begin
-        if (reset_global)
-            delay_cnt_max <= delay_cnt_max;
-        else
-            delay_cnt_max <= {ep02wire, ep01wire};  //firing rate
-    end        
-    
+//    
+//    reg [31:0] delay_cnt_max;
+//    always @(posedge ep50trig[7] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            delay_cnt_max <= delay_cnt_max;
+//        else
+//            delay_cnt_max <= {ep02wire, ep01wire};  //firing rate
+//    end        
+//    
     reg [31:0] BDAMP_1, BDAMP_2, BDAMP_chain, GI, GII;
     always @(posedge ep50trig[15] or posedge reset_global)
     begin
@@ -154,238 +178,161 @@ module stretch_reflex_xem6010(
                 
     
     // *** Generating waveform to stimulate the spindle
-	waveform_from_pipe gen(	
+    wire    [31:0] f_pos_elbow;
+//    waveform_from_pipe_bram_2s    generator(
+//                                .reset(reset_sim),
+//                                .pipe_clk(ti_clk),
+//                                .pipe_in_write(is_pipe_being_written),
+//                                .pipe_in_data(hex_from_py),
+//                                .pop_clk(sim_clk),
+//                                .wave(f_pos_elbow)
+//    );  
+
+    waveform_from_pipe_2k gen(	
         .ti_clk(ti_clk),
         .reset(reset_global),
         .repop(reset_sim),
         .feed_data_valid(is_pipe_being_written),
         .feed_data(hex_from_py),
-        .current_element(f_muscle_len),
+        .current_element(f_pos_elbow),
         .test_clk(sim_clk),
         .done_feeding(is_lce_valid)
-    );        
+    );      
 
     // *** Spindle: f_muscle_len => f_rawfr_Ia
-    wire [31:0] f_rawfr_Ia, x_0, x_1, f_rawfr_II;
-
-    spindle bag1_bag2_chain
+    wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
+    spindle bic_bag1_bag2_chain
     (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
         .gamma_sta(f_gamma_sta),
-        .lce(f_muscle_len), 
+        .lce(f_len_bic),
         .clk(spindle_clk),
         .reset(reset_sim),
-        .out0(x_0),
-        .out1(x_1),
-        .out2(f_rawfr_II),
-        .out3(f_rawfr_Ia),
+        .out0(x_0_bic),
+        .out1(x_1_bic),
+        .out2(f_bicepsfr_II),
+        .out3(f_bicepsfr_Ia),
         .BDAMP_1(BDAMP_1),
         .BDAMP_2(BDAMP_2),
         .BDAMP_chain(BDAMP_chain)
 		);
-
-    // *** Izhikevich: f_fr_Ia => spikes
-        // *** Convert float_fr to int_I1
-	
-    wire [31:0] f_fr_Ia;
-    wire [31:0] i_synI_Ia;
-	mult scale_pps_Ia( .x(f_rawfr_Ia), .y(f_pps_coef_Ia), .out(f_fr_Ia));
-    floor float_to_int_Ia( .in(f_fr_Ia), .out(i_synI_Ia) );
     
-    wire Ia_spike, s_Ia;
-    wire signed [17:0] v_Ia;   // cell potentials
-//    Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
-//    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
-    neuron Ia_neuron(
-                .neuron_clk(neuron_clk),
-                .reset(reset_sim),
-                .half_cnt(delay_cnt_max),
-                .I_in(i_synI_Ia),
-                
-                .spike_out(Ia_spike),
-                .delayed_spike()
-                
-    );
-
-
-    wire [31:0] f_fr_II;
-    wire [31:0] i_synI_II;
-    mult scale_pps_II( .x(f_rawfr_II), .y(f_pps_coef_II), .out(f_fr_II));
-    floor float_to_int_II( .in(f_fr_II), .out(i_synI_II) );
-    wire II_spike, s_II;
-    wire signed [17:0] v_II;   // cell potentials
-    Iz_neuron #(.NN(NN),.DELAY(10)) II_neuron
-    (v_II,s_II, a,b,c,d, i_synI_II, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, II_spike);
-
-    //*** Synapse:: spike -> I   
-	wire [17:0]  I_out;
-	wire [17:0]	w1, w2, w3;
-	wire spk1, spk2, spk3;
-    wire [31:0] i_postsyn_I;
-    
-//	synapse_int syn1(
-//			.I_out(I_out),
-//			.spk1(1'b0),
-//			.w1(18'd1),
-//			.spk2(Ia_spike),
-//			.w2(18'd1),
-//			.spk3(1'b0),
-//			.w3(18'd1),
-//			.clk(sim_clk),
-//			.reset(reset_sim)
-//	);
-	wire signed [17:0] Ia_w1, Ia_w2;  //learned synaptic weights
-
-	synapse_v   #(.NN(NN)) synIa(I_out, 	Ia_spike, 18'sh01000, 	1'b0, 	18'h0, 			1'b0, 	18'h0, 1'b0, 
-								neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 0, 0, Ia_w1, Ia_w2, 
-								0, 0);    
-    
-	assign i_postsyn_I = {14'h0, I_out};
-    
-    // *** izh-Motoneuron :: i_postsyn_I -> (MN_spike, rawspike)
-    
-	wire [3:0] a, b, tau;
-	wire [17:0] c, d, v1, u1, s1;
-	assign a = 3 ;  // bits for shifting, a = 0.125
-	assign b =  2 ;  // bits for shifting, b = 0.25
-	assign c =  18'sh3_599A ; // -0.65  = dec2hex(1+bitcmp(ceil(0.65 * hex2dec('ffff')),18)) = 3599A
-	assign d =  18'sh0_147A ; // 0.08 = dec2hex(floor(0.08 * hex2dec('ffff'))) = 147A
-	assign tau = 4'h2;
-    
-	wire [1:0] state;
-	assign state = neuronCounter[1:0];
-    
-	wire [NN:0] neuronIndex;
-	assign neuronIndex = neuronCounter[NN+2:2];
-	
-	wire state1, state2, state3, state4;
-	assign state1 = (state == 2'h0);
-	assign state2 = (state == 2'h1);
-	assign state3 = (state == 2'h2);
-	assign state4 = (state == 2'h3);
-	
-	wire neuronWriteCount, readClock, neuronWriteEnable, dataValid;
-	assign neuronWriteCount = state1;	//increment neuronID (ram address)
-	assign readClock = state2;				//read RAM
-	assign neuronWriteEnable = state4; //(state3 | state4);	//write RAM
-	assign dataValid = (neuronCounter == 32'd0);  //(neuronIndex ==0) & state2; //(neuronIndex == 1);   //slight delay of positive edge to allow latch set-up times
-		
-    wire MN_spike;
-
-	//Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_postsyn_I[17:0] * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike);
-    neuron MN_neuron(
-                .neuron_clk(neuron_clk),
-                .reset(reset_sim),
-                .half_cnt(delay_cnt_max),
-                .I_in(i_postsyn_I[17:0] * i_gain_MN[17:0]),
-                
-                .spike_out(MN_spike),
-                .delayed_spike()
-                
-    );
-  
-    reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
-	always @(negedge ti_clk) raw_MN_spikes <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
-	always @(negedge ti_clk) raw_Ia_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
-    always @(negedge ti_clk) raw_II_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, 1'b0, II_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
-
-//
-//    assign raw_MN_spikes = {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
-//	assign raw_Ia_spikes = {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
-//	assign raw_II_spikes = {1'b0, neuronIndex[NN:2], 1'b0, 1'b0, II_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
-    
-    // *** Count the spikes: rawspikes -> spike -> spike_count_out
-	wire    [31:0] i_MN_spk_cnt;
-    wire    clear_out;
-//    spikecnt count_rawspikes
-//	 (		.spike(MN_spike), 
-//			.slow_clk(sim_clk), 
-//			.fast_clk(neuron_clk),
-//            .int_cnt_out(i_MN_spk_cnt),
-//			.reset(reset_sim),
-//            .clear_out(clear_out) );   
-
-    spike_counter count_rawspikes
-    (   .spike(MN_spike), 
+    // *** Biceps: MN pools
+    wire MN_spk_bic;
+    neuron_pool #(.NN(NN)) bic_pool
+    (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
+        .f_pps_coef_Ia(f_pps_coef_Ia), //
+        .half_cnt(delay_cnt_max),
+        .rawclk(clk1),
+        .ti_clk(ti_clk),
+        .reset_sim(reset_sim),
+        .i_gain_MN(i_gain_MN),
+        .neuronCounter(neuronCounter),
+        .MN_spike(MN_spk_bic)
+    );     
+    wire    [31:0] i_MN_spkcnt_bic;
+    wire    dummy_slow;        
+    spikecnt count_rawspikes
+    (    .spike(MN_spk_bic), 
+        .int_cnt_out(i_MN_spkcnt_bic), 
+        .fast_clk(neuron_clk), 
         .slow_clk(sim_clk), 
-        .reset(reset_sim),
-        .int_cnt_out(i_MN_spk_cnt),
-        .clear_out(clear_out) );
+        .reset(reset_sim), 
+        .clear_out(dummy_slow));           
             
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
-    wire    [31:0]  f_total_force, f_active_state, f_MN_spk_cnt;
-    shadmehr_muscle muscle_for_test
-    (   .spike_cnt(i_MN_spk_cnt*gain),
-        .pos(f_muscle_len),  // muscle length
+    wire    [31:0]  f_actstate_bic, f_MN_spkcnt_bic; 
+    wire    [31:0]  f_force_bic, f_len_bic, IEEE_1p57, IEEE_2p77;
+    assign IEEE_1p57 = 32'h3FC8F5C3; 
+    assign IEEE_2p77 = 32'h403147AE;
+    // Get biceps muscle length from joint angle
+    sub get_bic_len(.x(IEEE_2p77), .y(f_pos_elbow), .out(f_len_bic));  
+    shadmehr_muscle biceps
+    (   .spike_cnt(i_MN_spkcnt_bic*gain),
+        .pos(f_len_bic),  // muscle length
         //.vel(current_vel),
         .vel(32'd0),
         .clk(sim_clk),
         .reset(reset_sim),
-        .total_force_out(f_total_force),
-        .current_A(f_active_state),
-        .current_fp_spikes(f_MN_spk_cnt)
+        .total_force_out(f_force_bic),
+        .current_A(f_actstate_bic),
+        .current_fp_spikes(f_MN_spkcnt_bic)
     );       
-
+    
     // *** EMG
     wire [17:0] si_emg;
-    emg #(.NN(NN)) muscle_emg
+    emg #(.NN(NN)) biceps_emg
     (   .emg_out(si_emg), 
-        .i_spk_cnt(i_MN_spk_cnt[NN:0]), 
+        .i_spk_cnt(i_MN_spkcnt_bic[NN:0]), 
         .clk(sim_clk), 
         .reset(reset_sim) );
-        
-    // ** LEDs 0 = ON    
-    assign led[4:2] = 3'b111;
-    assign led[0] = ~Ia_spike;
-    assign led[1] = 1'b1;
-    assign led[5] = ~MN_spike;
-    assign led[6] = ~sim_clk;
-    assign led[7] = ~reset_global;
     
-      
+    
+    wire [31:0] i_emg;
+    assign i_emg = {{14{si_emg[17]}},si_emg[17:0]};
+
+
+    
+ // ** LEDs
+    assign led[0] = ~reset_global;
+    assign led[1] = ~reset_sim;
+    assign led[2] = ~clk1;
+    assign led[3] = ~0;
+    assign led[4] = ~0;
+    assign led[5] = ~MN_spk_bic;
+    assign led[6] = ~spindle_clk; // slow clock
+    //assign led[5] = ~spike;
+    //assign led[5] = ~button1_response;
+    //assign led[6] = ~button2_response;
+    //assign led[6] = ~reset_sim;
+    assign led[7] = ~sim_clk; //fast clock
+    //assign led[6] = ~execute; // When execute==1, led lits      
     // *** Buttons, physical on XEM3010, software on XEM3050 & XEM6010
     assign reset_global = ep00wire[0];
     assign reset_sim = ep00wire[1];
     
     // *** Endpoint connections:
-    assign pin0 = Ia_spike;
-    assign pin1 = II_spike;
-    assign pin2 = MN_spike;
+    assign pin0 = clk1;   
+    assign pin1 = sim_clk;
+    assign pin2 = spindle_clk;
+    
 
-    // *** OpalKelly XEM interface
+
+  // Instantiate the okHost and connect endpoints.
+    // Host interface
+    // *** Endpoint connections:
+  
     okHost okHI(
         .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
         .ok1(ok1), .ok2(ok2));
-
-    wire [17*18-1:0]  ok2x;
-    okWireOR # (.N(18)) wireOR (ok2, ok2x);
-    wire [15:0]  ep00wire, ep01wire, ep02wire;
+        
+    parameter NUM_OK_IO = 14;
+    wire [NUM_OK_IO*17 - 1: 0]  ok2x;    
+    okWireOR # (.N(NUM_OK_IO)) wireOR (ok2, ok2x);
+    
     okWireIn     wi00 (.ok1(ok1),                           .ep_addr(8'h00), .ep_dataout(ep00wire));
     okWireIn     wi01 (.ok1(ok1),                           .ep_addr(8'h01), .ep_dataout(ep01wire));
     okWireIn     wi02 (.ok1(ok1),                           .ep_addr(8'h02), .ep_dataout(ep02wire));
-    
-    okWireOut    wo20 (.ep_datain(f_muscle_len[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
-    okWireOut    wo21 (.ep_datain(f_muscle_len[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-    okWireOut    wo22 (.ep_datain(f_rawfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-    okWireOut    wo23 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-    okWireOut    wo24 (.ep_datain(f_rawfr_II[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-    okWireOut    wo25 (.ep_datain(f_rawfr_II[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-    okWireOut    wo26 (.ep_datain(si_emg[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-    okWireOut    wo27 (.ep_datain({{14{si_emg[17]}},si_emg[17:16]}), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-    okWireOut    wo28 (.ep_datain(i_MN_spk_cnt[15:0]), .ok1(ok1), .ok2(ok2x[  8*17 +: 17 ]), .ep_addr(8'h28) );
-    okWireOut    wo29 (.ep_datain(i_MN_spk_cnt[31:16]), .ok1(ok1), .ok2(ok2x[  9*17 +: 17 ]), .ep_addr(8'h29) );
-    okWireOut    wo30 (.ep_datain(raw_MN_spikes[15:0]), .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
-    okWireOut    wo31 (.ep_datain(raw_MN_spikes[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
-    okWireOut    wo32 (.ep_datain(f_total_force[15:0]), .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
-    okWireOut    wo33 (.ep_datain(f_total_force[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );
+    //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep001wire));
 
+    okWireOut    wo20 (.ep_datain(f_pos_elbow[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
+    okWireOut    wo21 (.ep_datain(f_pos_elbow[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
+    okWireOut    wo22 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+    okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+    okWireOut    wo24 (.ep_datain(f_force_bic[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(f_force_bic[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo26 (.ep_datain(i_emg[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(i_emg[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo28 (.ep_datain(f_bicepsfr_II[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
+    okWireOut    wo29 (.ep_datain(f_bicepsfr_II[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
+    okWireOut    wo30 (.ep_datain(f_len_bic[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
+    okWireOut    wo31 (.ep_datain(f_len_bic[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
     //ep_ready = 1 (always ready to receive)
-    wire pipe_out_read0, pipe_out_read1, pipe_out_read2;
-    okBTPipeIn   ep80 (.ep_dataout(hex_from_py), .ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_ready(1'b1));
-    okBTPipeOut  epA0 (.ep_datain(raw_Ia_spikes), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read0),  .ep_blockstrobe(), .ep_ready(1'b1));
-    okBTPipeOut  epA1 (.ep_datain(raw_II_spikes), .ok1(ok1), .ok2(ok2x[ 16*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read1),  .ep_blockstrobe(), .ep_ready(1'b1));
-    okBTPipeOut  epA2 (.ep_datain(raw_MN_spikes), .ok1(ok1), .ok2(ok2x[ 17*17 +: 17 ]), .ep_addr(8'ha2), .ep_read(pipe_out_read2),  .ep_blockstrobe(), .ep_ready(1'b1));
+    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
+    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
+    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
 
-    wire [15:0] ep50trig;
     okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
 endmodule
+
+
 
