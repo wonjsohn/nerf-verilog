@@ -98,8 +98,8 @@ class User(QDialog, Ui_Dialog):
 #            if i == 1:
 #                print newData[i]
             
-        #newSpike = self.nerfModel.ReadPipe(0xA2, 4000) # read ## bytes
-        newSpike = "" # read ## bytes
+        newSpike = self.nerfModel.ReadPipe(0xA1, 4000) # read ## bytes
+        #newSpike = "" # read ## bytes
 
         
         self.dispView.newData(newData, newSpike)

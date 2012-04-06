@@ -79,7 +79,7 @@ class View(QMainWindow, Ui_Dialog):
         if (self.isPause):
             return
         size = self.size()
-        self.update(QRect(self.x, 0,size.width() - self.x + 1,size.height()))
+        self.update(QRect(self.x, 0,size.width() - self.x + 3,size.height()))
 
         if (self.x < size.width()):
             self.x = self.x + 1     
@@ -113,7 +113,7 @@ class View(QMainWindow, Ui_Dialog):
         #p = QPainter(self.graphicsView)                         ## our painter
         p = QPainter(self)                         ## our painter
         #r1 = QRegion ( QRect(100,100,200,80), QRegion.Ellipse() )
-        r1 = QRegion ( QRect(self.x,10,5,100))
+        r1 = QRegion ( QRect(self.x-2,10,5,100))
         r2 = QRegion ( QRect(100,120,10,30) ) ## r2 = rectangular region
         r3 = QRegion (r1.intersect( r2 ))    ## r3 = intersection
         #p.setClipRegion( r1 )              ## set clip region
@@ -127,7 +127,7 @@ class View(QMainWindow, Ui_Dialog):
         size = self.size()
         winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 4;
         self.pen.setStyle(Qt.SolidLine)
-        self.pen.setWidth(10)
+        self.pen.setWidth(4)
         self.pen.setBrush(Qt.blue)
         self.pen.setCapStyle(Qt.RoundCap)
         self.pen.setJoinStyle(Qt.RoundJoin)
@@ -142,8 +142,8 @@ class View(QMainWindow, Ui_Dialog):
                                  self.x, (winScale) -  22)
             if (rawspikes & 128) : ## MN
 #                gp.drawPoint(self.x, (winScale) - 24 - (neuronID/4)   ) 
-                gp.drawLine(self.x-2,(winScale) - 24 ,\
-                                 self.x, (winScale) - 24)
+                gp.drawLine(self.x-3,(winScale) - 25 - (neuronID/4) ,\
+                                 self.x+3, (winScale) - 22 - (neuronID/4) )
 
     def drawPoints(self, qp):
         """ 

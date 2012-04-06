@@ -33,7 +33,8 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     input   wire [31:0] i_gain_MN,
     input   wire [NN+2:0] neuronCounter,
 
-    output  wire MN_spike
+    output  wire MN_spike,
+    output  reg [15:0] spkid_MN
     );
 
     parameter NN = 8; // 2^(NN+1) = NUM_NEURON
@@ -146,13 +147,13 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
             .out(rand_out)
     );    
     wire [17:0] i_synI_rand;
-    assign i_synI_rand = {{13{0}},rand_out[4:0]};
+    assign i_synI_rand = {{14{0}},rand_out[3:0]};
 
-	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, (i_postsyn_I[17:0]+i_synI_rand) * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
+	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, (i_postsyn_I[17:0]+i_synI_rand)* i_gain_MN[17:0] , neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
     
-    reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
-	always @(negedge ti_clk) raw_MN_spikes <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
-	always @(negedge ti_clk) raw_Ia_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
+    //reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
+	always @(negedge neuron_clk) spkid_MN <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
+	//always @(negedge ti_clk) raw_Ia_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
 //    always @(negedge ti_clk) raw_II_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, 1'b0, II_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
 
 //
