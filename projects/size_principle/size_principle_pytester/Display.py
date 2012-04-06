@@ -12,8 +12,9 @@ from PyQt4.QtGui import QPainter, QRegion, QPen
 import sys, random
 from struct import unpack
 from Utilities import *
+from collections import deque
 
-PIXEL_OFFSET = 200 # pixels offset
+PIXEL_OFFSET = 200 # pixels offsets
 
 from Ui_Display import Ui_Dialog
 
@@ -24,6 +25,7 @@ class Channel:
         exec interp('self.color = #{color}')
         exec interp('self.vscale = 0.0')
         exec interp('self.yoffset = 1.0')
+        exec interp('self.data = deque([0]*100, maxlen=100)')
         exec interp('self.slider = QtGui.QSlider(dialog)')
         exec interp('self.slider.setGeometry(QtCore.QRect(100, 130+#{id}*100, 29, 100))')
         exec interp('self.slider.setOrientation(QtCore.Qt.Vertical)')
@@ -41,7 +43,6 @@ class View(QMainWindow, Ui_Dialog):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.x = 200
-        self.data = self.data_1 = ZERO_DATA
         self.pen = QPen()
 
         self.numPt = PIXEL_OFFSET
@@ -51,7 +52,6 @@ class View(QMainWindow, Ui_Dialog):
         # Create a gain_slider for each channel
         self.ch_all = []
         for (addr, name, visual_gain, type, color), i in zip(CHIN_PARAM, xrange(NUM_CHANNEL)):
-            print color, 
             exec interp('self.ch_#{name} = Channel(dialog=self, name=name, id=i, color = color)')
             exec interp('self.connect(self.ch_#{name}.slider, SIGNAL("valueChanged(int)"), self.onChInGain)')
             exec interp('self.ch_all.append(self.ch_#{name})')
@@ -61,9 +61,9 @@ class View(QMainWindow, Ui_Dialog):
         self.connect(self.timer, SIGNAL("timeout()"), self.onTimeOut)        
         self.timer.start(VIEWER_REFRESH_RATE)
 
-    def newData(self, newData, newSpike = ''):
-        self.data_1 = self.data
-        self.data = newData
+    def newDataIO(self, newData, newSpike = ''):
+        for ch, pt in zip(self.ch_all, newData):
+            ch.data.appendleft(pt)
         self.spike = newSpike
 
     def onTimeOut(self):
@@ -73,13 +73,13 @@ class View(QMainWindow, Ui_Dialog):
         self.update(QRect(self.x, 0,size.width() - self.x + 3,size.height()))
 
         if (self.x < size.width()):
-            self.x = self.x + 1     
+            self.x = self.x + 1   
         else:
-            self.x = PIXEL_OFFSET
+            self.x = PIXEL_OFFSET 
             
     def onChInGain(self):
         for ch in self.ch_all:
-            ch.vscale = ch.slider.value()* 0.01           
+            ch.vscale = ch.slider.value()* 0.1   
 
     def paintEvent(self, e):
         """ 
@@ -130,8 +130,8 @@ class View(QMainWindow, Ui_Dialog):
             qp.setPen(self.pen)
 
             yOffset = int(size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * ch.id)
-            qp.drawLine(self.x - 2, yOffset - self.data_1[ix] * ch.vscale,\
-                        self.x , yOffset - self.data[ix] * ch.vscale)
+            qp.drawLine(self.x - 2, yOffset - ch.data[1] * ch.vscale,\
+                        self.x , yOffset - ch.data[0] * ch.vscale)
   
 
     @pyqtSignature("bool")

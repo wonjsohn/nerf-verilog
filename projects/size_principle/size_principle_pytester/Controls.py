@@ -37,8 +37,9 @@ class User(QDialog, Ui_Dialog):
         self.data = []
         self.isLogData = False
         
+        # Timer for pulling data, separated from timer_display
         self.timer = QTimer(self)
-        self.connect(self.timer, SIGNAL("timeout()"), self.onCheckMoney)       
+        self.connect(self.timer, SIGNAL("timeout()"), self.onSyncData)       
         self.timer.start(VIEWER_REFRESH_RATE * 1.2)
         
         
@@ -46,12 +47,6 @@ class User(QDialog, Ui_Dialog):
 #        self.emit(SIGNAL("initRT"), 1)
         self.on_horizontalSlider_valueChanged(5)
         
-#        self.connect(self.doubleSpinBox_0, SIGNAL("editingFinished()"), self.onNewWire00In)
-#        self.connect(self.doubleSpinBox_0, SIGNAL("valueChanged(double)"), self.onNewWire00In)
-#
-#        self.connect(self.doubleSpinBox_1, SIGNAL("editingFinished()"), self.onNewWire01In)
-#        self.connect(self.doubleSpinBox_1, SIGNAL("valueChanged(double)"), self.onNewWire01In)
-
         self.connect(self.doubleSpinBox_1, SIGNAL("editingFinished()"), self.onNewWireIn1)
         self.connect(self.doubleSpinBox_1, SIGNAL("valueChanged(double)"), self.onNewWireIn1)
         
@@ -86,25 +81,23 @@ class User(QDialog, Ui_Dialog):
         self.connect(self.doubleSpinBox_15, SIGNAL("valueChanged(double)"), self.onNewWireIn15)
 
 
-    def onCheckMoney(self):
+    def onSyncData(self):
         """
-        Core function of Controller, which polls signals from Model(fpga) and appends to Viewer.
+        Core function of Controller, which polls data from Model(fpga) and sends them to Viewer.
         """
-        newData = [0.0 for ix in range(NUM_CHANNEL)]
-        
-        for i in xrange(NUM_CHANNEL):
-            newData[i] = self.nerfModel.ReadFPGA(DATA_OUT_ADDR[i], CH_TYPE[i])
+        newData = []
+        for xaddr, xtype in zip(DATA_OUT_ADDR, CH_TYPE):
+            #newData[i] = self.nerfModel.ReadFPGA(DATA_OUT_ADDR[i], CH_TYPE[i])
 #            if i == 3: 
 #                newData[i] = newData[i] / 100
-#            newData[i] = max(-65535, min(65535, self.nerfModel.ReadFPGA(DATA_OUT_ADDR[i], CH_TYPE[i])))
+            newData.append(max(-65535, min(65535, self.nerfModel.ReadFPGA(xaddr, xtype))))
 #            if i == 1:
 #                print newData[i]
             
-        newSpike = self.nerfModel.ReadPipe(0xA1, 4000) # read ## bytes
+        newSpike = self.nerfModel.ReadPipe(0xA1, 8000) # read ## bytes
         #newSpike = "" # read ## bytes
-
         
-        self.dispView.newData(newData, newSpike)
+        self.dispView.newDataIO(newData, newSpike)
         if (self.isLogData):
             self.data.append(newData)
         
@@ -114,10 +107,6 @@ class User(QDialog, Ui_Dialog):
         newHalfCnt = 10 * 200 * (10 **6) / SAMPLING_RATE / NUM_NEURON / value / 2 / 4
         self.nerfModel.SendPara(newVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
         
-#    def onNewWireIn(self, evt):
-#        newWireIn = eval('self.doubleSpinBox_'+str(evt)+u'.value()')
-#        self.nerfModel.SendPara(newVal = newWireIn, trigEvent = evt)
-
     def onNewWireIn1(self):
         newWireIn = self.doubleSpinBox_1.value()
         if SEND_TYPE[1] == 'int32': newWireIn = int(newWireIn)
@@ -185,7 +174,6 @@ class User(QDialog, Ui_Dialog):
 #            pipeInData = spike_train(firing_rate = 10)      
 #            pipeInData = gen_sin(F = 4.0, AMP = 0.3)
             pipeInData = gen_tri(T = 2.0) 
-
             
         elif choice == "Spike Train 20Hz":
 #            pipeInData = gen_tri() 
