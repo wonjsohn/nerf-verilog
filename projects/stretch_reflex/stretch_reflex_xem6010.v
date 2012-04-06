@@ -228,6 +228,7 @@ module stretch_reflex_xem6010(
     
     // *** Biceps: MN pools
     wire MN_spk_bic;
+    wire [15:0] spkid_MN;
     neuron_pool #(.NN(NN)) bic_pool
     (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
         .f_pps_coef_Ia(f_pps_coef_Ia), //
@@ -237,7 +238,8 @@ module stretch_reflex_xem6010(
         .reset_sim(reset_sim),
         .i_gain_MN(i_gain_MN),
         .neuronCounter(neuronCounter),
-        .MN_spike(MN_spk_bic)
+        .MN_spike(MN_spk_bic),
+        .spkid_MN(spkid_MN)
     );     
     wire    [31:0] i_MN_spkcnt_bic;
     wire    dummy_slow;        
@@ -334,7 +336,7 @@ module stretch_reflex_xem6010(
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
-    //okBTPipeOut  epA1 (.ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
+    okBTPipeOut  epA1 (.ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN), .ep_ready(1'b1));
 
     okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
 endmodule
