@@ -84,6 +84,8 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     
     wire Ia_spike, s_Ia;
     wire signed [17:0] v_Ia;   // cell potentials
+        
+   
     Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
     (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike, neuronWriteCount);
 //
@@ -135,8 +137,18 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 	assign dataValid = (neuronCounter == 32'd0);  //(neuronIndex ==0) & state2; //(neuronIndex == 1);   //slight delay of positive edge to allow latch set-up times
 		
     //wire MN_spike;
+    
+    wire [31:0] rand_out;
+    rng rng_0(
+            .clk1(rawclk),
+            .clk2(rawclk),
+            .reset(reset_sim),
+            .out(rand_out)
+    );    
+    wire [17:0] i_synI_rand;
+    assign i_synI_rand = {{13{0}},rand_out[4:0]};
 
-	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_postsyn_I[17:0] * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
+	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, (i_postsyn_I[17:0]+i_synI_rand) * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
     
     reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
 	always @(negedge ti_clk) raw_MN_spikes <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
