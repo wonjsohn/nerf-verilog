@@ -5,7 +5,7 @@
 // Engineer: 
 // 
 // Design Name: 
-// Module Name:    motor unit.v
+// Module Name:    neuron_pool.v
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -22,34 +22,57 @@
 
 // 
 module motorunit (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk, neuron_clk, reset_sim, f_total_force);
-    input   wire [31:0]  f_muscle_length,  // muscle length
     //input   [31:0]  vel,            // change of muscle length
     input   wire [31:0]  f_rawfr_Ia,     //
     input   wire [31:0]  f_pps_coef_Ia,  //
     input   wire [31:0]  half_cnt,
-    input   wire clk,
-    output  wire sim_clk,
-    //input   wire neuron_clk,
+    input   wire rawclk,
+
     input   wire ti_clk,
     input   wire reset_sim,
-    input   wire [31:0]  gain,           // gain 
     input   wire [31:0] i_gain_MN,
+    input   wire [NN+2:0] neuronCounter,
 
-    output  wire [31:0]  f_total_force  // output muscle force 
+    output  wire MN_spike,
+    output  reg [15:0] spkid_MN
     );
 
     parameter NN = 8; // 2^(NN+1) = NUM_NEURON
-    wire neuron_clk, spindle_clk;
-    wire [NN+2:0] neuronCounter;
+    wire [3:0] a, b, tau;  
+	wire [17:0] c, d;
     
-    gen_clk #(.NN(NN)) local_clocks
-    (   .rawclk(clk), 
-        .half_cnt(half_cnt), 
-        .clk_out1(neuron_clk), 
-        .clk_out2(sim_clk), 
-        .clk_out3(spindle_clk),
-        .int_neuron_cnt_out(neuronCounter) );
-                
+	assign a = 3 ;  // bits for shifting, a = 0.125
+	assign b =  2 ;  // bits for shifting, b = 0.25
+	assign c =  18'sh3_599A ; // -0.65  = dec2hex(1+bitcmp(ceil(0.65 * hex2dec('ffff')),18)) = 3599A
+	assign d =  18'sh0_147A ; // 0.08 = dec2hex(floor(0.08 * hex2dec('ffff'))) = 147A
+	assign tau = 4'h2;    
+    
+    
+    //Locally generate neuron_clk
+    reg neuron_clk;
+    reg [31:0] delay_cnt;
+    always @ (posedge rawclk) begin
+        if (delay_cnt < half_cnt) begin
+            neuron_clk <= neuron_clk;
+            delay_cnt <= delay_cnt + 1;
+        end
+        else begin
+            neuron_clk<= ~neuron_clk;
+            delay_cnt <= 0;
+        end
+    end
+
+   // wire neuron_clk, sim_clk, spindle_clk;
+//    wire [NN+2:0] neuronCounter;
+//    gen_clk #(.NN(NN)) local_clocks
+//    (   .rawclk(rawclk), 
+//        .half_cnt(half_cnt), 
+//        .clk_out1(neuron_clk), 
+//        //.clk_out2(sim_clk), 
+//        //.clk_out3(spindle_clk),
+//        //.int_neuron_cnt_out(neuronCounter) );
+              
+
 
     // *** Izhikevich: f_fr_Ia => spikes
     // *** Convert float_fr to int_I1
@@ -62,8 +85,10 @@ module motorunit (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk, 
     
     wire Ia_spike, s_Ia;
     wire signed [17:0] v_Ia;   // cell potentials
+        
+   
     Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
-    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike);
+    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike, neuronWriteCount);
 //
 //    wire [31:0] f_fr_II;
 //    wire [31:0] i_synI_II;
@@ -90,14 +115,10 @@ module motorunit (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk, 
     
     // *** izh-Motoneuron :: i_postsyn_I -> (MN_spike, rawspike)
     
-	wire [3:0] a, b, tau;
-	wire [17:0] c, d, v1, u1, s1;
-	assign a = 3 ;  // bits for shifting, a = 0.125
-	assign b =  2 ;  // bits for shifting, b = 0.25
-	assign c =  18'sh3_599A ; // -0.65  = dec2hex(1+bitcmp(ceil(0.65 * hex2dec('ffff')),18)) = 3599A
-	assign d =  18'sh0_147A ; // 0.08 = dec2hex(floor(0.08 * hex2dec('ffff'))) = 147A
-	assign tau = 4'h2;
+
+    wire [17:0] v1, u1, s1;
     
+   
 	wire [1:0] state;
 	assign state = neuronCounter[1:0];
     
@@ -116,13 +137,23 @@ module motorunit (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk, 
 	assign neuronWriteEnable = state4; //(state3 | state4);	//write RAM
 	assign dataValid = (neuronCounter == 32'd0);  //(neuronIndex ==0) & state2; //(neuronIndex == 1);   //slight delay of positive edge to allow latch set-up times
 		
-    wire MN_spike;
-
-	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_postsyn_I[17:0] * i_gain_MN[17:0], neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike);
+    //wire MN_spike;
     
-    reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
-	always @(negedge ti_clk) raw_MN_spikes <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
-	always @(negedge ti_clk) raw_Ia_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
+    wire [31:0] rand_out;
+    rng rng_0(
+            .clk1(rawclk),
+            .clk2(rawclk),
+            .reset(reset_sim),
+            .out(rand_out)
+    );    
+    wire [17:0] i_synI_rand;
+    assign i_synI_rand = {{14{0}},rand_out[3:0]};
+
+	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, (i_postsyn_I[17:0]+i_synI_rand)* i_gain_MN[17:0] , neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
+    
+    //reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
+	always @(negedge neuron_clk) spkid_MN <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
+	//always @(negedge ti_clk) raw_Ia_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
 //    always @(negedge ti_clk) raw_II_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, 1'b0, II_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
 
 //
@@ -131,37 +162,8 @@ module motorunit (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk, 
 //	assign raw_II_spikes = {1'b0, neuronIndex[NN:2], 1'b0, 1'b0, II_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
     
     // *** Count the spikes: rawspikes -> spike -> spike_count_out
-	wire    [31:0] i_MN_spk_cnt;
-    wire    clear_out;
-//    spikecnt count_rawspikes
-//	 (		.spike(MN_spike), 
-//			.slow_clk(sim_clk), 
-//			.fast_clk(neuron_clk),
-//            .int_cnt_out(i_MN_spk_cnt),
-//			.reset(reset_sim),
-//            .clear_out(clear_out) );   
-
-    spike_counter count_rawspikes
-    (   .spike(MN_spike), 
-        .slow_clk(sim_clk), 
-        .reset(reset_sim),
-        .int_cnt_out(i_MN_spk_cnt),
-        .clear_out(clear_out) );
-            
-    // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
-    wire    [31:0]  f_active_state, f_MN_spk_cnt;
-    shadmehr_muscle muscle_for_test
-    (   .spike_cnt(i_MN_spk_cnt*gain),
-        .pos(f_muscle_length),  // muscle length
-        //.vel(current_vel),
-        .vel(32'd0),
-        .clk(sim_clk),
-        .reset(reset_sim),
-        .total_force_out(f_total_force),
-        .current_A(f_active_state),
-        .current_fp_spikes(f_MN_spk_cnt)
-    );       
-
+	
+   
 
 
 
