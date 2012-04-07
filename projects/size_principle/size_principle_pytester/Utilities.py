@@ -12,7 +12,7 @@ DATA_EVT_CLKRATE = 7
 CHIN_PARAM =    (0x20,      'lce',      50,         'float32',      'Qt.blue'),  \
                 (0x22,      'aa',      0.11,         'float32',      'Qt.red'),  \
                 (0x24,      'bb',      0.005,         'float32',      'Qt.green'),  \
-                (0x26,      'dd',      0.08,         'float32',      'Qt.black'),  \
+                (0x26,      'dd',      0.08,         'int32',      'Qt.black'),  \
                 (0x28,      'ee',      0,         'float32',      'Qt.gray')
                 
 
