@@ -25,7 +25,7 @@ class Channel:
         exec interp('self.color = #{color}')
         exec interp('self.vscale = 0.0')
         exec interp('self.yoffset = 1.0')
-        exec interp('self.data = deque([0]*100, maxlen=100)')
+        exec interp('self.data = deque([0]*50, maxlen=50)')
         exec interp('self.slider = QtGui.QSlider(dialog)')
         exec interp('self.slider.setGeometry(QtCore.QRect(100, 130+#{id}*100, 29, 100))')
         exec interp('self.slider.setOrientation(QtCore.Qt.Vertical)')
@@ -71,7 +71,7 @@ class View(QMainWindow, Ui_Dialog):
             return
         size = self.size()
         self.update(QRect(self.x, 0,size.width() - self.x + 3,size.height()))
-
+        
         if (self.x < size.width()):
             self.x = self.x + 1   
         else:
@@ -130,8 +130,11 @@ class View(QMainWindow, Ui_Dialog):
             qp.setPen(self.pen)
 
             yOffset = int(size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * ch.id)
-            qp.drawLine(self.x - 2, yOffset - ch.data[1] * ch.vscale,\
-                        self.x , yOffset - ch.data[0] * ch.vscale)
+            y0 = yOffset - ch.data[1] * ch.vscale
+            y1 = yOffset - ch.data[0] * ch.vscale
+
+
+            qp.drawLine(self.x - 2, y0, self.x , y1)
   
 
     @pyqtSignature("bool")
@@ -147,4 +150,5 @@ class View(QMainWindow, Ui_Dialog):
         Slot documentation goes here.
         """
         # TODO: not implemented yet
-        raise NotImplementedError
+        for ch in self.ch_all:
+            ch.vscale = 50.0 / max(ch.data)
