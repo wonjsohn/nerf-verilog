@@ -51,13 +51,73 @@ module h_diff_eq(x_i1, x_i2, y_i1, y_i2, y_i);
 	 
 endmodule
 
+// fuglevand twitch model.  
+//  Z / (Z - a)^2, a= e^(-T_twitch/tau_twitch) 
+module fuglevand_twitch(x_i1, x_i2, y_i1, y_i2, y_i, tau);
+    input signed		 [31:0] x_i1, x_i2;
+    input signed   	 [31:0] y_i1, y_i2;
+    output signed  	 [31:0] y_i;
 
-module shadmehr_active_force(spikes, active_force_out, fp_spikes_out, clk, reset);
+    wire signed [31:0] a0, a1, a2, b1, b2;
+	 wire signed [31:0] t1, t2, t3, t4;
+	 wire [31:0] t1_2, t3_4;
+	 
+	 input [31:0] tau;
+	 wire signed [31:0] A_twitch, euler_e, P, T_twitch;
+	 wire signed [31:0] Pe, neg_recip_tau, neg_2a, A_twitch_sq, neg1, neg2, TA, PeTA, PeTA_div_tau;
+	 
+	 assign T_twitch = 32'h3A83126F; // 0.001
+	 assign euler_e = 32'h402DF3B6; //2.718
+	 assign P = 32'h3F800000; // 1 (arbitary)
+	 assign neg1 = 32'hBF800000;  // -1
+	 
+	 
+	 div div_fuglevand1(.x(neg1), .y(tau), .out(neg_recip_tau));  // -1/tau
+	 exp exp_fuglevand(.x(neg_recip_tau), .out(A_twitch));    // A_twitch = e^(-1/tau)
+	 
+	 mult mult_fuglevand1(.x(P), .y(euler_e), .out(Pe));
+	 mult mult_fuglevand2(.x(T_twitch), .y(A_twitch), .out(TA));
+	 mult mult_fuglevand3(.x(Pe), .y(TA), .out(PeTA));  
+	 
+	 div  div_fuglevand2(.x(PeTA), .y(tau), .out(PeTA_div_tau));  // PeTa/ tau
+	 
+	 
+	 mult mult_fublevanda1(.x(A_twitch), .y(neg2), .out(neg_2a));   // -2a
+	 mult mult_fuglevanda2(.x(A_twitch), .y(A_twitch), .out(A_twitch_sq)); // a^2
+	 
+
+	 
+	 assign b1 = PeTA_div_tau; //2 
+    assign b2 = 32'h0; // 0  
+	 assign a0 = 32'h3F800000; //1.0
+    assign a1 = neg_2a; // 
+    assign a2 = A_twitch_sq; // 
+
+//    assign t1 = b1 * x_i1;
+//    assign t2 = b2 * x_i2;
+//    assign t3 = a1 * y_i1;
+//    assign t4 = a2 * y_i2;
+	 mult mult1(.x(b1), .y(x_i1), .out(t1));
+	 mult mult2(.x(b2), .y(x_i2), .out(t2));
+	 mult mult3(.x(a1), .y(y_i1), .out(t3));
+	 mult mult4(.x(a2), .y(y_i2), .out(t4));
+
+    //assign y_i = t1 + t2 - t3 - t4;
+	 add	add1(.x(t1), .y(t2), .out(t1_2));
+	 add	add2(.x(t3), .y(t4), .out(t3_4));
+	 sub 	sub1(.x(t1_2), .y(t3_4), .out(y_i));
+	 
+endmodule
+
+
+
+module shadmehr_active_force(spikes, active_force_out, fp_spikes_out, clk, reset, tau);
 	//parameter NN = 8;  // (log2(neuronCount) - 1)
 	output   [31:0] fp_spikes_out;  // not used..
 	output reg [31:0]	active_force_out;
 	input  [31:0] spikes;
 	input  clk, reset;
+	input  [31:0] tau;
 
     reg [31:0]  spikes_i1, spikes_i2, h_i1, h_i2; 
     wire    [31:0]  spikes_i, h_i, emg_out;
@@ -65,7 +125,11 @@ module shadmehr_active_force(spikes, active_force_out, fp_spikes_out, clk, reset
 	int_to_float get_fp_spike(.out(spikes_i), .in(spikes * 32'd1024));
 	 
 	
-    h_diff_eq gen_h(spikes_i1, spikes_i2, h_i1, h_i2, h_i);
+    //h_diff_eq gen_h(spikes_i1, spikes_i2, h_i1, h_i2, h_i);
+	 fuglevand_twitch(spikes_i1, spikes_i2, h_i1, h_i2, h_i, tau);
+	 
+	 
+	 
     assign emg_out = spikes_i;
 
     always @(posedge clk or posedge reset) begin
@@ -89,11 +153,12 @@ endmodule
 
 
 // *** Shadmehr muscle: spike_cnt => current_total_force
-module shadmehr_muscle(spike_cnt, pos, vel, clk, reset, total_force_out, current_A, current_fp_spikes);
+module shadmehr_muscle(spike_cnt, pos, vel, clk, reset, total_force_out, current_A, current_fp_spikes, tau);
     input [31:0] spike_cnt;
     input [31:0] pos, vel;
     input clk;
-    input reset;    
+    input reset;
+	 input [31:0] tau;
     output [31:0] total_force_out;
     output [31:0] current_A;
     output [31:0] current_fp_spikes;
@@ -106,7 +171,8 @@ module shadmehr_muscle(spike_cnt, pos, vel, clk, reset, total_force_out, current
 			.active_force_out(current_h), 
 			.fp_spikes_out(current_fp_spikes), 
 			.clk(clk),
-			.reset(reset)
+			.reset(reset),
+			.tau(tau)
     );
         
     wire 	[31:0]	weightout, current_A;
