@@ -149,7 +149,7 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     wire [17:0] i_synI_rand;
     assign i_synI_rand = {{14{0}},rand_out[3:0]};
 
-	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, (i_postsyn_I[17:0]+i_synI_rand)* i_gain_MN[17:0] , neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
+	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, (i_postsyn_I[17:0])* i_gain_MN[17:0] , neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
     
     //reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
 	always @(negedge neuron_clk) spkid_MN <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
