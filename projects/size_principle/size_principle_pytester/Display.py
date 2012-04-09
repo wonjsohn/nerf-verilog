@@ -25,7 +25,7 @@ class Channel:
         exec interp('self.color = #{color}')
         exec interp('self.vscale = 0.0')
         exec interp('self.yoffset = 1.0')
-        exec interp('self.data = deque([0]*50, maxlen=50)')
+        exec interp('self.data = deque([0]*100, maxlen=100)')
         exec interp('self.slider = QtGui.QSlider(dialog)')
         exec interp('self.slider.setGeometry(QtCore.QRect(100, 130+#{id}*100, 29, 100))')
         exec interp('self.slider.setOrientation(QtCore.Qt.Vertical)')
@@ -70,10 +70,10 @@ class View(QMainWindow, Ui_Dialog):
         if (self.isPause):
             return
         size = self.size()
-        self.update(QRect(self.x, 0,size.width() - self.x + 3,size.height()))
+        self.update(QRect(self.x+ 1, 0,size.width() - self.x,size.height()))
         
         if (self.x < size.width()):
-            self.x = self.x + 1   
+            self.x = self.x + 1  
         else:
             self.x = PIXEL_OFFSET 
             
@@ -97,7 +97,7 @@ class View(QMainWindow, Ui_Dialog):
         size = self.size()
         winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 4;
         self.pen.setStyle(Qt.SolidLine)
-        self.pen.setWidth(4)
+        self.pen.setWidth(2)
         self.pen.setBrush(Qt.blue)
         self.pen.setCapStyle(Qt.RoundCap)
         self.pen.setJoinStyle(Qt.RoundJoin)
@@ -112,8 +112,8 @@ class View(QMainWindow, Ui_Dialog):
                                  self.x, (winScale) -  22)
             if (rawspikes & 128) : ## MN
 #                gp.drawPoint(self.x, (winScale) - 24 - (neuronID/4)   ) 
-                gp.drawLine(self.x-3,(winScale) - 25 - (neuronID/4) ,\
-                                 self.x+3, (winScale) - 22 - (neuronID/4) )
+                gp.drawLine(self.x-2,(winScale) - 25 - (neuronID/4) ,\
+                                 self.x, (winScale) - 22 - (neuronID/4) )
 
     def drawPoints(self, qp, ch_all):
         """ 
@@ -123,7 +123,7 @@ class View(QMainWindow, Ui_Dialog):
 
         for ch in ch_all:
             self.pen.setStyle(Qt.SolidLine)
-            self.pen.setWidth(2)
+            self.pen.setWidth(3)
             self.pen.setBrush(ch.color)
             self.pen.setCapStyle(Qt.RoundCap)
             self.pen.setJoinStyle(Qt.RoundJoin)
@@ -134,8 +134,7 @@ class View(QMainWindow, Ui_Dialog):
             y1 = yOffset - ch.data[0] * ch.vscale
 
 
-            qp.drawLine(self.x - 2, y0, self.x , y1)
-  
+            qp.drawLine(self.x - 1 , y0, self.x + 1 , (y1-y0)*2 + y0)
 
     @pyqtSignature("bool")
     def on_pushButton_toggled(self, checked):
