@@ -134,7 +134,7 @@ class View(QMainWindow, Ui_Dialog):
             y1 = yOffset - ch.data[0] * ch.vscale
 
 
-            qp.drawLine(self.x - 1 , y0, self.x + 1 , (y1-y0)*2 + y0)
+            qp.drawLine(self.x - 1 , y0, self.x + 1 , y1)
 
     @pyqtSignature("bool")
     def on_pushButton_toggled(self, checked):

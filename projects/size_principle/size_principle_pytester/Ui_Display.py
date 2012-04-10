@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/minos001/cmn_verilog/projects/size_principle/size_principle_pytester/Display.ui'
 #
-# Created: Mon Apr  9 15:47:32 2012
+# Created: Tue Apr 10 10:11:20 2012
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
