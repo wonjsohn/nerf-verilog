@@ -8,7 +8,7 @@ BUTTON_RESET_SIM = 1
 BUTTON_ENABLE_SIM = 2
 
 DATA_EVT_CLKRATE = 0
-#            add         name   visual_gain         type            color
+#            address         name   visual_gain         type            color
 CHIN_PARAM =    (0x20,      'lce',      50,         'float32',      'Qt.blue'),  \
                 (0x22,      'aa',      0.11,         'float32',      'Qt.red'),  \
                 (0x24,      'bb',      0.005,         'float32',      'Qt.green'),  \
@@ -18,12 +18,13 @@ NUM_CHANNEL = len(CHIN_PARAM) # Number of channels
 DATA_OUT_ADDR = list(zip(*CHIN_PARAM)[0])
 CH_TYPE = list(zip(*CHIN_PARAM)[3])
                 
-CHOUT_PARAM =   (1, 'pps_coef_Ia', 'float32', 0.5), \
-                (2, 'pps_coef_II', 'float32', 0.5), \
-                (3, 'close_loop', 'int32', 0), \
-                (4, 'gamma_dyn', 'float32', 80.0), \
-                (5, 'gamma_sta', 'float32', 80.0), \
-                (6, 'gain_MN', 'int32', 8)
+#            trig_id    name          type          default_value                
+CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      0.5), \
+                (2, 'pps_coef_II',  'float32',      0.5), \
+                (3, 'close_loop',   'int32',        0), \
+                (4, 'gamma_dyn',    'float32',      80.0), \
+                (5, 'gamma_sta',    'float32',      80.0), \
+                (6, 'gain_MN',      'int32',        8)
                 
 SEND_TYPE = list(zip(*CHOUT_PARAM)[2])   
 
