@@ -14,13 +14,23 @@ CHIN_PARAM =    (0x20,      'lce',      50,         'float32',      'Qt.blue'), 
                 (0x24,      'bb',      0.005,         'float32',      'Qt.green'),  \
                 (0x26,      'dd',      0.08,         'int32',      'Qt.black'),  \
                 (0x28,      'ee',      0,         'float32',      'Qt.gray')
-                
-
 NUM_CHANNEL = len(CHIN_PARAM) # Number of channels
-SEND_TYPE = ['', 'float32', 'float32', 'int32', 'float32', 'float32', 'int32', 'int32', '', '', \
-             '', '', '', '', 'float32', 'float32']      
 DATA_OUT_ADDR = list(zip(*CHIN_PARAM)[0])
 CH_TYPE = list(zip(*CHIN_PARAM)[3])
+                
+CHOUT_PARAM =   (0, 'ch0', 'float32'), \
+                (1, 'pps_coef_Ia', 'float32'), \
+                (2, 'pps_coef_II', 'float32'), \
+                (3, 'gain', 'float32'), \
+                (4, 'gamma_dyn', 'float32'), \
+                (5, 'gamma_sta', 'float32'), \
+                (6, 'gain_MN', 'int32'), \
+                (7, 'delay_cnt_max', 'int32')
+SEND_TYPE = list(zip(*CHOUT_PARAM)[2])
+
+['', 'float32', 'float32', 'int32', 'float32', 'float32', 'int32', 'int32', '', '', \
+             '', '', '', '', 'float32', 'float32']      
+
 BIT_FILE = "../size_principle_xem6010.bit"
 SAMPLING_RATE = 1024
 NUM_NEURON = 512
