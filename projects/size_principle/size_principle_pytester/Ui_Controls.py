@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/minos001/cmn_verilog/projects/size_principle/size_principle_pytester/Controls.ui'
 #
-# Created: Fri Apr  6 13:24:49 2012
+# Created: Mon Apr  9 15:47:31 2012
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -260,7 +260,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_4.setObjectName("doubleSpinBox_4")
         self.formLayout_4.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_4)
         self.layoutWidget_5 = QtGui.QWidget(Dialog)
-        self.layoutWidget_5.setGeometry(QtCore.QRect(230, 240, 176, 34))
+        self.layoutWidget_5.setGeometry(QtCore.QRect(230, 240, 177, 34))
         self.layoutWidget_5.setObjectName("layoutWidget_5")
         self.formLayout_5 = QtGui.QFormLayout(self.layoutWidget_5)
         self.formLayout_5.setObjectName("formLayout_5")
@@ -325,7 +325,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_0.setObjectName("doubleSpinBox_0")
         self.formLayout_0.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_0)
         self.layoutWidget_10 = QtGui.QWidget(Dialog)
-        self.layoutWidget_10.setGeometry(QtCore.QRect(230, 400, 203, 34))
+        self.layoutWidget_10.setGeometry(QtCore.QRect(230, 400, 220, 34))
         self.layoutWidget_10.setObjectName("layoutWidget_10")
         self.formLayout_9 = QtGui.QFormLayout(self.layoutWidget_10)
         self.formLayout_9.setObjectName("formLayout_9")
@@ -339,7 +339,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_9.setObjectName("doubleSpinBox_9")
         self.formLayout_9.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_9)
         self.layoutWidget_11 = QtGui.QWidget(Dialog)
-        self.layoutWidget_11.setGeometry(QtCore.QRect(230, 440, 203, 34))
+        self.layoutWidget_11.setGeometry(QtCore.QRect(230, 440, 220, 34))
         self.layoutWidget_11.setObjectName("layoutWidget_11")
         self.formLayout_10 = QtGui.QFormLayout(self.layoutWidget_11)
         self.formLayout_10.setObjectName("formLayout_10")
@@ -353,7 +353,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_10.setObjectName("doubleSpinBox_10")
         self.formLayout_10.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_10)
         self.layoutWidget_12 = QtGui.QWidget(Dialog)
-        self.layoutWidget_12.setGeometry(QtCore.QRect(230, 480, 203, 34))
+        self.layoutWidget_12.setGeometry(QtCore.QRect(230, 480, 220, 34))
         self.layoutWidget_12.setObjectName("layoutWidget_12")
         self.formLayout_11 = QtGui.QFormLayout(self.layoutWidget_12)
         self.formLayout_11.setObjectName("formLayout_11")
@@ -367,7 +367,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_11.setObjectName("doubleSpinBox_11")
         self.formLayout_11.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_11)
         self.layoutWidget_13 = QtGui.QWidget(Dialog)
-        self.layoutWidget_13.setGeometry(QtCore.QRect(230, 520, 203, 34))
+        self.layoutWidget_13.setGeometry(QtCore.QRect(230, 520, 220, 34))
         self.layoutWidget_13.setObjectName("layoutWidget_13")
         self.formLayout_12 = QtGui.QFormLayout(self.layoutWidget_13)
         self.formLayout_12.setObjectName("formLayout_12")
@@ -381,7 +381,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_12.setObjectName("doubleSpinBox_12")
         self.formLayout_12.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_12)
         self.layoutWidget_14 = QtGui.QWidget(Dialog)
-        self.layoutWidget_14.setGeometry(QtCore.QRect(230, 560, 203, 34))
+        self.layoutWidget_14.setGeometry(QtCore.QRect(230, 560, 220, 34))
         self.layoutWidget_14.setObjectName("layoutWidget_14")
         self.formLayout_13 = QtGui.QFormLayout(self.layoutWidget_14)
         self.formLayout_13.setObjectName("formLayout_13")
@@ -395,7 +395,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_13.setObjectName("doubleSpinBox_13")
         self.formLayout_13.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_13)
         self.layoutWidget_15 = QtGui.QWidget(Dialog)
-        self.layoutWidget_15.setGeometry(QtCore.QRect(230, 600, 212, 34))
+        self.layoutWidget_15.setGeometry(QtCore.QRect(230, 600, 229, 34))
         self.layoutWidget_15.setObjectName("layoutWidget_15")
         self.formLayout_14 = QtGui.QFormLayout(self.layoutWidget_15)
         self.formLayout_14.setObjectName("formLayout_14")
@@ -410,7 +410,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_14.setObjectName("doubleSpinBox_14")
         self.formLayout_14.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_14)
         self.layoutWidget_16 = QtGui.QWidget(Dialog)
-        self.layoutWidget_16.setGeometry(QtCore.QRect(230, 635, 212, 34))
+        self.layoutWidget_16.setGeometry(QtCore.QRect(230, 635, 229, 34))
         self.layoutWidget_16.setObjectName("layoutWidget_16")
         self.formLayout_15 = QtGui.QFormLayout(self.layoutWidget_16)
         self.formLayout_15.setObjectName("formLayout_15")
@@ -425,7 +425,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_15.setObjectName("doubleSpinBox_15")
         self.formLayout_15.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_15)
         self.layoutWidget_17 = QtGui.QWidget(Dialog)
-        self.layoutWidget_17.setGeometry(QtCore.QRect(230, 670, 203, 34))
+        self.layoutWidget_17.setGeometry(QtCore.QRect(230, 670, 220, 34))
         self.layoutWidget_17.setObjectName("layoutWidget_17")
         self.formLayout_16 = QtGui.QFormLayout(self.layoutWidget_17)
         self.formLayout_16.setObjectName("formLayout_16")
@@ -439,7 +439,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_16.setObjectName("doubleSpinBox_16")
         self.formLayout_16.setWidget(0, QtGui.QFormLayout.LabelRole, self.doubleSpinBox_16)
         self.layoutWidget_18 = QtGui.QWidget(Dialog)
-        self.layoutWidget_18.setGeometry(QtCore.QRect(230, 705, 203, 34))
+        self.layoutWidget_18.setGeometry(QtCore.QRect(230, 705, 220, 34))
         self.layoutWidget_18.setObjectName("layoutWidget_18")
         self.formLayout_17 = QtGui.QFormLayout(self.layoutWidget_18)
         self.formLayout_17.setObjectName("formLayout_17")

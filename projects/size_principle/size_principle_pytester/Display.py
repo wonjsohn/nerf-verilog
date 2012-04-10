@@ -18,7 +18,7 @@ PIXEL_OFFSET = 200 # pixels offsets
 
 from Ui_Display import Ui_Dialog
 
-class Channel:
+class ViewChannel:
     def __init__(self, dialog, name, id, width = 2, color = 'Qt.blue'):
         exec interp('self.id = #{id}')
         exec interp('self.width = #{width}')
@@ -52,7 +52,7 @@ class View(QMainWindow, Ui_Dialog):
         # Create a gain_slider for each channel
         self.ch_all = []
         for (addr, name, visual_gain, type, color), i in zip(CHIN_PARAM, xrange(NUM_CHANNEL)):
-            exec interp('self.ch_#{name} = Channel(dialog=self, name=name, id=i, color = color)')
+            exec interp('self.ch_#{name} = ViewChannel(dialog=self, name=name, id=i, color = color)')
             exec interp('self.connect(self.ch_#{name}.slider, SIGNAL("valueChanged(int)"), self.onChInGain)')
             exec interp('self.ch_all.append(self.ch_#{name})')
 
