@@ -7,7 +7,7 @@ BUTTON_RESET = 0
 BUTTON_RESET_SIM = 1
 BUTTON_ENABLE_SIM = 2
 
-DATA_EVT_CLKRATE = 7
+DATA_EVT_CLKRATE = 0
 #            add         name   visual_gain         type            color
 CHIN_PARAM =    (0x20,      'lce',      50,         'float32',      'Qt.blue'),  \
                 (0x22,      'aa',      0.11,         'float32',      'Qt.red'),  \
@@ -18,18 +18,14 @@ NUM_CHANNEL = len(CHIN_PARAM) # Number of channels
 DATA_OUT_ADDR = list(zip(*CHIN_PARAM)[0])
 CH_TYPE = list(zip(*CHIN_PARAM)[3])
                 
-CHOUT_PARAM =   (0, 'ch0', 'float32'), \
-                (1, 'pps_coef_Ia', 'float32'), \
-                (2, 'pps_coef_II', 'float32'), \
-                (3, 'gain', 'float32'), \
-                (4, 'gamma_dyn', 'float32'), \
-                (5, 'gamma_sta', 'float32'), \
-                (6, 'gain_MN', 'int32'), \
-                (7, 'delay_cnt_max', 'int32')
-SEND_TYPE = list(zip(*CHOUT_PARAM)[2])
-
-['', 'float32', 'float32', 'int32', 'float32', 'float32', 'int32', 'int32', '', '', \
-             '', '', '', '', 'float32', 'float32']      
+CHOUT_PARAM =   (1, 'pps_coef_Ia', 'float32', 0.5), \
+                (2, 'pps_coef_II', 'float32', 0.5), \
+                (3, 'close_loop', 'int32', 0), \
+                (4, 'gamma_dyn', 'float32', 80.0), \
+                (5, 'gamma_sta', 'float32', 80.0), \
+                (6, 'gain_MN', 'int32', 8)
+                
+SEND_TYPE = list(zip(*CHOUT_PARAM)[2])   
 
 BIT_FILE = "../size_principle_xem6010.bit"
 SAMPLING_RATE = 1024

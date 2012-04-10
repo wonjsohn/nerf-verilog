@@ -22,14 +22,18 @@ from Display import View
 class CtrlChannel:
     def __init__(self, hostDialog, name, id, type, value = 0.0):
         exec interp('self.id = #{id}')
-        exec interp('self.currVal = 0.0')
+        exec interp('self.currVal = #{value}')
         exec interp('self.type = type')
 
         exec interp('self.doubleSpinBox = QtGui.QDoubleSpinBox(hostDialog)')
-        exec interp('self.doubleSpinBox.setGeometry(QtCore.QRect(100, 130+#{id}*100, 29, 100))')
+        exec interp('self.doubleSpinBox.setGeometry(QtCore.QRect(230, #{id} * 35, 105, 30))')
         exec interp('self.doubleSpinBox.setProperty("value", value)')
         exec interp('self.doubleSpinBox.setObjectName("param_#{name}")')
-
+        
+        exec interp('self.label = QtGui.QLabel(hostDialog)')
+        exec interp('self.label.setObjectName("label_#{name}")')
+        exec interp('self.label.setText("#{name}")')        
+        exec interp('self.label.setGeometry(QtCore.QRect(350, #{id} * 35, 105, 30))')
 
 from Ui_Controls import Ui_Dialog
 class User(QDialog, Ui_Dialog):
@@ -53,8 +57,8 @@ class User(QDialog, Ui_Dialog):
         
         # Create float_spin for each input channel
         self.ctrl_all = []
-        for (trig_id, name, type) in CHOUT_PARAM:
-            exec interp('self.ctrl_#{name} = CtrlChannel(hostDialog=self, name=name, id=trig_id, type=type)')
+        for (trig_id, name, type, value) in CHOUT_PARAM:
+            exec interp('self.ctrl_#{name} = CtrlChannel(hostDialog=self, name=name, id=trig_id, type=type, value=value)')
             exec interp('self.connect(self.ctrl_#{name}.doubleSpinBox, SIGNAL("editingFinished()"), self.onNewWireIn)')
             exec interp('self.connect(self.ctrl_#{name}.doubleSpinBox, SIGNAL("valueChanged(double)"), self.onNewWireIn)')
             exec interp('self.ctrl_all.append(self.ctrl_#{name})')        
@@ -92,18 +96,18 @@ class User(QDialog, Ui_Dialog):
         """ value = how many times of 1/10 real-time
         """
         newHalfCnt = 10 * 200 * (10 **6) / SAMPLING_RATE / NUM_NEURON / value / 2 / 4
-        self.nerfModel.SendPara(newVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
+        self.nerfModel.SendPara(bitVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
         
     def onNewWireIn(self):
         for ctrl in self.ctrl_all:
-            newWireIn = self.doubleSpinBox.value()
-            if newWireIn != input.currValue:
-                input.currValue = newWireIn
-                if input.type == 'int32' :
-                    self.nerfModel.SendPara(newVal = int(newWireIn), trigEvent = self.input.id)
-                else:
-                    self.nerfModel.SendPara(newVal = newWireIn, trigEvent = self.input.id)
-
+            newWireIn = ctrl.doubleSpinBox.value()
+            if newWireIn != ctrl.currVal:
+                ctrl.currValue = newWireIn
+                if (ctrl.type == 'int32'):
+                    bitVal = int(newWireIn)
+                elif (ctrl.type == 'float32'):
+                    bitVal = ConvertType(newWireIn, fromType = 'f', toType = 'I')
+                self.nerfModel.SendPara(bitVal = bitVal, trigEvent = ctrl.id)
 
     def plotData(self, data):
         from pylab import plot, show, subplot
