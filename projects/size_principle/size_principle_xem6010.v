@@ -69,7 +69,7 @@ module size_principle_xem6010(
 
     // *** Triggered input from Python
        // *** Triggered input from Python
-    always @(posedge ep50trig[7] or posedge reset_global)
+    always @(posedge ep50trig[0] or posedge reset_global)
     begin
         if (reset_global)
             delay_cnt_max <= delay_cnt_max;
@@ -200,21 +200,6 @@ module size_principle_xem6010(
                                 .pop_clk(sim_clk),
                                 .wave(f_bicepsfr_Ia)
     );  
-
-
-//    waveform_from_pipe_2k gen(	
-//        .ti_clk(ti_clk),
-//        .reset(reset_global),
-//        .repop(reset_sim),
-//        .feed_data_valid(is_pipe_being_written),
-//        .feed_data(hex_from_py),
-//        .current_element(f_pos_elbow),
-//        .test_clk(sim_clk),
-//        .done_feeding(is_lce_valid)
-//    );      
-
-
-
 
     // *** Spindle: f_muscle_len => f_rawfr_Ia
     // Get biceps muscle length from joint angle
