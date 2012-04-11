@@ -278,18 +278,18 @@ module size_principle_xem6010(
 	assign i_MN_spkcnt_combined = i_MN_spkcnt_big_mu;	 
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_actstate_bic, f_MN_spkcnt_bic; 
-//    shadmehr_muscle biceps
-//    (   .spike_cnt(i_MN_spkcnt_combined*gain),
-//        .pos(f_len_bic),  // muscle length
-//        //.vel(current_vel),
-//        .vel(32'd0),
-//        .clk(sim_clk),
-//        .reset(reset_sim),
-//        .total_force_out(f_force_bic),
-//        .current_A(f_actstate_bic),
-//        .current_fp_spikes(f_MN_spkcnt_bic),
-//		  .tau(tau)
-//    );       
+    shadmehr_muscle biceps
+    (   .spike_cnt(i_MN_spkcnt_combined*gain),
+        .pos(f_len_bic),  // muscle length
+        //.vel(current_vel),
+        .vel(32'd0),
+        .clk(sim_clk),
+        .reset(reset_sim),
+        .total_force_out(f_force_bic),
+        .current_A(f_actstate_bic),
+        .current_fp_spikes(f_MN_spkcnt_bic),
+		  .tau(tau)
+    );       
     
     // *** EMG
     wire [17:0] si_emg;
@@ -351,12 +351,12 @@ module size_principle_xem6010(
     okWireOut    wo21 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
     okWireOut    wo22 (.ep_datain(i_MN_spkcnt_combined[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
     okWireOut    wo23 (.ep_datain(i_MN_spkcnt_combined[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-    okWireOut    wo24 (.ep_datain(i_gain_MN_used[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-    okWireOut    wo25 (.ep_datain(i_gain_MN_used[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo24 (.ep_datain(f_force_bic[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(f_force_bic[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
     okWireOut    wo26 (.ep_datain(i_current_out[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
     okWireOut    wo27 (.ep_datain(i_current_out[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-    okWireOut    wo28 (.ep_datain(i_synI_rand_out[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
-    okWireOut    wo29 (.ep_datain(i_synI_rand_out[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
+    okWireOut    wo28 (.ep_datain(i_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
+    okWireOut    wo29 (.ep_datain(i_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
     okWireOut    wo30 (.ep_datain(i_postsyn_I_out[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
     okWireOut    wo31 (.ep_datain(i_postsyn_I_out[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
     //ep_ready = 1 (always ready to receive)

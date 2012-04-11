@@ -11,7 +11,7 @@ DATA_EVT_CLKRATE = 0
 #            address         name   visual_gain         type            color
 CHIN_PARAM =    (0x20,      'f_bicepsfr_Ia',      50,         'float32',      'Qt.blue'),  \
                 (0x22,      'i_MN_spkcnt_combined',      0.11,         'int32',      'Qt.red'),  \
-                (0x24,      'f_force_bic',      1.0,         'int32',      'Qt.green'),  \
+                (0x24,      'f_force_bic',      1.0,         'float32',      'Qt.green'),  \
                 (0x26,      'i_emg',      0.08,         'int32',      'Qt.black'),  \
                 (0x28,      'tau',      0,         'int32',      'Qt.gray'),   \
                 (0x30,      'f_pps_coef_Ia',      0,         'int32',      'Qt.blue')
