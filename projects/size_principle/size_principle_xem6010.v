@@ -68,7 +68,6 @@ module size_principle_xem6010(
 	assign IEEE_0 = 32'd0;
 
     // *** Triggered input from Python
-       // *** Triggered input from Python
     always @(posedge ep50trig[0] or posedge reset_global)
     begin
         if (reset_global)
@@ -136,7 +135,7 @@ module size_principle_xem6010(
             f_gamma_sta <= {ep02wire, ep01wire};  
     end  
     
-    reg [31:0] i_gain_MN;
+    reg signed [31:0] i_gain_MN;
     always @(posedge ep50trig[6] or posedge reset_global)
     begin
         if (reset_global)
@@ -201,6 +200,21 @@ module size_principle_xem6010(
                                 .wave(f_bicepsfr_Ia)
     );  
 
+
+//    waveform_from_pipe_2k gen(	
+//        .ti_clk(ti_clk),
+//        .reset(reset_global),
+//        .repop(reset_sim),
+//        .feed_data_valid(is_pipe_being_written),
+//        .feed_data(hex_from_py),
+//        .current_element(f_bicepsfr_Ia),
+//        .test_clk(sim_clk),
+//        .done_feeding(is_lce_valid)
+//    );      
+
+
+
+
     // *** Spindle: f_muscle_len => f_rawfr_Ia
     // Get biceps muscle length from joint angle
     wire    [31:0]  f_force_bic, f_len_bic, IEEE_1p57, IEEE_2p77;
@@ -228,6 +242,12 @@ module size_principle_xem6010(
     // *** Biceps: MN pools
     wire MN_spk_big_mu;
     wire [15:0] spkid_MN_big_mu;
+	 
+	 wire signed [31:0] i_current_out;
+	 wire signed[ 31:0] i_synI_rand_out;
+	 wire signed [31:0] i_postsyn_I_out;
+	 wire signed [31:0] i_gain_MN_used;
+	 
     neuron_pool #(.NN(NN)) big_pool
     (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
         .f_pps_coef_Ia(f_pps_coef_Ia), //
@@ -238,7 +258,11 @@ module size_principle_xem6010(
         .i_gain_MN(i_gain_MN),
         .neuronCounter(neuronCounter),
         .MN_spike(MN_spk_big_mu),
-        .spkid_MN(spkid_MN_big_mu)
+        .spkid_MN(spkid_MN_big_mu),
+		  .i_current_out(i_current_out),
+		  .i_synI_rand_out(i_synI_rand_out),
+		  .i_postsyn_I_out(i_postsyn_I_out),
+		  .i_gain_MN_used(i_gain_MN_used)
     );     
     wire    [31:0] i_MN_spkcnt_big_mu;
     wire    dummy_slow_big;        
@@ -254,26 +278,26 @@ module size_principle_xem6010(
 	assign i_MN_spkcnt_combined = i_MN_spkcnt_big_mu;	 
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_actstate_bic, f_MN_spkcnt_bic; 
-    shadmehr_muscle biceps
-    (   .spike_cnt(i_MN_spkcnt_combined*gain),
-        .pos(f_len_bic),  // muscle length
-        //.vel(current_vel),
-        .vel(32'd0),
-        .clk(sim_clk),
-        .reset(reset_sim),
-        .total_force_out(f_force_bic),
-        .current_A(f_actstate_bic),
-        .current_fp_spikes(f_MN_spkcnt_bic),
-		  .tau(tau)
-    );       
+//    shadmehr_muscle biceps
+//    (   .spike_cnt(i_MN_spkcnt_combined*gain),
+//        .pos(f_len_bic),  // muscle length
+//        //.vel(current_vel),
+//        .vel(32'd0),
+//        .clk(sim_clk),
+//        .reset(reset_sim),
+//        .total_force_out(f_force_bic),
+//        .current_A(f_actstate_bic),
+//        .current_fp_spikes(f_MN_spkcnt_bic),
+//		  .tau(tau)
+//    );       
     
     // *** EMG
     wire [17:0] si_emg;
-    emg #(.NN(NN)) biceps_emg
-    (   .emg_out(si_emg), 
-        .i_spk_cnt(i_MN_spkcnt_combined[NN:0]), 
-        .clk(sim_clk), 
-        .reset(reset_sim) );
+//    emg #(.NN(NN)) biceps_emg
+//    (   .emg_out(si_emg), 
+//        .i_spk_cnt(i_MN_spkcnt_combined[NN:0]), 
+//        .clk(sim_clk), 
+//        .reset(reset_sim) );
     
     
     wire [31:0] i_emg;
@@ -327,14 +351,14 @@ module size_principle_xem6010(
     okWireOut    wo21 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
     okWireOut    wo22 (.ep_datain(i_MN_spkcnt_combined[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
     okWireOut    wo23 (.ep_datain(i_MN_spkcnt_combined[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-    okWireOut    wo24 (.ep_datain(f_force_bic[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-    okWireOut    wo25 (.ep_datain(f_force_bic[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-    okWireOut    wo26 (.ep_datain(i_emg[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-    okWireOut    wo27 (.ep_datain(i_emg[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-    okWireOut    wo28 (.ep_datain(tau[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
-    okWireOut    wo29 (.ep_datain(tau[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
-    okWireOut    wo30 (.ep_datain(f_pps_coef_Ia[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
-    okWireOut    wo31 (.ep_datain(f_pps_coef_Ia[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
+    okWireOut    wo24 (.ep_datain(i_gain_MN_used[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(i_gain_MN_used[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo26 (.ep_datain(i_current_out[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(i_current_out[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo28 (.ep_datain(i_synI_rand_out[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
+    okWireOut    wo29 (.ep_datain(i_synI_rand_out[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
+    okWireOut    wo30 (.ep_datain(i_postsyn_I_out[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
+    okWireOut    wo31 (.ep_datain(i_postsyn_I_out[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));

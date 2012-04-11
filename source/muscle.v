@@ -73,7 +73,7 @@ module fuglevand_twitch(x_i1, x_i2, y_i1, y_i2, y_i, tau);
 	 
 	 
 	 div div_fuglevand1(.x(neg1), .y(tau), .out(neg_recip_tau));  // -1/tau
-	 exp exp_fuglevand(.x(neg_recip_tau), .out(A_twitch));    // A_twitch = e^(-1/tau)
+	 exp exp_fuglevand(.x(neg_recip_tau), .out(A_twitch));    // A_twitch ~= e^(-1/tau)
 	 
 	 mult mult_fuglevand1(.x(P), .y(euler_e), .out(Pe));
 	 mult mult_fuglevand2(.x(T_twitch), .y(A_twitch), .out(TA));
@@ -84,9 +84,7 @@ module fuglevand_twitch(x_i1, x_i2, y_i1, y_i2, y_i, tau);
 	 
 	 mult mult_fublevanda1(.x(A_twitch), .y(neg2), .out(neg_2a));   // -2a
 	 mult mult_fuglevanda2(.x(A_twitch), .y(A_twitch), .out(A_twitch_sq)); // a^2
-	 
-
-	 
+	  
 	 assign b1 = PeTA_div_tau; //2 
     assign b2 = 32'h0; // 0  
 	 assign a0 = 32'h3F800000; //1.0

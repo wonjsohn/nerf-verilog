@@ -161,9 +161,9 @@ endmodule
 // Acts to create an exponentially falling current at the output 
 // from a spike input and a weight which can be +/-
 // up to three spike inputs are defined, each with its own weight
-module synapse(out,s1,w1,s2,w2,s3,w3,body,clk,reset,idx, enable, read, gamma_plus, gamma_minus, stdp_w1, stdp_w2, stdp_w1_reset, stdp_w2_reset);
+module synapse_v(out,s1,w1,s2,w2,s3,w3,body,clk,reset,idx, enable, read, gamma_plus, gamma_minus, stdp_w1, stdp_w2, stdp_w1_reset, stdp_w2_reset);
 	parameter NN = 8;  // (log2(neuronCount) - 1)
-	output [17:0] out; 				//the simulated current
+	output wire signed [17:0] out; 				//the simulated current
 	input s1,s2,s3;     			// the action potential inputs
 	input signed [17:0] w1,w2,w3;   //weights
 	input body;					//postsynaptic spike
@@ -219,7 +219,7 @@ module synapse(out,s1,w1,s2,w2,s3,w3,body,clk,reset,idx, enable, read, gamma_plu
 
 
 	//assign out = (s1?w1:0)+(s2?w2:0)+(s3?w3:0) ; 
-	assign out = (s1?stdp_w1:0)+(s2?stdp_w2:0)+(s3?w3:0) ; 
+	assign out = (s1?stdp_w1:0);//syn1_trace_out; 
 endmodule
 
 
@@ -289,7 +289,7 @@ module Iz_neuron(out,spike_delayed,a,b,c,d,I,clk,reset,idx, enable, read, tau, s
 	
 	assign c14 = 18'sh1_6666; // 1.4
 	signed_mult v1sq(v1xv1, v1, v1);
-	assign v1new = v1 + (v1xv1<<<2) + v1+(v1<<<2) + c14 - u1 + epsp_mem; //I;  //1msec sample (no dt term)
+	assign v1new = v1 + (v1xv1<<<2) + v1+(v1<<<2) + c14 - u1 + I; //I;  //1msec sample (no dt term)
 		
 	// u1(n+1) = u1 + dt*a*(b*v1(n) - u1(n))
 	assign v1xb = v1>>>b;         //mult (v1xb, v1, b);
