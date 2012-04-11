@@ -66,7 +66,7 @@ class User(QDialog, Ui_Dialog):
         # Timer for pulling data, separated from timer_display
         self.timer = QTimer(self)
         self.connect(self.timer, SIGNAL("timeout()"), self.onSyncData)       
-        self.timer.start(VIEWER_REFRESH_RATE * 1.2)
+        self.timer.start(VIEWER_REFRESH_RATE * 1.5)
         
         
         self.on_horizontalSlider_valueChanged(5)
@@ -82,8 +82,8 @@ class User(QDialog, Ui_Dialog):
 #            if i == 3: 
 #                newData[i] = newData[i] / 100
             newData.append(max(-65535, min(65535, self.nerfModel.ReadFPGA(xaddr, xtype))))
-#            if i == 1:
-#                print newData[i]
+            if xaddr == 0x26:
+                print newData[len(newData)-1]
             
         newSpike = self.nerfModel.ReadPipe(0xA1, 8000) # read ## bytes
         #newSpike = "" # read ## bytes
@@ -104,7 +104,8 @@ class User(QDialog, Ui_Dialog):
             if newWireIn != ctrl.currVal:
                 ctrl.currValue = newWireIn
                 if (ctrl.type == 'int32'):
-                    bitVal = int(newWireIn)
+                    bitVal = ConvertType(floor(newWireIn),  fromType = 'i',  toType = 'I')
+                    print bitVal
                 elif (ctrl.type == 'float32'):
                     bitVal = ConvertType(newWireIn, fromType = 'f', toType = 'I')
                 self.nerfModel.SendPara(bitVal = bitVal, trigEvent = ctrl.id)
@@ -132,7 +133,7 @@ class User(QDialog, Ui_Dialog):
         choice = p0
         if choice == "Spike Train 1Hz":
 #            pipeInData = spike_train(firing_rate = 1) 
-            pipeInData = gen_sin(F = 1.0, AMP = 0.6,  T = 2.0)
+            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0)
         elif choice == "Spike Train 10Hz":
 #            pipeInData = spike_train(firing_rate = 10)      
 #            pipeInData = gen_sin(F = 4.0, AMP = 0.3)
@@ -140,7 +141,8 @@ class User(QDialog, Ui_Dialog):
             
         elif choice == "Spike Train 20Hz":
 #            pipeInData = gen_tri() 
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.1, 1.1, 1.0, 1.0], FILT = False)
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.1, 1.1, 1.0, 1.0], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.2, 0.8, 1.2,  1.8,  2.0], L = [0,  0,  200, 200, 0, 0], FILT = False)
 #            pipeInData = spike_train(firing_rate = 100) 
         
         self.nerfModel.SendPipe(pipeInData)

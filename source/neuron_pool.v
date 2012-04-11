@@ -30,11 +30,16 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 
     input   wire ti_clk,
     input   wire reset_sim,
-    input   wire [31:0] i_gain_MN,
+    input   wire signed [31:0] i_gain_MN,
     input   wire [NN+2:0] neuronCounter,
 
     output  wire MN_spike,
-    output  reg [15:0] spkid_MN
+    output  reg [15:0] spkid_MN,
+	 // debug
+	 output wire signed  [31:0] i_current_out,
+	 output wire signed [31:0] i_synI_rand_out,
+	 output wire signed [31:0] i_postsyn_I_out,
+	 output wire signed [31:0] i_gain_MN_used
     );
 
     parameter NN = 8; // 2^(NN+1) = NUM_NEURON
@@ -88,7 +93,7 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
         
    
     Iz_neuron #(.NN(NN),.DELAY(10)) Ia_neuron
-    (v_Ia,s_Ia, a,b,c,d, i_synI_Ia, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike, neuronWriteCount);
+    (v_Ia,s_Ia, a,b,c,d, {i_synI_Ia[31], i_synI_Ia[16:0]}, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, Ia_spike, neuronWriteCount);
 //
 //    wire [31:0] f_fr_II;
 //    wire [31:0] i_synI_II;
@@ -100,18 +105,18 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 //    (v_II,s_II, a,b,c,d, i_synI_II, neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 4'h2, II_spike);
 
     //*** Synapse:: spike -> I   
-	wire [17:0]  I_out;
+	wire signed [17:0]  I_out;
 	wire [17:0]	w1, w2, w3;
 	wire spk1, spk2, spk3;
     wire [31:0] i_postsyn_I;
   
 	wire signed [17:0] Ia_w1, Ia_w2;  //learned synaptic weights
 
-	synapse   #(.NN(NN)) synIa(I_out, 	Ia_spike, 18'sh01000, 	1'b0, 	18'h0, 			1'b0, 	18'h0, 1'b0, 
+	synapse_v   #(.NN(NN)) synIa(I_out, 	Ia_spike, 18'sh01000, 	1'b0, 	18'h0, 			1'b0, 	18'h0, 1'b0, 
 								neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, 0, 0, Ia_w1, Ia_w2, 
 								0, 0);    
     
-	assign i_postsyn_I = {14'h0, I_out};
+	assign i_postsyn_I = {{14{I_out[17]}}, I_out};
     
     // *** izh-Motoneuron :: i_postsyn_I -> (MN_spike, rawspike)
     
@@ -146,10 +151,33 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
             .reset(reset_sim),
             .out(rand_out)
     );    
-    wire [17:0] i_synI_rand;
-    assign i_synI_rand = {{14{0}},rand_out[3:0]};
+    wire signed [17:0] i_synI_rand = {{14{1'b0}},rand_out[3:0]};
+	 ///debug
+	 //assign  i_current_out = ( {{14{i_postsyn_I[17]}}, i_postsyn_I[17:0]} + {{14{i_synI_rand[17]}}, i_synI_rand[17:0]} ) * i_gain_MN;
+	 //wire signed [17:0] i_init_current = i_postsyn_I[17:0] + i_synI_rand[17:0];
+	 
+	 wire signed [17:0] i_temp = i_synI_Ia[17:0];
+	 wire signed [17:0] i_init_current = i_temp + i_synI_rand;
+	 wire signed [17:0] i_gain_MN18 = {i_gain_MN[31], i_gain_MN[16:0]};
+	 wire signed [35:0] i_current36 = i_init_current * i_gain_MN18;
+	 
+	 reg [17:0] i_current_out18;
+	 always @(posedge neuron_clk or posedge reset_sim) begin
+		if (reset_sim) begin
+			i_current_out18 <= 18'd0;
+		end
+		else begin
+			i_current_out18 <= {i_current36[35],i_current36[16:0]};
+		end
+	 end
+	 assign  i_current_out = {{14{i_current_out18[17]}}, i_current_out18[16:0]};
+	 assign i_gain_MN_used = {{14{i_gain_MN18[17]}}, i_gain_MN18[17:0]};
+	 
+	 
+	 assign i_synI_rand_out =  {{14{1'b0}}, i_synI_rand[17:0]};
+	 assign i_postsyn_I_out = {{14{i_postsyn_I[17]}},i_postsyn_I[17:0]};
 
-	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, (i_postsyn_I[17:0])* i_gain_MN[17:0] , neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
+	Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_current_out18 , neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
     
     //reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
 	always @(negedge neuron_clk) spkid_MN <= {1'b0, neuronIndex[NN:2], MN_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};

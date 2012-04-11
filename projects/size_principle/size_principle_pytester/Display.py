@@ -123,7 +123,7 @@ class View(QMainWindow, Ui_Dialog):
 
         for ch in ch_all:
             self.pen.setStyle(Qt.SolidLine)
-            self.pen.setWidth(3)
+            self.pen.setWidth(2)
             self.pen.setBrush(ch.color)
             self.pen.setCapStyle(Qt.RoundCap)
             self.pen.setJoinStyle(Qt.RoundJoin)
@@ -150,4 +150,4 @@ class View(QMainWindow, Ui_Dialog):
         """
         # TODO: not implemented yet
         for ch in self.ch_all:
-            ch.vscale = 50.0 / max(ch.data)
+            ch.vscale = 50.0 / (max(ch.data)+1)
