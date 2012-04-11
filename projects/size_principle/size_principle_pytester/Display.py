@@ -75,6 +75,8 @@ class View(QMainWindow, Ui_Dialog):
     def newDataIO(self, newData, newSpike = ''):
         for ch, pt in zip(self.ch_all, newData):
             ch.data.appendleft(pt)
+            ch.label.setText("%4.2f" % pt)      
+
         self.spike = newSpike
 
     def onTimeOut(self):
@@ -133,7 +135,6 @@ class View(QMainWindow, Ui_Dialog):
         size = self.size()
 
         for ch in ch_all:
-            ch.label.setText("%4.2f" % ch.data[0])      
             self.pen.setStyle(Qt.SolidLine)
             self.pen.setWidth(2)
             self.pen.setBrush(ch.color)
