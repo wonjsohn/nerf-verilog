@@ -278,8 +278,9 @@ module size_principle_xem6010(
 	assign i_MN_spkcnt_combined = i_MN_spkcnt_big_mu;	 
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_actstate_bic, f_MN_spkcnt_bic; 
+	 wire 	[63:0] t_spkcnt = i_MN_spkcnt_combined*gain;
     shadmehr_muscle biceps
-    (   .spike_cnt(i_MN_spkcnt_combined*gain),
+    (   .spike_cnt(t_spkcnt[31:0]),
         .pos(f_len_bic),  // muscle length
         //.vel(current_vel),
         .vel(32'd0),
@@ -293,11 +294,11 @@ module size_principle_xem6010(
     
     // *** EMG
     wire [17:0] si_emg;
-//    emg #(.NN(NN)) biceps_emg
-//    (   .emg_out(si_emg), 
-//        .i_spk_cnt(i_MN_spkcnt_combined[NN:0]), 
-//        .clk(sim_clk), 
-//        .reset(reset_sim) );
+    emg #(.NN(NN)) biceps_emg
+    (   .emg_out(si_emg), 
+        .i_spk_cnt(i_MN_spkcnt_combined[NN:0]), 
+        .clk(sim_clk), 
+        .reset(reset_sim) );
     
     
     wire [31:0] i_emg;
