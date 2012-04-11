@@ -21,7 +21,7 @@ CH_TYPE = list(zip(*CHIN_PARAM)[3])
                 
 #            trig_id    name          type          default_value                
 CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      3.0), \
-                (2, 'tau',  'float32',      0.05), \
+                (2, 'tau',  'float32',      0.45), \
                 (3, 'close_loop',   'int32',        0), \
                 (4, 'gamma_dyn',    'float32',      80.0), \
                 (5, 'gamma_sta',    'float32',      80.0), \
