@@ -122,7 +122,7 @@ output reg signed [17:0] w1_out, w2_out;
 	Iz_neuron #(.NN(NN),.DELAY(15)) neuM1(v4,s4, a2,b,c,d, neu4In, neuronClock, neuronReset, neuronIndex, neuronWriteEnable, readClock, 4'h2, M1);
 	// cross-connections  (need to include delays)
 							
-	//this version using probability inputssigne
+	//this version using probability inputs
 	//             Neuron   input weight      input weight	randomInput			timeConstant
 	assign Ia_drive = ({2'b00,lfsr[15:0]} < Ia_bias) ? 1'b1 : 1'b0;
 	assign M1_drive = ({2'b00,lfsr4[15:0]} < M1_bias) ? 1'b1 : 1'b0;
