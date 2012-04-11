@@ -62,7 +62,7 @@ bram_2048 block_ram (
   .clkb(pop_clk), // input clkb
   .web(1'b0), // input [0 : 0] web
   .addrb(pop_addr), // input [10 : 0] addrb
-  .dinb(31'd0), // input [31 : 0] dinb
+  .dinb(32'd0), // input [31 : 0] dinb
   .doutb(wave) // output [31 : 0] doutb
 );
 /*
