@@ -19,17 +19,28 @@ PIXEL_OFFSET = 200 # pixels offsets
 from Ui_Display import Ui_Dialog
 
 class ViewChannel:
-    def __init__(self, dialog, name, id, width = 2, color = 'Qt.blue'):
+    def __init__(self, hostDialog, name, id, width = 2, color = 'Qt.blue'):
         exec interp('self.id = #{id}')
         exec interp('self.width = #{width}')
         exec interp('self.color = #{color}')
         exec interp('self.vscale = 0.0')
         exec interp('self.yoffset = 1.0')
         exec interp('self.data = deque([0]*100, maxlen=100)')
-        exec interp('self.slider = QtGui.QSlider(dialog)')
+        exec interp('self.slider = QtGui.QSlider(hostDialog)')
         exec interp('self.slider.setGeometry(QtCore.QRect(100, 130+#{id}*100, 29, 100))')
         exec interp('self.slider.setOrientation(QtCore.Qt.Vertical)')
         exec interp('self.slider.setObjectName("gain_#{name}")')
+        
+
+        exec interp('self.label = QtGui.QLabel(hostDialog)')
+        exec interp('pal = self.label.palette()')        
+        exec interp('pal.setColor( QtGui.QPalette.Foreground, #{color} )')        
+        exec interp('self.label.setPalette(pal)')        
+        exec interp('self.label.setObjectName("label_#{name}")')
+        exec interp('self.label.setText("#{name}")')        
+        exec interp('self.label.setGeometry(QtCore.QRect(10, 90+#{id}*100, 30, 100))')
+        exec interp('self.label.show()')        
+
 
 class View(QMainWindow, Ui_Dialog):
     """
@@ -52,7 +63,7 @@ class View(QMainWindow, Ui_Dialog):
         # Create a gain_slider for each channel
         self.ch_all = []
         for (addr, name, visual_gain, type, color), i in zip(CHIN_PARAM, xrange(NUM_CHANNEL)):
-            exec interp('self.ch_#{name} = ViewChannel(dialog=self, name=name, id=i, color = color)')
+            exec interp('self.ch_#{name} = ViewChannel(hostDialog=self, name=name, id=i, color = color)')
             exec interp('self.connect(self.ch_#{name}.slider, SIGNAL("valueChanged(int)"), self.onChInGain)')
             exec interp('self.ch_all.append(self.ch_#{name})')
 
@@ -122,12 +133,14 @@ class View(QMainWindow, Ui_Dialog):
         size = self.size()
 
         for ch in ch_all:
+            ch.label.setText("%4.2f" % ch.data[0])      
             self.pen.setStyle(Qt.SolidLine)
             self.pen.setWidth(2)
             self.pen.setBrush(ch.color)
             self.pen.setCapStyle(Qt.RoundCap)
             self.pen.setJoinStyle(Qt.RoundJoin)
             qp.setPen(self.pen)
+
 
             yOffset = int(size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * ch.id)
             y0 = yOffset - ch.data[1] * ch.vscale
