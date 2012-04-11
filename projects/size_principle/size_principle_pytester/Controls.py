@@ -105,7 +105,7 @@ class User(QDialog, Ui_Dialog):
                 ctrl.currValue = newWireIn
                 if (ctrl.type == 'int32'):
                     bitVal = ConvertType(floor(newWireIn),  fromType = 'i',  toType = 'I')
-                    print bitVal
+#                    print bitVal
                 elif (ctrl.type == 'float32'):
                     bitVal = ConvertType(newWireIn, fromType = 'f', toType = 'I')
                 self.nerfModel.SendPara(bitVal = bitVal, trigEvent = ctrl.id)
