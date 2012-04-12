@@ -14,7 +14,7 @@ CHIN_PARAM =    (0x20,      'f_bicepsfr_Ia',      50,         'float32',      'Q
                 (0x24,      'f_force_bic_small_mu',      1.0,         'float32',      'Qt.green'),  \
                 (0x26,      'f_force_bic_med_mu',      1.0,         'float32',      'Qt.black'),  \
                 (0x28,      'f_force_bic_big_mu',      1.0,         'float32',      'Qt.gray'),   \
-                (0x30,      'i_current_small_mu_out',     1.0,         'int32',      'Qt.blue')
+                (0x30,      'f_force_bic_combined_mu',     1.0,         'float32',      'Qt.blue')
 NUM_CHANNEL = len(CHIN_PARAM) # Number of channels
 DATA_OUT_ADDR = list(zip(*CHIN_PARAM)[0])
 CH_TYPE = list(zip(*CHIN_PARAM)[3])

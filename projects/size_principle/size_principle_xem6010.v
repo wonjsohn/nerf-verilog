@@ -404,6 +404,26 @@ module size_principle_xem6010(
 		  .tau(tau)
     );       
     
+//	 //*** Combined muscle Force. 
+    wire    [31:0]  f_force_bic_combined_mu;
+//    wire    [31:0]  f_actstate_bic_combined_mu, f_MN_spkcnt_bic_combined_mu; 
+//	 wire 	[63:0] t_spkcnt_combined_mu = i_MN_spkcnt_combined*gain;
+//    shadmehr_muscle biceps_combined_mu
+//    (   .spike_cnt(t_spkcnt_combined_mu[31:0]),
+//        .pos(f_len_bic),  // muscle length
+//        //.vel(current_vel),
+//        .vel(32'd0),
+//        .clk(sim_clk),
+//        .reset(reset_sim),
+//        .total_force_out(f_force_bic_combined_mu),
+//        .current_A(f_actstate_bic_combined_mu),
+//        .current_fp_spikes(f_MN_spkcnt_bic_combined_mu),
+//		  .tau(tau)
+//    );       
+	 wire signed [31:0] f_force_bic_bigmed_mu;
+	 add add_bm(.x(f_force_bic_big_mu), .y(f_force_bic_med_mu), .out(f_force_bic_bigmed_mu));
+	 add add_bms(.x(f_force_bic_bigmed_mu), .y(f_force_bic_small_mu), .out(f_force_bic_combined_mu));
+	 
     // *** EMG
     wire [17:0] si_emg;
     emg #(.NN(NN)) biceps_emg
@@ -470,8 +490,8 @@ module size_principle_xem6010(
     okWireOut    wo27 (.ep_datain(f_force_bic_med_mu[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
     okWireOut    wo28 (.ep_datain(f_force_bic_small_mu[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
     okWireOut    wo29 (.ep_datain(f_force_bic_small_mu[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
-    okWireOut    wo30 (.ep_datain(i_current_small_mu_out[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
-    okWireOut    wo31 (.ep_datain(i_current_small_mu_out[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
+    okWireOut    wo30 (.ep_datain(f_force_bic_combined_mu[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
+    okWireOut    wo31 (.ep_datain(f_force_bic_combined_mu[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
