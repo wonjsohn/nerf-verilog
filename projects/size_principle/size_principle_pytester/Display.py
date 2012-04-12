@@ -110,7 +110,7 @@ class View(QMainWindow, Ui_Dialog):
         size = self.size()
         winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 4;
         self.pen.setStyle(Qt.SolidLine)
-        self.pen.setWidth(2)
+        self.pen.setWidth(5)
         self.pen.setBrush(Qt.blue)
         self.pen.setCapStyle(Qt.RoundCap)
         self.pen.setJoinStyle(Qt.RoundJoin)
@@ -125,8 +125,8 @@ class View(QMainWindow, Ui_Dialog):
                                  self.x, (winScale) -  22)
             if (rawspikes & 128) : ## MN
 #                gp.drawPoint(self.x, (winScale) - 24 - (neuronID/4)   ) 
-                gp.drawLine(self.x-2,(winScale) - 25 - (neuronID/4) ,\
-                                 self.x, (winScale) - 22 - (neuronID/4) )
+                gp.drawLine(self.x-2,(winScale) - 22 - (neuronID/4)*0 ,\
+                                 self.x, (winScale) - 24 - (neuronID/4) *0)
 
     def drawPoints(self, qp, ch_all):
         """ 

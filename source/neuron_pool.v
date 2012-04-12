@@ -151,12 +151,12 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
             .reset(reset_sim),
             .out(rand_out)
     );    
-    wire signed [17:0] i_synI_rand = {{14{1'b0}},rand_out[3:0]};
+    wire signed [17:0] i_synI_rand = {{13{1'b0}},rand_out[4:0]};
 	 ///debug
 	 //assign  i_current_out = ( {{14{i_postsyn_I[17]}}, i_postsyn_I[17:0]} + {{14{i_synI_rand[17]}}, i_synI_rand[17:0]} ) * i_gain_MN;
 	 //wire signed [17:0] i_init_current = i_postsyn_I[17:0] + i_synI_rand[17:0];
 	 
-	 wire signed [17:0] i_temp = i_synI_Ia[17:0];
+	 wire signed [17:0] i_temp = {i_synI_Ia[31], i_synI_Ia[16:0]};
 	 wire signed [17:0] i_init_current = i_temp + i_synI_rand;
 	 wire signed [17:0] i_gain_MN18 = {i_gain_MN[31], i_gain_MN[16:0]};
 	 wire signed [35:0] i_current36 = i_init_current * i_gain_MN18;
