@@ -36,10 +36,10 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     output  wire MN_spike,
     output  reg [15:0] spkid_MN,
 	 // debug
-	 output wire signed  [31:0] i_current_out,
-	 output wire signed [31:0] i_synI_rand_out,
-	 output wire signed [31:0] i_postsyn_I_out,
-	 output wire signed [31:0] i_gain_MN_used
+	 output wire signed  [31:0] i_current_out
+	 //output wire signed [31:0] i_synI_rand_out,
+	 //output wire signed [31:0] i_postsyn_I_out,
+	 //output wire signed [31:0] i_gain_MN_used
     );
 
     parameter NN = 8; // 2^(NN+1) = NUM_NEURON
@@ -170,6 +170,10 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 			i_current_out18 <= {i_current36[35],i_current36[16:0]};
 		end
 	 end
+	 
+	 wire signed [31:0] i_synI_rand_out;
+	 wire signed [31:0] i_postsyn_I_out;
+	 wire signed [31:0] i_gain_MN_used;
 	 assign  i_current_out = {{14{i_current_out18[17]}}, i_current_out18[16:0]};
 	 assign i_gain_MN_used = {{14{i_gain_MN18[17]}}, i_gain_MN18[17:0]};
 	 
