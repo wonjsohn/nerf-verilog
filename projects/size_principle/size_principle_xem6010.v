@@ -425,18 +425,32 @@ module size_principle_xem6010(
 	 add add_bms(.x(f_force_bic_bigmed_mu), .y(f_force_bic_small_mu), .out(f_force_bic_combined_mu));
 	 
     // *** EMG
-    wire [17:0] si_emg;
-    emg #(.NN(NN)) biceps_emg
-    (   .emg_out(si_emg), 
+    wire [17:0] si_emg_big;
+    emg #(.NN(NN)) emg_big
+    (   .emg_out(si_emg_big), 
         .i_spk_cnt(i_MN_spkcnt_big_mu[NN:0]), 
         .clk(sim_clk), 
-        .reset(reset_sim) );
-    
-    
-    wire [31:0] i_emg;
-    assign i_emg = {{14{si_emg[17]}},si_emg[17:0]};
+        .reset(reset_sim) ); 
+    wire [31:0] i_emg_big;
+    assign i_emg_big = {{14{si_emg_big[17]}},si_emg_big[17:0]};
 
-
+    wire [17:0] si_emg_med;
+    emg #(.NN(NN)) emg_med
+    (   .emg_out(si_emg_med), 
+        .i_spk_cnt(i_MN_spkcnt_med_mu[NN:0]), 
+        .clk(sim_clk), 
+        .reset(reset_sim) ); 
+    wire [31:0] i_emg_med;
+    assign i_emg_med = {{14{si_emg_med[17]}},si_emg_med[17:0]};
+	 
+    wire [17:0] si_emg_small;
+    emg #(.NN(NN)) emg_small
+    (   .emg_out(si_emg_small), 
+        .i_spk_cnt(i_MN_spkcnt_small_mu[NN:0]), 
+        .clk(sim_clk), 
+        .reset(reset_sim) );     
+    wire [31:0] i_emg_small;
+    assign i_emg_small = {{14{si_emg_small[17]}},si_emg_small[17:0]};
     
  // ** LEDs
     assign led[0] = ~reset_global;
@@ -471,7 +485,7 @@ module size_principle_xem6010(
         .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
         .ok1(ok1), .ok2(ok2));
         
-    parameter NUM_OK_IO = 14;
+    parameter NUM_OK_IO = 21;
     wire [NUM_OK_IO*17 - 1: 0]  ok2x;    
     okWireOR # (.N(NUM_OK_IO)) wireOR (ok2, ok2x);
     
@@ -492,10 +506,18 @@ module size_principle_xem6010(
     okWireOut    wo29 (.ep_datain(f_force_bic_small_mu[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
     okWireOut    wo30 (.ep_datain(f_force_bic_combined_mu[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
     okWireOut    wo31 (.ep_datain(f_force_bic_combined_mu[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
+    okWireOut    wo32 (.ep_datain(i_emg_big[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
+    okWireOut    wo33 (.ep_datain(i_emg_big[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );
+    okWireOut    wo34 (.ep_datain(i_emg_med[15:0]),  .ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h34) );
+    okWireOut    wo35 (.ep_datain(i_emg_med[31:16]), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'h35) );
+    okWireOut    wo36 (.ep_datain(i_emg_small[15:0]),  .ok1(ok1), .ok2(ok2x[ 16*17 +: 17 ]), .ep_addr(8'h36) );
+    okWireOut    wo37 (.ep_datain(i_emg_small[31:16]), .ok1(ok1), .ok2(ok2x[ 17*17 +: 17 ]), .ep_addr(8'h37) );
     //ep_ready = 1 (always ready to receive)
-    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
+    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 18*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
-    okBTPipeOut  epA1 (.ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_big_mu), .ep_ready(1'b1));
+    okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 19*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_big_mu), .ep_ready(1'b1));
+    okBTPipeOut  epA1 (.ok1(ok1), .ok2(ok2x[ 20*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_med_mu), .ep_ready(1'b1));
+    okBTPipeOut  epA2 (.ok1(ok1), .ok2(ok2x[ 21*17 +: 17 ]), .ep_addr(8'ha2), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_small_mu), .ep_ready(1'b1));
 
     okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
 endmodule
