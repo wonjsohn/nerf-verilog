@@ -83,11 +83,11 @@ class User(QDialog, Ui_Dialog):
 #                newData[i] = newData[i] / 100
             newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(xaddr, xtype))))
             
-        newSpike1 = self.nerfModel.ReadPipe(0xA0, 5000) # read ## bytes
-        newSpike2 = self.nerfModel.ReadPipe(0xA1, 5000) # read ## bytes
-        newSpike3 = self.nerfModel.ReadPipe(0xA2, 5000) # read ## bytes
-        newSpike4 = self.nerfModel.ReadPipe(0xA3, 5000) # read ## bytes
-        newSpike5 = self.nerfModel.ReadPipe(0xA4, 5000) # read ## bytes
+        newSpike1 = self.nerfModel.ReadPipe(0xA0, 2000) # read ## bytes
+        newSpike2 = self.nerfModel.ReadPipe(0xA1, 2000) # read ## bytes
+        newSpike3 = self.nerfModel.ReadPipe(0xA2, 2000) # read ## bytes
+        newSpike4 = self.nerfModel.ReadPipe(0xA3, 2000) # read ## bytes
+        newSpike5 = self.nerfModel.ReadPipe(0xA4, 2000) # read ## bytes
         #newSpike = "" # read ## bytes
         
         self.dispView.newDataIO(newData, [newSpike1, newSpike2, newSpike3, newSpike4, newSpike5])

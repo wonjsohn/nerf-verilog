@@ -269,7 +269,7 @@ module Iz_neuron(out,spike_delayed,a,b,c,d,I,clk,reset,idx, enable, read, tau, s
 									.wren(enable), .q1(spike_list_mem), .q2(epsp_mem));
 
 	assign out = v1_mem;
-	assign spike = ((v1_mem > p)&&~neuronWriteCount) ? 1'b1 : 1'b0;
+	assign spike = ((v1_mem > p)&&~clk) ? 1'b1 : 1'b0;
 	assign spikes = spike_list_mem;
 	assign u1 = u1_mem;
 	assign v1 = out;  //to use single-step integration
@@ -289,7 +289,7 @@ module Iz_neuron(out,spike_delayed,a,b,c,d,I,clk,reset,idx, enable, read, tau, s
 	
 	assign c14 = 18'sh1_6666; // 1.4
 	signed_mult v1sq(v1xv1, v1, v1);
-	assign v1new = v1 + (v1xv1<<<2) + v1+(v1<<<2) + c14 - u1 + I; //I;  //1msec sample (no dt term)
+	assign v1new = v1 + (v1xv1<<<2) + v1+(v1<<<2) + c14 - u1 + epsp_mem; //I;  //1msec sample (no dt term)
 		
 	// u1(n+1) = u1 + dt*a*(b*v1(n) - u1(n))
 	assign v1xb = v1>>>b;         //mult (v1xb, v1, b);
