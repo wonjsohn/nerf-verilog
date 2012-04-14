@@ -36,7 +36,7 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     output  wire MN_spike,
     output  wire [15:0] spkid_MN,
 	 // debug
-	 output wire signed  [31:0] i_current_out,
+	 output reg  [31:0] i_current_out,
 	 output wire signed [31:0] i_synI_rand_out,
 	 output wire signed [31:0] i_postsyn_I_out,
 	 output wire signed [31:0] i_gain_MN_used
@@ -110,27 +110,25 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
             .reset(reset_sim),
             .out(rand_out)
     );    
-    wire signed [17:0] i_synI_rand = {{14{1'b0}},rand_out[3:0]};
+    wire signed [31:0] i_synI_rand = {{26{1'b0}},rand_out[5:0]};
 	 ///debug
 	 //assign  i_current_out = ( {{14{i_postsyn_I[17]}}, i_postsyn_I[17:0]} + {{14{i_synI_rand[17]}}, i_synI_rand[17:0]} ) * i_gain_MN;
 	 //wire signed [17:0] i_init_current = i_postsyn_I[17:0] + i_synI_rand[17:0];
 	 
-	 wire signed [17:0] i_temp = i_synI_Ia[17:0];
-	 wire signed [17:0] i_init_current = i_temp + i_synI_rand;
-	 wire signed [17:0] i_gain_MN18 = {i_gain_MN[31], i_gain_MN[16:0]};
-	 wire signed [35:0] i_current36 = i_init_current * i_gain_MN18;
+	 //wire signed [31:0] i_init_current = {i_synI_Ia[31:5], i_synI_rand[4:0]};
+	 wire signed [31:0] i_init_current = i_synI_Ia + i_synI_rand;
+	 wire signed [63:0] i_current64 = i_init_current * i_gain_MN;
 	 
-	 reg [17:0] i_current_out18;
+	 //reg [31:0] i_current_out;
 	 always @(posedge neuron_clk or posedge reset_sim) begin
 		if (reset_sim) begin
-			i_current_out18 <= 18'd0;
+			i_current_out <= 32'd0;
 		end
 		else begin
-			i_current_out18 <= {i_current36[35],i_current36[16:0]};
+			i_current_out <= {i_current64[63],i_current64[30:0]};
 		end
 	 end
-	 assign  i_current_out = {{14{i_current_out18[17]}}, i_current_out18[16:0]};
-	 assign i_gain_MN_used = {{14{i_gain_MN18[17]}}, i_gain_MN18[17:0]};
+	 //assign i_gain_MN_used = {{14{i_gain_MN18[17]}}, i_gain_MN18[17:0]};
 	 
 	 
 	 assign i_synI_rand_out =  {{14{1'b0}}, i_synI_rand[17:0]};
