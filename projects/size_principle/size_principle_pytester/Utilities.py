@@ -20,12 +20,12 @@ DATA_OUT_ADDR = list(zip(*CHIN_PARAM)[0])
 CH_TYPE = list(zip(*CHIN_PARAM)[3])
                 
 #            trig_id    name          type          default_value                
-CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      3.0), \
+CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      0.1), \
                 (2, 'tau',  'float32',      0.45), \
                 (3, 'close_loop',   'int32',        0), \
                 (4, 'gamma_dyn',    'float32',      80.0), \
                 (5, 'gamma_sta',    'float32',      80.0), \
-                (6, 'gain_MN',      'int32',        8)
+                (6, 'gain_MN',      'int32',        79.0)
                 
 SEND_TYPE = list(zip(*CHOUT_PARAM)[2])   
 
