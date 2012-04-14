@@ -296,7 +296,7 @@ module size_principle_xem6010(
     wire [17:0] si_emg;
     emg #(.NN(NN)) biceps_emg
     (   .emg_out(si_emg), 
-        .i_spk_cnt(i_MN_spkcnt_combined[NN:0]), 
+        .i_spk_cnt(i_MN_spkcnt_combined[NN:0] <<< 2), 
         .clk(sim_clk), 
         .reset(reset_sim) );
     

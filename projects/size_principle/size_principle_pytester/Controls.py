@@ -140,7 +140,7 @@ class User(QDialog, Ui_Dialog):
         elif choice == "Spike Train 20Hz":
 #            pipeInData = gen_tri() 
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.1, 1.1, 1.0, 1.0], FILT = False)
-            pipeInData = gen_ramp(T = [0.0, 0.2, 0.8, 1.2,  1.8,  2.0], L = [0,  0,  2000, 2000, 0, 0], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.2, 0.8, 1.2,  1.8,  2.0], L = [0,  0,  1500, 1500, 0, 0], FILT = False)
 #            pipeInData = spike_train(firing_rate = 100) 
         
         self.nerfModel.SendPipe(pipeInData)
