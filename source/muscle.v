@@ -62,34 +62,30 @@ module fuglevand_twitch(x_i1, x_i2, y_i1, y_i2, y_i, tau);
 	 wire signed [31:0] t1, t2, t3, t4;
 	 wire [31:0] t1_2, t3_4;
 	 
-	 input [31:0] tau;  // contraction time ~in < 100ms
-	 wire signed [31:0] A_twitch, euler_e, P_unscaled, P, T_twitch;
-	 wire signed [31:0] Pe, T_div_tau, neg_T_div_tau, neg_2a, A_twitch_sq, neg1, neg2, TA, PeTA, PeTA_div_tau;
+	 input [31:0] tau;
+	 wire signed [31:0] A_twitch, euler_e, P, T_twitch;
+	 wire signed [31:0] Pe, neg_recip_tau, neg_2a, A_twitch_sq, neg1, neg2, TA, PeTA, PeTA_div_tau;
 	 
 	 assign T_twitch = 32'h3A83126F; // 0.001
 	 assign euler_e = 32'h402DF3B6; //2.718
 	 assign P = 32'h3F800000; // 1 (arbitary)
 	 assign neg1 = 32'hBF800000;  // -1
-	 assign neg2 = 32'hC0000000; //-2
-	 
-	 //assign P = P_unscaled <<< 10;
 	 
 	 
-	 div div_fuglevand1(.x(T_twitch), .y(tau), .out(T_div_tau));  //   T/tau
-	 mult mult_neg(.x(neg1), .y(T_div_tau), .out(neg_T_div_tau)); //  -T/tau
-	 exp exp_fuglevand(.x(neg_T_div_tau), .out(A_twitch));    //       A_twitch ~= e^(-T/tau)
+	 div div_fuglevand1(.x(neg1), .y(tau), .out(neg_recip_tau));  // -1/tau
+	 exp exp_fuglevand(.x(neg_recip_tau), .out(A_twitch));    // A_twitch ~= e^(-1/tau)
 	 
 	 mult mult_fuglevand1(.x(P), .y(euler_e), .out(Pe));
 	 mult mult_fuglevand2(.x(T_twitch), .y(A_twitch), .out(TA));
 	 mult mult_fuglevand3(.x(Pe), .y(TA), .out(PeTA));  
 	 
-	 div  div_fuglevand2(.x(PeTA), .y(tau), .out(PeTA_div_tau));  // PeTA/ tau
+	 div  div_fuglevand2(.x(PeTA), .y(tau), .out(PeTA_div_tau));  // PeTa/ tau
 	 
 	 
 	 mult mult_fublevanda1(.x(A_twitch), .y(neg2), .out(neg_2a));   // -2a
 	 mult mult_fuglevanda2(.x(A_twitch), .y(A_twitch), .out(A_twitch_sq)); // a^2
 	  
-	 assign b1 = PeTA_div_tau; //
+	 assign b1 = PeTA_div_tau; //2 
     assign b2 = 32'h0; // 0  
 	 assign a0 = 32'h3F800000; //1.0
     assign a1 = neg_2a; // 
@@ -104,12 +100,10 @@ module fuglevand_twitch(x_i1, x_i2, y_i1, y_i2, y_i, tau);
 	 mult mult3(.x(a1), .y(y_i1), .out(t3));
 	 mult mult4(.x(a2), .y(y_i2), .out(t4));
 
-	 wire signed [31:0] y_i_raw; 
     //assign y_i = t1 + t2 - t3 - t4;
 	 add	add1(.x(t1), .y(t2), .out(t1_2));
 	 add	add2(.x(t3), .y(t4), .out(t3_4));
 	 sub 	sub1(.x(t1_2), .y(t3_4), .out(y_i));
-	 //assign y_i = y_i_raw <<< 5;   // multiply by 64
 	 
 endmodule
 
