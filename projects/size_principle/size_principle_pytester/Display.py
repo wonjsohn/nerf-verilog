@@ -120,13 +120,11 @@ class View(QMainWindow, Ui_Dialog):
             neuronID = spikeSeq[i+1]
             rawspikes = spikeSeq[i]
             ## flexors
-            if (rawspikes & 64) : ## Ia
-                gp.drawLine(self.x-2,(winScale) - 22 ,\
-                                 self.x, (winScale) -  22)
             if (rawspikes & 128) : ## MN
 #                gp.drawPoint(self.x, (winScale) - 24 - (neuronID/4)   ) 
                 gp.drawLine(self.x-2,(winScale) - 25 - (neuronID/4) ,\
                                  self.x, (winScale) - 22 - (neuronID/4) )
+            #print spikeSeq[i],  
 
     def drawPoints(self, qp, ch_all):
         """ 

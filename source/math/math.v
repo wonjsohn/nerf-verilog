@@ -323,3 +323,23 @@ module pow_25( 	output wire [31:0] out,
 	rsqrt rsqrt2(out, inv_sqrt);
 
 endmodule
+
+
+///////////////////////////////////////////////
+// same, but give full 32-bit output with same normalization
+// this is equivalent to a 2.34 format 2'comp
+//////////////////////////////////////////////
+module signed_mult32 (out, a, b);
+
+	output 	signed	[31:0]	out;
+	input 	signed	[31:0] 	a;
+	input 	signed	[31:0] 	b;
+	
+	wire 	signed	[31:0]	mult_out, out;
+    wire    signed  [15:0]  short_a, short_b;
+
+    assign short_a = {a[31], a[14:0]};
+    assign short_b = {b[31], b[14:0]};
+	assign mult_out = short_a * short_b;
+    assign out = (mult_out[31] == (a[31] ^ b[31]))? mult_out : 32'b0; 
+endmodule
