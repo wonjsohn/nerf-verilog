@@ -246,7 +246,7 @@ module size_principle_xem6010(
 	 wire signed [31:0] i_current_out;
 	 wire signed[ 31:0] i_synI_rand_out;
 	 wire signed [31:0] i_synI_Ia_out;
-	 wire signed [31:0] i_gain_MN_used;
+	 wire [31:0] f_rand_Ia, f_randn, f_fr_Ia;
 	 
     neuron_pool #(.NN(NN)) big_pool
     (   //input
@@ -262,9 +262,9 @@ module size_principle_xem6010(
         .MN_spike(MN_spk_big_mu), 
         .spkid_MN(spkid_MN_big_mu),
 		.i_current_out(i_current_out),
-		.i_synI_rand_out(i_synI_rand_out),
-		.i_synI_Ia_out(i_synI_Ia_out),
-		.i_gain_MN_used(i_gain_MN_used)
+		.out2(f_rand_Ia),
+		.out3(f_randn),
+		.out4(f_fr_Ia)
     );     
     wire    [31:0] i_MN_spkcnt_big_mu;
     wire    dummy_slow_big;        
@@ -354,14 +354,14 @@ module size_principle_xem6010(
     okWireOut    wo21 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
     okWireOut    wo22 (.ep_datain(i_MN_spkcnt_combined[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
     okWireOut    wo23 (.ep_datain(i_MN_spkcnt_combined[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-    okWireOut    wo24 (.ep_datain(f_force_bic[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-    okWireOut    wo25 (.ep_datain(f_force_bic[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo24 (.ep_datain(f_fr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(f_fr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
     okWireOut    wo26 (.ep_datain(i_current_out[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
     okWireOut    wo27 (.ep_datain(i_current_out[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-    okWireOut    wo28 (.ep_datain(i_synI_rand_out[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
-    okWireOut    wo29 (.ep_datain(i_synI_rand_out[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
-    okWireOut    wo30 (.ep_datain(i_synI_Ia_out[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
-    okWireOut    wo31 (.ep_datain(i_synI_Ia_out[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
+    okWireOut    wo28 (.ep_datain(f_rand_Ia[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
+    okWireOut    wo29 (.ep_datain(f_rand_Ia[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
+    okWireOut    wo30 (.ep_datain(f_randn[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
+    okWireOut    wo31 (.ep_datain(f_randn[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));

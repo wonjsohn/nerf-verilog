@@ -331,15 +331,61 @@ endmodule
 //////////////////////////////////////////////
 module signed_mult32 (out, a, b);
 
-	output 	signed	[31:0]	out;
+	output 	reg	[31:0]	out;
 	input 	signed	[31:0] 	a;
 	input 	signed	[31:0] 	b;
 	
-	wire 	signed	[31:0]	mult_out, out;
-    wire    signed  [15:0]  short_a, short_b;
+	wire 	signed	[63:0]	y;
 
-    assign short_a = {a[31], a[14:0]};
-    assign short_b = {b[31], b[14:0]};
-	assign mult_out = short_a * short_b;
-    assign out = (mult_out[31] == (a[31] ^ b[31]))? mult_out : 32'b0; 
+//    assign short_a = {a[31], a[14:0]};
+//    assign short_b = {b[31], b[14:0]};
+	assign y[63:0] = a * b;
+    always @(*) begin
+        if ( y[63:32] != 32'h0 || y[63:32] != 32'hFFFF_FFFF) begin
+            out <= {y[63], {31{~y[63]}}};
+        end
+        else begin
+            out <=  y[31:0];
+        end
+    end
 endmodule
+
+//module fp_normalize (a, out);
+//    input wire [31:0] a;
+//    output  wire [31:0] out;
+//
+//    wire [7:0] fp_shift;
+//    wire [22:0] fp_mantissa;
+//    wire [7:0] fp_exp;
+//
+//    assign fp_shift =   (a[22] ? 8'd1
+//                      : (a[21] ? 8'd2
+//                      : (a[20] ? 8'd3
+//                      : (a[19] ? 8'd4
+//                      : (a[18] ? 8'd5
+//                      : (a[17] ? 8'd6
+//                      : (a[16] ? 8'd7
+//                      : (a[15] ? 8'd8
+//                      : (a[14] ? 8'd9
+//                      : (a[13] ? 8'd10
+//                      : (a[12] ? 8'd11
+//                      : (a[11] ? 8'd12
+//                      : (a[10] ? 8'd13
+//                      : (a[9] ? 8'd14
+//                      : (a[8] ? 8'd15
+//                      : (a[7] ? 8'd16
+//                      : (a[6] ? 8'd17
+//                      : (a[5] ? 8'd18
+//                      : (a[4] ? 8'd19
+//                      : (a[3] ? 8'd20
+//                      : (a[2] ? 8'd21
+//                      : (a[1] ? 8'd22
+//                      : (a[0] ? 8'd23
+//                      : 8'd0))))))))))))))))))))))); // this means the result is zero
+//
+//	
+//	    assign fp_exp = (a[30:23] > fp_shift) ? a[30:23] - fp_shift : 8'h0;
+//	    assign fp_mantissa = a[22:0] << fp_shift;
+//	    assign out = {a[31], fp_exp[7:0], fp_mantissa[22:0]};
+//endmodule 
+
