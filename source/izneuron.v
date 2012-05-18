@@ -145,7 +145,7 @@ module izneuron(
         if (reset) begin
             state <= 1;
             write <= 0;
-            I <= I_in;
+            I <= 0;
             neuron_index<=0;
         end else begin
             case(state)
@@ -169,26 +169,28 @@ module izneuron(
     // PERFORM READ/COMPUTE/WRITE CYCLE ON RAM CONTENTS
 
 
-wire reset_bar;
-assign reset_bar = ~reset;
-always @ (negedge clk or negedge reset_bar) begin
-    if (~reset_bar) begin
-       spike<=0;
-       first_pass <= 1;
-       v_out <= 0;
-    end else begin
-        if (state) begin
-            history[neuron_index] <= fired;
-            if (neuron_index == 7'h7f) begin
-                first_pass <= 0;
-                v_out <= v_mem_in;
-                spike <= fired;
-                //population <= {fired, history[126:0]};
+    wire reset_bar;
+    assign reset_bar = ~reset;
+    always @ (negedge clk or negedge reset_bar) begin
+        if (~reset_bar) begin
+           spike<=0;
+           first_pass <= 1;
+           v_out <= 0;
+           spkid <= 0;
+
+        end else begin
+            if (state) begin
+                history[neuron_index] <= fired;
                 spkid <= {1'b0, neuron_index[6:0], fired, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
+                if (neuron_index == 7'h7f) begin
+                    first_pass <= 0;
+                    v_out <= v_mem_in;
+                    spike <= fired;
+                    //population <= {fired, history[126:0]};
+                end
             end
         end
     end
-end
 
     
     neuron_ram u_ram (
