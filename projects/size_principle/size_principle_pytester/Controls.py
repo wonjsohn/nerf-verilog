@@ -83,11 +83,11 @@ class User(QDialog, Ui_Dialog):
 #                newData[i] = newData[i] / 100
             newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(xaddr, xtype))))
             
-        newSpike1 = self.nerfModel.ReadPipe(0xA0, 4000) # read ## bytes
-        newSpike2 = self.nerfModel.ReadPipe(0xA1, 4000) # read ## bytes
-        newSpike3 = self.nerfModel.ReadPipe(0xA2, 4000) # read ## bytes
-        newSpike4 = self.nerfModel.ReadPipe(0xA3, 4000) # read ## bytes
-        newSpike5 = self.nerfModel.ReadPipe(0xA4, 4000) # read ## bytes
+        newSpike1 = self.nerfModel.ReadPipe(0xA0, 5000) # read ## bytes
+        newSpike2 = self.nerfModel.ReadPipe(0xA1, 5000) # read ## bytes
+        newSpike3 = self.nerfModel.ReadPipe(0xA2, 5000) # read ## bytes
+        newSpike4 = self.nerfModel.ReadPipe(0xA3, 5000) # read ## bytes
+        newSpike5 = self.nerfModel.ReadPipe(0xA4, 5000) # read ## bytes
         #newSpike = "" # read ## bytes
         
         self.dispView.newDataIO(newData, [newSpike1, newSpike2, newSpike3, newSpike4, newSpike5])
@@ -145,7 +145,7 @@ class User(QDialog, Ui_Dialog):
         elif choice == "Spike Train 20Hz":
 #            pipeInData = gen_tri() 
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.1, 1.1, 1.0, 1.0], FILT = False)
-            pipeInData = gen_ramp(T = [0.0, 0.1, 1.8, 1.85,  1.9,  2.0], L = [0,  0,  150, 150, 0, 0], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 1.8, 1.85,  1.9,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)
 #            pipeInData = spike_train(firing_rate = 100) 
         
         self.nerfModel.SendPipe(pipeInData)

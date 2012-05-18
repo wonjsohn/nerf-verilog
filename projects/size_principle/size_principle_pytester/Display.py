@@ -165,4 +165,4 @@ class View(QMainWindow, Ui_Dialog):
         """
         # TODO: not implemented yet
         for ch in self.ch_all:
-            ch.vscale = 50.0 / (abs(max(ch.data)) + 1)
+            ch.vscale = 50.0 / (max(ch.data)+1)
