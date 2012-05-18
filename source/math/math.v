@@ -90,8 +90,8 @@ module fp_mult(out, mult_error, in1, in2);
 	assign err_test = {1'b0, exp1} + {1'b0, exp2} - {1'b0, shift} + 9'h02;	// check for exponent within limits
 
 	//error code: 01-overflow, 10-underflow, 00-no error
-	assign mult_error = (err_test > 9'h17d || (exp_out[7:0] == 8'hfe & prod > 48'h7fffff800000)) ? 2'b01 
-								: ((err_test < 9'h80 && shift !=0) || (exp_out[7:0] == 8'h01 & prod < 48'h400000000000)) ? 2'b10 
+	assign mult_error = (exp_out > 9'h0FE || (exp_out[7:0] == 8'hfe & prod > 48'h7fffff800000)) ? 2'b01 
+								: ((exp_out < 9'h001 && shift !=0) || (exp_out[7:0] == 8'h01 & prod < 48'h400000000000) || (exp_out < 9'h001)) ? 2'b10 
 								: 2'b00;
 
 endmodule
