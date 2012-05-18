@@ -75,16 +75,8 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     wire [31:0] f_randn_F0 = {12'h3F8, rand_out[19:0]};
     wire [31:0] f_rand_Ia_F0; 
     mult get_rand_Ia( .x(f_rawfr_Ia), .y(f_randn), .out(f_rand_Ia_F0));
-    wire [4:0] flag_rand_Ia;
-    //fpmul get_rand_Ia( .a(f_rawfr_Ia), .b(f_randn), .y(f_rand_Ia_F0), .control(5'h00), .flags(flag_rand_Ia));
-    //assign f_rand_Ia = {f_rawfr_Ia[31], {f_rawfr_Ia[30:23]}, i23_rand};    
-
 	mult scale_pps_Ia( .x(f_rand_Ia), .y(f_pps_coef_Ia), .out(f_fr_Ia_F0));
-    wire [4:0] flag_fr_Ia;
-    //fpmul scale_pps_Ia( .a(f_rand_Ia_F0), .b(f_pps_coef_Ia), .y(f_fr_Ia_F0), .control(5'h00), .flags(flag_fr_Ia));
-    
-	//mult scale_pps_Ia( .x(f_norm_Ia), .y(f_pps_coef_Ia), .out(f_fr_Ia));
-    
+        
     wire Ia_spike, s_Ia;
     
     wire signed [17:0] v_Ia;   // cell potentials
@@ -107,10 +99,6 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 
     wire signed [31:0] i_synI_Ia;
     floor float_to_int_Ia( .in(f_fr_Ia), .out(i_synI_Ia) );    
-	 ///debug
-	 //assign  i_current_out = ( {{14{i_postsyn_I[17]}}, i_postsyn_I[17:0]} + {{14{i_synI_rand[17]}}, i_synI_rand[17:0]} ) * i_gain_MN;
-	 //wire signed [17:0] i_init_current = i_postsyn_I[17:0] + i_synI_rand[17:0];
-	 
 
 	 //reg [31:0] i_current_out;
      reg    [31:0] f_fr_Ia, f_rand_Ia, f_randn;
@@ -131,10 +119,6 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
             f_randn <= f_randn_F0;
 		end
 	 end
-	 //assign i_gain_MN_used = {{14{i_gain_MN18[17]}}, i_gain_MN18[17:0]};
-	 
-	 
-	// assign i_synI_rand_out =  {{14{1'b0}}, i23_rand[17:0]};
 
 	//Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_current_out18 , neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
     wire [31:0] v;

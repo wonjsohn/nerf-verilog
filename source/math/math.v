@@ -24,8 +24,10 @@ input wire [31:0] x, y;
 output wire [31:0] out;
 wire [4:0] flags;
 
+// Core 1 fp_mult = In-house multiplier, by Sirish Nandyala
 fp_mult mult1(.in1(x), .in2(y), .out(out), .mult_error(flags) );
-
+// Core 2 fpmul = GPL open-source. Adapted from http://www.hmc.edu/chips/index.html, by Mark Phair
+// fpmul mult1( .a(x), .b(y), .y(out), .control(5'h00), .flags(flags));
 endmodule
 
 module div(x, y, out);
@@ -58,7 +60,9 @@ module fp_mult(out, mult_error, in1, in2);
 	wire [23:0] mant2;
 	wire signed [7:0]	exp1;
 	wire signed [7:0]	exp2;
+	wire [8:0] 	exp_out;
 	wire [47:0] var;
+	wire [15:0] shift;
 	wire [22:0] mant_out;
 	wire [47:0] prod;
 	wire [8:0] err_test;
@@ -76,17 +80,11 @@ module fp_mult(out, mult_error, in1, in2);
 	//assign prod = mant1 * mant2;
 	
 	//only three shift possibilities (0, 1 or 2)
+	assign shift = prod[47] ? 8'h01 : (prod[46] ? 8'h02 : 8'h00);
 	assign var = (prod <<< shift);		//dummy variable
 	assign mant_out = var[47:25];			//take 23 most significant bits
-    
-  	wire [8:0] 	exp_out;
-    assign exp_out = {1'b0, exp1} + {1'b0, exp2} + 9'h02 - {1'b0, shift} - 9'h7f;  //add exponents, account for shift
-
-    reg [1:0]   shift;
-    always @(*) begin
-        shift <= prod[47] ? 8'h01 : (prod[46] ? 8'h02 : 8'h00);
-	end
-    //- {1'b0, shift} + 9'h02 adjust exponent for the mantissa and the hidden 1
+	assign exp_out = {1'b0, exp1} + {1'b0, exp2} - {1'b0, shift} + 9'h02 - 9'h7f;  //add exponents, account for shift
+	//- {1'b0, shift} + 9'h02 adjust exponent for the mantissa and the hidden 1
 	// 9'h7f adjust for 127 bias in the exponent
 
 	assign out = (mult_error == 2'b00) ? ((in1[30:0] == 31'h00000000 || in2[30:0] == 31'h00000000) ? 32'h00000000 : {sign_out, exp_out[7:0], mant_out}) : 0; // account for output of zero	
@@ -94,11 +92,9 @@ module fp_mult(out, mult_error, in1, in2);
 	assign err_test = {1'b0, exp1} + {1'b0, exp2} - {1'b0, shift} + 9'h02;	// check for exponent within limits
 
 	//error code: 01-overflow, 10-underflow, 00-no error
-//	assign mult_error = (exp_out > 9'h0FE || (exp_out[7:0] == 8'hfe & prod > 48'h7fffff800000)) ? 2'b01 
-//								: ((exp_out < 9'h001 && shift !=0) || (exp_out[7:0] == 8'h01 & prod < 48'h400000000000) || (exp_out < 9'h001)) ? 2'b10 
-//								: 2'b00;
-
-	assign mult_error = (exp_out > 9'h0FE ) ? 2'b10 : 2'b00;
+	assign mult_error = (err_test > 9'h17d || (exp_out[7:0] == 8'hfe & prod > 48'h7fffff800000)) ? 2'b01 
+								: ((err_test < 9'h80 && shift !=0) || (exp_out[7:0] == 8'h01 & prod < 48'h400000000000)) ? 2'b10 
+								: 2'b00;
 
 endmodule
 
@@ -329,69 +325,3 @@ module pow_25( 	output wire [31:0] out,
 	rsqrt rsqrt2(out, inv_sqrt);
 
 endmodule
-
-
-///////////////////////////////////////////////
-// same, but give full 32-bit output with same normalization
-// this is equivalent to a 2.34 format 2'comp
-//////////////////////////////////////////////
-module signed_mult32 (out, a, b);
-
-	output 	reg	[31:0]	out;
-	input 	signed	[31:0] 	a;
-	input 	signed	[31:0] 	b;
-	
-	wire 	signed	[63:0]	y;
-
-//    assign short_a = {a[31], a[14:0]};
-//    assign short_b = {b[31], b[14:0]};
-	assign y[63:0] = a * b;
-    always @(*) begin
-        if ( y[63:32] != 32'h0 || y[63:32] != 32'hFFFF_FFFF) begin
-            out <= {y[63], {31{~y[63]}}};
-        end
-        else begin
-            out <=  y[31:0];
-        end
-    end
-endmodule
-
-//module fp_normalize (a, out);
-//    input wire [31:0] a;
-//    output  wire [31:0] out;
-//
-//    wire [7:0] fp_shift;
-//    wire [22:0] fp_mantissa;
-//    wire [7:0] fp_exp;
-//
-//    assign fp_shift =   (a[22] ? 8'd1
-//                      : (a[21] ? 8'd2
-//                      : (a[20] ? 8'd3
-//                      : (a[19] ? 8'd4
-//                      : (a[18] ? 8'd5
-//                      : (a[17] ? 8'd6
-//                      : (a[16] ? 8'd7
-//                      : (a[15] ? 8'd8
-//                      : (a[14] ? 8'd9
-//                      : (a[13] ? 8'd10
-//                      : (a[12] ? 8'd11
-//                      : (a[11] ? 8'd12
-//                      : (a[10] ? 8'd13
-//                      : (a[9] ? 8'd14
-//                      : (a[8] ? 8'd15
-//                      : (a[7] ? 8'd16
-//                      : (a[6] ? 8'd17
-//                      : (a[5] ? 8'd18
-//                      : (a[4] ? 8'd19
-//                      : (a[3] ? 8'd20
-//                      : (a[2] ? 8'd21
-//                      : (a[1] ? 8'd22
-//                      : (a[0] ? 8'd23
-//                      : 8'd0))))))))))))))))))))))); // this means the result is zero
-//
-//	
-//	    assign fp_exp = (a[30:23] > fp_shift) ? a[30:23] - fp_shift : 8'h0;
-//	    assign fp_mantissa = a[22:0] << fp_shift;
-//	    assign out = {a[31], fp_exp[7:0], fp_mantissa[22:0]};
-//endmodule 
-
