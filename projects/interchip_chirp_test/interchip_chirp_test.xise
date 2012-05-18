@@ -70,7 +70,7 @@
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="128"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="15"/>
     </file>
-    <file xil_pn:name="../../source/math/integrator.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../source/integrator.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="129"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="10"/>
     </file>
