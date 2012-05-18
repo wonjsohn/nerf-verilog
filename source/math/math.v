@@ -58,9 +58,7 @@ module fp_mult(out, mult_error, in1, in2);
 	wire [23:0] mant2;
 	wire signed [7:0]	exp1;
 	wire signed [7:0]	exp2;
-	wire [8:0] 	exp_out;
 	wire [47:0] var;
-	wire [15:0] shift;
 	wire [22:0] mant_out;
 	wire [47:0] prod;
 	wire [8:0] err_test;
@@ -78,11 +76,17 @@ module fp_mult(out, mult_error, in1, in2);
 	//assign prod = mant1 * mant2;
 	
 	//only three shift possibilities (0, 1 or 2)
-	assign shift = prod[47] ? 8'h01 : (prod[46] ? 8'h02 : 8'h00);
 	assign var = (prod <<< shift);		//dummy variable
 	assign mant_out = var[47:25];			//take 23 most significant bits
-	assign exp_out = {1'b0, exp1} + {1'b0, exp2} - {1'b0, shift} + 9'h02 - 9'h7f;  //add exponents, account for shift
-	//- {1'b0, shift} + 9'h02 adjust exponent for the mantissa and the hidden 1
+    
+  	wire [8:0] 	exp_out;
+    assign exp_out = {1'b0, exp1} + {1'b0, exp2} + 9'h02 - {1'b0, shift} - 9'h7f;  //add exponents, account for shift
+
+    reg [1:0]   shift;
+    always @(*) begin
+        shift <= prod[47] ? 8'h01 : (prod[46] ? 8'h02 : 8'h00);
+	end
+    //- {1'b0, shift} + 9'h02 adjust exponent for the mantissa and the hidden 1
 	// 9'h7f adjust for 127 bias in the exponent
 
 	assign out = (mult_error == 2'b00) ? ((in1[30:0] == 31'h00000000 || in2[30:0] == 31'h00000000) ? 32'h00000000 : {sign_out, exp_out[7:0], mant_out}) : 0; // account for output of zero	
@@ -90,9 +94,11 @@ module fp_mult(out, mult_error, in1, in2);
 	assign err_test = {1'b0, exp1} + {1'b0, exp2} - {1'b0, shift} + 9'h02;	// check for exponent within limits
 
 	//error code: 01-overflow, 10-underflow, 00-no error
-	assign mult_error = (exp_out > 9'h0FE || (exp_out[7:0] == 8'hfe & prod > 48'h7fffff800000)) ? 2'b01 
-								: ((exp_out < 9'h001 && shift !=0) || (exp_out[7:0] == 8'h01 & prod < 48'h400000000000) || (exp_out < 9'h001)) ? 2'b10 
-								: 2'b00;
+//	assign mult_error = (exp_out > 9'h0FE || (exp_out[7:0] == 8'hfe & prod > 48'h7fffff800000)) ? 2'b01 
+//								: ((exp_out < 9'h001 && shift !=0) || (exp_out[7:0] == 8'h01 & prod < 48'h400000000000) || (exp_out < 9'h001)) ? 2'b10 
+//								: 2'b00;
+
+	assign mult_error = (exp_out > 9'h0FE ) ? 2'b10 : 2'b00;
 
 endmodule
 
