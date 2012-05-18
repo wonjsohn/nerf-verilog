@@ -11,7 +11,7 @@ module emg(emg_out, i_spk_cnt, clk, reset);
 	reg [35:0]	spikes_long;
 	wire signed [35:0] emg_long;
 
-	assign emg_stimulus = (spikes_long <<< 4);  //{{(29-NN) {1'b0}}, spikes, 7'h00};
+	assign emg_stimulus = (spikes_long <<< 8);  //{{(29-NN) {1'b0}}, spikes, 7'h00};
 	//assign emg_stimulus = (spikes_long);  //{{(29-NN) {1'b0}}, spikes, 7'h00};
 	assign stimulus = spikes_long;
 
