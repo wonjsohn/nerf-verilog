@@ -358,8 +358,302 @@ module size_principle_xem6010(
     );
 
 
+    //** MOTOR UNIT 6
+    wire [31:0]  f_force_mu6;  // output muscle force 
+    wire [31:0]  i_emg_mu6;
+    wire MN_spk_mu6;	
+    wire [15:0] spkid_MN_mu6;
+    motorunit mu6 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),        // gain 
+    .i_gain_MN(i_gain_mu1_MN+10),
+    .f_total_force(f_force_mu6),  // output muscle force 
+    .i_emg(i_emg_mu6),
+    .MN_spk(MN_spk_mu6),
+    .spkid_MN(spkid_MN_mu6)
+    );
+    
+    
+    //** MOTOR UNIT 7
+    wire [31:0]  f_force_mu7;  // output muscle force 
+    wire [31:0]  i_emg_mu7;
+    wire MN_spk_mu7;	
+    wire [15:0] spkid_MN_mu7;
+    motorunit mu7 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),        // gain 
+    .i_gain_MN(i_gain_mu1_MN+12),
+    .f_total_force(f_force_mu7),  // output muscle force 
+    .i_emg(i_emg_mu7),
+    .MN_spk(MN_spk_mu7),
+    .spkid_MN(spkid_MN_mu7)
+    );
+    
+    
+    //** MOTOR UNIT 8
+    wire [31:0]  f_force_mu8;  // output muscle force 
+    wire [31:0]  i_emg_mu8;
+    wire MN_spk_mu8;	
+    wire [15:0] spkid_MN_mu8;
+    motorunit mu8 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),        // gain 
+    .i_gain_MN(i_gain_mu1_MN+14),
+    .f_total_force(f_force_mu8),  // output muscle force 
+    .i_emg(i_emg_mu8),
+    .MN_spk(MN_spk_mu8),
+    .spkid_MN(spkid_MN_mu8)
+    );
+    
+    
+    //** MOTOR UNIT 9
+    wire [31:0]  f_force_mu9;  // output muscle force 
+    wire [31:0]  i_emg_mu9;
+    wire MN_spk_mu9;	
+    wire [15:0] spkid_MN_mu9;
+    motorunit mu9 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),        // gain 
+    .i_gain_MN(i_gain_mu1_MN+16),
+    .f_total_force(f_force_mu9),  // output muscle force 
+    .i_emg(i_emg_mu9),
+    .MN_spk(MN_spk_mu9),
+    .spkid_MN(spkid_MN_mu9)
+    );
+    
+    
+    //** MOTOR UNIT 10
+    wire [31:0]  f_force_mu10;  // output muscle force 
+    wire [31:0]  i_emg_mu10;
+    wire MN_spk_mu10;	
+    wire [15:0] spkid_MN_mu10;
+    motorunit mu10 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),        // gain 
+    .i_gain_MN(i_gain_mu1_MN+18),
+    .f_total_force(f_force_mu10),  // output muscle force 
+    .i_emg(i_emg_mu10),
+    .MN_spk(MN_spk_mu10),
+    .spkid_MN(spkid_MN_mu10)
+    );
 
 
+//** MOTOR UNIT 11
+    wire [31:0]  f_force_mu11;  // output muscle force 
+    wire [31:0]  i_emg_mu11;
+    wire MN_spk_mu11;	
+    wire [15:0] spkid_MN_mu11;
+    motorunit mu11 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain),           // gain 
+    .i_gain_MN(i_gain_mu1_MN+20),
+    .tau(tau),
+    .f_total_force(f_force_mu11),  // output muscle force 
+    .i_emg(i_emg_mu11),
+    .MN_spk(MN_spk_mu11),
+    .spkid_MN(spkid_MN_mu11)
+    );
+
+        //** MOTOR UNIT 12
+    wire [31:0]  f_force_mu12;  // output muscle force 
+    wire [31:0]  i_emg_mu12;
+    wire MN_spk_mu12;	
+    wire [15:0] spkid_MN_mu12;
+    motorunit mu12 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),     
+    .i_gain_MN(i_gain_mu1_MN+22),
+    .f_total_force(f_force_mu12),  // output muscle force 
+    .i_emg(i_emg_mu12),
+    .MN_spk(MN_spk_mu12),
+    .spkid_MN(spkid_MN_mu12)
+    );
+    
+      //** MOTOR UNIT 13
+    wire [31:0]  f_force_mu13;  // output muscle force 
+    wire [31:0]  i_emg_mu13;
+    wire MN_spk_mu13;	
+    wire [15:0] spkid_MN_mu13;
+    motorunit mu13 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain),           // gain 
+    .i_gain_MN(i_gain_mu1_MN+24),
+    .tau(tau),
+    .f_total_force(f_force_mu13),  // output muscle force 
+    .i_emg(i_emg_mu13),
+    .MN_spk(MN_spk_mu13),
+    .spkid_MN(spkid_MN_mu13)
+    );
+
+      //** MOTOR UNIT 14
+    wire [31:0]  f_force_mu14;  // output muscle force 
+    wire [31:0]  i_emg_mu14;
+    wire MN_spk_mu14;	
+    wire [15:0] spkid_MN_mu14;
+    motorunit mu14 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),         // gain 
+    .i_gain_MN(i_gain_mu1_MN+26),
+    .f_total_force(f_force_mu14),  // output muscle force 
+    .i_emg(i_emg_mu14),
+    .MN_spk(MN_spk_mu14),
+    .spkid_MN(spkid_MN_mu14)
+    );
+
+      //** MOTOR UNIT 15
+    wire [31:0]  f_force_mu15;  // output muscle force 
+    wire [31:0]  i_emg_mu15;
+    wire MN_spk_mu15;	
+    wire [15:0] spkid_MN_mu15;
+    motorunit mu15 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),        // gain 
+    .i_gain_MN(i_gain_mu1_MN+28),
+    .f_total_force(f_force_mu15),  // output muscle force 
+    .i_emg(i_emg_mu15),
+    .MN_spk(MN_spk_mu15),
+    .spkid_MN(spkid_MN_mu15)
+    );
+
+
+    //** MOTOR UNIT 16
+    wire [31:0]  f_force_mu16;  // output muscle force 
+    wire [31:0]  i_emg_mu16;
+    wire MN_spk_mu16;	
+    wire [15:0] spkid_MN_mu16;
+    motorunit mu16 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),        // gain 
+    .i_gain_MN(i_gain_mu1_MN+30),
+    .f_total_force(f_force_mu16),  // output muscle force 
+    .i_emg(i_emg_mu16),
+    .MN_spk(MN_spk_mu16),
+    .spkid_MN(spkid_MN_mu16)
+    );
+    
+    
+    //** MOTOR UNIT 17
+    wire [31:0]  f_force_mu17;  // output muscle force 
+    wire [31:0]  i_emg_mu17;
+    wire MN_spk_mu17;	
+    wire [15:0] spkid_MN_mu17;
+    motorunit mu17 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),        // gain 
+    .i_gain_MN(i_gain_mu1_MN+32),
+    .f_total_force(f_force_mu17),  // output muscle force 
+    .i_emg(i_emg_mu17),
+    .MN_spk(MN_spk_mu17),
+    .spkid_MN(spkid_MN_mu17)
+    );
+    
+    
+    //** MOTOR UNIT 18
+    wire [31:0]  f_force_mu18;  // output muscle force 
+    wire [31:0]  i_emg_mu18;
+    wire MN_spk_mu18;	
+    wire [15:0] spkid_MN_mu18;
+    motorunit mu18 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),        // gain 
+    .i_gain_MN(i_gain_mu1_MN+34),
+    .f_total_force(f_force_mu18),  // output muscle force 
+    .i_emg(i_emg_mu18),
+    .MN_spk(MN_spk_mu18),
+    .spkid_MN(spkid_MN_mu18)
+    );
+    
+    
+    //** MOTOR UNIT 19
+    wire [31:0]  f_force_mu19;  // output muscle force 
+    wire [31:0]  i_emg_mu19;
+    wire MN_spk_mu19;	
+    wire [15:0] spkid_MN_mu19;
+    motorunit mu19 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),        // gain 
+    .i_gain_MN(i_gain_mu1_MN+36),
+    .f_total_force(f_force_mu19),  // output muscle force 
+    .i_emg(i_emg_mu19),
+    .MN_spk(MN_spk_mu19),
+    .spkid_MN(spkid_MN_mu19)
+    );
+    
+    
+    //** MOTOR UNIT 20
+    wire [31:0]  f_force_mu20;  // output muscle force 
+    wire [31:0]  i_emg_mu20;
+    wire MN_spk_mu20;	
+    wire [15:0] spkid_MN_mu20;
+    motorunit mu20 (
+    .f_muscle_length(f_len),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(gain), .tau(tau),        // gain 
+    .i_gain_MN(i_gain_mu1_MN+38),
+    .f_total_force(f_force_mu20),  // output muscle force 
+    .i_emg(i_emg_mu20),
+    .MN_spk(MN_spk_mu20),
+    .spkid_MN(spkid_MN_mu20)
+    );
 		  
 //    // *** Biceps: Medium MN pools
 //    wire MN_spk_med_mu;
@@ -560,16 +854,16 @@ module size_principle_xem6010(
     okWireOut    wo31 (.ep_datain(i_emg_mu4[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
     okWireOut    wo32 (.ep_datain(i_emg_mu5[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
     okWireOut    wo33 (.ep_datain(i_emg_mu5[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );    
-    okWireOut    wo34 (.ep_datain(i_emg_mu1[15:0]),  .ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h34) );
-    okWireOut    wo35 (.ep_datain(i_emg_mu1[31:16]), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'h35) );
-    okWireOut    wo36 (.ep_datain(i_emg_mu2[15:0]),  .ok1(ok1), .ok2(ok2x[ 16*17 +: 17 ]), .ep_addr(8'h36) );
-    okWireOut    wo37 (.ep_datain(i_emg_mu2[31:16]), .ok1(ok1), .ok2(ok2x[ 17*17 +: 17 ]), .ep_addr(8'h37) );
-    okWireOut    wo38 (.ep_datain(i_emg_mu3[15:0]),  .ok1(ok1), .ok2(ok2x[ 18*17 +: 17 ]), .ep_addr(8'h38) );
-    okWireOut    wo39 (.ep_datain(i_emg_mu3[31:16]), .ok1(ok1), .ok2(ok2x[ 19*17 +: 17 ]), .ep_addr(8'h39) );
-    okWireOut    wo40 (.ep_datain(i_emg_mu4[15:0]),  .ok1(ok1), .ok2(ok2x[ 20*17 +: 17 ]), .ep_addr(8'h40) );
-    okWireOut    wo41 (.ep_datain(i_emg_mu4[31:16]), .ok1(ok1), .ok2(ok2x[ 21*17 +: 17 ]), .ep_addr(8'h41) );
-    okWireOut    wo42 (.ep_datain(i_emg_mu5[15:0]),  .ok1(ok1), .ok2(ok2x[ 22*17 +: 17 ]), .ep_addr(8'h42) );
-    okWireOut    wo43 (.ep_datain(i_emg_mu5[31:16]), .ok1(ok1), .ok2(ok2x[ 23*17 +: 17 ]), .ep_addr(8'h43) );
+    okWireOut    wo34 (.ep_datain(i_emg_mu16[15:0]),  .ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h34) );
+    okWireOut    wo35 (.ep_datain(i_emg_mu16[31:16]), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'h35) );
+    okWireOut    wo36 (.ep_datain(i_emg_mu17[15:0]),  .ok1(ok1), .ok2(ok2x[ 16*17 +: 17 ]), .ep_addr(8'h36) );
+    okWireOut    wo37 (.ep_datain(i_emg_mu17[31:16]), .ok1(ok1), .ok2(ok2x[ 17*17 +: 17 ]), .ep_addr(8'h37) );
+    okWireOut    wo38 (.ep_datain(i_emg_mu18[15:0]),  .ok1(ok1), .ok2(ok2x[ 18*17 +: 17 ]), .ep_addr(8'h38) );
+    okWireOut    wo39 (.ep_datain(i_emg_mu18[31:16]), .ok1(ok1), .ok2(ok2x[ 19*17 +: 17 ]), .ep_addr(8'h39) );
+    okWireOut    wo40 (.ep_datain(i_emg_mu19[15:0]),  .ok1(ok1), .ok2(ok2x[ 20*17 +: 17 ]), .ep_addr(8'h40) );
+    okWireOut    wo41 (.ep_datain(i_emg_mu19[31:16]), .ok1(ok1), .ok2(ok2x[ 21*17 +: 17 ]), .ep_addr(8'h41) );
+    okWireOut    wo42 (.ep_datain(i_emg_mu20[15:0]),  .ok1(ok1), .ok2(ok2x[ 22*17 +: 17 ]), .ep_addr(8'h42) );
+    okWireOut    wo43 (.ep_datain(i_emg_mu20[31:16]), .ok1(ok1), .ok2(ok2x[ 23*17 +: 17 ]), .ep_addr(8'h43) );
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 26*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
