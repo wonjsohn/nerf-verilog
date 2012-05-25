@@ -313,6 +313,17 @@ module one_joint_board1_xem6010(
         .reset(reset_sim), 
         .clear_out(dummy_slow));
 
+    //counting the spike from the long latency loop.
+    wire    [31:0] i_CN_spkcnt;   //Cortical Neuron
+    wire    dummy_slow_CN;        
+    spikecnt count_longlatency_spikes
+    (   .spike(spike_in1), 
+        .int_cnt_out(i_CN_spkcnt), 
+        .fast_clk(neuron_clk), 
+        .slow_clk(sim_clk), 
+        .reset(reset_sim), 
+        .clear_out(dummy_slow_CN));
+
 
     
  // ** LEDs
@@ -363,8 +374,8 @@ module one_joint_board1_xem6010(
     okWireOut    wo21 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
     okWireOut    wo22 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
     okWireOut    wo23 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-//    okWireOut    wo24 (.ep_datain(f_bic_force[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-//    okWireOut    wo25 (.ep_datain(f_bic_force[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo24 (.ep_datain(i_CN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(i_CN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
 //    okWireOut    wo26 (.ep_datain(f_tri_force[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
 //    okWireOut    wo27 (.ep_datain(f_tri_force[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
 //    okWireOut    wo28 (.ep_datain(f_tricepsfr_Ia[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );

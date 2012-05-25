@@ -10,8 +10,8 @@ BUTTON_ENABLE_SIM = 2
 DATA_EVT_CLKRATE = 0
 #            address         name   visual_gain         type            color
 CHIN_PARAM =    (0x20,      'i_MN_spkcnt',      1.0,         'int32',      'Qt.blue'),  \
-                (0x22,      'i_MN_spkcnt',      1.0,         'int32',      'Qt.red'),  \
-#                (0x26,      'i_emg_mu2',      1.0,         'int32',      'Qt.green'),  \
+                (0x22,      'i_CN_spkcnt',      1.0,         'int32',      'Qt.red'),  \
+                (0x24,      'i_spkcnt_delayed',      1.0,         'int32',      'Qt.green'),  \
 #                (0x28,      'i_emg_mu3',      1.0,         'int32',      'Qt.black'),  \
 #                (0x30,      'i_emg_mu4',      1.0,         'int32',      'Qt.magenta'),  \
 #                (0x32,      'i_emg_mu5',      1.0,         'int32',      'Qt.darkRed'),  \

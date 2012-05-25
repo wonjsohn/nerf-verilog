@@ -32,7 +32,7 @@ module one_joint_board2_xem6010(
     output wire pin0,
     output wire pin1,
     output wire pin2,
-    //output wire spike_out1,   // cross-board spike
+    output wire spike_out1,   // cross-board spike
     input wire spike_in1    // cross-board spike
 	 );
 //	 output wire SCK_s,	    //JP1 pin 38 GCLK pin
@@ -262,9 +262,175 @@ module one_joint_board2_xem6010(
         .reset(reset_sim), 
         .clear_out(dummy_slow));
 
+ reg [31:0] i_MN_spkcnt_F0;
+ reg [31:0] i_MN_spkcnt_F1;
+ reg [31:0] i_MN_spkcnt_F2;
+ reg [31:0] i_MN_spkcnt_F3;
+ reg [31:0] i_MN_spkcnt_F4;
+ reg [31:0] i_MN_spkcnt_F5; 
+ reg [31:0] i_MN_spkcnt_F6;
+ reg [31:0] i_MN_spkcnt_F7;
+ reg [31:0] i_MN_spkcnt_F8;
+ reg [31:0] i_MN_spkcnt_F9;
+ reg [31:0] i_MN_spkcnt_F10;
+ reg [31:0] i_MN_spkcnt_F11;
+ reg [31:0] i_MN_spkcnt_F12;
+ reg [31:0] i_MN_spkcnt_F13;
+ reg [31:0] i_MN_spkcnt_F14;
+ reg [31:0] i_MN_spkcnt_F15; 
+ reg [31:0] i_MN_spkcnt_F16;
+ reg [31:0] i_MN_spkcnt_F17;
+ reg [31:0] i_MN_spkcnt_F18;
+ reg [31:0] i_MN_spkcnt_F19;
+ reg [31:0] i_MN_spkcnt_F20;
+ reg [31:0] i_MN_spkcnt_F21;
+ reg [31:0] i_MN_spkcnt_F22;
+ reg [31:0] i_MN_spkcnt_F23;
+ reg [31:0] i_MN_spkcnt_F24;
+ reg [31:0] i_MN_spkcnt_F25; 
+ reg [31:0] i_MN_spkcnt_F26;
+ reg [31:0] i_MN_spkcnt_F27;
+ reg [31:0] i_MN_spkcnt_F28;
+ reg [31:0] i_MN_spkcnt_F29;
+ reg [31:0] i_MN_spkcnt_F30;
+   
+   
+  // delay 30 ms (32 bit data) 
+ always @(posedge sim_clk or posedge reset_global)
+    begin
+        if (reset_global) begin
+            i_MN_spkcnt_F0 <= 32'h0; // 
+            i_MN_spkcnt_F1 <= 32'h0; // 
+            i_MN_spkcnt_F2 <= 32'h0; // 
+            i_MN_spkcnt_F3 <= 32'h0; // 
+            i_MN_spkcnt_F4 <= 32'h0; // 
+            i_MN_spkcnt_F5 <= 32'h0; // 
+            i_MN_spkcnt_F6 <= 32'h0; // 
+            i_MN_spkcnt_F7 <= 32'h0; // 
+            i_MN_spkcnt_F8 <= 32'h0; // 
+            i_MN_spkcnt_F9 <= 32'h0; // 
+            i_MN_spkcnt_F10 <= 32'h0; //            i_MN_spkcnt_F0 <= 32'h0; // 
+            i_MN_spkcnt_F11 <= 32'h0; // 
+            i_MN_spkcnt_F12 <= 32'h0; // 
+            i_MN_spkcnt_F13 <= 32'h0; // 
+            i_MN_spkcnt_F14 <= 32'h0; // 
+            i_MN_spkcnt_F15 <= 32'h0; // 
+            i_MN_spkcnt_F16 <= 32'h0; // 
+            i_MN_spkcnt_F17 <= 32'h0; // 
+            i_MN_spkcnt_F18 <= 32'h0; // 
+            i_MN_spkcnt_F19 <= 32'h0; // 
+            i_MN_spkcnt_F20 <= 32'h0; //
+            i_MN_spkcnt_F21 <= 32'h0; // 
+            i_MN_spkcnt_F22 <= 32'h0; // 
+            i_MN_spkcnt_F23 <= 32'h0; // 
+            i_MN_spkcnt_F24 <= 32'h0; // 
+            i_MN_spkcnt_F25 <= 32'h0; // 
+            i_MN_spkcnt_F26 <= 32'h0; // 
+            i_MN_spkcnt_F27 <= 32'h0; // 
+            i_MN_spkcnt_F28 <= 32'h0; // 
+            i_MN_spkcnt_F29 <= 32'h0; // 
+            i_MN_spkcnt_F30 <= 32'h0; //  
+        end
+        else begin
+            i_MN_spkcnt_F0 <= i_MN_spkcnt; 
+            i_MN_spkcnt_F1 <= i_MN_spkcnt_F0;
+            i_MN_spkcnt_F2 <= i_MN_spkcnt_F1;
+            i_MN_spkcnt_F3 <= i_MN_spkcnt_F2;
+            i_MN_spkcnt_F4 <= i_MN_spkcnt_F3;
+            i_MN_spkcnt_F5 <= i_MN_spkcnt_F4;
+            i_MN_spkcnt_F6 <= i_MN_spkcnt_F5;
+            i_MN_spkcnt_F7 <= i_MN_spkcnt_F6;
+            i_MN_spkcnt_F8 <= i_MN_spkcnt_F7;
+            i_MN_spkcnt_F9 <= i_MN_spkcnt_F8;
+            i_MN_spkcnt_F10 <= i_MN_spkcnt_F9;
+            i_MN_spkcnt_F11 <= i_MN_spkcnt_F10;
+            i_MN_spkcnt_F12 <= i_MN_spkcnt_F11;
+            i_MN_spkcnt_F13 <= i_MN_spkcnt_F12;
+            i_MN_spkcnt_F14 <= i_MN_spkcnt_F13;
+            i_MN_spkcnt_F15 <= i_MN_spkcnt_F14;
+            i_MN_spkcnt_F16 <= i_MN_spkcnt_F15;
+            i_MN_spkcnt_F17 <= i_MN_spkcnt_F16;
+            i_MN_spkcnt_F18 <= i_MN_spkcnt_F17;
+            i_MN_spkcnt_F19 <= i_MN_spkcnt_F18;
+            i_MN_spkcnt_F20 <= i_MN_spkcnt_F19;
+            i_MN_spkcnt_F21 <= i_MN_spkcnt_F20;
+            i_MN_spkcnt_F22 <= i_MN_spkcnt_F21;
+            i_MN_spkcnt_F23 <= i_MN_spkcnt_F22;
+            i_MN_spkcnt_F24 <= i_MN_spkcnt_F23;
+            i_MN_spkcnt_F25 <= i_MN_spkcnt_F24;
+            i_MN_spkcnt_F26 <= i_MN_spkcnt_F25;
+            i_MN_spkcnt_F27 <= i_MN_spkcnt_F26;
+            i_MN_spkcnt_F28 <= i_MN_spkcnt_F27;
+            i_MN_spkcnt_F29 <= i_MN_spkcnt_F28;
+            i_MN_spkcnt_F30 <= i_MN_spkcnt_F29;
+        end 
+    end  
  
+ 
+ 
+// test this module (IODELAY2) separately in a spare time. 
+     
+    // IODELAY2: Input and Output Fixed or Variable Delay Element
+    // Spartan-6
+    // Xilinx HDL Libraries Guide, version 12.4
+    
+    wire BUSY, DATAOUT, DATAOUT2, DOUT, TOUT;   // ouputs
+    wire CAL,CE,CLK,IDATAIN,INC,IOCLK0,IOCLK1,ODATAIN,RST,T;  //inputs 
+    
+    assign RST = reset_global;
+    assign CLK = sim_clk;
+    assign ODATAIN = spike_in1;
+    assign T = 1'b0;
+    assign TOUT = 1'b0;
+    
+//    
+    IODELAY2 #(
+    .COUNTER_WRAPAROUND("WRAPAROUND"), // "STAY_AT_LIMIT" or "WRAPAROUND"
+    .DATA_RATE("SDR"), // "SDR" or "DDR"
+    .DELAY_SRC("ODATAIN"), // "IO", "ODATAIN" or "IDATAIN"
+    .IDELAY2_VALUE(0), // Delay value when IDELAY_MODE="PCI" (0-255)
+    .IDELAY_MODE("NORMAL"), // "NORMAL" or "PCI"
+    .IDELAY_TYPE("DEFAULT"), // "FIXED", "DEFAULT", "VARIABLE_FROM_ZERO", "VARIABLE_FROM_HALF_MAX"
+    // or "DIFF_PHASE_DETECTOR"
+    .IDELAY_VALUE(0), // Amount of taps for fixed input delay (0-255)
+    .ODELAY_VALUE(128), // Amount of taps fixed output delay (0-255)
+    .SERDES_MODE("NONE"), // "NONE", "MASTER" or "SLAVE"
+    .SIM_TAPDELAY_VALUE(75) // Per tap delay used for simulation in ps
+    )
+    IODELAY2_inst (
+    .BUSY(), // 1-bit output Busy output after CAL
+    .DATAOUT(), // 1-bit output Delayed data output to ISERDES/input register
+    .DATAOUT2(DATAOUT2), // 1-bit output Delayed data output to general FPGA fabric
+    .DOUT(), // 1-bit output Delayed data output
+    .TOUT(), // 1-bit output Delayed 3-state output
+    .CAL(1'b0), // 1-bit input Initiate calibration input
+    .CE(1'b0), // 1-bit input Enable INC input
+    .CLK(1'b0), // 1-bit input Clock input
+    .IDATAIN(1'b0), // 1-bit input Data input (connect to top-level port or I/O buffer)
+    .INC(1'b0), // 1-bit input Increment / decrement input
+    .IOCLK0(1'b0), // 1-bit input Input from the I/O clock network
+    .IOCLK1(1'b0), // 1-bit input Input from the I/O clock network
+    .ODATAIN(ODATAIN), // 1-bit input Output data input from output register or OSERDES2.
+    .RST(1'b0), // 1-bit input Reset to zero or 1/2 of total delay period
+    .T(1'b0) // 1-bit input 3-state input signal
+    );
+    // End of IODELAY2_inst instantiation
 
+    wire spike_in1_delayed;
+    assign spike_in1_delayed = DATAOUT2;  // check
+    
+    wire    [31:0] i_MN_spkcnt_delayed;
+    wire    dummy_slow_delayed;        
+    spikecnt count_rawspikes_delayed
+    (   .spike(spike_in1_delayed), 
+        .int_cnt_out(i_MN_spkcnt_delayed), 
+        .fast_clk(neuron_clk), 
+        .slow_clk(sim_clk), 
+        .reset(reset_sim), 
+        .clear_out(dummy_slow_delayed));
 
+    
+    
     
  // ** LEDs
     assign led[0] = ~reset_global;
@@ -290,6 +456,7 @@ module one_joint_board2_xem6010(
     assign pin1 = sim_clk;
     assign pin2 = spindle_clk;
     
+    assign spike_out1 = spike_in1;
 
 
   // Instantiate the okHost and connect endpoints.
@@ -312,10 +479,10 @@ module one_joint_board2_xem6010(
 
     okWireOut    wo20 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
     okWireOut    wo21 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-//    okWireOut    wo22 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-//    okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-//    okWireOut    wo24 (.ep_datain(f_bic_force[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-//    okWireOut    wo25 (.ep_datain(f_bic_force[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo22 (.ep_datain(i_MN_spkcnt_F30[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+    okWireOut    wo23 (.ep_datain(i_MN_spkcnt_F30[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+    okWireOut    wo24 (.ep_datain(i_MN_spkcnt_delayed[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(i_MN_spkcnt_delayed[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
 //    okWireOut    wo26 (.ep_datain(f_tri_force[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
 //    okWireOut    wo27 (.ep_datain(f_tri_force[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
 //    okWireOut    wo28 (.ep_datain(f_tricepsfr_Ia[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
