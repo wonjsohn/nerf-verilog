@@ -262,6 +262,9 @@ module one_joint_board2_xem6010(
         .reset(reset_sim), 
         .clear_out(dummy_slow));
 
+
+// delay by 32 bit registers 
+
  reg [31:0] i_MN_spkcnt_F0;
  reg [31:0] i_MN_spkcnt_F1;
  reg [31:0] i_MN_spkcnt_F2;
@@ -367,68 +370,72 @@ module one_joint_board2_xem6010(
     end  
  
  
- 
-// test this module (IODELAY2) separately in a spare time. 
-     
-    // IODELAY2: Input and Output Fixed or Variable Delay Element
-    // Spartan-6
-    // Xilinx HDL Libraries Guide, version 12.4
+ // delay by blk memory (1 bit) 
+    wire [18:0] blk_size;
+    assign blk_size = 19'd1100000;
     
-    wire BUSY, DATAOUT, DATAOUT2, DOUT, TOUT;   // ouputs
-    wire CAL,CE,CLK,IDATAIN,INC,IOCLK0,IOCLK1,ODATAIN,RST,T;  //inputs 
+    reg [18:0] write_index, read_index;
+    reg write;
+    reg blk_mem_filled;
     
-    assign RST = reset_global;
-    assign CLK = sim_clk;
-    assign ODATAIN = spike_in1;
-    assign T = 1'b0;
-    assign TOUT = 1'b0;
+    wire [3:0] read_write_diff;
+    assign read_write_diff = 4'd5;
     
-//    
-    IODELAY2 #(
-    .COUNTER_WRAPAROUND("WRAPAROUND"), // "STAY_AT_LIMIT" or "WRAPAROUND"
-    .DATA_RATE("SDR"), // "SDR" or "DDR"
-    .DELAY_SRC("ODATAIN"), // "IO", "ODATAIN" or "IDATAIN"
-    .IDELAY2_VALUE(0), // Delay value when IDELAY_MODE="PCI" (0-255)
-    .IDELAY_MODE("NORMAL"), // "NORMAL" or "PCI"
-    .IDELAY_TYPE("DEFAULT"), // "FIXED", "DEFAULT", "VARIABLE_FROM_ZERO", "VARIABLE_FROM_HALF_MAX"
-    // or "DIFF_PHASE_DETECTOR"
-    .IDELAY_VALUE(0), // Amount of taps for fixed input delay (0-255)
-    .ODELAY_VALUE(128), // Amount of taps fixed output delay (0-255)
-    .SERDES_MODE("NONE"), // "NONE", "MASTER" or "SLAVE"
-    .SIM_TAPDELAY_VALUE(75) // Per tap delay used for simulation in ps
-    )
-    IODELAY2_inst (
-    .BUSY(), // 1-bit output Busy output after CAL
-    .DATAOUT(), // 1-bit output Delayed data output to ISERDES/input register
-    .DATAOUT2(DATAOUT2), // 1-bit output Delayed data output to general FPGA fabric
-    .DOUT(), // 1-bit output Delayed data output
-    .TOUT(), // 1-bit output Delayed 3-state output
-    .CAL(1'b0), // 1-bit input Initiate calibration input
-    .CE(1'b0), // 1-bit input Enable INC input
-    .CLK(1'b0), // 1-bit input Clock input
-    .IDATAIN(1'b0), // 1-bit input Data input (connect to top-level port or I/O buffer)
-    .INC(1'b0), // 1-bit input Increment / decrement input
-    .IOCLK0(1'b0), // 1-bit input Input from the I/O clock network
-    .IOCLK1(1'b0), // 1-bit input Input from the I/O clock network
-    .ODATAIN(ODATAIN), // 1-bit input Output data input from output register or OSERDES2.
-    .RST(1'b0), // 1-bit input Reset to zero or 1/2 of total delay period
-    .T(1'b0) // 1-bit input 3-state input signal
-    );
-    // End of IODELAY2_inst instantiation
-
+    always @ (posedge clk1 or posedge reset_global)
+    begin
+        if (reset_global) begin
+            write <= 0;
+            write_index<=0;
+            read_index <=0;
+            blk_mem_filled <=0;
+        end 
+        else begin
+            write_index <= write_index + 1;
+            write <= 1;  // always write
+            if (write_index == (blk_size - read_write_diff )) begin   // wrap around the blk_mem
+                blk_mem_filled <= 1;             // stay filled after initial fill. 
+                read_index <= 1;
+            end
+            if (write_index == blk_size) 
+                write_index <= 0;
+            if (blk_mem_filled) begin
+                read_index <= read_index + 1;
+                if (read_index == blk_size) 
+                    read_index <= 0; 
+                else 
+                    read_index <= read_index + 1;
+            end 
+        end
+    end
+    
+    //reg reset_global;
+    //wire spike_in1;
+    //assign spike_in1 = spike;
+    
     wire spike_in1_delayed;
-    assign spike_in1_delayed = DATAOUT2;  // check
-    
+//    wire write;
+//    assign write = 1'b1;
+ 
+
+   delayed_ram spike_ram1(
+    .clka(clk1),
+    .wea(write),
+    .addra(write_index),
+    .dina(spike_in1),
+    .clkb(clk1),
+    .addrb(read_index),
+    .doutb(spike_in1_delayed)
+    );
+
     wire    [31:0] i_MN_spkcnt_delayed;
     wire    dummy_slow_delayed;        
-    spikecnt count_rawspikes_delayed
+    spikecnt count_rawspikes_3
     (   .spike(spike_in1_delayed), 
         .int_cnt_out(i_MN_spkcnt_delayed), 
         .fast_clk(neuron_clk), 
         .slow_clk(sim_clk), 
         .reset(reset_sim), 
         .clear_out(dummy_slow_delayed));
-
     
     
     
@@ -456,7 +463,7 @@ module one_joint_board2_xem6010(
     assign pin1 = sim_clk;
     assign pin2 = spindle_clk;
     
-    assign spike_out1 = spike_in1;
+    assign spike_out1 = spike_in1_delayed;
 
 
   // Instantiate the okHost and connect endpoints.
