@@ -442,27 +442,27 @@ module one_joint_board2_xem6010(
         .reset(reset_sim), 
         .clear_out(dummy_slow_delayed));
     
-//    // additional delay 
-//    wire spike_in2_delayed;
-//    blk_mem_gen_v6_1 spike_ram2(
-//    .clka(neuron_clk),
-//    .wea(write),
-//    .addra(write_index),
-//    .dina(spike_in1_delayed),
-//    .clkb(neuron_clk),
-//    .addrb(read_index),
-//    .doutb(spike_in2_delayed)
-//    );
-//    
-//    wire    [31:0] i_MN_spkcnt_delayed_twice;
-//    wire    dummy_slow_delayed_twice;        
-//    spikecnt count_rawspikes_4
-//    (   .spike(spike_in2_delayed), 
-//        .int_cnt_out(i_MN_spkcnt_delayed_twice), 
-//        .fast_clk(neuron_clk), 
-//        .slow_clk(sim_clk), 
-//        .reset(reset_sim), 
-//        .clear_out(dummy_slow_delayed_twice));
+    // additional delay 
+    wire spike_in2_delayed;
+    blk_mem_gen_v6_1 spike_ram2(
+    .clka(neuron_clk),
+    .wea(write),
+    .addra(write_index),
+    .dina(spike_in1_delayed),
+    .clkb(neuron_clk),
+    .addrb(read_index),
+    .doutb(spike_in2_delayed)
+    );
+    
+    wire    [31:0] i_MN_spkcnt_delayed_twice;
+    wire    dummy_slow_delayed_twice;        
+    spikecnt count_rawspikes_4
+    (   .spike(spike_in2_delayed), 
+        .int_cnt_out(i_MN_spkcnt_delayed_twice), 
+        .fast_clk(neuron_clk), 
+        .slow_clk(sim_clk), 
+        .reset(reset_sim), 
+        .clear_out(dummy_slow_delayed_twice));
     
     
     
