@@ -313,7 +313,9 @@ module one_joint_board1_xem6010(
         .reset(reset_sim), 
         .clear_out(dummy_slow));
 
+
     //counting the spike from the long latency loop.
+    //wire spike_longlatency;
     wire    [31:0] i_CN_spkcnt;   //Cortical Neuron
     wire    dummy_slow_CN;        
     spikecnt count_longlatency_spikes
@@ -323,6 +325,28 @@ module one_joint_board1_xem6010(
         .slow_clk(sim_clk), 
         .reset(reset_sim), 
         .clear_out(dummy_slow_CN));
+
+
+    // ** EMG, Motor neuron (MN)
+    wire [17:0] si_emg;
+    emg #(.NN(NN)) emg
+    (   .emg_out(si_emg), 
+        .i_spk_cnt(i_MN_spkcnt[NN:0]), 
+        .clk(sim_clk), 
+        .reset(reset_sim) ); 
+    wire [31:0] i_MN_emg;
+    assign i_MN_emg = {{14{si_emg[17]}},si_emg[17:0]};
+    
+    // ** EMG, delayed Cortical Neuron (CN)
+    wire [17:0] si_CN_emg;
+    emg #(.NN(NN)) CN_emg
+    (   .emg_out(si_CN_emg), 
+        .i_spk_cnt(i_CN_spkcnt[NN:0]), 
+        .clk(sim_clk), 
+        .reset(reset_sim) ); 
+    wire [31:0] i_CN_emg;
+    assign i_CN_emg = {{14{si_CN_emg[17]}},si_CN_emg[17:0]};
+
 
 
     
@@ -350,7 +374,7 @@ module one_joint_board1_xem6010(
     assign pin1 = sim_clk;
     assign pin2 = spindle_clk;
     assign spike_out1 = MN_spk;
-
+    //assign spike_longlatency = spike_in1;
 
   // Instantiate the okHost and connect endpoints.
     // Host interface
@@ -375,11 +399,11 @@ module one_joint_board1_xem6010(
     okWireOut    wo22 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
     okWireOut    wo23 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(i_CN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-//    okWireOut    wo25 (.ep_datain(i_CN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-//    okWireOut    wo26 (.ep_datain(f_tri_force[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-//    okWireOut    wo27 (.ep_datain(f_tri_force[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-//    okWireOut    wo28 (.ep_datain(f_tricepsfr_Ia[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
-//    okWireOut    wo29 (.ep_datain(f_tricepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
+    okWireOut    wo25 (.ep_datain(i_CN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo26 (.ep_datain(i_MN_emg[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo28 (.ep_datain(i_CN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
+    okWireOut    wo29 (.ep_datain(i_CN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
 //    okWireOut    wo30 (.ep_datain(f_tri_len[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
 //    okWireOut    wo31 (.ep_datain(f_tri_len[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
     //ep_ready = 1 (always ready to receive)
