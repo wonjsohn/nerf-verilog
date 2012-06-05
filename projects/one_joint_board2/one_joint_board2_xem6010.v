@@ -371,19 +371,19 @@ module one_joint_board2_xem6010(
  
  
  // delay by blk memory (1 bit) 
-    wire [18:0] blk_size;
-    assign blk_size = 19'd1100000;
+    wire [20:0] blk_size;
+    assign blk_size = 21'd1600000;
     
-    reg [18:0] write_index, read_index;
+    reg [20:0] write_index, read_index;
     reg write;
     reg blk_mem_filled;
     
     wire [3:0] read_write_diff;
     assign read_write_diff = 4'd5;
     
-    always @ (posedge clk1 or posedge reset_global)
+    always @ (posedge neuron_clk or posedge reset_sim)
     begin
-        if (reset_global) begin
+        if (reset_sim) begin
             write <= 0;
             write_index<=0;
             read_index <=0;
@@ -392,15 +392,17 @@ module one_joint_board2_xem6010(
         else begin
             write_index <= write_index + 1;
             write <= 1;  // always write
-            if (write_index == (blk_size - read_write_diff )) begin   // wrap around the blk_mem
+            if (write_index == (blk_size - read_write_diff)) begin   // wrap around the blk_mem
                 blk_mem_filled <= 1;             // stay filled after initial fill. 
-                read_index <= 1;
+                read_index <= read_index + 1;
             end
-            if (write_index == blk_size) 
+                
+            if (write_index == blk_size) // write_index wraps around. 
                 write_index <= 0;
+                
             if (blk_mem_filled) begin
                 read_index <= read_index + 1;
-                if (read_index == blk_size) 
+                if (read_index == blk_size)  // 
                     read_index <= 0; 
                 else 
                     read_index <= read_index + 1;
@@ -417,15 +419,18 @@ module one_joint_board2_xem6010(
 //    assign write = 1'b1;
  
 
-   delayed_ram spike_ram1(
-    .clka(clk1),
+   blk_mem_gen_v6_1 spike_ram1(
+    .clka(neuron_clk),
     .wea(write),
     .addra(write_index),
     .dina(spike_in1),
-    .clkb(clk1),
+    .clkb(neuron_clk),
     .addrb(read_index),
     .doutb(spike_in1_delayed)
     );
+    
+
+    
 
     wire    [31:0] i_MN_spkcnt_delayed;
     wire    dummy_slow_delayed;        
@@ -437,6 +442,28 @@ module one_joint_board2_xem6010(
         .reset(reset_sim), 
         .clear_out(dummy_slow_delayed));
     
+//    // additional delay 
+//    wire spike_in2_delayed;
+//    blk_mem_gen_v6_1 spike_ram2(
+//    .clka(neuron_clk),
+//    .wea(write),
+//    .addra(write_index),
+//    .dina(spike_in1_delayed),
+//    .clkb(neuron_clk),
+//    .addrb(read_index),
+//    .doutb(spike_in2_delayed)
+//    );
+//    
+//    wire    [31:0] i_MN_spkcnt_delayed_twice;
+//    wire    dummy_slow_delayed_twice;        
+//    spikecnt count_rawspikes_4
+//    (   .spike(spike_in2_delayed), 
+//        .int_cnt_out(i_MN_spkcnt_delayed_twice), 
+//        .fast_clk(neuron_clk), 
+//        .slow_clk(sim_clk), 
+//        .reset(reset_sim), 
+//        .clear_out(dummy_slow_delayed_twice));
+    
     
     
  // ** LEDs
@@ -446,7 +473,7 @@ module one_joint_board2_xem6010(
     assign led[3] = ~0;
 //    assign led[4] = ~MN_bic_spike;
 	 assign led[4] = ~spike_in1;
-    assign led[5] =  ~spike_in1;
+    assign led[5] =  ~spike_in1_delayed;
     assign led[6]  = ~spindle_clk; // slow clock
     //assign led[5] = ~spike;
     //assign led[5] = ~button1_response;
@@ -490,10 +517,10 @@ module one_joint_board2_xem6010(
     okWireOut    wo23 (.ep_datain(i_MN_spkcnt_F30[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(i_MN_spkcnt_delayed[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
     okWireOut    wo25 (.ep_datain(i_MN_spkcnt_delayed[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-//    okWireOut    wo26 (.ep_datain(f_tri_force[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-//    okWireOut    wo27 (.ep_datain(f_tri_force[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-//    okWireOut    wo28 (.ep_datain(f_tricepsfr_Ia[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
-//    okWireOut    wo29 (.ep_datain(f_tricepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
+    okWireOut    wo26 (.ep_datain(i_MN_spkcnt_delayed_twice[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(i_MN_spkcnt_delayed_twice[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+//    okWireOut    wo28 (.ep_datain({15'd0,spike_in1_delayed}),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
+//    okWireOut    wo29 (.ep_datain(16'd0), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
 //    okWireOut    wo30 (.ep_datain(f_tri_len[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
 //    okWireOut    wo31 (.ep_datain(f_tri_len[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
     //ep_ready = 1 (always ready to receive)

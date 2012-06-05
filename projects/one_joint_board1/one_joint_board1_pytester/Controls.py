@@ -152,7 +152,7 @@ class User(QDialog, Ui_Dialog):
 #            pipeInData = gen_tri() 
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.1, 1.1, 1.0, 1.0], FILT = False)
             pipeInData = gen_ramp(T = [0.0, 0.1, 1.8, 1.85,  1.9,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)
-#            pipeInData = spike_train(firing_rate = 100) 
+#            pipeInData = spike_train(firing_rate = 1000) 
         
         self.nerfModel.SendPipe(pipeInData)
 

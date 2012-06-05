@@ -36,7 +36,7 @@ SEND_TYPE = list(zip(*CHOUT_PARAM)[2])
 
 BIT_FILE = "../one_joint_board1_xem6010.bit"
 SAMPLING_RATE = 1024
-NUM_NEURON = 512
+NUM_NEURON = 128
 
 
 def ConvertType(val, fromType, toType):

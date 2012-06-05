@@ -12,8 +12,8 @@ DATA_EVT_CLKRATE = 0
 CHIN_PARAM =    (0x20,      'i_MN_spkcnt',      1.0,         'int32',      'Qt.blue'),  \
                 (0x22,      'i_CN_spkcnt',      1.0,         'int32',      'Qt.red'),  \
                 (0x24,      'i_spkcnt_delayed',      1.0,         'int32',      'Qt.green'),  \
-#                (0x28,      'i_emg_mu3',      1.0,         'int32',      'Qt.black'),  \
-#                (0x30,      'i_emg_mu4',      1.0,         'int32',      'Qt.magenta'),  \
+                (0x26,      'i_spkcnt_delayed2',      1.0,         'int32',      'Qt.black'),  \
+#               (0x28,      'spike_delayed',      1.0,         'int32',      'Qt.magenta'),  \
 #                (0x32,      'i_emg_mu5',      1.0,         'int32',      'Qt.darkRed'),  \
 #              (0x34,      'i_emg_mu6',      1.0,         'int32',      'Qt.darkGray'),   \
 #                (0x36,      'i_emg_mu7',     1.0,         'int32',      'Qt.blue'), \
@@ -36,9 +36,9 @@ SEND_TYPE = list(zip(*CHOUT_PARAM)[2])
 
 BIT_FILE = "../one_joint_board2_xem6010.bit"
 SAMPLING_RATE = 1024
-NUM_NEURON = 512
-
-
+#NUM_NEURON = 512
+NUM_NEURON = 128
+\
 def ConvertType(val, fromType, toType):
     return unpack(toType, pack(fromType, val))[0]
     
