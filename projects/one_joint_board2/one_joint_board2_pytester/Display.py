@@ -101,7 +101,7 @@ class View(QMainWindow, Ui_Dialog):
 
         #p = QPainter(self.graphicsView)                         ## our painter
         canvas = QPainter(self)                         ## our painter
-        self.drawPoints(canvas, self.ch_all)          ## paint clipped graphics
+        self.drawPoints(canvas, self.ch_all)          ## paint clipped graphics\
         self.drawRaster(canvas)
 
     def drawRaster(self, gp):
