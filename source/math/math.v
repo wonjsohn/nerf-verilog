@@ -25,9 +25,9 @@ output wire [31:0] out;
 wire [4:0] flags;
 
 // Core 1 fp_mult = In-house multiplier, by Sirish Nandyala
-fp_mult mult1(.in1(x), .in2(y), .out(out), .mult_error(flags) );
+//fp_mult mult1(.in1(x), .in2(y), .out(out), .mult_error(flags) );
 // Core 2 fpmul = GPL open-source. Adapted from http://www.hmc.edu/chips/index.html, by Mark Phair
-// fpmul mult1( .a(x), .b(y), .y(out), .control(5'h00), .flags(flags));
+ fpmul mult1( .a(x), .b(y), .y(out), .control(5'h00), .flags(flags));
 endmodule
 
 module div(x, y, out);
@@ -203,7 +203,7 @@ module floor(
 	
 	wire [31:0] floor_a;
 	wire [7:0] b;	//exp unbiased
-	wire [23:0] a;	//mantissa with leading 1
+	wire [31:0] a;	//mantissa with leading 1
 	//wire flag;
 	
 	assign b = in[30:23]-8'd127;
