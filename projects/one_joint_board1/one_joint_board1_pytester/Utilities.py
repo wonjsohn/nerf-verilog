@@ -12,10 +12,10 @@ DATA_EVT_CLKRATE = 0
 CHIN_PARAM =    (0x20,      'f_rawfr_Ia',      50,         'float32',      'Qt.blue'),  \
                 (0x22,      'i_MN_spkcnt',      1.0,         'int32',      'Qt.red'),  \
                 (0x24,      'i_CN_spkcnt',      1.0,         'int32',      'Qt.green'),  \
-                (0x26,      'i_MN_emg',      1.0,         'int32',      'Qt.black'),  \
-                (0x28,      'i_CN_emg',      1.0,         'int32',      'Qt.magenta'),  \
-#                (0x32,      'i_emg_mu5',      1.0,         'int32',      'Qt.darkRed'),  \
-#              (0x34,      'i_emg_mu6',      1.0,         'int32',      'Qt.darkGray'),   \
+                (0x26,      'i_Combined_spkcnt',      1.0,         'int32',      'Qt.black'),  \
+                (0x28,      'i_MN_emg',      1.0,         'int32',      'Qt.magenta'),  \
+                (0x30,      'i_CN_emg',      1.0,         'int32',      'Qt.darkRed'),  \
+                (0x32,      'i_combined_emg',      1.0,         'int32',      'Qt.darkGray'),   \
 #                (0x36,      'i_emg_mu7',     1.0,         'int32',      'Qt.blue'), \
 #                (0x28,      'f_force_mu3',     1.0,         'float32',      'Qt.red')
 NUM_CHANNEL = len(CHIN_PARAM) # Number of channels

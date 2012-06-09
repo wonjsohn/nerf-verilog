@@ -372,7 +372,7 @@ module one_joint_board2_xem6010(
  
  // delay by blk memory (1 bit) 
     wire [20:0] blk_size;
-    assign blk_size = 21'd1600000;
+    assign blk_size = 21'd800000;
     
     reg [20:0] write_index, read_index;
     reg write;
