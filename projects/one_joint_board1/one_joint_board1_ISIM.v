@@ -89,14 +89,14 @@ module one_joint_board1_xem6010(
 
 
     // *** Triggered input from Python
-    always @(posedge ep50trig[0] or posedge reset_global)
-    begin
-        if (reset_global)
-            delay_cnt_max <= delay_cnt_max;
-        else
-            delay_cnt_max <= {2'b00, ep01wire};  //firing rate
-    end
-    
+//    always @(posedge ep50trig[0] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            delay_cnt_max <= delay_cnt_max;
+//        else
+//            delay_cnt_max <= {2'b00, ep01wire};  //firing rate
+//    end
+//    
     
     reg [31:0] f_pps_coef_Ia;
     always @(posedge ep50trig[1] or posedge reset_global)
@@ -138,23 +138,23 @@ module one_joint_board1_xem6010(
             gain <= {ep02wire, ep01wire};  //firing rate
     end        
     
-    reg [31:0] f_gamma_dyn;
-    always @(posedge ep50trig[4] or posedge reset_global)
-    begin
-        if (reset_global)
-            f_gamma_dyn <= 32'h42A0_0000; // gamma_dyn reset to 80
-        else
-            f_gamma_dyn <= {ep02wire, ep01wire};  
-    end  
+//    reg [31:0] f_gamma_dyn;
+//    always @(posedge ep50trig[4] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            f_gamma_dyn <= 32'h42A0_0000; // gamma_dyn reset to 80
+//        else
+//            f_gamma_dyn <= {ep02wire, ep01wire};  
+//    end  
     
-    reg [31:0] f_gamma_sta;
-    always @(posedge ep50trig[5] or posedge reset_global)
-    begin
-        if (reset_global)
-            f_gamma_sta <= 32'h42A0_0000; // gamma_sta reset to 80
-        else
-            f_gamma_sta <= {ep02wire, ep01wire};  
-    end  
+//    reg [31:0] f_gamma_sta;
+//    always @(posedge ep50trig[5] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            f_gamma_sta <= 32'h42A0_0000; // gamma_sta reset to 80
+//        else
+//            f_gamma_sta <= {ep02wire, ep01wire};  
+//    end  
     
     reg signed [31:0] i_gain_mu1_MN;
     always @(posedge ep50trig[6] or posedge reset_global)
@@ -216,38 +216,42 @@ module one_joint_board1_xem6010(
             BDAMP_chain <= {ep02wire, ep01wire};  //firing rate
     end
     
-    
+    parameter DATALINES = 1023;
     // For test bench 
     // clk1 generation
     reg clk1;
-    reg [31:0] data [5:0];
-    reg [31:0] data_output [5:0];
+    reg [31:0] data [DATALINES:0];
+    //reg [31:0] data_output [5:0];
+	 reg [31:0] data_output;
     reg [31:0] k, outfile;
+	 reg reading;
+	 
     initial
         begin 
-        $readmemh("datafile.txt", data);
+        $readmemh("outx.txt", data);  // read once for all
         $timeformat(-9, 1, " ns", 6);
-        clk1 = 1'b0; reset_global = 1; reset_sim = 1;
-        #10 reset_sim = 0; reset_global = 0;
+		  #100;
+        clk1 = 1'b0;  reset_global = 1; reset_sim = 1; k = 0; reading = 0;
+		  delay_cnt_max = 197;
+        #10 reset_sim = 0; reset_global = 0; 
+		  #10 reset_sim = 1;
+		  #10 reset_sim = 0;
+		  reading=1; 
+		  outfile = $fopen ("dataout.txt", "w");
+		  #100000; //for reading.
+		  $fclose (outfile);  
         #3000000;          
         $finish; // to shut down the simulation
         end
-    // Display the contents of memory
-    initial begin
-        $display("Contents of Mem after reading data file:");
-         outfile = $fopen ("dataout.txt", "w");
-        for (k=0; k<6; k=k+1) begin
-            $display("%d:%h",k,data[k]);
-            data_output[k] <= data[k] + 32'h10;
-            $fwrite (outfile, "%h\n", data_output[k]);
-            //$fdisplay (outfile, "%d", data_output);
-        end    
-       $fclose (outfile);
-    end
-         
-        
-    
 
+	 always @(posedge neuron_clk) begin
+		  if (reading && k < DATALINES + 1) begin
+				data_output = data[k]; 
+				$fdisplay(outfile, "%d:%x",0, f_bicepsfr_Ia);
+				k <= k + 1;
+		  end          
+	 end 
+  
  
     always begin
         #5  clk1 = ~clk1;
@@ -262,6 +266,7 @@ module one_joint_board1_xem6010(
 
     gen_clk #(.NN(NN)) useful_clocks
     (   .rawclk(clk1), 
+		  .reset(reset_sim),
         .half_cnt(delay_cnt_max), 
         .clk_out1(neuron_clk), 
         .clk_out2(sim_clk), 
@@ -294,22 +299,10 @@ module one_joint_board1_xem6010(
     );  
     
 
-//    // *** Spindle: f_muscle_len => f_rawfr_Ia
-//    wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
-//    spindle bic_bag1_bag2_chain
-//    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-//        .gamma_sta(f_gamma_sta),
-//        .lce(f_bic_len),
-//        .clk(spindle_clk),
-//        .reset(reset_sim),
-//        .out0(x_0_bic),
-//        .out1(x_1_bic),
-//        .out2(f_bicepsfr_II),
-//        .out3(f_bicepsfr_Ia),
-//        .BDAMP_1(BDAMP_1),
-//        .BDAMP_2(BDAMP_2),
-//        .BDAMP_chain(BDAMP_chain)
-//		);
+    // *** Spindle: f_muscle_len => f_rawfr_Ia
+    wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
+
+    mult get_rand_Ia( .x(data_output), .y(32'h3fc00000), .out(f_bicepsfr_Ia));
 
 //    wire [31:0] f_tricepsfr_Ia, x_0_tri, x_1_tri, f_tricepsfr_II;
 //    spindle tri_bag1_bag2_chain
@@ -330,38 +323,37 @@ module one_joint_board1_xem6010(
     wire [31:0] delay_cnt_max32;
     assign delay_cnt_max32 = {12'b0, delay_cnt_max};
     
-	wire signed [31:0] i_current_out;
-	wire MN_spk;
-    wire [15:0] spkid_MN;
+//	wire signed [31:0] i_current_out;
+//	wire MN_spk;
+//    wire [15:0] spkid_MN;
     
-    neuron_pool #(.NN(NN)) big_pool
-    (   .f_rawfr_Ia(f_rawfr_Ia),     //
-        .f_pps_coef_Ia(f_pps_coef_Ia), //
-        .half_cnt(delay_cnt_max32),
-        .rawclk(clk1),
-        .ti_clk(ti_clk),
-        .reset_sim(reset_sim),
-        .i_gain_MN(i_gain_mu1_MN),
-        .neuronCounter(neuronCounter),
-        .MN_spike(MN_spk),
-        .spkid_MN(spkid_MN),
-		.i_current_out(i_current_out) );
+//    neuron_pool #(.NN(NN)) big_pool
+//    (   .f_rawfr_Ia(data_output),     //
+//        .f_pps_coef_Ia(f_pps_coef_Ia), //
+//        .half_cnt(delay_cnt_max32),
+//        .rawclk(clk1),
+//        .ti_clk(ti_clk),
+//        .reset_sim(reset_sim),
+//        .i_gain_MN(i_gain_mu1_MN),
+//        .neuronCounter(neuronCounter),
+//        .MN_spike(MN_spk),
+//        .spkid_MN(spkid_MN),
+//		.i_current_out(i_current_out) );
 
 
-   
 
 
-    //counting the spike from the short latency loop.
-
-    wire    [31:0] i_MN_spkcnt;
-    wire    dummy_slow;        
-    spikecnt count_rawspikes
-    (   .spike(MN_spk), 
-        .int_cnt_out(i_MN_spkcnt), 
-        .fast_clk(neuron_clk), 
-        .slow_clk(sim_clk), 
-        .reset(reset_sim), 
-        .clear_out(dummy_slow));
+//    //counting the spike from the short latency loop.
+//
+//    wire    [31:0] i_MN_spkcnt;
+//    wire    dummy_slow;        
+//    spikecnt count_rawspikes
+//    (   .spike(MN_spk), 
+//        .int_cnt_out(i_MN_spkcnt), 
+//        .fast_clk(neuron_clk), 
+//        .slow_clk(sim_clk), 
+//        .reset(reset_sim), 
+//        .clear_out(dummy_slow));
 
 
 
@@ -369,15 +361,15 @@ module one_joint_board1_xem6010(
  
 
 
-    // ** EMG, Motor neuron (MN)
-    wire [17:0] si_emg;
-    emg #(.NN(NN)) emg
-    (   .emg_out(si_emg), 
-        .i_spk_cnt(i_MN_spkcnt[NN:0]), 
-        .clk(sim_clk), 
-        .reset(reset_sim) ); 
-    wire [31:0] i_MN_emg;
-    assign i_MN_emg = {{14{si_emg[17]}},si_emg[17:0]};
+//    // ** EMG, Motor neuron (MN)
+//    wire [17:0] si_emg;
+//    emg #(.NN(NN)) emg
+//    (   .emg_out(si_emg), 
+//        .i_spk_cnt(i_MN_spkcnt[NN:0]), 
+//        .clk(sim_clk), 
+//        .reset(reset_sim) ); 
+//    wire [31:0] i_MN_emg;
+//    assign i_MN_emg = {{14{si_emg[17]}},si_emg[17:0]};
     
 
  
@@ -409,14 +401,14 @@ module one_joint_board1_xem6010(
 
     okWireOut    wo20 (.ep_datain(f_rawfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
     okWireOut    wo21 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-    okWireOut    wo22 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-    okWireOut    wo23 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+//    okWireOut    wo22 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+//    okWireOut    wo23 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
 //    okWireOut    wo24 (.ep_datain(i_CN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
 //    okWireOut    wo25 (.ep_datain(i_CN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
 //    okWireOut    wo26 (.ep_datain(i_combined_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
 //    okWireOut    wo27 (.ep_datain(i_combined_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-    okWireOut    wo28 (.ep_datain(i_MN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
-    okWireOut    wo29 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
+//    okWireOut    wof28 (.ep_datain(i_MN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
+//    okWireOut    wo29 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
 //    okWireOut    wo30 (.ep_datain(i_CN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
 //    okWireOut    wo31 (.ep_datain(i_CN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
 //    okWireOut    wo32 (.ep_datain(i_combined_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );

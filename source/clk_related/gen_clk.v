@@ -10,14 +10,19 @@ module gen_clk(rawclk, reset, half_cnt, clk_out1, clk_out2, clk_out3, int_neuron
     reg [31:0] delay_cnt;
 
     always @ (posedge rawclk) begin
-        if (delay_cnt < half_cnt) begin
-            clk_out1 <= clk_out1;
-            delay_cnt <= delay_cnt + 1;
-        end
-        else begin
-            clk_out1 <= ~clk_out1;
-            delay_cnt <= 0;
-        end
+	     if (reset) begin
+            clk_out1 <= 0;
+		  end 
+		  else begin
+			  if (delay_cnt < half_cnt) begin
+					clk_out1 <= clk_out1;
+					delay_cnt <= delay_cnt + 1;
+			  end
+			  else begin
+					clk_out1 <= ~clk_out1;
+					delay_cnt <= 0;
+			  end
+		  end
     end
 
 	reg [NN+2:0] neuronCounter;
@@ -25,10 +30,12 @@ module gen_clk(rawclk, reset, half_cnt, clk_out1, clk_out2, clk_out3, int_neuron
 
 	assign neuronIndex = neuronCounter[NN+2:2];
 
-	always @ (posedge clk_out1)
+	always @ (posedge clk_out1 or posedge reset)
 	begin
         if (reset) begin
             neuronCounter <= 0;
+				clk_out2 <= 0;
+				clk_out3 <= 0;
         end else begin
             neuronCounter <= neuronCounter + 1'b1;
             clk_out2 <= {neuronCounter == 0};
