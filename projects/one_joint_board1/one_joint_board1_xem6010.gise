@@ -22,17 +22,7 @@
   <sourceproject xmlns="http://www.xilinx.com/XMLSchema" xil_pn:fileType="FILE_XISE" xil_pn:name="one_joint_board1_xem6010.xise"/>
 
   <files xmlns="http://www.xilinx.com/XMLSchema">
-    <file xil_pn:fileType="FILE_USERDOC" xil_pn:name="../../source/io/blk_mem_gen_readme.txt" xil_pn:origination="imported"/>
     <file xil_pn:fileType="FILE_LOG" xil_pn:name="../../source/io/coregen.log"/>
-    <file xil_pn:fileType="FILE_ASY" xil_pn:name="../../source/io/neuron_ram.asy" xil_pn:origination="imported"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGC" xil_pn:name="../../source/io/neuron_ram.ngc" xil_pn:origination="imported"/>
-    <file xil_pn:fileType="FILE_SYMBOL" xil_pn:name="../../source/io/neuron_ram.sym" xil_pn:origination="imported"/>
-    <file xil_pn:fileType="FILE_VERILOG" xil_pn:name="../../source/io/neuron_ram.v" xil_pn:origination="imported">
-      <branch xil_pn:name="Implementation"/>
-      <branch xil_pn:name="BehavioralSim"/>
-    </file>
-    <file xil_pn:fileType="FILE_VEO" xil_pn:name="../../source/io/neuron_ram.veo" xil_pn:origination="imported"/>
-    <file xil_pn:fileType="FILE_VHO" xil_pn:name="../../source/io/neuron_ram.vho" xil_pn:origination="imported"/>
     <file xil_pn:fileType="FILE_DIRECTORY" xil_pn:name="_ngo"/>
     <file xil_pn:fileType="FILE_XMSGS" xil_pn:name="_xmsgs/bitgen.xmsgs"/>
     <file xil_pn:fileType="FILE_XMSGS" xil_pn:name="_xmsgs/map.xmsgs"/>
@@ -243,6 +233,7 @@
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="one_joint_board1_xem6010_xst.xrpt"/>
     <file xil_pn:fileType="FILE_DIRECTORY" xil_pn:name="planAhead_run_1"/>
     <file xil_pn:fileType="FILE_DIRECTORY" xil_pn:name="planAhead_run_2"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="signed_mult32_isim_beh.exe"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_REPORT" xil_pn:name="spindle_bag1_neuron_xem6010.bgn" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BIT" xil_pn:name="spindle_bag1_neuron_xem6010.bit" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGDBUILD_LOG" xil_pn:name="spindle_bag1_neuron_xem6010.bld"/>
@@ -417,11 +408,11 @@
   </files>
 
   <transforms xmlns="http://www.xilinx.com/XMLSchema">
-    <transform xil_pn:end_ts="1339195034" xil_pn:name="TRAN_copyInitialToAbstractSimulation" xil_pn:start_ts="1339195034">
+    <transform xil_pn:end_ts="1339446967" xil_pn:name="TRAN_copyInitialToAbstractSimulation" xil_pn:start_ts="1339446967">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1339204728" xil_pn:in_ck="-3910785106288062017" xil_pn:name="TRAN_copyAbstractToPostAbstractSimulation" xil_pn:start_ts="1339204728">
+    <transform xil_pn:end_ts="1339460786" xil_pn:in_ck="-3910785106288062017" xil_pn:name="TRAN_copyAbstractToPostAbstractSimulation" xil_pn:start_ts="1339460786">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="../../source/IzhikevichModuleMin.v"/>
@@ -471,21 +462,21 @@
       <outfile xil_pn:name="../../source/xem6010/okLibrary.vhd"/>
       <outfile xil_pn:name="one_joint_board1_ISIM.v"/>
     </transform>
-    <transform xil_pn:end_ts="1339195034" xil_pn:name="TRAN_xawsToSimhdl" xil_pn:prop_ck="-3013759921157252988" xil_pn:start_ts="1339195034">
+    <transform xil_pn:end_ts="1339453202" xil_pn:name="TRAN_xawsToSimhdl" xil_pn:prop_ck="-3013759921157252988" xil_pn:start_ts="1339453202">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1339195034" xil_pn:name="TRAN_schematicsToHdlSim" xil_pn:prop_ck="-8838457059082012606" xil_pn:start_ts="1339195034">
+    <transform xil_pn:end_ts="1339453202" xil_pn:name="TRAN_schematicsToHdlSim" xil_pn:prop_ck="-8838457059082012606" xil_pn:start_ts="1339453202">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1339195034" xil_pn:in_ck="4626989682768643499" xil_pn:name="TRAN_regenerateCoresSim" xil_pn:prop_ck="-1473930526863990211" xil_pn:start_ts="1339195034">
+    <transform xil_pn:end_ts="1339447114" xil_pn:in_ck="4626989682768643499" xil_pn:name="TRAN_regenerateCoresSim" xil_pn:prop_ck="-1473930526863990211" xil_pn:start_ts="1339447114">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="../../source/io/neuron_ram.ngc"/>
       <outfile xil_pn:name="../../source/io/neuron_ram.v"/>
     </transform>
-    <transform xil_pn:end_ts="1339204728" xil_pn:in_ck="8249969045095882134" xil_pn:name="TRAN_copyPostAbstractToPreSimulation" xil_pn:start_ts="1339204728">
+    <transform xil_pn:end_ts="1339460786" xil_pn:in_ck="-3910785106288062017" xil_pn:name="TRAN_copyPostAbstractToPreSimulation" xil_pn:start_ts="1339460786">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="../../source/IzhikevichModuleMin.v"/>
@@ -517,7 +508,6 @@
       <outfile xil_pn:name="../../source/fpmul/round.v"/>
       <outfile xil_pn:name="../../source/fpmul/shift.v"/>
       <outfile xil_pn:name="../../source/io/bram_2048.v"/>
-      <outfile xil_pn:name="../../source/io/neuron_ram.v"/>
       <outfile xil_pn:name="../../source/io/waveform_from_pipe.v"/>
       <outfile xil_pn:name="../../source/io/waveform_from_pipe_bram.v"/>
       <outfile xil_pn:name="../../source/izneuron.v"/>
@@ -536,7 +526,7 @@
       <outfile xil_pn:name="../../source/xem6010/okLibrary.vhd"/>
       <outfile xil_pn:name="one_joint_board1_ISIM.v"/>
     </transform>
-    <transform xil_pn:end_ts="1339204730" xil_pn:in_ck="8249969045095882134" xil_pn:name="TRAN_ISimulateBehavioralModelRunFuse" xil_pn:prop_ck="-5505821839702605273" xil_pn:start_ts="1339204728">
+    <transform xil_pn:end_ts="1339460800" xil_pn:in_ck="8249969045095882134" xil_pn:name="TRAN_ISimulateBehavioralModelRunFuse" xil_pn:prop_ck="-5505821839702605273" xil_pn:start_ts="1339460786">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
@@ -548,7 +538,7 @@
       <outfile xil_pn:name="one_joint_board1_xem6010_isim_beh.exe"/>
       <outfile xil_pn:name="xilinxsim.ini"/>
     </transform>
-    <transform xil_pn:end_ts="1339204731" xil_pn:in_ck="2856149172001953500" xil_pn:name="TRAN_ISimulateBehavioralModel" xil_pn:prop_ck="4074919339753783882" xil_pn:start_ts="1339204730">
+    <transform xil_pn:end_ts="1339461206" xil_pn:in_ck="-8084355110957203829" xil_pn:name="TRAN_ISimulateBehavioralModel" xil_pn:prop_ck="4074919339753783882" xil_pn:start_ts="1339461206">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="isim.cmd"/>
@@ -567,8 +557,10 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
-      <outfile xil_pn:name="../../source/io/neuron_ram.ngc"/>
-      <outfile xil_pn:name="../../source/io/neuron_ram.v"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputAdded"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1330556355" xil_pn:name="TRAN_SubProjectAbstractToPreProxy" xil_pn:start_ts="1330556355">
       <status xil_pn:value="SuccessfullyRun"/>
@@ -613,12 +605,13 @@
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputAdded"/>
       <status xil_pn:value="InputRemoved"/>
       <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1339010606" xil_pn:in_ck="6774144502036439469" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1339010568">
       <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="NotReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
@@ -628,7 +621,7 @@
     <transform xil_pn:end_ts="1339010648" xil_pn:in_ck="-6787650932875675450" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1339010606">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
-      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="NotReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
@@ -638,7 +631,7 @@
     <transform xil_pn:end_ts="1339010665" xil_pn:in_ck="5237465785819715248" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="396117104113915555" xil_pn:start_ts="1339010648">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
-      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="NotReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
@@ -647,7 +640,7 @@
     </transform>
     <transform xil_pn:end_ts="1339010648" xil_pn:in_ck="-5415036603432783063" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1339010639">
       <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="NotReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
