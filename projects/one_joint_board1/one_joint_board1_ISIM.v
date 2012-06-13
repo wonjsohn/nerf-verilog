@@ -17,14 +17,14 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module one_joint_board1_xem6010(
-	input  wire [7:0]  hi_in,
-	output wire [1:0]  hi_out,
-	inout  wire [15:0] hi_inout,
-	inout  wire        hi_aa,
-
-	output wire        i2c_sda,
-	output wire        i2c_scl,
-	output wire        hi_muxsel
+//	input  wire [7:0]  hi_in,
+//	output wire [1:0]  hi_out,
+//	inout  wire [15:0] hi_inout,
+//	inout  wire        hi_aa,
+//
+//	output wire        i2c_sda,
+//	output wire        i2c_scl,
+//	output wire        hi_muxsel
 	//input  wire        clk1,
 	//input  wire        clk2,
 	
@@ -67,13 +67,13 @@ module one_joint_board1_xem6010(
     
     reg [17:0] delay_cnt, delay_cnt_max;
     
-    reg [15:0] rawspikes;
-    wire pipe_out_read;
- 
-    // *** Target interface bus:
-    assign i2c_sda = 1'bz;
-    assign i2c_scl = 1'bz;
-    assign hi_muxsel = 1'b0;
+//    reg [15:0] rawspikes;
+//    wire pipe_out_read;
+// 
+//    // *** Target interface bus:
+//    assign i2c_sda = 1'bz;
+//    assign i2c_scl = 1'bz;
+//    assign hi_muxsel = 1'b0;
 
   // *** Buttons, physical on XEM3010, software on XEM3050 & XEM6010
     // *** Reset & Enable signals
@@ -225,34 +225,42 @@ module one_joint_board1_xem6010(
 	 reg [31:0] data_output;
     reg [31:0] k, outfile;
 	 reg reading;
+     
+     initial begin 
+          #140 reset_global = 0; 
+          #40 reset_sim = 0; 
+          
+     end
 	 
-    initial
+     initial
         begin 
         $readmemh("outx.txt", data);  // read once for all
         $timeformat(-9, 1, " ns", 6);
 		  #100;
-        clk1 = 1'b0;  reset_global = 1; reset_sim = 1; k = 0; reading = 0;
+            clk1 = 1'b0;  reset_global = 1; reset_sim = 1; k = 0; reading = 0;
 		  delay_cnt_max = 197;
-        #10 reset_sim = 0; reset_global = 0; 
-		  #10 reset_sim = 1;
-		  #10 reset_sim = 0;
+     
+//		  #10 reset_sim = 1;
+//		  #10 reset_sim = 0;
 		  reading=1; 
 		  outfile = $fopen ("dataout.txt", "w");
 		  #100000; //for reading.
-		  $fclose (outfile);  
-        #3000000;          
-        $finish; // to shut down the simulation
+		    
+          #8000000; // 8ms       
+			$fclose (outfile);			 
+          $finish; // to shut down the simulation
+			 
         end
 
-	 always @(posedge neuron_clk) begin
-		  if (reading && k < DATALINES + 1) begin
-				data_output = data[k]; 
-				$fdisplay(outfile, "%d:%x",0, f_bicepsfr_Ia);
+	 always @(posedge sim_clk) begin
+		  if (reading & (k < (DATALINES + 1))) begin
+				data_output <= data[k]; 
+				$fdisplay(outfile, "%d: %x", k, f_bicepsfr_Ia);
 				k <= k + 1;
 		  end          
 	 end 
   
- 
+    // 200Mhz base clock
     always begin
         #5  clk1 = ~clk1;
     end
@@ -266,7 +274,7 @@ module one_joint_board1_xem6010(
 
     gen_clk #(.NN(NN)) useful_clocks
     (   .rawclk(clk1), 
-		  .reset(reset_sim),
+		  .reset(reset_global),
         .half_cnt(delay_cnt_max), 
         .clk_out1(neuron_clk), 
         .clk_out2(sim_clk), 
@@ -298,11 +306,33 @@ module one_joint_board1_xem6010(
                                 .wave(f_rawfr_Ia)
     );  
     
+    
+    wire [31:0] f_gamma_dyn, f_gamma_sta;
+    assign f_gamma_dyn = 32'h42A0_0000;
+    assign f_gamma_sta = 32'h42A0_0000;
+    
 
     // *** Spindle: f_muscle_len => f_rawfr_Ia
     wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
+    
+    spindle bic_bag1_bag2_chain
+    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
+        .gamma_sta(f_gamma_sta),
+        .lce(data_output),
+        .clk(spindle_clk),
+        .reset(reset_sim),
+        .out0(x_0_bic),
+        .out1(x_1_bic),
+        .out2(f_bicepsfr_II),
+        .out3(f_bicepsfr_Ia),
+        .BDAMP_1(32'h3E71_4120),
+        .BDAMP_2(32'h3D14_4674),
+        .BDAMP_chain(32'h3C58_44D0)
+		);
+    
+    
 
-    mult get_rand_Ia( .x(data_output), .y(32'h3fc00000), .out(f_bicepsfr_Ia));
+    //mult get_rand_Ia( .x(data_output), .y(32'h3fc00000), .out(f_bicepsfr_Ia));
 
 //    wire [31:0] f_tricepsfr_Ia, x_0_tri, x_1_tri, f_tricepsfr_II;
 //    spindle tri_bag1_bag2_chain
@@ -385,40 +415,40 @@ module one_joint_board1_xem6010(
     // Host interface
     // *** Endpoint connections:
   
-    okHost okHI(
-        .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
-        .ok1(ok1), .ok2(ok2));
-        
-    parameter NUM_OK_IO = 20;
-
-    wire [NUM_OK_IO*17 - 1: 0]  ok2x;
-    okWireOR # (.N(NUM_OK_IO)) wireOR (ok2, ok2x);
-    okWireIn     wi00 (.ok1(ok1),                           .ep_addr(8'h00), .ep_dataout(ep00wire));
-    okWireIn     wi01 (.ok1(ok1),                           .ep_addr(8'h01), .ep_dataout(ep01wire));
-    okWireIn     wi02 (.ok1(ok1),                           .ep_addr(8'h02), .ep_dataout(ep02wire));
-    //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep03wire));
-
-
-    okWireOut    wo20 (.ep_datain(f_rawfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
-    okWireOut    wo21 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-//    okWireOut    wo22 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-//    okWireOut    wo23 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-//    okWireOut    wo24 (.ep_datain(i_CN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-//    okWireOut    wo25 (.ep_datain(i_CN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-//    okWireOut    wo26 (.ep_datain(i_combined_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-//    okWireOut    wo27 (.ep_datain(i_combined_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-//    okWireOut    wof28 (.ep_datain(i_MN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
-//    okWireOut    wo29 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
-//    okWireOut    wo30 (.ep_datain(i_CN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
-//    okWireOut    wo31 (.ep_datain(i_CN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
-//    okWireOut    wo32 (.ep_datain(i_combined_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
-//    okWireOut    wo33 (.ep_datain(i_combined_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );   
-    //ep_ready = 1 (always ready to receive)
-    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
-    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
-    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
-
-    okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
+//    okHost okHI(
+//        .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
+//        .ok1(ok1), .ok2(ok2));
+//        
+//    parameter NUM_OK_IO = 20;
+//
+//    wire [NUM_OK_IO*17 - 1: 0]  ok2x;
+//    okWireOR # (.N(NUM_OK_IO)) wireOR (ok2, ok2x);
+//    okWireIn     wi00 (.ok1(ok1),                           .ep_addr(8'h00), .ep_dataout(ep00wire));
+//    okWireIn     wi01 (.ok1(ok1),                           .ep_addr(8'h01), .ep_dataout(ep01wire));
+//    okWireIn     wi02 (.ok1(ok1),                           .ep_addr(8'h02), .ep_dataout(ep02wire));
+//    //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep03wire));
+//
+//
+//    okWireOut    wo20 (.ep_datain(f_rawfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
+//    okWireOut    wo21 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
+////    okWireOut    wo22 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+////    okWireOut    wo23 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+////    okWireOut    wo24 (.ep_datain(i_CN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+////    okWireOut    wo25 (.ep_datain(i_CN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+////    okWireOut    wo26 (.ep_datain(i_combined_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+////    okWireOut    wo27 (.ep_datain(i_combined_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+////    okWireOut    wof28 (.ep_datain(i_MN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
+////    okWireOut    wo29 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
+////    okWireOut    wo30 (.ep_datain(i_CN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
+////    okWireOut    wo31 (.ep_datain(i_CN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
+////    okWireOut    wo32 (.ep_datain(i_combined_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
+////    okWireOut    wo33 (.ep_datain(i_combined_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );   
+//    //ep_ready = 1 (always ready to receive)
+//    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
+//    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
+//    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
+//
+//    okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
 endmodule
 
 

@@ -2,6 +2,7 @@ module integrator
 (
 		input wire [31:0] x,
         input wire [31:0] int_x,
+        input wire reset,
 		output wire [31:0] out // out = x*dt + int_x
 );
 	
@@ -18,17 +19,21 @@ module integrator
 	assign x_by_dt_exp = x[30:23] - 8'd10;
 	assign x_by_dt_man = x[22:0];
 	
-	always @ (x)
+	always @ (x or reset)
 	begin
+        if (reset) begin
+             x_by_dt <= 32'd0;
+            x_by_dt_underflow <= 0;
+        end
 		if ( x[30:23]<= 8'd10 )
 			begin
-				x_by_dt = 0;
-				x_by_dt_underflow=1;
+				x_by_dt <= 0;
+				x_by_dt_underflow<=1;
 			end
 		else
 			begin
-				x_by_dt = {x[31], x_by_dt_exp, x_by_dt_man};
-				x_by_dt_underflow = 0;
+				x_by_dt <= {x[31], x_by_dt_exp, x_by_dt_man};
+				x_by_dt_underflow <= 0;
 			end
 	end
 	

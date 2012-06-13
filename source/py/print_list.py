@@ -7,7 +7,7 @@ def ConvertType(val, fromType, toType):
     return unpack(toType, pack(fromType, val))[0]
 
 x =  gen(F = 2.0, BIAS = 1.0, AMP = 0.2)
-file = open('/home/wonjsohn/outx.txt', 'w')
+file = open('/home/eric/outx.txt', 'w')
 for item in x:
   new_item = ConvertType(item, 'f', 'i')
   print>>file, "%x" % new_item
