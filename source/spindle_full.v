@@ -23,7 +23,6 @@ module spindle(
 	//wire [1:0] state;
     //assign state = 2'd0;
     reg [31:0] Ia_fiber_2, II_fiber_2;
-	reg [31:0] Ia_chain, II_chain;
     reg [31:0] Ia_muscle, II_muscle;
 	wire [31:0] IEEE_100000;
 	assign IEEE_100000 = 32'h47C3_5000;
@@ -79,7 +78,17 @@ module spindle(
 	assign GI_2_chain = 32'h461C4000;	//10000
 	
 	reg [31:0] GI_in;
-	always @ (state) begin
+	always @ (state or reset) begin
+        if (reset) begin
+            x_0_in = 0;
+            x_1_in = 0;
+            x_2_in = 0;
+            dx_0_in = 0;
+            dx_1_in = 0;
+            dx_2_in = 0;
+            GI_in = 0;
+        end
+        else begin
 		case (state) 
 			0: begin //bag1
 				x_0_in = x_0;
@@ -118,6 +127,7 @@ module spindle(
 					GI_in = 0;
 					end
 		endcase
+        end
 	end
 
 
@@ -213,6 +223,7 @@ module spindle(
 	integrator x_2_hat_integrator (	.x(dx_2_in), .int_x(x_2_in), .out(x_2_hat) );
 	//loeb spindle bag1 derivatives
 	spindle_derivatives derivatives(    .state(state),	
+                                .reset(reset),
                                  .gamma_dyn(gamma_dyn),
                                 .gamma_sta(gamma_sta),                                 
             					.lce(lce), 
@@ -249,76 +260,144 @@ module spindle(
 	always @ (posedge clk or posedge reset)
 	begin
 		if (reset) begin
-			Ia_fiber_1 <= 32'h0000_0000;
-			Ia_fiber_2 <= 32'h0000_0000;
-			II_fiber_2 <= 32'h0000_0000;
-			x_0 <= 32'h0000_0000;
+            x_0 <= 32'h0000_0000;
 			x_1 <= 32'h3F75_38EF; //0.9579
 			x_2 <= 32'h0000_0000;
-			dx_0_prev <= 32'd0;
-			dx_1_prev <= 32'd0;
-			dx_2_prev <= 32'd0;
 			x_3 <= 32'h0000_0000;
 			x_4 <= 32'h3F75_38EF; //0.9579 
 			x_5 <= 32'h0000_0000;
+            x_6 <= 32'h0000_0000;
+			x_7 <= 32'h3F75_38EF; //0.9579
+			x_8 <= 32'h0000_0000;
+            dx_0_prev <= 32'd0;
+			dx_1_prev <= 32'd0;
+			dx_2_prev <= 32'd0;
 			dx_3_prev <= 32'd0;
 			dx_4_prev <= 32'd0;
 			dx_5_prev <= 32'd0;
+            dx_6_prev <= 32'd0;
+			dx_7_prev <= 32'd0;
+			dx_8_prev <= 32'd0;
+            Ia_fiber_1 <= 32'h0000_0000;
+			Ia_fiber_2 <= 32'h0000_0000;
+			II_fiber_2 <= 32'h0000_0000;
+            II_muscle <= 32'd0;
+            Ia_muscle <= 32'd0;
 		end
-		else if (state == 2'd0) begin //bag1
-		    		x_0 <= x_0_F0;
-		    		x_1 <= x_1_F0;
-		    		x_2 <= x_2_F0;
+		else case (state)
+        2'd0: begin //bag1
+		    	x_0 <= x_0_F0;
+		    	x_1 <= x_1_F0;
+		    	x_2 <= x_2_F0;
+                x_3 <= x_3;
+		    	x_4 <= x_4;
+		    	x_5 <= x_5;
+                x_6 <= x_6;
+                x_7 <= x_7;
+                x_8 <= x_8;
 				dx_0_prev <= dx_0;
 				dx_1_prev <= dx_1;
-				dx_2_prev <= dx_2;
+				dx_2_prev <= dx_2;            
+                dx_3_prev <= dx_3_prev;
+				dx_4_prev <= dx_4_prev;
+				dx_5_prev <= dx_5_prev;
+                dx_6_prev <= dx_6_prev;
+				dx_7_prev <= dx_7_prev;
+				dx_8_prev <= dx_8_prev;
+                
 				//Ia fiber output	
-		        Ia_fiber_1 <=Ia_fiber_F0;
+		        Ia_fiber_1 <= Ia_fiber_F0;
+                Ia_fiber_2 <= Ia_fiber_2;
+                II_fiber_2 <= II_fiber_2;
+                II_muscle <= II_muscle;
+                Ia_muscle <= Ia_muscle;
               end
-			else if (state == 2'd1) begin //bag2
-		    		x_3 <= x_0_F0;
-		    		x_4 <= x_1_F0;
-		    		x_5 <= x_2_F0;
+			2'd1: begin //bag2
+                x_0 <= x_0;
+		    	x_1 <= x_1;
+		    	x_2 <= x_2;
+		    	x_3 <= x_0_F0;
+		    	x_4 <= x_1_F0;
+		    	x_5 <= x_2_F0;
+                x_6 <= x_6;
+                x_7 <= x_7;
+                x_8 <= x_8;
+                dx_0_prev <= dx_0_prev;
+				dx_1_prev <= dx_1_prev;
+				dx_2_prev <= dx_2_prev;
 				dx_3_prev <= dx_0;
 				dx_4_prev <= dx_1;
 				dx_5_prev <= dx_2;
+                dx_6_prev <= dx_6_prev;
+				dx_7_prev <= dx_7_prev;
+				dx_8_prev <= dx_8_prev;
+                
+                Ia_fiber_1 <= Ia_fiber_1;
 				//Ia fiber output	
-		        Ia_fiber_2 <=Ia_fiber_F0;
+		        Ia_fiber_2 <= Ia_fiber_F0;
 				// II fiber output	
-		        II_fiber_2 <=II_fiber_F0;
+		        II_fiber_2 <= II_fiber_F0;
+                II_muscle <= II_muscle;
+                Ia_muscle <= Ia_muscle;
               end
-           else if (state == 2'd2) begin //chain
+           2'd2: begin //chain
+                x_0 <= x_0;
+		    	x_1 <= x_1;
+		    	x_2 <= x_2;
+                x_3 <= x_3;
+		    	x_4 <= x_4;
+		    	x_5 <= x_5;
                 x_6 <= x_0_F0;
                 x_7 <= x_1_F0;
                 x_8 <= x_2_F0;
+                
+                dx_0_prev <= dx_0_prev;
+				dx_1_prev <= dx_1_prev;
+				dx_2_prev <= dx_2_prev;
+                dx_3_prev <= dx_3_prev;
+				dx_4_prev <= dx_4_prev;
+				dx_5_prev <= dx_5_prev;   
                 dx_6_prev <= dx_0;
                 dx_7_prev <= dx_1;
                 dx_8_prev <= dx_2;
+                Ia_fiber_1 <= Ia_fiber_1;
+                Ia_fiber_2 <= Ia_fiber_2;
+                II_fiber_2 <= II_fiber_2;                
                 II_muscle <= II_muscle_F0;
                 Ia_muscle <= Ia_muscle_F0;
            end
-           else begin
-            Ia_fiber_1 <= Ia_fiber_1;
-            Ia_fiber_2 <= Ia_fiber_2;
-            II_fiber_2 <= II_fiber_2;
+           default: begin     
             x_0 <= x_0;
             x_1 <= x_1;
             x_2 <= x_2;
-            dx_0_prev <= dx_0_prev;
-            dx_1_prev <= dx_1_prev;
-            dx_2_prev <= dx_2_prev;
             x_3 <= x_3;
             x_4 <= x_4;
             x_5 <= x_5;
+            x_6 <= x_6;
+            x_7 <= x_7;
+            x_8 <= x_8;
+            dx_0_prev <= dx_0_prev;
+            dx_1_prev <= dx_1_prev;
+            dx_2_prev <= dx_2_prev;
             dx_3_prev <= dx_3_prev;
             dx_4_prev <= dx_4_prev;
             dx_5_prev <= dx_5_prev;
-        end
-       end
+            dx_6_prev <= dx_6_prev;
+            dx_7_prev <= dx_7_prev;
+            dx_8_prev <= dx_8_prev;
+            Ia_fiber_1 <= Ia_fiber_1;
+            Ia_fiber_2 <= Ia_fiber_2;
+            II_fiber_2 <= II_fiber_2;
+            II_muscle <= II_muscle;
+            Ia_muscle <= Ia_muscle;
+            end
+        endcase
+   end // of always
 endmodule
 
 
 module spindle_derivatives(		input wire [1:0] state,
+                    input wire reset,
 					input wire [31:0]gamma_dyn,
 					input wire [31:0]gamma_sta, 
 					input wire [31:0]lce, 
@@ -357,13 +436,25 @@ module spindle_derivatives(		input wire [1:0] state,
     assign IEEE_0_01 = 32'h3C23D70A;
     assign IEEE_8100 = 32'h45FD2000;
     
-	always @ (state) begin
+	always @ (state or reset) begin
+        if (reset) begin
+					gamma = 0;
+					dx_0_CONSTANT = 0;
+					BDAMP = 0;
+                    B0 = 0;
+                    F = 0;
+                    F0 = 32'd0;
+					C_KSR_P_KPR = 0;
+                    fs_sqr = 0;
+        end
+        else
 		case (state)
 			0: begin	//bag1
 				gamma = gamma_dyn;
 				dx_0_CONSTANT = IEEE_SIX_POINT_SEVEN_ONE_ONE;
 				BDAMP = BDAMP_1;
                 B0 = 32'h3D77CED9;
+                F0 = 32'd0;
                 F = 32'h3CECBFB1;
 				C_KSR_P_KPR = C_KSR_P_KPR_1;
                 fs_sqr = IEEE_3600;
@@ -374,6 +465,7 @@ module spindle_derivatives(		input wire [1:0] state,
 				BDAMP = BDAMP_2;
                 B0 = 32'h3DA85879;
                 F = 32'h3D8240B8;
+                F0 = 32'd0;
 				C_KSR_P_KPR = C_KSR_P_KPR_2;
                 fs_sqr = IEEE_3600;
 				end
@@ -383,6 +475,7 @@ module spindle_derivatives(		input wire [1:0] state,
 				BDAMP = BDAMP_chain;
                 B0 = 32'h3DA85879;
                 F = 32'h3DC36113;
+                F0 = 32'd0;
 				C_KSR_P_KPR = C_KSR_P_KPR_chain;
                 fs_sqr = IEEE_8100;
 				end
@@ -392,7 +485,8 @@ module spindle_derivatives(		input wire [1:0] state,
 					BDAMP = 0;
                     B0 = 0;
                     F = 0;
-					C_KSR_P_KPR = 0;
+                    F0 = 32'd0;
+                    C_KSR_P_KPR = 0;
                     fs_sqr = 0;
 				end
 		endcase
