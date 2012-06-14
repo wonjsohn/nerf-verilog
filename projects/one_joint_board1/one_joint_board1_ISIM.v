@@ -222,6 +222,7 @@ module one_joint_board1_xem6010(
     reg clk1;
     reg [31:0] data [DATALINES:0];
     //reg [31:0] data_output [5:0];
+	 reg [31:0] data_input;
 	 reg [31:0] data_output;
     reg [31:0] k, outfile;
 	 reg reading;
@@ -254,8 +255,8 @@ module one_joint_board1_xem6010(
 
 	 always @(posedge sim_clk) begin
 		  if (reading & (k < (DATALINES + 1))) begin
-				data_output <= data[k]; 
-				$fdisplay(outfile, "%d: %x", k, f_bicepsfr_Ia);
+				data_input <= data[k]; 
+				$fdisplay(outfile, "%x",  i_MN_emg);
 				k <= k + 1;
 		  end          
 	 end 
@@ -265,7 +266,26 @@ module one_joint_board1_xem6010(
         #5  clk1 = ~clk1;
     end
     
+//	 wire [31:0] data_output_F0;
+//	  // *** Integrate
+//    integrator integrate_data_input
+//    (
+//        .x(data_input),       //dT_i
+//        .int_x(data_output),   //T_i
+//		  .reset(reset_global),
+//        .out(data_output_F0)     //T_i_F0
+//    );
+//
+//    always @(posedge sim_clk or posedge reset_global) begin
+//        if (reset_global) begin
+//				data_output <= 32'd0;
+//        end
+//        else begin
+//            data_output <= data_output_F0;
+//        end
+//    end
     
+
     
     // *** Deriving clocks from on-board clk1:
     wire neuron_clk, sim_clk, spindle_clk;
@@ -295,16 +315,16 @@ module one_joint_board1_xem6010(
 //        .done_feeding(is_lce_valid)
 //    );    
     // *** Generating waveform to stimulate the spindle
-    wire    [31:0] f_pos_elbow;
-    wire    [31:0] f_rawfr_Ia;
-    waveform_from_pipe_bram_2s    generator(
-                                .reset(reset_sim),
-                                .pipe_clk(ti_clk),
-                                .pipe_in_write(is_pipe_being_written),
-                                .pipe_in_data(hex_from_py),
-                                .pop_clk(sim_clk),
-                                .wave(f_rawfr_Ia)
-    );  
+//    wire    [31:0] f_pos_elbow;
+//    wire    [31:0] f_rawfr_Ia;
+//    waveform_from_pipe_bram_2s    generator(
+//                                .reset(reset_sim),
+//                                .pipe_clk(ti_clk),
+//                                .pipe_in_write(is_pipe_being_written),
+//                                .pipe_in_data(hex_from_py),
+//                                .pop_clk(sim_clk),
+//                                .wave(f_rawfr_Ia)
+//    );  
     
     
     wire [31:0] f_gamma_dyn, f_gamma_sta;
@@ -315,21 +335,21 @@ module one_joint_board1_xem6010(
     // *** Spindle: f_muscle_len => f_rawfr_Ia
     wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
     
-    spindle bic_bag1_bag2_chain
-    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-        .gamma_sta(f_gamma_sta),
-        .lce(data_output),
-        .clk(spindle_clk),
-        .reset(reset_sim),
-        .out0(x_0_bic),
-        .out1(x_1_bic),
-        .out2(f_bicepsfr_II),
-        .out3(f_bicepsfr_Ia),
-        .BDAMP_1(32'h3E71_4120),
-        .BDAMP_2(32'h3D14_4674),
-        .BDAMP_chain(32'h3C58_44D0)
-		);
-    
+//    spindle bic_bag1_bag2_chain
+//    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
+//        .gamma_sta(f_gamma_sta),
+//        .lce(data_output),
+//        .clk(spindle_clk),
+//        .reset(reset_sim),
+//        .out0(x_0_bic),
+//        .out1(x_1_bic),
+//        .out2(f_bicepsfr_II),
+//        .out3(f_bicepsfr_Ia),
+//        .BDAMP_1(32'h3E71_4120),
+//        .BDAMP_2(32'h3D14_4674),
+//        .BDAMP_chain(32'h3C58_44D0)
+//		);
+//    
     
 
     //mult get_rand_Ia( .x(data_output), .y(32'h3fc00000), .out(f_bicepsfr_Ia));
@@ -373,33 +393,28 @@ module one_joint_board1_xem6010(
 
 
 
-//    //counting the spike from the short latency loop.
-//
-//    wire    [31:0] i_MN_spkcnt;
-//    wire    dummy_slow;        
-//    spikecnt count_rawspikes
-//    (   .spike(MN_spk), 
-//        .int_cnt_out(i_MN_spkcnt), 
-//        .fast_clk(neuron_clk), 
-//        .slow_clk(sim_clk), 
-//        .reset(reset_sim), 
-//        .clear_out(dummy_slow));
+    //counting the spike from the short latency loop.
+
+    wire    [31:0] i_MN_spkcnt;
+    wire    dummy_slow;        
+    spikecnt count_rawspikes
+    (   .spike(data_input),  //spikes 
+        .int_cnt_out(i_MN_spkcnt), 
+        .fast_clk(neuron_clk), 
+        .slow_clk(sim_clk), 
+        .reset(reset_sim), 
+        .clear_out(dummy_slow));
 
 
-
-        
- 
-
-
-//    // ** EMG, Motor neuron (MN)
-//    wire [17:0] si_emg;
-//    emg #(.NN(NN)) emg
-//    (   .emg_out(si_emg), 
-//        .i_spk_cnt(i_MN_spkcnt[NN:0]), 
-//        .clk(sim_clk), 
-//        .reset(reset_sim) ); 
-//    wire [31:0] i_MN_emg;
-//    assign i_MN_emg = {{14{si_emg[17]}},si_emg[17:0]};
+    // ** EMG, Motor neuron (MN)
+    wire [17:0] si_emg;
+    emg #(.NN(NN)) emg
+    (   .emg_out(si_emg), 
+        .i_spk_cnt(i_MN_spkcnt[NN:0]), 
+        .clk(sim_clk), 
+        .reset(reset_sim) ); 
+    wire [31:0] i_MN_emg;
+    assign i_MN_emg = {{14{si_emg[17]}},si_emg[17:0]};
     
 
  
