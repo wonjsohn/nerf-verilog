@@ -280,6 +280,7 @@ module size_principle_xem6010(
     .spkid_MN(spkid_MN_mu1)
     );
 
+/*
         //** MOTOR UNIT 2
     wire [31:0]  f_force_mu2;  // output muscle force 
     wire [31:0]  i_emg_mu2;
@@ -654,6 +655,8 @@ module size_principle_xem6010(
     .MN_spk(MN_spk_mu20),
     .spkid_MN(spkid_MN_mu20)
     );
+		  */
+		  
 		  
 //    // *** Biceps: Medium MN pools
 //    wire MN_spk_med_mu;
@@ -803,8 +806,8 @@ module size_principle_xem6010(
     assign led[1] = ~reset_sim;
     assign led[2] = ~clk1;
     assign led[3] = ~MN_spk_mu1;
-    assign led[4] = ~MN_spk_mu3;
-    assign led[5] = ~MN_spk_mu5;
+    assign led[4] = ~0;
+    assign led[5] = ~0;
     assign led[6] = ~spindle_clk; // slow clock
     //assign led[5] = ~spike;
     //assign led[5] = ~button1_response;
@@ -846,32 +849,32 @@ module size_principle_xem6010(
     okWireOut    wo23 (.ep_datain(i_MN_spkcnt_combined[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(i_emg_mu1[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
     okWireOut    wo25 (.ep_datain(i_emg_mu1[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-    okWireOut    wo26 (.ep_datain(i_emg_mu2[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-    okWireOut    wo27 (.ep_datain(i_emg_mu2[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-    okWireOut    wo28 (.ep_datain(i_emg_mu3[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
-    okWireOut    wo29 (.ep_datain(i_emg_mu3[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
-    okWireOut    wo30 (.ep_datain(i_emg_mu4[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
-    okWireOut    wo31 (.ep_datain(i_emg_mu4[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
-    okWireOut    wo32 (.ep_datain(i_emg_mu5[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
-    okWireOut    wo33 (.ep_datain(i_emg_mu5[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );    
-    okWireOut    wo34 (.ep_datain(i_emg_mu16[15:0]),  .ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h34) );
-    okWireOut    wo35 (.ep_datain(i_emg_mu16[31:16]), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'h35) );
-    okWireOut    wo36 (.ep_datain(i_emg_mu17[15:0]),  .ok1(ok1), .ok2(ok2x[ 16*17 +: 17 ]), .ep_addr(8'h36) );
-    okWireOut    wo37 (.ep_datain(i_emg_mu17[31:16]), .ok1(ok1), .ok2(ok2x[ 17*17 +: 17 ]), .ep_addr(8'h37) );
-    okWireOut    wo38 (.ep_datain(i_emg_mu18[15:0]),  .ok1(ok1), .ok2(ok2x[ 18*17 +: 17 ]), .ep_addr(8'h38) );
-    okWireOut    wo39 (.ep_datain(i_emg_mu18[31:16]), .ok1(ok1), .ok2(ok2x[ 19*17 +: 17 ]), .ep_addr(8'h39) );
-    okWireOut    wo40 (.ep_datain(i_emg_mu19[15:0]),  .ok1(ok1), .ok2(ok2x[ 20*17 +: 17 ]), .ep_addr(8'h40) );
-    okWireOut    wo41 (.ep_datain(i_emg_mu19[31:16]), .ok1(ok1), .ok2(ok2x[ 21*17 +: 17 ]), .ep_addr(8'h41) );
-    okWireOut    wo42 (.ep_datain(i_emg_mu20[15:0]),  .ok1(ok1), .ok2(ok2x[ 22*17 +: 17 ]), .ep_addr(8'h42) );
-    okWireOut    wo43 (.ep_datain(i_emg_mu20[31:16]), .ok1(ok1), .ok2(ok2x[ 23*17 +: 17 ]), .ep_addr(8'h43) );
+//    okWireOut    wo26 (.ep_datain(i_emg_mu2[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+//    okWireOut    wo27 (.ep_datain(i_emg_mu2[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+//    okWireOut    wo28 (.ep_datain(i_emg_mu3[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
+//    okWireOut    wo29 (.ep_datain(i_emg_mu3[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
+//    okWireOut    wo30 (.ep_datain(i_emg_mu4[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
+//    okWireOut    wo31 (.ep_datain(i_emg_mu4[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
+//    okWireOut    wo32 (.ep_datain(i_emg_mu5[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
+//    okWireOut    wo33 (.ep_datain(i_emg_mu5[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );    
+//    okWireOut    wo34 (.ep_datain(i_emg_mu16[15:0]),  .ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h34) );
+//    okWireOut    wo35 (.ep_datain(i_emg_mu16[31:16]), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'h35) );
+//    okWireOut    wo36 (.ep_datain(i_emg_mu17[15:0]),  .ok1(ok1), .ok2(ok2x[ 16*17 +: 17 ]), .ep_addr(8'h36) );
+//    okWireOut    wo37 (.ep_datain(i_emg_mu17[31:16]), .ok1(ok1), .ok2(ok2x[ 17*17 +: 17 ]), .ep_addr(8'h37) );
+//    okWireOut    wo38 (.ep_datain(i_emg_mu18[15:0]),  .ok1(ok1), .ok2(ok2x[ 18*17 +: 17 ]), .ep_addr(8'h38) );
+//    okWireOut    wo39 (.ep_datain(i_emg_mu18[31:16]), .ok1(ok1), .ok2(ok2x[ 19*17 +: 17 ]), .ep_addr(8'h39) );
+//    okWireOut    wo40 (.ep_datain(i_emg_mu19[15:0]),  .ok1(ok1), .ok2(ok2x[ 20*17 +: 17 ]), .ep_addr(8'h40) );
+//    okWireOut    wo41 (.ep_datain(i_emg_mu19[31:16]), .ok1(ok1), .ok2(ok2x[ 21*17 +: 17 ]), .ep_addr(8'h41) );
+//    okWireOut    wo42 (.ep_datain(i_emg_mu20[15:0]),  .ok1(ok1), .ok2(ok2x[ 22*17 +: 17 ]), .ep_addr(8'h42) );
+//    okWireOut    wo43 (.ep_datain(i_emg_mu20[31:16]), .ok1(ok1), .ok2(ok2x[ 23*17 +: 17 ]), .ep_addr(8'h43) );
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 26*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
     okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 27*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_mu1), .ep_ready(1'b1));
-    okBTPipeOut  epA1 (.ok1(ok1), .ok2(ok2x[ 28*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_mu2), .ep_ready(1'b1));
-    okBTPipeOut  epA2 (.ok1(ok1), .ok2(ok2x[ 29*17 +: 17 ]), .ep_addr(8'ha2), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_mu3), .ep_ready(1'b1));
-    okBTPipeOut  epA3 (.ok1(ok1), .ok2(ok2x[ 30*17 +: 17 ]), .ep_addr(8'ha3), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_mu4), .ep_ready(1'b1));
-    okBTPipeOut  epA4 (.ok1(ok1), .ok2(ok2x[ 31*17 +: 17 ]), .ep_addr(8'ha4), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_mu5), .ep_ready(1'b1));
+//    okBTPipeOut  epA1 (.ok1(ok1), .ok2(ok2x[ 28*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_mu2), .ep_ready(1'b1));
+//    okBTPipeOut  epA2 (.ok1(ok1), .ok2(ok2x[ 29*17 +: 17 ]), .ep_addr(8'ha2), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_mu3), .ep_ready(1'b1));
+//    okBTPipeOut  epA3 (.ok1(ok1), .ok2(ok2x[ 30*17 +: 17 ]), .ep_addr(8'ha3), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_mu4), .ep_ready(1'b1));
+//    okBTPipeOut  epA4 (.ok1(ok1), .ok2(ok2x[ 31*17 +: 17 ]), .ep_addr(8'ha4), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN_mu5), .ep_ready(1'b1));
 
     okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
 endmodule
