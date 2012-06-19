@@ -1,11 +1,12 @@
 `timescale 1ns / 1ps
 `default_nettype none
 //////////////////////////////////////////////////////////////////////////////////
-// Creator: C. Minos Niu
+// Creator: Eric W. Sohn (test bench[tb] written by) 
+
 // 
 // Module Name:    
 // Project Name: 
-// Target Devices: XEM6010 - OpalKelly
+// Target Devices:    ISIM test bench
 // Design properties: xc6slx150-2fgg484
 // Description: 
 //
@@ -17,42 +18,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module one_joint_board1_xem6010(
-//	input  wire [7:0]  hi_in,
-//	output wire [1:0]  hi_out,
-//	inout  wire [15:0] hi_inout,
-//	inout  wire        hi_aa,
-//
-//	output wire        i2c_sda,
-//	output wire        i2c_scl,
-//	output wire        hi_muxsel
-	//input  wire        clk1,
-	//input  wire        clk2,
-	
-	//output wire [7:0]  led,
-    //output wire pin0,   
-    //output wire pin1,
-    //output wire pin2,
-    //output wire spike_out1,  // corss-board spike output
-    //input wire  spike_in1  // cross-board spike input
 	 );
-//	input wire SCK_r,	    //pin_jp1_41    SCK_r
-//   input wire SSEL_r,	    //pin_jp1_42    SSEL_r
-//   input wire DATA_0_r,  //pin_jp1_43    Data_bic_r
-//	//input wire DATA_1_r,  //pin_jp1_44    Data_tri_r
-//   output wire  SCK_s,	    //pin_jp2_41    SCK_s
-//   output wire  SSEL_s, 	     //pin_jp2_42	  SSEL_s
-//   output wire  DATA_0_s 	//pin_jp2_43   DATA_bic_s
-//   //output wire  DATA_1_s	   //pin_jp2_43 DATA_tri_s
-//   );
-//   
-//    
-//	 // Mapping to UCF files
-//	 wire DATA_tricepsfr_Ia_r,DATA_triforce_r, DATA_trilen_s, DATA_biclen_s;
-//	 assign DATA_tricepsfr_Ia_r = DATA_0_r;
-//	 //assign DATA_triforce_r = DATA_1_r;
-//	 assign DATA_0_s = DATA_trilen_s;
-//	 //assign DATA_1_s = DATA_biclen_s;
-//		
+
     parameter NN = 8;
     // *** Dump all the declarations here:
     wire         ti_clk;
@@ -67,19 +34,6 @@ module one_joint_board1_xem6010(
     
     reg [17:0] delay_cnt, delay_cnt_max;
     
-//    reg [15:0] rawspikes;
-//    wire pipe_out_read;
-// 
-//    // *** Target interface bus:
-//    assign i2c_sda = 1'bz;
-//    assign i2c_scl = 1'bz;
-//    assign hi_muxsel = 1'b0;
-
-  // *** Buttons, physical on XEM3010, software on XEM3050 & XEM6010
-    // *** Reset & Enable signals
-    //assign reset_global = ep00wire[0];
-    //assign reset_sim = ep00wire[1];
-    
     reg reset_global, reset_sim;
 
     //assign enable_sim = is_waveform_valid;
@@ -87,17 +41,7 @@ module one_joint_board1_xem6010(
 	assign IEEE_1 = 32'h3F800000;
 	assign IEEE_0 = 32'd0;
 
-
-    // *** Triggered input from Python
-//    always @(posedge ep50trig[0] or posedge reset_global)
-//    begin
-//        if (reset_global)
-//            delay_cnt_max <= delay_cnt_max;
-//        else
-//            delay_cnt_max <= {2'b00, ep01wire};  //firing rate
-//    end
-//    
-    
+ 
     reg [31:0] f_pps_coef_Ia;
     always @(posedge ep50trig[1] or posedge reset_global)
     begin
@@ -117,17 +61,14 @@ module one_joint_board1_xem6010(
 //    end           
 //    
 
-
-
     reg [31:0] tau;
     always @(posedge ep50trig[2] or posedge reset_global)
     begin
         if (reset_global)
-            tau <= 32'd1; // gamma_sta reset to 80
+            tau <= 32'd1; // 
         else
             tau <= {ep02wire, ep01wire};  
-    end      
-//    
+    end       
 
     reg [31:0] gain;
     always @(posedge ep50trig[3] or posedge reset_global)
@@ -216,47 +157,52 @@ module one_joint_board1_xem6010(
             BDAMP_chain <= {ep02wire, ep01wire};  //firing rate
     end
     
-    parameter DATALINES = 1023;
+    parameter DATALINES = 1024;
+	 
     // For test bench 
     // clk1 generation
     reg clk1;
-    reg [31:0] data [DATALINES:0];
+    reg [31:0] data [DATALINES-1:0];
     //reg [31:0] data_output [5:0];
 	 reg [31:0] data_input;
 	 reg [31:0] data_output;
     reg [31:0] k, outfile;
 	 reg reading;
      
+	  // reset tb
      initial begin 
           #140 reset_global = 0; 
           #40 reset_sim = 0; 
-          
      end
 	 
+	  // tb time profile
      initial
-        begin 
-        $readmemh("outx.txt", data);  // read once for all
-        $timeformat(-9, 1, " ns", 6);
-		  #100;
-            clk1 = 1'b0;  reset_global = 1; reset_sim = 1; k = 0; reading = 0;
-		  delay_cnt_max = 197;
-     
-//		  #10 reset_sim = 1;
-//		  #10 reset_sim = 0;
-		  reading=1; 
-		  outfile = $fopen ("dataout.txt", "w");
-		  #100000; //for reading.
-		    
-          #8000000; // 8ms       
-			$fclose (outfile);			 
-          $finish; // to shut down the simulation
-			 
-        end
+         begin 
+         $readmemh("stimulus.txt", data);  // read input file once.
+         $timeformat(-9, 1, " ns", 6);
+		   #100;
+         clk1 = 1'b0;  reset_global = 1; reset_sim = 1; k = 0; reading = 0; 
+		   delay_cnt_max = 197;   // calculated from the equation in NIPS paper. (F_fpga = 200Mhz, C = 4, F_emul = 1Khz ....) 
+		   #10 reset_sim = 0;
+		   #10 reset_sim = 1;
+		   #10 reset_sim = 0;	 // reset for one more time.   
+		   reading=1;          // to control reading.       
+		   outfile = $fopen ("response.txt", "w");   // output file to write.  
+		   #100000; //for reading.
+		  
+		   #40000000;   // 4ms
+			$fclose (outfile);    // CLOSE THE OUTPUT FILE			 
+         $finish; // to shut down the simulation
+    end
 
-	 always @(posedge sim_clk) begin
-		  if (reading & (k < (DATALINES + 1))) begin
+	 // writing multiple variables to file. Only write as much data points in the input file. 
+	 always @(posedge sim_clk or posedge reset_sim) begin
+		  if (reset_sim) begin
+				data_input <= 32'd0;
+		  end 
+		  if (reading & (k < DATALINES)) begin
 				data_input <= data[k]; 
-				$fdisplay(outfile, "%x",  i_MN_emg);
+				$fdisplay(outfile, "%x	%x   %x",  data_input, f_bicepsfr_Ia, f_force_mu1);
 				k <= k + 1;
 		  end          
 	 end 
@@ -266,32 +212,30 @@ module one_joint_board1_xem6010(
         #5  clk1 = ~clk1;
     end
     
-//	 wire [31:0] data_output_F0;
-//	  // *** Integrate
-//    integrator integrate_data_input
-//    (
-//        .x(data_input),       //dT_i
-//        .int_x(data_output),   //T_i
-//		  .reset(reset_global),
-//        .out(data_output_F0)     //T_i_F0
-//    );
-//
-//    always @(posedge sim_clk or posedge reset_global) begin
-//        if (reset_global) begin
-//				data_output <= 32'd0;
-//        end
-//        else begin
-//            data_output <= data_output_F0;
-//        end
-//    end
-    
+	 wire [31:0] data_output_F0;
 
-    
+	 // *** Integrator test 
+    integrator integrate_data_input
+    (
+        .x(data_input),       //dT_i
+        .int_x(data_output),   //T_i
+		  .reset(reset_sim),
+        .out(data_output_F0)     //T_i_F0
+    );
+
+    always @(posedge sim_clk or posedge reset_sim) begin
+        if (reset_sim) begin
+				data_output <= 32'd0;
+        end
+        else begin
+            data_output <= data_output_F0;
+        end
+    end
+        
     // *** Deriving clocks from on-board clk1:
     wire neuron_clk, sim_clk, spindle_clk;
     wire [NN+2:0] neuronCounter;
     
-
     gen_clk #(.NN(NN)) useful_clocks
     (   .rawclk(clk1), 
 		  .reset(reset_global),
@@ -300,124 +244,56 @@ module one_joint_board1_xem6010(
         .clk_out2(sim_clk), 
         .clk_out3(spindle_clk),
         .int_neuron_cnt_out(neuronCounter) );
-                
-    
-//    // *** Generating waveform to stimulate the spindle
-//     wire    [31:0] f_elbow_pos;
-//	waveform_from_pipe gen(	
-//        .ti_clk(ti_clk),
-//        .reset(reset_global),
-//        .repop(reset_sim),
-//        .feed_data_valid(is_pipe_being_written),
-//        .feed_data(hex_from_py),
-//        .current_element(f_elbow_pos),
-//        .test_clk(sim_clk),
-//        .done_feeding(is_lce_valid)
-//    );    
-    // *** Generating waveform to stimulate the spindle
-//    wire    [31:0] f_pos_elbow;
-//    wire    [31:0] f_rawfr_Ia;
-//    waveform_from_pipe_bram_2s    generator(
-//                                .reset(reset_sim),
-//                                .pipe_clk(ti_clk),
-//                                .pipe_in_write(is_pipe_being_written),
-//                                .pipe_in_data(hex_from_py),
-//                                .pop_clk(sim_clk),
-//                                .wave(f_rawfr_Ia)
-//    );  
-    
-    
+                   
     wire [31:0] f_gamma_dyn, f_gamma_sta;
     assign f_gamma_dyn = 32'h42A0_0000;
     assign f_gamma_sta = 32'h42A0_0000;
     
 
+
+    //** MOTOR UNIT 1
+    wire [31:0]  f_force_mu1;  // output muscle force 
+    wire [31:0]  i_emg_mu1;
+    wire MN_spk_mu1;	
+    wire [15:0] spkid_MN_mu1;
+    motorunit mu1 (
+    .f_muscle_length(data_input),  // muscle length
+    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+    .gain(IEEE_1),           // gain 
+    .i_gain_MN(i_gain_mu1_MN),
+    .tau(IEEE_1),
+    .f_total_force(f_force_mu1),  // output muscle force 
+    .i_emg(i_emg_mu1),
+    .MN_spk(MN_spk_mu1),
+    .spkid_MN(spkid_MN_mu1)
+    );
+	 
+	 
+	 
     // *** Spindle: f_muscle_len => f_rawfr_Ia
     wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
     
-//    spindle bic_bag1_bag2_chain
-//    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-//        .gamma_sta(f_gamma_sta),
-//        .lce(data_output),
-//        .clk(spindle_clk),
-//        .reset(reset_sim),
-//        .out0(x_0_bic),
-//        .out1(x_1_bic),
-//        .out2(f_bicepsfr_II),
-//        .out3(f_bicepsfr_Ia),
-//        .BDAMP_1(32'h3E71_4120),
-//        .BDAMP_2(32'h3D14_4674),
-//        .BDAMP_chain(32'h3C58_44D0)
-//		);
-//    
+    spindle bic_bag1_bag2_chain
+    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
+        .gamma_sta(f_gamma_sta),
+        .lce(data_input),
+        .clk(spindle_clk),
+        .reset(reset_sim),
+        .out0(x_0_bic),
+        .out1(x_1_bic),
+        .out2(f_bicepsfr_II),
+        .out3(f_bicepsfr_Ia),
+        .BDAMP_1(32'h3E71_4120),
+        .BDAMP_2(32'h3D14_4674),
+        .BDAMP_chain(32'h3C58_44D0)
+		);
     
-
-    //mult get_rand_Ia( .x(data_output), .y(32'h3fc00000), .out(f_bicepsfr_Ia));
-
-//    wire [31:0] f_tricepsfr_Ia, x_0_tri, x_1_tri, f_tricepsfr_II;
-//    spindle tri_bag1_bag2_chain
-//    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-//        .gamma_sta(f_gamma_sta),
-//        .lce(f_tri_len),
-//        .clk(spindle_clk),
-//        .reset(reset_sim),
-//        .out0(x_0_tri),
-//        .out1(x_1_tri),
-//        .out2(f_tricepsfr_II),
-//        .out3(f_tricepsfr_Ia),
-//        .BDAMP_1(BDAMP_1),
-//        .BDAMP_2(BDAMP_2),
-//        .BDAMP_chain(BDAMP_chain)
-//		);
-
+ 
     wire [31:0] delay_cnt_max32;
     assign delay_cnt_max32 = {12'b0, delay_cnt_max};
-    
-//	wire signed [31:0] i_current_out;
-//	wire MN_spk;
-//    wire [15:0] spkid_MN;
-    
-//    neuron_pool #(.NN(NN)) big_pool
-//    (   .f_rawfr_Ia(data_output),     //
-//        .f_pps_coef_Ia(f_pps_coef_Ia), //
-//        .half_cnt(delay_cnt_max32),
-//        .rawclk(clk1),
-//        .ti_clk(ti_clk),
-//        .reset_sim(reset_sim),
-//        .i_gain_MN(i_gain_mu1_MN),
-//        .neuronCounter(neuronCounter),
-//        .MN_spike(MN_spk),
-//        .spkid_MN(spkid_MN),
-//		.i_current_out(i_current_out) );
-
-
-
-
-    //counting the spike from the short latency loop.
-
-    wire    [31:0] i_MN_spkcnt;
-    wire    dummy_slow;        
-    spikecnt count_rawspikes
-    (   .spike(data_input),  //spikes 
-        .int_cnt_out(i_MN_spkcnt), 
-        .fast_clk(neuron_clk), 
-        .slow_clk(sim_clk), 
-        .reset(reset_sim), 
-        .clear_out(dummy_slow));
-
-
-    // ** EMG, Motor neuron (MN)
-    wire [17:0] si_emg;
-    emg #(.NN(NN)) emg
-    (   .emg_out(si_emg), 
-        .i_spk_cnt(i_MN_spkcnt[NN:0]), 
-        .clk(sim_clk), 
-        .reset(reset_sim) ); 
-    wire [31:0] i_MN_emg;
-    assign i_MN_emg = {{14{si_emg[17]}},si_emg[17:0]};
-    
-
- 
 
     
  

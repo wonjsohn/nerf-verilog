@@ -11,12 +11,12 @@ DATA_EVT_CLKRATE = 0
 #            address         name   visual_gain         type            color
 CHIN_PARAM =    (0x20,      'f_bicepsfr_Ia',      50,         'float32',      'Qt.blue'),  \
                 (0x24,      'i_emg_mu1',      1.0,         'int32',      'Qt.red'),  \
-                (0x26,      'i_emg_mu2',      1.0,         'int32',      'Qt.green'),  \
-                (0x28,      'i_emg_mu3',      1.0,         'int32',      'Qt.black'),  \
-                (0x30,      'i_emg_mu4',      1.0,         'int32',      'Qt.magenta'),  \
-                (0x32,      'i_emg_mu5',      1.0,         'int32',      'Qt.darkRed'),  \
-                (0x34,      'i_emg_mu6',      1.0,         'int32',      'Qt.darkGray'),   \
-                (0x36,      'i_emg_mu7',     1.0,         'int32',      'Qt.blue'), \
+#                (0x26,      'i_emg_mu2',      1.0,         'int32',      'Qt.green'),  \
+#                (0x28,      'i_emg_mu3',      1.0,         'int32',      'Qt.black'),  \
+#                (0x30,      'i_emg_mu4',      1.0,         'int32',      'Qt.magenta'),  \
+#                (0x32,      'i_emg_mu5',      1.0,         'int32',      'Qt.darkRed'),  \
+#                (0x34,      'i_emg_mu6',      1.0,         'int32',      'Qt.darkGray'),   \
+#                (0x36,      'i_emg_mu7',     1.0,         'int32',      'Qt.blue'), \
 #                (0x28,      'f_force_mu3',     1.0,         'float32',      'Qt.red')
 NUM_CHANNEL = len(CHIN_PARAM) # Number of channels
 DATA_OUT_ADDR = list(zip(*CHIN_PARAM)[0])

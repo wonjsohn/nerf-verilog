@@ -197,6 +197,10 @@
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGM" xil_pn:name="okHost_map.ngm" xil_pn:subbranch="Map"/>
     <file xil_pn:fileType="FILE_HTML" xil_pn:name="okHost_summary.html"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="okHost_xst.xrpt"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="okWireIn_isim_beh.exe"/>
+    <file xil_pn:fileType="FILE_ISIM_MISC" xil_pn:name="okWireIn_isim_beh.wdb"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="okWireOut_isim_beh.exe"/>
+    <file xil_pn:fileType="FILE_ISIM_MISC" xil_pn:name="okWireOut_isim_beh.wdb"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_REPORT" xil_pn:name="one_joint_board1_xem6010.bgn" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BIT" xil_pn:name="one_joint_board1_xem6010.bit" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGDBUILD_LOG" xil_pn:name="one_joint_board1_xem6010.bld"/>
@@ -416,11 +420,11 @@
   </files>
 
   <transforms xmlns="http://www.xilinx.com/XMLSchema">
-    <transform xil_pn:end_ts="1339446967" xil_pn:name="TRAN_copyInitialToAbstractSimulation" xil_pn:start_ts="1339446967">
+    <transform xil_pn:end_ts="1340057029" xil_pn:name="TRAN_copyInitialToAbstractSimulation" xil_pn:start_ts="1340057027">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1339713036" xil_pn:in_ck="-3910785106288062017" xil_pn:name="TRAN_copyAbstractToPostAbstractSimulation" xil_pn:start_ts="1339713036">
+    <transform xil_pn:end_ts="1340064538" xil_pn:in_ck="8229225453617016605" xil_pn:name="TRAN_copyAbstractToPostAbstractSimulation" xil_pn:start_ts="1340064538">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="../../source/IzhikevichModuleMin.v"/>
@@ -455,6 +459,7 @@
       <outfile xil_pn:name="../../source/io/waveform_from_pipe.v"/>
       <outfile xil_pn:name="../../source/io/waveform_from_pipe_bram.v"/>
       <outfile xil_pn:name="../../source/izneuron.v"/>
+      <outfile xil_pn:name="../../source/limb.v"/>
       <outfile xil_pn:name="../../source/math/integrator.v"/>
       <outfile xil_pn:name="../../source/math/math.v"/>
       <outfile xil_pn:name="../../source/math/rng.v"/>
@@ -470,21 +475,21 @@
       <outfile xil_pn:name="../../source/xem6010/okLibrary.vhd"/>
       <outfile xil_pn:name="one_joint_board1_ISIM.v"/>
     </transform>
-    <transform xil_pn:end_ts="1339453202" xil_pn:name="TRAN_xawsToSimhdl" xil_pn:prop_ck="-3013759921157252988" xil_pn:start_ts="1339453202">
+    <transform xil_pn:end_ts="1340062412" xil_pn:name="TRAN_xawsToSimhdl" xil_pn:prop_ck="-3013759921157252988" xil_pn:start_ts="1340062412">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1339453202" xil_pn:name="TRAN_schematicsToHdlSim" xil_pn:prop_ck="-8838457059082012606" xil_pn:start_ts="1339453202">
+    <transform xil_pn:end_ts="1340062412" xil_pn:name="TRAN_schematicsToHdlSim" xil_pn:prop_ck="-8838457059082012606" xil_pn:start_ts="1340062412">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1339710715" xil_pn:in_ck="4626989682768643499" xil_pn:name="TRAN_regenerateCoresSim" xil_pn:prop_ck="-4534685153396169987" xil_pn:start_ts="1339710715">
+    <transform xil_pn:end_ts="1340062412" xil_pn:in_ck="4626989682768643499" xil_pn:name="TRAN_regenerateCoresSim" xil_pn:prop_ck="-4534685153396169987" xil_pn:start_ts="1340062412">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="../../source/io/neuron_ram.ngc"/>
       <outfile xil_pn:name="../../source/io/neuron_ram.v"/>
     </transform>
-    <transform xil_pn:end_ts="1339713036" xil_pn:in_ck="8249969045095882134" xil_pn:name="TRAN_copyPostAbstractToPreSimulation" xil_pn:start_ts="1339713036">
+    <transform xil_pn:end_ts="1340064538" xil_pn:in_ck="2071008066542292372" xil_pn:name="TRAN_copyPostAbstractToPreSimulation" xil_pn:start_ts="1340064538">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="../../source/IzhikevichModuleMin.v"/>
@@ -520,6 +525,7 @@
       <outfile xil_pn:name="../../source/io/waveform_from_pipe.v"/>
       <outfile xil_pn:name="../../source/io/waveform_from_pipe_bram.v"/>
       <outfile xil_pn:name="../../source/izneuron.v"/>
+      <outfile xil_pn:name="../../source/limb.v"/>
       <outfile xil_pn:name="../../source/math/integrator.v"/>
       <outfile xil_pn:name="../../source/math/math.v"/>
       <outfile xil_pn:name="../../source/math/rng.v"/>
@@ -535,7 +541,7 @@
       <outfile xil_pn:name="../../source/xem6010/okLibrary.vhd"/>
       <outfile xil_pn:name="one_joint_board1_ISIM.v"/>
     </transform>
-    <transform xil_pn:end_ts="1339713037" xil_pn:in_ck="8249969045095882134" xil_pn:name="TRAN_ISimulateBehavioralModelRunFuse" xil_pn:prop_ck="-5505821839702605273" xil_pn:start_ts="1339713036">
+    <transform xil_pn:end_ts="1340064540" xil_pn:in_ck="2071008066542292372" xil_pn:name="TRAN_ISimulateBehavioralModelRunFuse" xil_pn:prop_ck="-5505821839702605273" xil_pn:start_ts="1340064538">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
@@ -547,7 +553,7 @@
       <outfile xil_pn:name="one_joint_board1_xem6010_isim_beh.exe"/>
       <outfile xil_pn:name="xilinxsim.ini"/>
     </transform>
-    <transform xil_pn:end_ts="1339713037" xil_pn:in_ck="2856149172001953500" xil_pn:name="TRAN_ISimulateBehavioralModel" xil_pn:prop_ck="4074919339753783882" xil_pn:start_ts="1339713037">
+    <transform xil_pn:end_ts="1340064540" xil_pn:in_ck="-1141767656262815701" xil_pn:name="TRAN_ISimulateBehavioralModel" xil_pn:prop_ck="4074919339753783882" xil_pn:start_ts="1340064540">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="isim.cmd"/>
