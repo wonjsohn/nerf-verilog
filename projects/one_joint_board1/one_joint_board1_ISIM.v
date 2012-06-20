@@ -8,7 +8,7 @@
 // Project Name: 
 // Target Devices:    ISIM test bench
 // Design properties: xc6slx150-2fgg484
-// Description: 
+// Description:  ** In simulation, cross-board test is implemented in a single simulation file. ***
 //
 // Dependencies: 
 //
@@ -17,21 +17,13 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module one_joint_board1_xem6010(
+module one_joint_board1_ISIM(
 	 );
 
     parameter NN = 8;
-    // *** Dump all the declarations here:
-    wire         ti_clk;
-    wire [30:0]  ok1;
-    wire [16:0]  ok2;   
-    wire [15:0]  ep00wire, ep01wire, ep02wire, ep50trig, ep20wire, ep21wire, ep22wire, ep23wire;
-    wire [15:0]  ep24wire, ep25wire, ep26wire, ep27wire, ep28wire, ep29wire, ep30wire, ep31wire;
-    // reset_global, reset_sim;
-    wire        is_pipe_being_written, is_lce_valid;
     
     wire [15:0] hex_from_py;
-    
+     wire         ti_clk;
     reg [17:0] delay_cnt, delay_cnt_max;
     
     reg reset_global, reset_sim;
@@ -42,42 +34,32 @@ module one_joint_board1_xem6010(
 	assign IEEE_0 = 32'd0;
 
  
-    reg [31:0] f_pps_coef_Ia;
-    always @(posedge ep50trig[1] or posedge reset_global)
-    begin
-        if (reset_global)
-            f_pps_coef_Ia <= 32'h3F66_6666;
-        else
-            f_pps_coef_Ia <= {ep02wire, ep01wire};  //firing rate
-    end       
-//    
-//    reg [31:0] f_pps_coef_II;
+//    reg [31:0] f_pps_coef_Ia;
+//    always @(posedge ep50trig[1] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            f_pps_coef_Ia <= 32'h3F66_6666;
+//        else
+//            f_pps_coef_Ia <= {ep02wire, ep01wire};  //firing rate
+//    end       
+//
+//    reg [31:0] tau;
 //    always @(posedge ep50trig[2] or posedge reset_global)
 //    begin
 //        if (reset_global)
-//            f_pps_coef_II <= 32'h3F66_6666;
+//            tau <= 32'd1; // 
 //        else
-//            f_pps_coef_II <= {ep02wire, ep01wire};  //firing rate
-//    end           
-//    
-
-    reg [31:0] tau;
-    always @(posedge ep50trig[2] or posedge reset_global)
-    begin
-        if (reset_global)
-            tau <= 32'd1; // 
-        else
-            tau <= {ep02wire, ep01wire};  
-    end       
-
-    reg [31:0] gain;
-    always @(posedge ep50trig[3] or posedge reset_global)
-    begin
-        if (reset_global)
-            gain <= 32'd0;
-        else
-            gain <= {ep02wire, ep01wire};  //firing rate
-    end        
+//            tau <= {ep02wire, ep01wire};  
+//    end       
+//
+//    reg [31:0] gain;
+//    always @(posedge ep50trig[3] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            gain <= 32'd0;
+//        else
+//            gain <= {ep02wire, ep01wire};  //firing rate
+//    end        
     
 //    reg [31:0] f_gamma_dyn;
 //    always @(posedge ep50trig[4] or posedge reset_global)
@@ -97,32 +79,32 @@ module one_joint_board1_xem6010(
 //            f_gamma_sta <= {ep02wire, ep01wire};  
 //    end  
     
-    reg signed [31:0] i_gain_mu1_MN;
-    always @(posedge ep50trig[6] or posedge reset_global)
-    begin
-        if (reset_global)
-            i_gain_mu1_MN <= 32'd1; // gamma_sta reset to 80
-        else
-            i_gain_mu1_MN <= {ep02wire, ep01wire};  
-    end
-	 
-    reg signed [31:0] i_gain_mu2_MN;
-    always @(posedge ep50trig[7] or posedge reset_global)
-    begin
-        if (reset_global)
-            i_gain_mu2_MN <= 32'd1; // gamma_sta reset to 80
-        else
-            i_gain_mu2_MN <= {ep02wire, ep01wire};  
-    end  
-
-    reg signed [31:0] i_gain_mu3_MN;
-    always @(posedge ep50trig[8] or posedge reset_global)
-    begin
-        if (reset_global)
-            i_gain_mu3_MN <= 32'd1; // gamma_sta reset to 80
-        else
-            i_gain_mu3_MN <= {ep02wire, ep01wire};  
-    end  
+//    reg signed [31:0] i_gain_mu1_MN;
+//    always @(posedge ep50trig[6] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            i_gain_mu1_MN <= 32'd1; // gamma_sta reset to 80
+//        else
+//            i_gain_mu1_MN <= {ep02wire, ep01wire};  
+//    end
+//	 
+//    reg signed [31:0] i_gain_mu2_MN;
+//    always @(posedge ep50trig[7] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            i_gain_mu2_MN <= 32'd1; // gamma_sta reset to 80
+//        else
+//            i_gain_mu2_MN <= {ep02wire, ep01wire};  
+//    end  
+//
+//    reg signed [31:0] i_gain_mu3_MN;
+//    always @(posedge ep50trig[8] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            i_gain_mu3_MN <= 32'd1; // gamma_sta reset to 80
+//        else
+//            i_gain_mu3_MN <= {ep02wire, ep01wire};  
+//    end  
 	 
 //    
 //    reg [31:0] delay_cnt_max;
@@ -134,30 +116,30 @@ module one_joint_board1_xem6010(
 //            delay_cnt_max <= {ep02wire, ep01wire};  //firing rate
 //    end        
 //    
-    reg [31:0] BDAMP_1, BDAMP_2, BDAMP_chain, GI, GII;
-    always @(posedge ep50trig[15] or posedge reset_global)
-    begin
-        if (reset_global)
-            BDAMP_1 <= 32'h3E71_4120; // bag 1 BDAMP reset to 0.2356
-        else
-            BDAMP_1 <= {ep02wire, ep01wire};  //firing rate
-    end
-    always @(posedge ep50trig[14] or posedge reset_global)
-    begin
-        if (reset_global)
-            BDAMP_2 <= 32'h3D14_4674; // bag 2 BDAMP reset to 0.0362
-        else
-            BDAMP_2 <= {ep02wire, ep01wire};  //firing rate
-    end    
-    always @(posedge ep50trig[13] or posedge reset_global)
-    begin
-        if (reset_global)
-            BDAMP_chain <= 32'h3C58_44D0; // chain BDAMP reset to 0.0132 
-        else
-            BDAMP_chain <= {ep02wire, ep01wire};  //firing rate
-    end
+//    reg [31:0] BDAMP_1, BDAMP_2, BDAMP_chain, GI, GII;
+//    always @(posedge ep50trig[15] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            BDAMP_1 <= 32'h3E71_4120; // bag 1 BDAMP reset to 0.2356
+//        else
+//            BDAMP_1 <= {ep02wire, ep01wire};  //firing rate
+//    end
+//    always @(posedge ep50trig[14] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            BDAMP_2 <= 32'h3D14_4674; // bag 2 BDAMP reset to 0.0362
+//        else
+//            BDAMP_2 <= {ep02wire, ep01wire};  //firing rate
+//    end    
+//    always @(posedge ep50trig[13] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            BDAMP_chain <= 32'h3C58_44D0; // chain BDAMP reset to 0.0132 
+//        else
+//            BDAMP_chain <= {ep02wire, ep01wire};  //firing rate
+//    end
     
-    parameter DATALINES = 1024;
+    parameter DATALINES = 2048;
 	 
     // For test bench 
     // clk1 generation
@@ -202,7 +184,7 @@ module one_joint_board1_xem6010(
 		  end 
 		  if (reading & (k < DATALINES)) begin
 				data_input <= data[k]; 
-				$fdisplay(outfile, "%x	%x   %x",  data_input, f_bicepsfr_Ia, f_force_mu1);
+				$fdisplay(outfile, "%x	%x   %x",  data_input, f_bicepsfr_Ia, f_total_force);
 				k <= k + 1;
 		  end          
 	 end 
@@ -214,23 +196,23 @@ module one_joint_board1_xem6010(
     
 	 wire [31:0] data_output_F0;
 
-	 // *** Integrator test 
-    integrator integrate_data_input
-    (
-        .x(data_input),       //dT_i
-        .int_x(data_output),   //T_i
-		  .reset(reset_sim),
-        .out(data_output_F0)     //T_i_F0
-    );
-
-    always @(posedge sim_clk or posedge reset_sim) begin
-        if (reset_sim) begin
-				data_output <= 32'd0;
-        end
-        else begin
-            data_output <= data_output_F0;
-        end
-    end
+//	 // *** Integrator test 
+//    integrator integrate_data_input
+//    (
+//        .x(data_input),       //dT_i
+//        .int_x(data_output),   //T_i
+//		  .reset(reset_sim),
+//        .out(data_output_F0)     //T_i_F0
+//    );
+//
+//    always @(posedge sim_clk or posedge reset_sim) begin
+//        if (reset_sim) begin
+//				data_output <= 32'd0;
+//        end
+//        else begin
+//            data_output <= data_output_F0;
+//        end
+//    end
         
     // *** Deriving clocks from on-board clk1:
     wire neuron_clk, sim_clk, spindle_clk;
@@ -250,29 +232,25 @@ module one_joint_board1_xem6010(
     assign f_gamma_sta = 32'h42A0_0000;
     
 
-
-    //** MOTOR UNIT 1
-    wire [31:0]  f_force_mu1;  // output muscle force 
-    wire [31:0]  i_emg_mu1;
-    wire MN_spk_mu1;	
-    wire [15:0] spkid_MN_mu1;
-    motorunit mu1 (
-    .f_muscle_length(data_input),  // muscle length
-    .f_rawfr_Ia(f_bicepsfr_Ia),     //
-    .f_pps_coef_Ia(f_pps_coef_Ia),  //
-    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
-    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
-    .gain(IEEE_1),           // gain 
-    .i_gain_MN(i_gain_mu1_MN),
-    .tau(IEEE_1),
-    .f_total_force(f_force_mu1),  // output muscle force 
-    .i_emg(i_emg_mu1),
-    .MN_spk(MN_spk_mu1),
-    .spkid_MN(spkid_MN_mu1)
-    );
-	 
-	 
-	 
+//    //** MOTOR UNIT 1
+//    wire [31:0]  f_force_mu1;  // output muscle force 
+//    wire [31:0]  i_emg_mu1;
+//    wire MN_spk_mu1;	
+//    wire [15:0] spkid_MN_mu1;
+//    motorunit mu1 (
+//    .f_muscle_length(data_input),  // muscle length
+//    .f_rawfr_Ia(f_bicepsfr_Ia),     //
+//    .f_pps_coef_Ia(f_pps_coef_Ia),  //
+//    .half_cnt(delay_cnt_max),.rawclk(clk1),  .ti_clk(ti_clk), .sim_clk(sim_clk), 
+//    .neuron_clk(neuron_clk), .reset_sim(reset_sim),.neuronCounter(neuronCounter),
+//    .gain(IEEE_1),           // gain 
+//    .i_gain_MN(IEEE_1),     
+//    .tau(IEEE_1),
+//    .f_total_force(f_force_mu1),  // output muscle force 
+//    .i_emg(i_emg_mu1),
+//    .MN_spk(MN_spk_mu1),
+//    .spkid_MN(spkid_MN_mu1)
+//    );
     // *** Spindle: f_muscle_len => f_rawfr_Ia
     wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
     
@@ -290,56 +268,136 @@ module one_joint_board1_xem6010(
         .BDAMP_2(32'h3D14_4674),
         .BDAMP_chain(32'h3C58_44D0)
 		);
-    
+     
+	  
+	 // motorunit module decomposed. 
+	 wire signed [31:0] i_current_out;
+	 wire MN_spk;
+	 wire [15:0] spkid_MN;
+	 
+    neuron_pool #(.NN(NN)) big_pool
+    (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
+        .f_pps_coef_Ia(32'h3F66_6666), //
+        .half_cnt(delay_cnt_max32),
+        .rawclk(clk1),
+        .ti_clk(ti_clk),
+        .reset_sim(reset_sim),
+        .i_gain_MN(32'd1), // not used...
+        .neuronCounter(neuronCounter),
+        .MN_spike(MN_spk),    // probably  neuron_ram doesn't work in ISIM. 
+        .spkid_MN(spkid_MN),
+		  .i_current_out(i_current_out)
+
+    );
+	 
+	 wire    [31:0] i_MN_spkcnt;
+    wire    dummy_slow;        
+    spikecnt count_rawspikes
+    (   .spike(MN_spk), 
+        .int_cnt_out(i_MN_spkcnt), 
+        .fast_clk(neuron_clk), 
+        .slow_clk(sim_clk), 
+        .reset(reset_sim), 
+        .clear_out(dummy_slow));
+
  
+
     wire [31:0] delay_cnt_max32;
     assign delay_cnt_max32 = {12'b0, delay_cnt_max};
 
-    
- 
-  //  assign reset_global = ep00wire[0];
-  //  assign reset_sim = ep00wire[1];
-    
 
 
-  // Instantiate the okHost and connect endpoints.
-    // Host interface
-    // *** Endpoint connections:
-  
-//    okHost okHI(
-//        .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
-//        .ok1(ok1), .ok2(ok2));
-//        
-//    parameter NUM_OK_IO = 20;
-//
-//    wire [NUM_OK_IO*17 - 1: 0]  ok2x;
-//    okWireOR # (.N(NUM_OK_IO)) wireOR (ok2, ok2x);
-//    okWireIn     wi00 (.ok1(ok1),                           .ep_addr(8'h00), .ep_dataout(ep00wire));
-//    okWireIn     wi01 (.ok1(ok1),                           .ep_addr(8'h01), .ep_dataout(ep01wire));
-//    okWireIn     wi02 (.ok1(ok1),                           .ep_addr(8'h02), .ep_dataout(ep02wire));
-//    //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep03wire));
-//
-//
-//    okWireOut    wo20 (.ep_datain(f_rawfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
-//    okWireOut    wo21 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-////    okWireOut    wo22 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-////    okWireOut    wo23 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-////    okWireOut    wo24 (.ep_datain(i_CN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-////    okWireOut    wo25 (.ep_datain(i_CN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-////    okWireOut    wo26 (.ep_datain(i_combined_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-////    okWireOut    wo27 (.ep_datain(i_combined_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-////    okWireOut    wof28 (.ep_datain(i_MN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
-////    okWireOut    wo29 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
-////    okWireOut    wo30 (.ep_datain(i_CN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
-////    okWireOut    wo31 (.ep_datain(i_CN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
-////    okWireOut    wo32 (.ep_datain(i_combined_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
-////    okWireOut    wo33 (.ep_datain(i_combined_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );   
-//    //ep_ready = 1 (always ready to receive)
-//    okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
-//    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
-//    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
-//
-//    okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
+ // delay by blk memory (1 bit) 
+    wire [20:0] blk_size;
+    assign blk_size = 21'd800000;
+    
+    reg [20:0] write_index, read_index;
+    reg write;
+    reg blk_mem_filled;
+    
+    wire [3:0] read_write_diff;
+    assign read_write_diff = 4'd5;
+    
+    always @ (posedge neuron_clk or posedge reset_sim)
+    begin
+        if (reset_sim) begin
+            write <= 0;
+            write_index<=0;
+            read_index <=0;
+            blk_mem_filled <=0;
+        end 
+        else begin
+            write_index <= write_index + 1;
+            write <= 1;  // always write
+            if (write_index == (blk_size - read_write_diff)) begin   // wrap around the blk_mem
+                blk_mem_filled <= 1;             // stay filled after initial fill. 
+                read_index <= read_index + 1;
+            end
+                
+            if (write_index == blk_size) // write_index wraps around. 
+                write_index <= 0;
+                
+            if (blk_mem_filled) begin
+                read_index <= read_index + 1;
+                if (read_index == blk_size)  // 
+                    read_index <= 0; 
+                else 
+                    read_index <= read_index + 1;
+            end 
+        end
+    end
+	
+	// block ram for delay (ipcore)
+    wire MN_spk_delayed;
+	 blk_mem_gen_v6_1 spike_ram1(
+		 .clka(neuron_clk),
+		 .wea(write),
+		 .addra(write_index),
+		 .dina(MN_spk),
+		 .clkb(neuron_clk),
+		 .addrb(read_index),
+		 .doutb(MN_spk_delayed)
+		 );
+		
+
+	// 'OR' the spike train from short & long latency loop
+    wire spike_SL_combined;
+    assign spike_SL_combined = MN_spk | MN_spk_delayed;
+	 
+	 
+    wire    [31:0] i_SL_spkcnt;
+    wire    dummy_slow_delayed;        
+    spikecnt count_rawspikes_3
+    (   .spike(spike_SL_combined), 
+        .int_cnt_out(i_SL_spkcnt), 
+        .fast_clk(neuron_clk), 
+        .slow_clk(sim_clk), 
+        .reset(reset_sim), 
+        .clear_out(dummy_slow_delayed));
+
+   // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
+	 // Big motor neuron muscle
+	wire 		[31:0]  f_total_force;
+	wire    [31:0]  f_force;
+   wire    [31:0]  f_actstate, f_MN_spkcnt;
+	
+	wire 	[63:0] t_spkcnt = i_SL_spkcnt;
+    shadmehr_muscle muscles
+    (   .spike_cnt(t_spkcnt[31:0]),
+        .pos(data_input),  // muscle length
+        //.vel(current_vel),
+        .vel(32'd0),
+        .clk(sim_clk),
+        .reset(reset_sim),
+        .total_force_out(f_total_force),
+        .current_A(f_actstate),
+        .current_fp_spikes(f_MN_spkcnt),
+		.tau(IEEE_1)
+    );       
+
+
+
+
 endmodule
 
 

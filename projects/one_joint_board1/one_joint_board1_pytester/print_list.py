@@ -10,7 +10,7 @@ import pickle
 def ConvertType(val, fromType, toType):
     return unpack(toType, pack(fromType, val))[0]
 
-x =  gen(F = 4.0, BIAS = 1.1,  AMP = 0.1)
+x =  gen(F = 4.0, T = 2.0,  BIAS = 1.1,  AMP = 0.1)
 #x = spike_train(firing_rate = 150)
 file = open('../stimulus.txt', 'w')
 
