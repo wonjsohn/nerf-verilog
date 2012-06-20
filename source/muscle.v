@@ -130,7 +130,7 @@ module shadmehr_active_force(spikes, active_force_out, fp_spikes_out, clk, reset
 	 
 	
     //h_diff_eq gen_h(spikes_i1, spikes_i2, h_i1, h_i2, h_i);
-	 fuglevand_twitch(spikes_i1, spikes_i2, h_i1, h_i2, h_i, tau);
+	 fuglevand_twitch twitch(spikes_i1, spikes_i2, h_i1, h_i2, h_i, tau);
 	 
 	 
 	 
