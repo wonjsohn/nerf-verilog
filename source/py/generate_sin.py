@@ -1,6 +1,5 @@
 from numpy import *
 
-
 def gen(F = 1.0, T =1.0, BIAS = 1.0, AMP = 0.2, SAMPLING_RATE = 1024, PHASE = 0.0):
     """ f = 1.0 # in Hz, continuous freq
     T = 1.0 # Total time in sec
@@ -18,13 +17,9 @@ def gen(F = 1.0, T =1.0, BIAS = 1.0, AMP = 0.2, SAMPLING_RATE = 1024, PHASE = 0.
     x = AMP * sin(w * n + PHASE) + BIAS
     return x
 
-def ConvertType(val, fromType, toType):
-    return unpack(toType, pack(fromType, val))[0]
-    
+
 if __name__ == '__main__':
     from pylab import *
-    from struct import pack, unpack
-    file = open('/home/eric/eric_nerf_verilog/source/py/test.txt', 'w')
     x = gen(F = 1.0, BIAS = 0.0, AMP = 2.0*pi*1.0*0.1, PHASE = pi/2)
     SAMPLING_RATE = 1024
     intx_list = []
@@ -33,9 +28,6 @@ if __name__ == '__main__':
         intx_i = intx_i1 + x_i * (1.0 /SAMPLING_RATE)
         intx_list.append(intx_i)
         intx_i1 = intx_i
-    
-        print>>file, "%f" % x_i
-
     plot(intx_list)
     # plot(x)
     show()
