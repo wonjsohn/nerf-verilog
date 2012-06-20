@@ -47,13 +47,24 @@ levellink
 
 endmodule
 
+
+module mux22(in, c, out);
+input [1:0] in;
+input c;
+output out;
+
+assign out = (c&in[0])|(~c&in[1]);
+
+endmodule
+
+
+
 module levellink(in1, in2, s, out);
 input [31:0] in1, in2;
 input s;
 output [31:0] out;
 
-mux21
-	mux21_1_0(.in({in1[0], in2[0]}), .c(s), .out(out[0])),
+mux22 mux21_1_0(.in({in1[0], in2[0]}), .c(s), .out(out[0])),
 	mux21_1_1(.in({in1[1], in2[1]}), .c(s), .out(out[1])),
 	mux21_1_2(.in({in1[2], in2[2]}), .c(s), .out(out[2])),
 	mux21_1_3(.in({in1[3], in2[3]}), .c(s), .out(out[3])),
@@ -88,14 +99,6 @@ mux21
 
 endmodule
 
-module mux21(in, c, out);
-input [1:0] in;
-input c;
-output out;
-
-assign out = (c&in[0])|(~c&in[1]);
-
-endmodule
 
 module reverse(in, out);
 input [31:0] in;
