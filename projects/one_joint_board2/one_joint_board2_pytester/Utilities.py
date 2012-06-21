@@ -10,9 +10,9 @@ BUTTON_ENABLE_SIM = 2
 DATA_EVT_CLKRATE = 0
 #            address         name   visual_gain         type            color
 CHIN_PARAM =    (0x20,      'i_MN_spkcnt',      1.0,         'int32',      'Qt.blue'),  \
-                (0x22,      'i_CN_spkcnt',      1.0,         'int32',      'Qt.red'),  \
-                (0x24,      'i_spkcnt_delayed',      1.0,         'int32',      'Qt.green'),  \
-                (0x26,      'i_spkcnt_delayed2',      1.0,         'int32',      'Qt.black'),  \
+                (0x22,      'i_MN_spkcnt_delayed',      1.0,         'int32',      'Qt.red'),  \
+                (0x24,      'i_MN_spkcnt_delayed_twice',      1.0,         'int32',      'Qt.green'),  \
+ #               (0x26,      'i_spkcnt_delayed2',      1.0,         'int32',      'Qt.black'),  \
 #               (0x28,      'spike_delayed',      1.0,         'int32',      'Qt.magenta'),  \
 #                (0x32,      'i_emg_mu5',      1.0,         'int32',      'Qt.darkRed'),  \
 #              (0x34,      'i_emg_mu6',      1.0,         'int32',      'Qt.darkGray'),   \
@@ -24,7 +24,7 @@ CH_TYPE = list(zip(*CHIN_PARAM)[3])
                 
 #            trig_id    name          type          default_value                
 CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      3.0), \
-                (2, 'tau',  'float32',      0.01), \
+                (2, 'blk_size',  'int32',      400000), \
                 (3, 'close_loop',   'int32',        0), \
                 (4, 'gamma_dyn',    'float32',      80.0), \
                 (5, 'gamma_sta',    'float32',      80.0), \

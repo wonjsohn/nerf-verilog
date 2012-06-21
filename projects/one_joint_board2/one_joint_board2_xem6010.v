@@ -117,15 +117,25 @@ module one_joint_board2_xem6010(
 
 
 
-    reg [31:0] tau;
+//    reg [31:0] tau;
+//    always @(posedge ep50trig[2] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            tau <= 32'd1; // gamma_sta reset to 80
+//        else
+//            tau <= {ep02wire, ep01wire};  
+//    end      
+////    
+//
+    reg [31:0] blk_size;
     always @(posedge ep50trig[2] or posedge reset_global)
     begin
         if (reset_global)
-            tau <= 32'd1; // gamma_sta reset to 80
+            blk_size <= 32'd800000; // default memory allocation.
         else
-            tau <= {ep02wire, ep01wire};  
-    end      
-//    
+            blk_size <= {ep02wire, ep01wire};  
+    end   
+
 
     reg [31:0] gain;
     always @(posedge ep50trig[3] or posedge reset_global)
@@ -371,15 +381,18 @@ module one_joint_board2_xem6010(
  
  
  // delay by blk memory (1 bit) 
-    wire [20:0] blk_size;
-    assign blk_size = 21'd800000;
+    
+	 //wire [20:0] blk_size;
+    //assign blk_size = 21'd800000;
     
     reg [20:0] write_index, read_index;
+	 reg [20:0] blk_size_temp;
     reg write;
     reg blk_mem_filled;
     
     wire [3:0] read_write_diff;
     assign read_write_diff = 4'd5;
+	  
     
     always @ (posedge neuron_clk or posedge reset_sim)
     begin
@@ -388,7 +401,15 @@ module one_joint_board2_xem6010(
             write_index<=0;
             read_index <=0;
             blk_mem_filled <=0;
+				blk_size_temp <= blk_size;
         end 
+		  else if (blk_size_temp != blk_size) begin  // blk_size changed. 
+				write <= 0;
+            write_index<=0;
+            read_index <=0;
+            blk_mem_filled <=0;
+				blk_size_temp <= blk_size;
+		  end
         else begin
             write_index <= write_index + 1;
             write <= 1;  // always write
@@ -513,12 +534,12 @@ module one_joint_board2_xem6010(
 
     okWireOut    wo20 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
     okWireOut    wo21 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-    okWireOut    wo22 (.ep_datain(i_MN_spkcnt_F30[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-    okWireOut    wo23 (.ep_datain(i_MN_spkcnt_F30[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-    okWireOut    wo24 (.ep_datain(i_MN_spkcnt_delayed[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-    okWireOut    wo25 (.ep_datain(i_MN_spkcnt_delayed[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-    okWireOut    wo26 (.ep_datain(i_MN_spkcnt_delayed_twice[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-    okWireOut    wo27 (.ep_datain(i_MN_spkcnt_delayed_twice[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo22 (.ep_datain(i_MN_spkcnt_delayed[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+    okWireOut    wo23 (.ep_datain(i_MN_spkcnt_delayed[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+    okWireOut    wo24 (.ep_datain(i_MN_spkcnt_delayed_twice[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(i_MN_spkcnt_delayed_twice[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+//    okWireOut    wo26 (.ep_datain(i_MN_spkcnt_delayed_twice[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+//    okWireOut    wo27 (.ep_datain(i_MN_spkcnt_delayed_twice[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
 //    okWireOut    wo28 (.ep_datain({15'd0,spike_in1_delayed}),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
 //    okWireOut    wo29 (.ep_datain(16'd0), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
 //    okWireOut    wo30 (.ep_datain(f_tri_len[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
