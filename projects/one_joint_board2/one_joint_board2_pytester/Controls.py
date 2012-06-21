@@ -26,6 +26,9 @@ class CtrlChannel:
         exec interp('self.type = type')
 
         exec interp('self.doubleSpinBox = QtGui.QDoubleSpinBox(hostDialog)')
+        exec interp('self.doubleSpinBox.setMaximum(800000.0)')
+        exec interp('self.doubleSpinBox.setMinimum(10.0)')
+        exec interp('self.doubleSpinBox.setSingleStep(10000.0)')
         exec interp('self.doubleSpinBox.setGeometry(QtCore.QRect(230, #{id} * 35, 105, 30))')
         exec interp('self.doubleSpinBox.setProperty("value", value)')
         exec interp('self.doubleSpinBox.setObjectName("param_#{name}")')
