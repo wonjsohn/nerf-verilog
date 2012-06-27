@@ -272,113 +272,119 @@ module one_joint_board2_xem6010(
         .reset(reset_sim), 
         .clear_out(dummy_slow));
 
+//    spike_counter spike_multsen2
+//	 (		.spike(spike_in1), 
+//			.int_cnt_out(i_MN_spkcnt), 
+//			.slow_clk(sim_clk), 
+//			.reset(reset_sim), 
+//			.clear_out(dummy_slow));
 
-// delay by 32 bit registers 
-
- reg [31:0] i_MN_spkcnt_F0;
- reg [31:0] i_MN_spkcnt_F1;
- reg [31:0] i_MN_spkcnt_F2;
- reg [31:0] i_MN_spkcnt_F3;
- reg [31:0] i_MN_spkcnt_F4;
- reg [31:0] i_MN_spkcnt_F5; 
- reg [31:0] i_MN_spkcnt_F6;
- reg [31:0] i_MN_spkcnt_F7;
- reg [31:0] i_MN_spkcnt_F8;
- reg [31:0] i_MN_spkcnt_F9;
- reg [31:0] i_MN_spkcnt_F10;
- reg [31:0] i_MN_spkcnt_F11;
- reg [31:0] i_MN_spkcnt_F12;
- reg [31:0] i_MN_spkcnt_F13;
- reg [31:0] i_MN_spkcnt_F14;
- reg [31:0] i_MN_spkcnt_F15; 
- reg [31:0] i_MN_spkcnt_F16;
- reg [31:0] i_MN_spkcnt_F17;
- reg [31:0] i_MN_spkcnt_F18;
- reg [31:0] i_MN_spkcnt_F19;
- reg [31:0] i_MN_spkcnt_F20;
- reg [31:0] i_MN_spkcnt_F21;
- reg [31:0] i_MN_spkcnt_F22;
- reg [31:0] i_MN_spkcnt_F23;
- reg [31:0] i_MN_spkcnt_F24;
- reg [31:0] i_MN_spkcnt_F25; 
- reg [31:0] i_MN_spkcnt_F26;
- reg [31:0] i_MN_spkcnt_F27;
- reg [31:0] i_MN_spkcnt_F28;
- reg [31:0] i_MN_spkcnt_F29;
- reg [31:0] i_MN_spkcnt_F30;
-   
-   
-  // delay 30 ms (32 bit data) 
- always @(posedge sim_clk or posedge reset_global)
-    begin
-        if (reset_global) begin
-            i_MN_spkcnt_F0 <= 32'h0; // 
-            i_MN_spkcnt_F1 <= 32'h0; // 
-            i_MN_spkcnt_F2 <= 32'h0; // 
-            i_MN_spkcnt_F3 <= 32'h0; // 
-            i_MN_spkcnt_F4 <= 32'h0; // 
-            i_MN_spkcnt_F5 <= 32'h0; // 
-            i_MN_spkcnt_F6 <= 32'h0; // 
-            i_MN_spkcnt_F7 <= 32'h0; // 
-            i_MN_spkcnt_F8 <= 32'h0; // 
-            i_MN_spkcnt_F9 <= 32'h0; // 
-            i_MN_spkcnt_F10 <= 32'h0; //            i_MN_spkcnt_F0 <= 32'h0; // 
-            i_MN_spkcnt_F11 <= 32'h0; // 
-            i_MN_spkcnt_F12 <= 32'h0; // 
-            i_MN_spkcnt_F13 <= 32'h0; // 
-            i_MN_spkcnt_F14 <= 32'h0; // 
-            i_MN_spkcnt_F15 <= 32'h0; // 
-            i_MN_spkcnt_F16 <= 32'h0; // 
-            i_MN_spkcnt_F17 <= 32'h0; // 
-            i_MN_spkcnt_F18 <= 32'h0; // 
-            i_MN_spkcnt_F19 <= 32'h0; // 
-            i_MN_spkcnt_F20 <= 32'h0; //
-            i_MN_spkcnt_F21 <= 32'h0; // 
-            i_MN_spkcnt_F22 <= 32'h0; // 
-            i_MN_spkcnt_F23 <= 32'h0; // 
-            i_MN_spkcnt_F24 <= 32'h0; // 
-            i_MN_spkcnt_F25 <= 32'h0; // 
-            i_MN_spkcnt_F26 <= 32'h0; // 
-            i_MN_spkcnt_F27 <= 32'h0; // 
-            i_MN_spkcnt_F28 <= 32'h0; // 
-            i_MN_spkcnt_F29 <= 32'h0; // 
-            i_MN_spkcnt_F30 <= 32'h0; //  
-        end
-        else begin
-            i_MN_spkcnt_F0 <= i_MN_spkcnt; 
-            i_MN_spkcnt_F1 <= i_MN_spkcnt_F0;
-            i_MN_spkcnt_F2 <= i_MN_spkcnt_F1;
-            i_MN_spkcnt_F3 <= i_MN_spkcnt_F2;
-            i_MN_spkcnt_F4 <= i_MN_spkcnt_F3;
-            i_MN_spkcnt_F5 <= i_MN_spkcnt_F4;
-            i_MN_spkcnt_F6 <= i_MN_spkcnt_F5;
-            i_MN_spkcnt_F7 <= i_MN_spkcnt_F6;
-            i_MN_spkcnt_F8 <= i_MN_spkcnt_F7;
-            i_MN_spkcnt_F9 <= i_MN_spkcnt_F8;
-            i_MN_spkcnt_F10 <= i_MN_spkcnt_F9;
-            i_MN_spkcnt_F11 <= i_MN_spkcnt_F10;
-            i_MN_spkcnt_F12 <= i_MN_spkcnt_F11;
-            i_MN_spkcnt_F13 <= i_MN_spkcnt_F12;
-            i_MN_spkcnt_F14 <= i_MN_spkcnt_F13;
-            i_MN_spkcnt_F15 <= i_MN_spkcnt_F14;
-            i_MN_spkcnt_F16 <= i_MN_spkcnt_F15;
-            i_MN_spkcnt_F17 <= i_MN_spkcnt_F16;
-            i_MN_spkcnt_F18 <= i_MN_spkcnt_F17;
-            i_MN_spkcnt_F19 <= i_MN_spkcnt_F18;
-            i_MN_spkcnt_F20 <= i_MN_spkcnt_F19;
-            i_MN_spkcnt_F21 <= i_MN_spkcnt_F20;
-            i_MN_spkcnt_F22 <= i_MN_spkcnt_F21;
-            i_MN_spkcnt_F23 <= i_MN_spkcnt_F22;
-            i_MN_spkcnt_F24 <= i_MN_spkcnt_F23;
-            i_MN_spkcnt_F25 <= i_MN_spkcnt_F24;
-            i_MN_spkcnt_F26 <= i_MN_spkcnt_F25;
-            i_MN_spkcnt_F27 <= i_MN_spkcnt_F26;
-            i_MN_spkcnt_F28 <= i_MN_spkcnt_F27;
-            i_MN_spkcnt_F29 <= i_MN_spkcnt_F28;
-            i_MN_spkcnt_F30 <= i_MN_spkcnt_F29;
-        end 
-    end  
- 
+//// delay by 32 bit registers 
+//
+// reg [31:0] i_MN_spkcnt_F0;
+// reg [31:0] i_MN_spkcnt_F1;
+// reg [31:0] i_MN_spkcnt_F2;
+// reg [31:0] i_MN_spkcnt_F3;
+// reg [31:0] i_MN_spkcnt_F4;
+// reg [31:0] i_MN_spkcnt_F5; 
+// reg [31:0] i_MN_spkcnt_F6;
+// reg [31:0] i_MN_spkcnt_F7;
+// reg [31:0] i_MN_spkcnt_F8;
+// reg [31:0] i_MN_spkcnt_F9;
+// reg [31:0] i_MN_spkcnt_F10;
+// reg [31:0] i_MN_spkcnt_F11;
+// reg [31:0] i_MN_spkcnt_F12;
+// reg [31:0] i_MN_spkcnt_F13;
+// reg [31:0] i_MN_spkcnt_F14;
+// reg [31:0] i_MN_spkcnt_F15; 
+// reg [31:0] i_MN_spkcnt_F16;
+// reg [31:0] i_MN_spkcnt_F17;
+// reg [31:0] i_MN_spkcnt_F18;
+// reg [31:0] i_MN_spkcnt_F19;
+// reg [31:0] i_MN_spkcnt_F20;
+// reg [31:0] i_MN_spkcnt_F21;
+// reg [31:0] i_MN_spkcnt_F22;
+// reg [31:0] i_MN_spkcnt_F23;
+// reg [31:0] i_MN_spkcnt_F24;
+// reg [31:0] i_MN_spkcnt_F25; 
+// reg [31:0] i_MN_spkcnt_F26;
+// reg [31:0] i_MN_spkcnt_F27;
+// reg [31:0] i_MN_spkcnt_F28;
+// reg [31:0] i_MN_spkcnt_F29;
+// reg [31:0] i_MN_spkcnt_F30;
+//   
+//   
+//  // delay 30 ms (32 bit data) 
+// always @(posedge sim_clk or posedge reset_global)
+//    begin
+//        if (reset_global) begin
+//            i_MN_spkcnt_F0 <= 32'h0; // 
+//            i_MN_spkcnt_F1 <= 32'h0; // 
+//            i_MN_spkcnt_F2 <= 32'h0; // 
+//            i_MN_spkcnt_F3 <= 32'h0; // 
+//            i_MN_spkcnt_F4 <= 32'h0; // 
+//            i_MN_spkcnt_F5 <= 32'h0; // 
+//            i_MN_spkcnt_F6 <= 32'h0; // 
+//            i_MN_spkcnt_F7 <= 32'h0; // 
+//            i_MN_spkcnt_F8 <= 32'h0; // 
+//            i_MN_spkcnt_F9 <= 32'h0; // 
+//            i_MN_spkcnt_F10 <= 32'h0; //            i_MN_spkcnt_F0 <= 32'h0; // 
+//            i_MN_spkcnt_F11 <= 32'h0; // 
+//            i_MN_spkcnt_F12 <= 32'h0; // 
+//            i_MN_spkcnt_F13 <= 32'h0; // 
+//            i_MN_spkcnt_F14 <= 32'h0; // 
+//            i_MN_spkcnt_F15 <= 32'h0; // 
+//            i_MN_spkcnt_F16 <= 32'h0; // 
+//            i_MN_spkcnt_F17 <= 32'h0; // 
+//            i_MN_spkcnt_F18 <= 32'h0; // 
+//            i_MN_spkcnt_F19 <= 32'h0; // 
+//            i_MN_spkcnt_F20 <= 32'h0; //
+//            i_MN_spkcnt_F21 <= 32'h0; // 
+//            i_MN_spkcnt_F22 <= 32'h0; // 
+//            i_MN_spkcnt_F23 <= 32'h0; // 
+//            i_MN_spkcnt_F24 <= 32'h0; // 
+//            i_MN_spkcnt_F25 <= 32'h0; // 
+//            i_MN_spkcnt_F26 <= 32'h0; // 
+//            i_MN_spkcnt_F27 <= 32'h0; // 
+//            i_MN_spkcnt_F28 <= 32'h0; // 
+//            i_MN_spkcnt_F29 <= 32'h0; // 
+//            i_MN_spkcnt_F30 <= 32'h0; //  
+//        end
+//        else begin
+//            i_MN_spkcnt_F0 <= i_MN_spkcnt; 
+//            i_MN_spkcnt_F1 <= i_MN_spkcnt_F0;
+//            i_MN_spkcnt_F2 <= i_MN_spkcnt_F1;
+//            i_MN_spkcnt_F3 <= i_MN_spkcnt_F2;
+//            i_MN_spkcnt_F4 <= i_MN_spkcnt_F3;
+//            i_MN_spkcnt_F5 <= i_MN_spkcnt_F4;
+//            i_MN_spkcnt_F6 <= i_MN_spkcnt_F5;
+//            i_MN_spkcnt_F7 <= i_MN_spkcnt_F6;
+//            i_MN_spkcnt_F8 <= i_MN_spkcnt_F7;
+//            i_MN_spkcnt_F9 <= i_MN_spkcnt_F8;
+//            i_MN_spkcnt_F10 <= i_MN_spkcnt_F9;
+//            i_MN_spkcnt_F11 <= i_MN_spkcnt_F10;
+//            i_MN_spkcnt_F12 <= i_MN_spkcnt_F11;
+//            i_MN_spkcnt_F13 <= i_MN_spkcnt_F12;
+//            i_MN_spkcnt_F14 <= i_MN_spkcnt_F13;
+//            i_MN_spkcnt_F15 <= i_MN_spkcnt_F14;
+//            i_MN_spkcnt_F16 <= i_MN_spkcnt_F15;
+//            i_MN_spkcnt_F17 <= i_MN_spkcnt_F16;
+//            i_MN_spkcnt_F18 <= i_MN_spkcnt_F17;
+//            i_MN_spkcnt_F19 <= i_MN_spkcnt_F18;
+//            i_MN_spkcnt_F20 <= i_MN_spkcnt_F19;
+//            i_MN_spkcnt_F21 <= i_MN_spkcnt_F20;
+//            i_MN_spkcnt_F22 <= i_MN_spkcnt_F21;
+//            i_MN_spkcnt_F23 <= i_MN_spkcnt_F22;
+//            i_MN_spkcnt_F24 <= i_MN_spkcnt_F23;
+//            i_MN_spkcnt_F25 <= i_MN_spkcnt_F24;
+//            i_MN_spkcnt_F26 <= i_MN_spkcnt_F25;
+//            i_MN_spkcnt_F27 <= i_MN_spkcnt_F26;
+//            i_MN_spkcnt_F28 <= i_MN_spkcnt_F27;
+//            i_MN_spkcnt_F29 <= i_MN_spkcnt_F28;
+//            i_MN_spkcnt_F30 <= i_MN_spkcnt_F29;
+//        end 
+//    end  
+// 
  
  // delay by blk memory (1 bit) 
     
