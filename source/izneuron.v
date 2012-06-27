@@ -166,7 +166,7 @@ module izneuron(
         end
     end
     
-    // PERFORM READ/COMPUTE/WRITE CYCLE ON RAM CONTENTS
+    // PERFORM READ/ COMPUTE/WRITE CYCLE ON RAM CONTENTS
 
 
     wire reset_bar;

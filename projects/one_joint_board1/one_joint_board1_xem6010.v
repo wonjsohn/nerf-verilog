@@ -253,22 +253,23 @@ module one_joint_board1_xem6010(
     );  
     
 
-    // *** Spindle: f_muscle_len => f_rawfr_Ia
-    wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
-    spindle bic_bag1_bag2_chain
-    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-        .gamma_sta(f_gamma_sta),
-        .lce(f_len),
-        .clk(spindle_clk),
-        .reset(reset_sim),
-        .out0(x_0_bic),
-        .out1(x_1_bic),
-        .out2(f_bicepsfr_II),
-        .out3(f_bicepsfr_Ia),
-        .BDAMP_1(BDAMP_1),
-        .BDAMP_2(BDAMP_2),
-        .BDAMP_chain(BDAMP_chain)
-		);
+
+//    // *** Spindle: f_muscle_len => f_rawfr_Ia
+//    wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
+//    spindle bic_bag1_bag2_chain
+//    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
+//        .gamma_sta(f_gamma_sta),
+//        .lce(f_len),
+//        .clk(spindle_clk),
+//        .reset(reset_sim),
+//        .out0(x_0_bic),
+//        .out1(x_1_bic),
+//        .out2(f_bicepsfr_II),
+//        .out3(f_bicepsfr_Ia),
+//        .BDAMP_1(BDAMP_1),
+//        .BDAMP_2(BDAMP_2),
+//        .BDAMP_chain(BDAMP_chain)
+//		);
 
 //    wire [31:0] f_tricepsfr_Ia, x_0_tri, x_1_tri, f_tricepsfr_II;
 //    spindle tri_bag1_bag2_chain
@@ -294,7 +295,7 @@ module one_joint_board1_xem6010(
     wire [15:0] spkid_MN;
     
     neuron_pool #(.NN(NN)) big_pool
-    (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
+    (   .f_rawfr_Ia(f_len),     //
         .f_pps_coef_Ia(f_pps_coef_Ia), //
         .half_cnt(delay_cnt_max32),
         .rawclk(clk1),
@@ -323,7 +324,14 @@ module one_joint_board1_xem6010(
         .slow_clk(sim_clk), 
         .reset(reset_sim), 
         .clear_out(dummy_slow));
-
+//		  
+//    spike_counter spike_multsen1
+//	 (		.spike(MN_spk), 
+//			.int_cnt_out(i_MN_spkcnt), 
+//			.slow_clk(sim_clk), 
+//			.reset(reset_sim), 
+//			.clear_out(dummy_slow));
+//	 
 
     //counting the spike from the long latency loop. (LL)
     //wire spike_longlatency;
@@ -430,8 +438,8 @@ module one_joint_board1_xem6010(
 
     okWireOut    wo20 (.ep_datain(f_len[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
     okWireOut    wo21 (.ep_datain(f_len[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-    okWireOut    wo22 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-    okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+   // okWireOut    wo22 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+  //  okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
     okWireOut    wo25 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
     okWireOut    wo26 (.ep_datain(i_LL_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );

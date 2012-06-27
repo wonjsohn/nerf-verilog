@@ -8,32 +8,28 @@ module spikecnt(spike, int_cnt_out, fast_clk, slow_clk, reset, clear_out);
     reg t1;
     always @(posedge reset or posedge slow_clk) begin
         if (reset) begin
-            //t1 <= t2;
-				t1 <= 0;
+            t1 <= t2;
         end
         else begin
             if (~read) t1 <= ~t1;
+				else t1 <= t1;
         end
     end
     
     always @(negedge spike or posedge reset) begin
         if (reset) begin
-            //t2 <= t1;
-				t2<= 1;
+            t2 <= t1;
         end
         else begin
             if (read) t2 <= ~t2;
+				else t2 <= t2;
         end
     end
     
     wire    read = t1 ^ t2;
     wire    out_flag = read && slow_clk;
     
-    always @(posedge spike or posedge reset) begin
-		  if (reset) begin
-			   cnt <= 32'd0;
-		  end 
-		  else
+    always @(posedge spike) begin
         if (read) begin
             cnt <= 32'd1;
         end
