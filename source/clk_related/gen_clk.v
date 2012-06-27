@@ -1,5 +1,5 @@
 module gen_clk(rawclk, reset, half_cnt, clk_out1, clk_out2, clk_out3, int_neuron_cnt_out);
-    parameter NN = 8; // 2^(NN+1) = NUM_NEURON
+    parameter NN = 6; // 2^(NN+1) = NUM_NEURON
     parameter SR = 10; // 2^SR = SAMPLING_RATE
     input rawclk;
     input reset;

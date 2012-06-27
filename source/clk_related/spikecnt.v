@@ -30,10 +30,10 @@ module spikecnt(spike, int_cnt_out, fast_clk, slow_clk, reset, clear_out);
     wire    out_flag = read && slow_clk;
     
     always @(posedge spike or posedge reset) begin
-//		  if (reset) begin
-//			   cnt <= 32'd0;
-//		  end 
-//		  else
+		  if (reset) begin
+			   cnt <= 32'd0;
+		  end 
+		  else
         if (read) begin
             cnt <= 32'd1;
         end

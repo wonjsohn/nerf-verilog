@@ -12,7 +12,6 @@
 // Dependencies: 
 //
 // Revision: 
-// Revision 0.01 - File Created
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +52,7 @@ module one_joint_board1_xem6010(
 //	 assign DATA_0_s = DATA_trilen_s;
 //	 //assign DATA_1_s = DATA_biclen_s;
 //		
-    parameter NN = 8;
+    parameter NN = 6;
     // *** Dump all the declarations here:
     wire         ti_clk;
     wire [30:0]  ok1;
@@ -320,7 +319,7 @@ module one_joint_board1_xem6010(
     spikecnt count_rawspikes
     (   .spike(MN_spk), 
         .int_cnt_out(i_MN_spkcnt), 
-        .fast_clk(neuron_clk), 
+        .fast_clk(neuron_clk), // not used
         .slow_clk(sim_clk), 
         .reset(reset_sim), 
         .clear_out(dummy_slow));
