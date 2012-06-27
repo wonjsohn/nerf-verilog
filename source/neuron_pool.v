@@ -42,7 +42,7 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 	 output wire [31:0] out4
     );
 
-    parameter NN = 8; // 2^(NN+1) = NUM_NEURON
+    parameter NN = 6; // 2^(NN+1) = NUM_NEURON
     
     //Locally generate neuron_clk
     reg neuron_clk;

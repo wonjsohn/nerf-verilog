@@ -53,7 +53,7 @@ module one_joint_board2_xem6010(
 //	 assign DATA_0_s = DATA_tricepsfr_Ia_s;
 //	// assign DATA_1_s = DATA_triforce_s;
 
-	parameter NN = 8;
+	parameter NN = 6;
     // *** Dump all the declarations here:
     wire         ti_clk;
     wire [30:0]  ok1;

@@ -38,7 +38,7 @@ class ViewChannel:
         exec interp('self.label.setPalette(pal)')        
         exec interp('self.label.setObjectName("label_#{name}")')
         exec interp('self.label.setText("#{name}")')        
-        exec interp('self.label.setGeometry(QtCore.QRect(10, 90+#{id}*100, 30, 100))')
+        exec interp('self.label.setGeometry(QtCore.QRect(10, 90+#{id}*100, 80, 100))')
         exec interp('self.label.show()')        
 
 

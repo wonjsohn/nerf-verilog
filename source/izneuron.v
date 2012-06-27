@@ -185,9 +185,14 @@ module izneuron(
                 if (neuron_index == 7'h7f) begin
                     first_pass <= 0;
                     v_out <= v_mem_in;
-                    spike <= fired;
+                    
                     //population <= {fired, history[126:0]};
                 end
+                
+                spike <= fired;
+            end 
+            else begin  
+                spike <= 0;
             end
         end
     end
