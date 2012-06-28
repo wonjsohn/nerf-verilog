@@ -264,20 +264,26 @@ module one_joint_board2_xem6010(
     
     wire    [31:0] i_MN_spkcnt;
     wire    dummy_slow;        
-    spikecnt count_rawspikes_2
-    (   .spike(spike_in1), 
-        .int_cnt_out(i_MN_spkcnt), 
-        .fast_clk(neuron_clk), 
-        .slow_clk(sim_clk), 
-        .reset(reset_sim), 
-        .clear_out(dummy_slow));
+//    spikecnt count_rawspikes_2
+//    (   .spike(spike_in1), 
+//        .int_cnt_out(i_MN_spkcnt), 
+//        .fast_clk(neuron_clk), 
+//        .slow_clk(sim_clk), 
+//        .reset(reset_sim), 
+//        .clear_out(dummy_slow));
 
-//    spike_counter spike_multsen2
-//	 (		.spike(spike_in1), 
-//			.int_cnt_out(i_MN_spkcnt), 
-//			.slow_clk(sim_clk), 
-//			.reset(reset_sim), 
-//			.clear_out(dummy_slow));
+	wire	[31:0]  dummycnt;  
+	wire  dummy1;
+   wire  [1:0]	dummy2; 
+    spike_counter spike_multsen_1
+	 (		.spike(spike_in1), 
+			.int_cnt_out(i_MN_spkcnt), 
+			.slow_clk(sim_clk), 
+			.reset(reset_sim), 
+			.clear_out(dummy_slow),
+			.cnt(dummycnt), 
+			.read(dummy1),
+			.wait_for_one_more_spike(dummy2));
 
 //// delay by 32 bit registers 
 //

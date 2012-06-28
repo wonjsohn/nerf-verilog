@@ -108,7 +108,7 @@ class User(QDialog, Ui_Dialog):
         """ value = how many times of 1/10 real-time
         """
         
-        newHalfCnt = 1 * 200 * (10 **6) / SAMPLING_RATE / NUM_NEURON / value / 2 / 2
+        newHalfCnt = 1 * 200 * (10 **6) / SAMPLING_RATE / NUM_NEURON / (value*4) / 2 / 2
         #newHalfCnt = 1
         print 'halfCnt=%d' % newHalfCnt
         self.nerfModel.SendPara(bitVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
