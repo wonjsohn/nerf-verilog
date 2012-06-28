@@ -317,45 +317,55 @@ module one_joint_board1_xem6010(
 
     wire    [31:0] i_MN_spkcnt;
     wire    dummy_slow;        
-    spikecnt count_rawspikes
-    (   .spike(MN_spk), 
-        .int_cnt_out(i_MN_spkcnt), 
-        .fast_clk(neuron_clk), // not used
-        .slow_clk(sim_clk), 
-        .reset(reset_sim), 
-        .clear_out(dummy_slow));
-//		  
-//    spike_counter spike_multsen1
-//	 (		.spike(MN_spk), 
-//			.int_cnt_out(i_MN_spkcnt), 
-//			.slow_clk(sim_clk), 
-//			.reset(reset_sim), 
-//			.clear_out(dummy_slow));
-//	 
+//    spikecnt count_rawspikes
+//    (   .spike(MN_spk), 
+//        .int_cnt_out(i_MN_spkcnt), 
+//        .fast_clk(neuron_clk), // not used
+//        .slow_clk(sim_clk), 
+//        .reset(reset_sim), 
+//        .clear_out(dummy_slow));
+		  
+	//new counter
+    spike_counter spike_cnt_multsen_SL
+	 (		.spike(MN_spk), 
+			.int_cnt_out(i_MN_spkcnt), 
+			.slow_clk(sim_clk), 
+			.reset(reset_sim), 
+			.clear_out(dummy_slow));
+	 
 
     //counting the spike from the long latency loop. (LL)
     //wire spike_longlatency;
     wire    [31:0] i_LL_spkcnt;   //Long Latency (LL)  
     wire    dummy_slow_LL;        
-    spikecnt count_longlatency_spikes
+    spikecnt spike_cnt_LL
     (   .spike(spike_in1), 
         .int_cnt_out(i_LL_spkcnt), 
         .fast_clk(neuron_clk), 
         .slow_clk(sim_clk), 
         .reset(reset_sim), 
         .clear_out(dummy_slow_LL));
+	
+// new counter	
+    wire    [31:0] i_LL_spkcnt_multsen;   //Long Latency (LL)  
+    wire    dummy_slow_LL_ms;        
+    spike_counter spike_cnt_multsen_LL
+	 (		.spike(spike_in1), 
+			.int_cnt_out(i_LL_spkcnt_multsen), 
+			.slow_clk(sim_clk), 
+			.reset(reset_sim), 
+			.clear_out(dummy_slow_LL_ms));
         
         
     wire    [31:0] i_combined_spkcnt;   //SL + LL
-    wire    dummy_slow_combined;        
-    spikecnt count_combined_spikes
-    (   .spike(spike_SL_LL_combined), 
-        .int_cnt_out(i_combined_spkcnt), 
-        .fast_clk(neuron_clk), 
-        .slow_clk(sim_clk), 
-        .reset(reset_sim), 
-        .clear_out(dummy_slow_combined));
-    
+    wire    dummy_slow_combined;     
+	spike_counter spike_cnt_combined	 
+	 (		.spike(spike_in1), 
+			.int_cnt_out(i_combined_spkcnt), 
+			.slow_clk(sim_clk), 
+			.reset(reset_sim), 
+			.clear_out(dummy_slow_combined));
+        
 
 
     // ** EMG, Motor neuron (MN)
@@ -444,8 +454,8 @@ module one_joint_board1_xem6010(
     okWireOut    wo25 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
     okWireOut    wo26 (.ep_datain(i_LL_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
     okWireOut    wo27 (.ep_datain(i_LL_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-//    okWireOut    wo28 (.ep_datain(i_MN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
-//    okWireOut    wo29 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
+    okWireOut    wo28 (.ep_datain(i_LL_spkcnt_multsen[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
+    okWireOut    wo29 (.ep_datain(i_LL_spkcnt_multsen[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
 //    okWireOut    wo30 (.ep_datain(i_CN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
 //    okWireOut    wo31 (.ep_datain(i_CN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
     okWireOut    wo32 (.ep_datain(i_combined_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );

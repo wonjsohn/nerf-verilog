@@ -104,7 +104,7 @@ class User(QDialog, Ui_Dialog):
     def onClkRate(self, value):   
         """ value = how many times of 1/10 real-time
         """
-        newHalfCnt = 1 * 200 * (10 **6) / SAMPLING_RATE / NUM_NEURON / value / 2 / 2
+        newHalfCnt = 1 * 200 * (10 **6) / SAMPLING_RATE / NUM_NEURON / (value*4) / 2 / 2
         #newHalfCnt = 1
         print 'halfcnt=%d' %newHalfCnt
         print 'value=%d' %value
