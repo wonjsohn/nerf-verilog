@@ -121,16 +121,49 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 	 end
 
 	//Iz_neuron #(.NN(NN),.DELAY(10)) neuMN(v1,s1, a,b,c,d, i_current_out18 , neuron_clk, reset_sim, neuronIndex, neuronWriteEnable, readClock, tau, MN_spike, neuronWriteCount);
-    wire [31:0] v;
+//    wire [31:0] v;
+//    wire spike;
+//    wire [127:0] population;
+//    izneuron neuron_0(
+//                .clk(neuron_clk),
+//                .reset(reset_sim),
+//                .I_in(i_current_out),                
+//                .spike(MN_spike),                
+//                .spkid(spkid_MN)
+//    );    
+	 
+	 
+	 //********* izneuron *************//
+	 wire [31:0] v;
     wire spike;
+    wire each_spike;
     wire [127:0] population;
     izneuron neuron_0(
                 .clk(neuron_clk),
                 .reset(reset_sim),
-                .I_in(i_current_out),                
-                .spike(MN_spike),                
-                .spkid(spkid_MN)
-    );    
+                .I_in(i_current_out),
+                .spike(),
+                .each_spike(MN_spike)
+    );
+    
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
     //reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
 	//always @(negedge ti_clk) raw_Ia_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
 //    always @(negedge ti_clk) raw_II_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, 1'b0, II_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
