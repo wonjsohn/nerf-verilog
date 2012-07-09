@@ -311,7 +311,7 @@ module one_joint_board1_xem6010(
     // 'OR' the spike train from short & long latency loop
     wire spike_SL_LL_combined;
     assign spike_SL_LL_combined = MN_spk | spike_in1;
-
+   
 
     //counting the spike from the short latency loop.
 
