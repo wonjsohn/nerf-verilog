@@ -87,13 +87,13 @@ module stretch_reflex_xem6010(
             f_pps_coef_Ia <= {ep02wire, ep01wire};  //firing rate
     end       
     
-    reg [31:0] f_pps_coef_II;
+    reg [31:0] f_len_bic_pxi; // _pxi = from PXI system in BBDL
     always @(posedge ep50trig[2] or posedge reset_global)
     begin
         if (reset_global)
-            f_pps_coef_II <= 32'h3F66_6666;
+            f_len_bic_pxi <= 32'h3F66_6666;
         else
-            f_pps_coef_II <= {ep02wire, ep01wire};  //firing rate
+            f_len_bic_pxi <= {ep02wire, ep01wire};  //firing rate
     end           
     
     reg [31:0] gain;
@@ -212,7 +212,7 @@ module stretch_reflex_xem6010(
     spindle bic_bag1_bag2_chain
     (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
         .gamma_sta(f_gamma_sta),
-        .lce(f_len_bic),
+        .lce(f_len_bic_pxi), // OR f_len_bic
         .clk(spindle_clk),
         .reset(reset_sim),
         .out0(x_0_bic),
