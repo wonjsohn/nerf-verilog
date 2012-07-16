@@ -379,7 +379,7 @@ module stretch_reflex_xem6010(
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
     okBTPipeOut  epA1 (.ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN), .ep_ready(1'b1));
 
-    okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
+    okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(sim_clk), .ep_trigger(ep50trig));
 endmodule
 
 

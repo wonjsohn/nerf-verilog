@@ -13,7 +13,7 @@ CHIN_PARAM =    (0x20,      'f_len',      50,         'float32',      'Qt.blue')
                 (0x22,      'i',      1.0,         'float32',      'Qt.red'),  \
                 (0x24,      'i_CN_spkcnt',      1.0,         'float32',      'Qt.green'),  \
                 (0x26,      'i_Combined_spkcnt',      1.0,         'float32',      'Qt.black'),  \
-                (0x28,      'i_MN_emg',      1.0,         'float32',      'Qt.magenta'),  \
+                (0x28,      'i_MN_emg',      1.0,         'int32',      'Qt.magenta'),  \
                 (0x30,      'i_CN_emg',      1.0,         'int32',      'Qt.darkRed'),  \
                 (0x32,      'i_combined_emg',      1.0,         'int32',      'Qt.darkGray'),   \
 #                (0x36,      'i_emg_mu7',     1.0,         'int32',      'Qt.blue'), \
