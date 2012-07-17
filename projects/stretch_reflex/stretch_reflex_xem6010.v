@@ -69,7 +69,7 @@ module stretch_reflex_xem6010(
 
     // *** Triggered input from Python
        // *** Triggered input from Python
-    always @(posedge ep50trig[7] or posedge reset_global)
+    always @(posedge ep50trig[0] or posedge reset_global)
     begin
         if (reset_global)
             delay_cnt_max <= delay_cnt_max;
@@ -91,9 +91,9 @@ module stretch_reflex_xem6010(
     always @(posedge ep50trig[2] or posedge reset_global)
     begin
         if (reset_global)
-            f_len_bic_pxi <= 32'h3F66_6666;
+            f_len_bic_pxi <= 32'h3F66_6666; //0.9
         else
-            f_len_bic_pxi <= {ep02wire, ep01wire};  //firing rate
+            f_len_bic_pxi <= {ep02wire, ep01wire}; 
     end           
     
     reg [31:0] gain;
@@ -102,7 +102,7 @@ module stretch_reflex_xem6010(
         if (reset_global)
             gain <= 32'd0;
         else
-            gain <= {ep02wire, ep01wire};  //firing rate
+            gain <= {ep02wire, ep01wire};  
     end        
     
     reg [31:0] f_gamma_dyn;
@@ -212,7 +212,7 @@ module stretch_reflex_xem6010(
     spindle bic_bag1_bag2_chain
     (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
         .gamma_sta(f_gamma_sta),
-        .lce(f_len_bic_pxi), // OR f_len_bic
+        .lce(f_len_bic), // OR f_len_bic
         .clk(spindle_clk),
         .reset(reset_sim),
         .out0(x_0_bic),
