@@ -261,28 +261,28 @@ module one_joint_robot_xem6010(
                                 .pipe_in_write(is_pipe_being_written),
                                 .pipe_in_data(hex_from_py),
                                 .pop_clk(sim_clk),
-                                .wave(f_rawfr_Ia)
+                                .wave(f_len)
     );  
     
 // // Get biceps muscle length from joint angle
 
 
-//    // *** Spindle: f_muscle_len => f_rawfr_Ia
-//    wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
-//    spindle bic_bag1_bag2_chain
-//    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
-//        .gamma_sta(f_gamma_sta),
-//        .lce(f_len),
-//        .clk(spindle_clk),
-//        .reset(reset_sim),
-//        .out0(x_0_bic),
-//        .out1(x_1_bic),
-//        .out2(f_bicepsfr_II),
-//        .out3(f_bicepsfr_Ia),
-//        .BDAMP_1(BDAMP_1),
-//        .BDAMP_2(BDAMP_2),
-//        .BDAMP_chain(BDAMP_chain)
-//		);
+    // *** Spindle: f_muscle_len => f_rawfr_Ia
+    wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
+    spindle bic_bag1_bag2_chain
+    (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
+        .gamma_sta(f_gamma_sta),
+        .lce(f_len),
+        .clk(spindle_clk),
+        .reset(reset_sim),
+        .out0(x_0_bic),
+        .out1(x_1_bic),
+        .out2(f_bicepsfr_II),
+        .out3(f_bicepsfr_Ia),
+        .BDAMP_1(BDAMP_1),
+        .BDAMP_2(BDAMP_2),
+        .BDAMP_chain(BDAMP_chain)
+		);
 
 //    wire [31:0] f_tricepsfr_Ia, x_0_tri, x_1_tri, f_tricepsfr_II;
 //    spindle tri_bag1_bag2_chain
@@ -308,7 +308,7 @@ module one_joint_robot_xem6010(
     wire [15:0] spkid_MN;
     
     neuron_pool #(.NN(NN)) big_pool
-    (   .f_rawfr_Ia(f_rawfr_Ia),     //
+    (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
         .f_pps_coef_Ia(f_pps_coef_Ia), //
         .half_cnt(delay_cnt_max32),
         .rawclk(clk1),
@@ -381,9 +381,9 @@ module one_joint_robot_xem6010(
                 .I_out(I_synapse),  // updates once per population (scaling factor 1024) 
                 .each_I(each_I_synapse) // updates on each synapse
     );
-	wire [31:0] thirty5k, f_scaled_len;
-	assign thirty5k = 32'h455AC000;
-	div div1(.x(f_rawfr_Ia), .y(thirty5k), .out(f_scaled_len));
+	//wire [31:0] thirty5k, f_scaled_len;
+	//assign thirty5k = 32'h455AC000;
+	//div div1(.x(f_rawfr_Ia), .y(thirty5k), .out(f_scaled_len));
 	
  // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
      wire    [31:0]  f_actstate_bic, f_MN_spkcnt_bic; 
@@ -391,7 +391,7 @@ module one_joint_robot_xem6010(
      wire    [31:0] IEEE_1p57, IEEE_2p77;
     assign IEEE_1p57 = 32'h3FC8F5C3; 
     assign IEEE_2p77 = 32'h403147AE;    
-    sub get_bic_len(.x(IEEE_2p77), .y(f_scaled_len), .out(f_len_bic));  
+    sub get_bic_len(.x(IEEE_2p77), .y(f_len), .out(f_len_bic));  
 
     shadmehr_muscle biceps
     (   .spike_cnt(i_MN_spkcnt*gain),
@@ -451,20 +451,20 @@ module one_joint_robot_xem6010(
     //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep001wire));
 
 
-    okWireOut    wo20 (.ep_datain(f_rawfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
-    okWireOut    wo21 (.ep_datain(f_rawfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-    okWireOut    wo22 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-    okWireOut    wo23 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-    okWireOut    wo24 (.ep_datain(f_force_bic[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-    okWireOut    wo25 (.ep_datain(f_force_bic[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo20 (.ep_datain(f_len[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
+    okWireOut    wo21 (.ep_datain(f_len[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
+    okWireOut    wo22 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+    okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+    okWireOut    wo24 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
     okWireOut    wo26 (.ep_datain(I_synapse[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
     okWireOut    wo27 (.ep_datain(I_synapse[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
     okWireOut    wo28 (.ep_datain(i_MN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
     okWireOut    wo29 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
-    okWireOut    wo30 (.ep_datain(f_scaled_len[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
-    okWireOut    wo31 (.ep_datain(f_scaled_len[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
-    okWireOut    wo32 (.ep_datain(f_len_bic[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
-    okWireOut    wo33 (.ep_datain(f_len_bic[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );   
+    okWireOut    wo30 (.ep_datain(f_len_bic[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
+    okWireOut    wo31 (.ep_datain(f_len_bic[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
+    okWireOut    wo32 (.ep_datain(f_force_bic[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
+    okWireOut    wo33 (.ep_datain(f_force_bic[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );   
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
