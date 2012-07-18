@@ -164,13 +164,22 @@ module one_joint_robot_xem6010(
             i_gain_mu1_MN <= {ep02wire, ep01wire};  
     end
 	 
-    reg signed [31:0] i_gain_mu2_MN;
+//    reg signed [31:0] i_gain_mu2_MN;
+//    always @(posedge ep50trig[7] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            i_gain_mu2_MN <= 32'd1; // gamma_sta reset to 80
+//        else
+//            i_gain_mu2_MN <= {ep02wire, ep01wire};  
+//    end  
+//	 
+	 reg signed [31:0] trigger_input;
     always @(posedge ep50trig[7] or posedge reset_global)
     begin
         if (reset_global)
-            i_gain_mu2_MN <= 32'd1; // gamma_sta reset to 80
+            trigger_input <= 32'd0; // gamma_sta reset to 80
         else
-            i_gain_mu2_MN <= {ep02wire, ep01wire};  
+            trigger_input <= {ep02wire, ep01wire};  
     end  
 
 //    reg signed [31:0] i_gain_mu3_MN;
@@ -272,7 +281,7 @@ module one_joint_robot_xem6010(
     spindle bic_bag1_bag2_chain
     (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
         .gamma_sta(f_gamma_sta),
-        .lce(f_len),
+        .lce(trigger_input?  f_len_bic_pxi: f_len),
         .clk(spindle_clk),
         .reset(reset_sim),
         .out0(x_0_bic),
@@ -391,7 +400,7 @@ module one_joint_robot_xem6010(
      wire    [31:0] IEEE_1p57, IEEE_2p77;
     assign IEEE_1p57 = 32'h3FC8F5C3; 
     assign IEEE_2p77 = 32'h403147AE;    
-    sub get_bic_len(.x(IEEE_2p77), .y(f_len), .out(f_len_bic));  
+    sub get_bic_len(.x(IEEE_2p77), .y(trigger_input?  f_len_bic_pxi: f_len), .out(f_len_bic));  
 
     shadmehr_muscle biceps
     (   .spike_cnt(i_MN_spkcnt*gain),
@@ -461,8 +470,8 @@ module one_joint_robot_xem6010(
     okWireOut    wo27 (.ep_datain(I_synapse[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
     okWireOut    wo28 (.ep_datain(i_MN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
     okWireOut    wo29 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
-    okWireOut    wo30 (.ep_datain(f_len_bic[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
-    okWireOut    wo31 (.ep_datain(f_len_bic[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
+    okWireOut    wo30 (.ep_datain(f_len_bic_pxi[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
+    okWireOut    wo31 (.ep_datain(f_len_bic_pxi[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
     okWireOut    wo32 (.ep_datain(f_force_bic[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
     okWireOut    wo33 (.ep_datain(f_force_bic[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );   
     //ep_ready = 1 (always ready to receive)
