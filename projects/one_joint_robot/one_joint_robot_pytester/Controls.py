@@ -29,12 +29,14 @@ class CtrlChannel:
         exec interp('self.doubleSpinBox.setGeometry(QtCore.QRect(230, #{id} * 35, 105, 30))')
         exec interp('self.doubleSpinBox.setProperty("value", value)')
         exec interp('self.doubleSpinBox.setObjectName("param_#{name}")')
+        exec interp('self.doubleSpinBox.setSingleStep(0.1)')
         
         exec interp('self.label = QtGui.QLabel(hostDialog)')
         exec interp('self.label.setObjectName("label_#{name}")')
         exec interp('self.label.setText("#{name}")')        
         exec interp('self.label.setGeometry(QtCore.QRect(350, #{id} * 35, 105, 30))')
-
+             
+             
 from Ui_Controls import Ui_Dialog
 class User(QDialog, Ui_Dialog):
     """
@@ -122,6 +124,8 @@ class User(QDialog, Ui_Dialog):
                 elif (ctrl.type == 'float32'):
                     bitVal = ConvertType(newWireIn, fromType = 'f', toType = 'I')
                 self.nerfModel.SendPara(bitVal = bitVal, trigEvent = ctrl.id)
+                
+
 
     def plotData(self, data):
         from pylab import plot, show, subplot
@@ -206,3 +210,13 @@ class User(QDialog, Ui_Dialog):
         Slot documentation goes here.
         """
         self.isLogData = checked
+
+
+#    @pyqtSignature("bool")
+#    def on_checkbox_checked(self, state):
+#        """
+#        Slot documentation goes here.
+#        """
+#        if state == QtCore.Qt.Checked:
+#            self.nerfModel.SendCheck()
+        

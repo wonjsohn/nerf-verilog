@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/minos001/cmn_verilog/projects/size_principle/size_principle_pytester/Controls.ui'
+# Form implementation generated from reading ui file '/home/eric/eric_nerf_verilog/projects/one_joint_robot/one_joint_robot_pytester/Controls.ui'
 #
-# Created: Tue Apr 10 10:11:19 2012
+# Created: Thu Jul 19 12:41:12 2012
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -204,6 +204,9 @@ class Ui_Dialog(object):
         self.pushButtonData.setDefault(False)
         self.pushButtonData.setFlat(False)
         self.pushButtonData.setObjectName("pushButtonData")
+        self.checkBox = QtGui.QCheckBox(Dialog)
+        self.checkBox.setGeometry(QtCore.QRect(20, 410, 131, 22))
+        self.checkBox.setObjectName("checkBox")
 
         self.retranslateUi(Dialog)
         QtCore.QObject.connect(self.horizontalSlider, QtCore.SIGNAL("valueChanged(int)"), self.lcdNumber.display)
@@ -221,6 +224,7 @@ class Ui_Dialog(object):
         self.comboBox.setItemText(2, QtGui.QApplication.translate("Dialog", "Spike Train 20Hz", None, QtGui.QApplication.UnicodeUTF8))
         self.label_RT.setText(QtGui.QApplication.translate("Dialog", "x 0.1 Real-time", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButtonData.setText(QtGui.QApplication.translate("Dialog", "Log Data", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox.setText(QtGui.QApplication.translate("Dialog", "trigger  input", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":

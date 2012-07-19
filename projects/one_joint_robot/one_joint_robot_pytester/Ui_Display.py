@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/minos001/cmn_verilog/projects/size_principle/size_principle_pytester/Display.ui'
+# Form implementation generated from reading ui file '/home/eric/eric_nerf_verilog/projects/one_joint_robot/one_joint_robot_pytester/Display.ui'
 #
-# Created: Tue Apr 10 10:11:20 2012
+# Created: Thu Jul 19 12:41:13 2012
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
