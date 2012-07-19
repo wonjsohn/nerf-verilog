@@ -49,7 +49,8 @@ class Model:
         self.xem.SetPLL22393Configuration(self.pll)
         self.xem.ConfigureFPGA(bitfile.encode('utf-8'))
         print(bitfile.encode('utf-8'))
-
+        
+        
     def ReadFPGA(self, getAddr, type):
 
         """ getAddr = 0x20 -- 0x3F (maximal in OkHost)
@@ -104,6 +105,10 @@ class Model:
             else :
                 self.xem.SetWireInValue(0x00, 0x00, 0x04)
             self.xem.UpdateWireIns()
+            
+
+
+
     def SendPipe(self, pipeInData):
         """ Send byte stream to OpalKelly board
         """

@@ -30,11 +30,16 @@ CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      3.0), \
                 (5, 'gamma_sta',    'float32',      80.0), \
                 (6, 'gain_big_MN',      'int32',        4),  \
                 (7, 'trigger_input',      'int32',        0),  \
-                (8, 'f_len_pxi',      'float32',        0.9)
+                (8, 'bicep_len_pxi',      'float32',        0.9)
+                
+
+
                 
 SEND_TYPE = list(zip(*CHOUT_PARAM)[2])   
 
 BIT_FILE = "../one_joint_robot_xem6010.bit"
+
+
 SAMPLING_RATE = 1024
 #NUM_NEURON = 512
 NUM_NEURON = 128

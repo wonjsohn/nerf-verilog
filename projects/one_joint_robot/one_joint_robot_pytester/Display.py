@@ -18,6 +18,7 @@ PIXEL_OFFSET = 200 # pixels offsets
 
 from Ui_Display import Ui_Dialog
 
+
 class ViewChannel:
     def __init__(self, hostDialog, name, id, width = 2, color = 'Qt.blue'):
         exec interp('self.id = #{id}')
