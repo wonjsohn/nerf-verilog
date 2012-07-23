@@ -177,7 +177,7 @@ module one_joint_robot_xem6010(
     always @(posedge ep50trig[7] or posedge reset_global)
     begin
         if (reset_global)
-            trigger_input <= 32'd0; // gamma_sta reset to 80
+            trigger_input <= 32'd1; // gamma_sta reset to 80
         else
             trigger_input <= {ep02wire, ep01wire};  
     end  
@@ -377,11 +377,11 @@ module one_joint_robot_xem6010(
     wire    [31:0] IEEE_1p57, IEEE_2p77;
     assign IEEE_1p57 = 32'h3FC8F5C3; 
     assign IEEE_2p77 = 32'h403147AE;    
-    sub get_bic_len(.x(IEEE_2p77), .y(trigger_input?  f_len_bic_pxi: f_len_bic), .out(f_muscleInput_len_bic));  
+   // sub get_bic_len(.x(IEEE_2p77), .y(trigger_input?  f_len_bic_pxi: f_len_bic), .out(f_muscleInput_len_bic));  
 
     shadmehr_muscle biceps
     (   .spike_cnt(i_MN_bic_spkcnt*gain),
-        .pos(f_muscleInput_len_bic),  // muscle length
+        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
         //.vel(current_vel),
         .vel(32'd0),
         .clk(sim_clk),
@@ -458,7 +458,7 @@ module one_joint_robot_xem6010(
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
 
-    okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
+    okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(sim_clk), .ep_trigger(ep50trig));
 endmodule
 
 

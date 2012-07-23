@@ -29,7 +29,7 @@ CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      3.0), \
                 (4, 'gamma_dyn',    'float32',      80.0), \
                 (5, 'gamma_sta',    'float32',      80.0), \
                 (6, 'gain_big_MN',      'int32',        4),  \
-                (7, 'trigger_input',      'int32',        0),  \
+                (7, 'trigger_input',      'int32',        1),  \
                 (8, 'bicep_len_pxi',      'float32',        0.9)
                 
 
@@ -38,6 +38,7 @@ CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      3.0), \
 SEND_TYPE = list(zip(*CHOUT_PARAM)[2])   
 
 BIT_FILE = "../one_joint_robot_xem6010.bit"
+BIT_FILE2 = "../one_joint_robot_xem6010 (copy).bit"
 
 
 SAMPLING_RATE = 1024
