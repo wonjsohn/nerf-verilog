@@ -342,14 +342,14 @@ module one_joint_robot_xem6010(
 			.clear_out(dummy_slow));
 
     // ** EMG, Motor neuron (MN)
-//    wire [17:0] si_emg;
-//    emg #(.NN(NN)) emg
-//    (   .emg_out(si_emg), 
-//        .i_spk_cnt(i_MN_bic_spkcnt[NN:0]), 
-//        .clk(sim_clk), 
-//        .reset(reset_sim) ); 
-//    wire [31:0] i_MN_emg;
-//    assign i_MN_emg = {{14{si_emg[17]}},si_emg[17:0]};
+    wire [17:0] si_emg;
+    emg #(.NN(NN)) emg
+    (   .emg_out(si_emg), 
+        .i_spk_cnt(i_MN_bic_spkcnt[NN:0]), 
+        .clk(sim_clk), 
+        .reset(reset_sim) ); 
+    wire [31:0] i_MN_emg;
+    assign i_MN_emg = {{14{si_emg[17]}},si_emg[17:0]};
     
 
 
@@ -459,8 +459,8 @@ module one_joint_robot_xem6010(
     okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(i_MN_bic_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
     okWireOut    wo25 (.ep_datain(i_MN_bic_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-  //  okWireOut    wo26 (.ep_datain(f_len_tri_pxi[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-  //  okWireOut    wo27 (.ep_datain(f_len_tri_pxi[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo26 (.ep_datain(i_MN_emg[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
     okWireOut    wo28 (.ep_datain(f_len_bic_pxi[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
     okWireOut    wo29 (.ep_datain(f_len_bic_pxi[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
     okWireOut    wo30 (.ep_datain(f_force_bic[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
