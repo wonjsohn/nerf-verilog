@@ -378,3 +378,47 @@ module d_force_simple (T_i, x_i, dx_i, A_i, dT_i);
 
 endmodule
 
+
+module fuglevand_muscle(spike_cnt, pos, vel, clk, reset, total_force_out, current_A, current_fp_spikes, tau);
+    input [31:0] spike_cnt;
+    input [31:0] pos, vel;
+    input clk;
+    input reset;
+	 input [31:0] tau;
+    output reg [31:0] total_force_out;
+    output [31:0] current_A;
+    output [31:0] current_fp_spikes;
+	 
+	 
+    
+    reg [31:0]  spikes_i1, spikes_i2, h_i1, h_i2; 
+    wire    [31:0]  spikes_i, h_i;
+    //assign  spikes_i = spikes * 32'sd1024;// 32'sd128;
+	int_to_float get_fp_spike(.out(spikes_i), .in(spike_cnt * 32'd1024));
+	 
+	
+    //h_diff_eq gen_h(spikes_i1, spikes_i2, h_i1, h_i2, h_i);
+	 fuglevand_twitch twitch(spikes_i1, spikes_i2, h_i1, h_i2, h_i, tau);
+	 
+	 
+
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            spikes_i1 <= 32'd0;
+            spikes_i2 <= 32'd0;
+            h_i1 <= 32'd0;
+            h_i2 <= 32'd0;
+			total_force_out <= 32'd0;
+        end
+        else begin
+            spikes_i1 <= spikes_i;
+            spikes_i2 <= spikes_i1;
+            h_i1 <= h_i;
+            h_i2 <= h_i1;
+			total_force_out <= h_i;
+        end
+    end
+
+endmodule
+
+

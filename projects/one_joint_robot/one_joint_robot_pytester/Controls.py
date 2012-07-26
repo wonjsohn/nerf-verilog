@@ -50,7 +50,7 @@ class User1(QDialog, Ui_Dialog):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         
-        self.nerfModel = Model(board=1)
+        self.nerfModel = Model()
         
         self.dispView = View(None, VIEWER_REFRESH_RATE, CHIN_PARAM)
 
@@ -238,7 +238,7 @@ class User2(QDialog, Ui_Dialog):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         
-        self.nerfModel2 = Model(board=2)
+        self.nerfModel2 = Model()
         self.dispView = View(None, VIEWER_REFRESH_RATE, CHIN_PARAM)
 
         self.dispView.show()

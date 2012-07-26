@@ -380,9 +380,9 @@ module one_joint_robot_xem6010(
    // sub get_bic_len(.x(IEEE_2p77), .y(trigger_input?  f_len_bic_pxi: f_len_bic), .out(f_muscleInput_len_bic));  
 
     shadmehr_muscle biceps
-    (   .spike_cnt(i_MN_bic_spkcnt*gain),
+    (   .spike_cnt(i_MN_bic_spkcnt),
         //.pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
-        .pos(32'h3f80_0000),  // muscle length
+        .pos(32'h3F8147AE),  // muscle length 1.01
         //.vel(current_vel),
         .vel(32'd0),
         .clk(sim_clk),
@@ -393,7 +393,20 @@ module one_joint_robot_xem6010(
 		  .tau(tau)
     );       
         
-	 
+//	    fuglevand_muscle biceps
+//    (   .spike_cnt(i_MN_bic_spkcnt),
+//        //.pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
+//        .pos(32'h3f80_0000),  // muscle length
+//        //.vel(current_vel),
+//        .vel(32'd0),
+//        .clk(sim_clk),
+//        .reset(reset_sim),
+//        .total_force_out(f_force_bic),
+//        .current_A(f_actstate_bic),
+//        .current_fp_spikes(f_MN_spkcnt_bic), 
+//		  .tau(tau)
+//    );   	  
+//	 
 
 	 
  // ** LEDs
@@ -444,8 +457,8 @@ module one_joint_robot_xem6010(
     okWireOut    wo21 (.ep_datain(f_len_bic[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
     okWireOut    wo22 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
     okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-  //  okWireOut    wo24 (.ep_datain(f_tricepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-  //  okWireOut    wo25 (.ep_datain(f_tricepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo24 (.ep_datain(i_MN_bic_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(i_MN_bic_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
   //  okWireOut    wo26 (.ep_datain(f_len_tri_pxi[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
   //  okWireOut    wo27 (.ep_datain(f_len_tri_pxi[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
     okWireOut    wo28 (.ep_datain(f_len_bic_pxi[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
