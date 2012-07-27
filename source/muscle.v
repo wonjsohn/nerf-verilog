@@ -126,7 +126,7 @@ module shadmehr_active_force(spikes, active_force_out, fp_spikes_out, clk, reset
     reg [31:0]  spikes_i1, spikes_i2, h_i1, h_i2; 
     wire    [31:0]  spikes_i, h_i, emg_out;
     //assign  spikes_i = spikes * 32'sd1024;// 32'sd128;
-	int_to_float get_fp_spike(.out(spikes_i), .in(spikes * 32'd1024));
+	int_to_float get_fp_spike(.out(spikes_i), .in(spikes ));
 	 
 	
     //h_diff_eq gen_h(spikes_i1, spikes_i2, h_i1, h_i2, h_i);
@@ -181,9 +181,9 @@ module shadmehr_muscle(spike_cnt, pos, vel, clk, reset, total_force_out, current
         
     wire 	[31:0]	weightout, current_A;
     
-    s_weight  s_func (	.x_i(pos), .weight(weightout));
-    mult		multA(.x(weightout), .y(current_h), .out(current_A));
-	  
+    //s_weight  s_func (	.x_i(pos), .weight(weightout));
+    //mult		multA(.x(weightout), .y(current_h), .out(current_A));
+	  assign current_A = current_h;
 		  
     wire    [31:0]  current_dT;
     shadmehr_total_force total1
