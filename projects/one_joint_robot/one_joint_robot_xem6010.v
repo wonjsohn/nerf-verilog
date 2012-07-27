@@ -381,8 +381,8 @@ module one_joint_robot_xem6010(
 
     shadmehr_muscle biceps
     (   .spike_cnt(i_MN_bic_spkcnt),
-        //.pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
-        .pos(32'h3F8147AE),  // muscle length 1.01
+        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
+        //pos(32'h3F8147AE),  // muscle length 1.01
         //.vel(current_vel),
         .vel(32'd0),
         .clk(sim_clk),
@@ -440,7 +440,7 @@ module one_joint_robot_xem6010(
     // *** Endpoint connections:
   
     okHost okHI(
-        .hi_in(hi_in), .hi_out(hi_out), .hi_inout(hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
+        .hi_in(hi_in), .hi_out(hi_out), .hi_inout   (hi_inout), .hi_aa(hi_aa), .ti_clk(ti_clk),
         .ok1(ok1), .ok2(ok2));
         
     parameter NUM_OK_IO = 20;

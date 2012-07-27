@@ -285,7 +285,7 @@ module d_force (T_i, x_i, dx_i, A_i, dT_i);
     input   [31:0]  A_i;   
     output  [31:0]  dT_i;
     
-    wire    [31:0]  dx_2_LLLR4, dx_2_LLL3, dx_2_LLR3, dx_2_LL2, dx_2_LR2, dx_2_L1,  dx_2_R1, dx_2_F0;
+    wire    [31:0]  dx_2_LLLR4, dx_2_LLL3, dx_2_LLL3_check,  dx_2_LLR3, dx_2_LL2, dx_2_LR2, dx_2_L1,  dx_2_R1, dx_2_F0;
     wire    [31:0]  x0, Kse_x_Kpe_o_b, Kse, Kse_o_b_m_one_p_Kpe_o_Kse, Kpe_o_b;
  
     assign x0 = 32'h3F800000; //1.0
@@ -300,15 +300,16 @@ module d_force (T_i, x_i, dx_i, A_i, dT_i);
     //SIMPLFIED: exp = "204.0*(x_i-x0)+136*dx_i-4.22*T_i+2.72*A_i"
      //     x_i     ----    x0    =>    dx_2_LLLR4
     sub dx_2_LLLR4_sub( .x(x_i), .y(x0), .out(dx_2_LLLR4) );
-
+	
      //     204.0     ****    dx_2_LLLR4    =>    dx_2_LLL3
     mult dx_2_LLL3_mult( .x(Kse_x_Kpe_o_b), .y(dx_2_LLLR4), .out(dx_2_LLL3) );
-
+    // manually added to check if muscle length (x_i) is greater than rest length (x0). if not, put zero. 
+	 assign dx_2_LLL3_check = (dx_2_LLLR4[31])? 32'd0 : dx_2_LLL3 ;
      //     136     ****    dx_i    =>    dx_2_LLR3
     mult dx_2_LLR3_mult( .x(Kse), .y(dx_i), .out(dx_2_LLR3) );
 
      //     dx_2_LLL3     ++++    dx_2_LLR3    =>    dx_2_LL2
-    add dx_2_LL2_add( .x(dx_2_LLL3), .y(dx_2_LLR3), .out(dx_2_LL2) );
+    add dx_2_LL2_add( .x(dx_2_LLL3_check), .y(dx_2_LLR3), .out(dx_2_LL2) );
 
      //     4.22     ****    T_i    =>    dx_2_LR2
     mult dx_2_LR2_mult( .x(Kse_o_b_m_one_p_Kpe_o_Kse), .y(T_i), .out(dx_2_LR2) );
@@ -377,48 +378,4 @@ module d_force_simple (T_i, x_i, dx_i, A_i, dT_i);
         //dT_i = Kse / b * (b * rate_change_x - (1 + Kpe/Kse) * T_0 + A)
 
 endmodule
-
-
-module fuglevand_muscle(spike_cnt, pos, vel, clk, reset, total_force_out, current_A, current_fp_spikes, tau);
-    input [31:0] spike_cnt;
-    input [31:0] pos, vel;
-    input clk;
-    input reset;
-	 input [31:0] tau;
-    output reg [31:0] total_force_out;
-    output [31:0] current_A;
-    output [31:0] current_fp_spikes;
-	 
-	 
-    
-    reg [31:0]  spikes_i1, spikes_i2, h_i1, h_i2; 
-    wire    [31:0]  spikes_i, h_i;
-    //assign  spikes_i = spikes * 32'sd1024;// 32'sd128;
-	int_to_float get_fp_spike(.out(spikes_i), .in(spike_cnt * 32'd1024));
-	 
-	
-    //h_diff_eq gen_h(spikes_i1, spikes_i2, h_i1, h_i2, h_i);
-	 fuglevand_twitch twitch(spikes_i1, spikes_i2, h_i1, h_i2, h_i, tau);
-	 
-	 
-
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            spikes_i1 <= 32'd0;
-            spikes_i2 <= 32'd0;
-            h_i1 <= 32'd0;
-            h_i2 <= 32'd0;
-			total_force_out <= 32'd0;
-        end
-        else begin
-            spikes_i1 <= spikes_i;
-            spikes_i2 <= spikes_i1;
-            h_i1 <= h_i;
-            h_i2 <= h_i1;
-			total_force_out <= h_i;
-        end
-    end
-
-endmodule
-
 
