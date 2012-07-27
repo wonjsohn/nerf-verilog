@@ -623,6 +623,19 @@
     <string>trigger  input</string>
    </property>
   </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>10</y>
+     <width>171</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>reset the firing rate!</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>

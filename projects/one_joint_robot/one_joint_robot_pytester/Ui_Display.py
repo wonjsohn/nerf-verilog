@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/eric_nerf_verilog/projects/one_joint_robot/one_joint_robot_pytester/Display.ui'
 #
-# Created: Thu Jul 19 12:41:13 2012
+# Created: Thu Jul 26 16:01:58 2012
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!

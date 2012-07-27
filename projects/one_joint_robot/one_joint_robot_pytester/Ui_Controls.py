@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/eric_nerf_verilog/projects/one_joint_robot/one_joint_robot_pytester/Controls.ui'
 #
-# Created: Thu Jul 19 12:41:12 2012
+# Created: Thu Jul 26 16:01:57 2012
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -207,6 +207,9 @@ class Ui_Dialog(object):
         self.checkBox = QtGui.QCheckBox(Dialog)
         self.checkBox.setGeometry(QtCore.QRect(20, 410, 131, 22))
         self.checkBox.setObjectName("checkBox")
+        self.label = QtGui.QLabel(Dialog)
+        self.label.setGeometry(QtCore.QRect(250, 10, 171, 17))
+        self.label.setObjectName("label")
 
         self.retranslateUi(Dialog)
         QtCore.QObject.connect(self.horizontalSlider, QtCore.SIGNAL("valueChanged(int)"), self.lcdNumber.display)
@@ -225,6 +228,7 @@ class Ui_Dialog(object):
         self.label_RT.setText(QtGui.QApplication.translate("Dialog", "x 0.1 Real-time", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButtonData.setText(QtGui.QApplication.translate("Dialog", "Log Data", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox.setText(QtGui.QApplication.translate("Dialog", "trigger  input", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("Dialog", "reset the firing rate!", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":

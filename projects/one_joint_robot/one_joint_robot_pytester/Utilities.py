@@ -30,7 +30,7 @@ CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      30.0), \
                 (5, 'gamma_sta',    'float32',      80.0), \
                 (6, 'gain_big_MN',      'int32',        4),  \
                 (7, 'trigger_input',      'int32',        1),  \
-                (8, 'bicep_len_pxi',      'float32',        0.9)
+                (8, 'bicep_len_pxi',      'float32',        1.1)
                 
 
 
