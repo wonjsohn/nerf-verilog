@@ -381,7 +381,8 @@ module one_joint_robot_xem6010(
 
     shadmehr_muscle biceps
     (   .spike_cnt(i_MN_bic_spkcnt),
-        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
+//        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
+        .pos(f_len_bic_pxi),  // muscle length
         //pos(32'h3F8147AE),  // muscle length 1.01
         //.vel(current_vel),
         .vel(32'd0),
