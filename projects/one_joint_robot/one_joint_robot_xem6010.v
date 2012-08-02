@@ -202,7 +202,7 @@ module one_joint_robot_xem6010(
 
 
     reg [31:0] f_len_tri_pxi; // _pxi = from PXI system in BBDL
-    always @(posedge ep50trig[8] or posedge reset_global)
+    always @(posedge ep50trig[9] or posedge reset_global)
     begin
         if (reset_global)
             f_len_tri_pxi <= 32'h3F66_6666; //0.9
