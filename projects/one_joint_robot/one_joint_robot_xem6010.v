@@ -89,7 +89,7 @@ module one_joint_robot_xem6010(
     always @(posedge ep50trig[0] or posedge reset_global)
     begin
         if (reset_global)
-            delay_cnt_max <= delay_cnt_max;
+            delay_cnt_max <= 18'd9;
         else
             delay_cnt_max <= {2'b00, ep01wire};  //firing rate
     end
@@ -221,6 +221,7 @@ module one_joint_robot_xem6010(
 //            delay_cnt_max <= {ep02wire, ep01wire};  //firing rate
 //    end        
 //    
+
     reg [31:0] BDAMP_1, BDAMP_2, BDAMP_chain, GI, GII;
     always @(posedge ep50trig[15] or posedge reset_global)
     begin
@@ -279,7 +280,7 @@ module one_joint_robot_xem6010(
     spindle bic_bag1_bag2_chain
     (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
         .gamma_sta(f_gamma_sta),
-        .lce(trigger_input?  f_len_bic_pxi: f_len_bic),
+        .lce(f_len_bic_pxi),
         .clk(spindle_clk),
         .reset(reset_sim),
         .out0(x_0_bic),
@@ -308,7 +309,7 @@ module one_joint_robot_xem6010(
 //		);
 
     wire [31:0] delay_cnt_max32;
-    assign delay_cnt_max32 = {12'b0, delay_cnt_max};
+    assign delay_cnt_max32 = {14'b0, delay_cnt_max};
     
 	wire signed [31:0] i_current_out_bic;
 	wire MN_bic_spk;
