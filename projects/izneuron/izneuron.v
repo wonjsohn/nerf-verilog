@@ -136,6 +136,11 @@ module izneuron(
     assign u_mem_in = fired ? upd : upuprime;
     assign v_mem_in = fired ? c : vpvprime;
     
+    wire [31:0] spike_history_mem;
+    wire [31:0] spike_history_mem_in;
+
+    assign spike_history_mem_in = first_pass ? 0 : {spike_history_mem[30:0], fired};
+    
     reg state;
     reg read;
     reg write;
@@ -181,13 +186,16 @@ always @ (negedge clk or negedge reset_bar) begin
        v_out <= 0;
     end else begin
         if (state) begin
-            each_spike <= fired;
+            //each_spike <= fired;
+            each_spike <= spike_history_mem[14];
             history[neuron_index] <= fired;
             if (neuron_index == 7'h7f) begin
                 first_pass <= 0;
                 v_out <= v_mem_in;
-                spike <= fired;
-                population <= {fired, history[126:0]};
+                //spike <= fired;
+                spike <= spike_history_mem[14];
+                //population <= {fired, history[126:0]};
+                population <= history;
             end
         end
     end
@@ -220,7 +228,19 @@ end
   .doutb() // output [31 : 0] doutb
     );    
     
-
+    neuron_ram spike_history_ram (
+  .clka(~clk), // input clka
+  .wea(write), // input [0 : 0] wea
+  .addra(neuron_index), // input [6 : 0] addra
+  .dina(spike_history_mem_in), // input [31 : 0] dina
+  .douta(spike_history_mem), // output [31 : 0] douta
+  .clkb(clk), // input clkb
+  .web(1'b0), // input [0 : 0] web
+  .addrb(7'd0), // input [6 : 0] addrb
+  .dinb(32'd0), // input [31 : 0] dinb
+  .doutb() // output [31 : 0] doutb
+    );
+    
 endmodule
 
 

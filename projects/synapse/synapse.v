@@ -47,7 +47,7 @@ assign i_mem_in = first_pass ? 0 : (i_mem >>> 1) + (i_mem >>> 2) + (i_mem >>> 3)
 wire [31:0] spike_history_mem;
 wire [31:0] spike_history_mem_in;
 
-assign spike_history_mem_in = first_pass ? 0 : {spike_history_mem[31:1], spike};
+assign spike_history_mem_in = first_pass ? 0 : {spike_history_mem[30:0], spike};
 
 wire [31:0] delta_w;
 
@@ -57,17 +57,33 @@ assign delta_w = postsynaptic_spike ? ((spike_history_mem == 32'd0) ? 0 : 32'd10
 wire [31:0] ps_spike_history_mem;
 wire [31:0] ps_spike_history_mem_in;
 
-assign ps_spike_history_mem_in = first_pass ? 0 : {ps_spike_history_mem[31:1], postsynaptic_spike};
+assign ps_spike_history_mem_in = first_pass ? 0 : {ps_spike_history_mem[30:0], postsynaptic_spike};
 
 wire [31:0] delta_w_ltd;
 
 assign delta_w_ltd = spike ? ((ps_spike_history_mem == 32'd0) ? 0 : -32'd512) :
                         0 ;
+                        
+wire [31:0] random_out;
+wire [31:0] impulse_decay;
 
+assign impulse_decay = (random_out[7:0] == 8'hFF) ? impulse_mem >>> 7 : 0; 
+    
+    rng decay_rng(
+            .clk1(clk),
+            .clk2(clk),
+            .reset(reset),
+            .out(random_out),
+            
+            .lfsr(),
+            .casr()
+    );
+    
 wire [31:0] impulse_mem;
 wire [31:0] impulse_mem_in;
 
-assign impulse_mem_in = first_pass ? 32'd10240 : impulse_mem+delta_w+delta_w_ltd;
+assign impulse_mem_in = first_pass ? 32'd10240 : impulse_mem+delta_w+delta_w_ltd-impulse_decay;
+
 
 // STATE MACHINE //////////////////////////////////////////////////////////////////////////////////////
     
@@ -148,6 +164,19 @@ end
   .addra(neuron_index), // input [6 : 0] addra
   .dina(spike_history_mem_in), // input [31 : 0] dina
   .douta(spike_history_mem), // output [31 : 0] douta
+  .clkb(clk), // input clkb
+  .web(1'b0), // input [0 : 0] web
+  .addrb(7'd0), // input [6 : 0] addrb
+  .dinb(32'd0), // input [31 : 0] dinb
+  .doutb() // output [31 : 0] doutb
+    );
+    
+     neuron_ram ps_spike_history_ram (
+  .clka(~clk), // input clka
+  .wea(write), // input [0 : 0] wea
+  .addra(neuron_index), // input [6 : 0] addra
+  .dina(ps_spike_history_mem_in), // input [31 : 0] dina
+  .douta(ps_spike_history_mem), // output [31 : 0] douta
   .clkb(clk), // input clkb
   .web(1'b0), // input [0 : 0] web
   .addrb(7'd0), // input [6 : 0] addrb
