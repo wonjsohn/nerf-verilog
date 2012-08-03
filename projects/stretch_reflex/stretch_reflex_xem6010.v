@@ -34,7 +34,7 @@ module stretch_reflex_xem6010(
     output wire pin2
    );
    
-    parameter NN = 8;
+    parameter NN = 6;
 		
     // *** Dump all the declarations here:
     wire         ti_clk;
@@ -69,7 +69,7 @@ module stretch_reflex_xem6010(
 
     // *** Triggered input from Python
        // *** Triggered input from Python
-    always @(posedge ep50trig[7] or posedge reset_global)
+    always @(posedge ep50trig[0] or posedge reset_global)
     begin
         if (reset_global)
             delay_cnt_max <= delay_cnt_max;
@@ -87,13 +87,13 @@ module stretch_reflex_xem6010(
             f_pps_coef_Ia <= {ep02wire, ep01wire};  //firing rate
     end       
     
-    reg [31:0] f_pps_coef_II;
+    reg [31:0] f_len_bic_pxi; // _pxi = from PXI system in BBDL
     always @(posedge ep50trig[2] or posedge reset_global)
     begin
         if (reset_global)
-            f_pps_coef_II <= 32'h3F66_6666;
+            f_len_bic_pxi <= 32'h3F66_6666; //0.9
         else
-            f_pps_coef_II <= {ep02wire, ep01wire};  //firing rate
+            f_len_bic_pxi <= {ep02wire, ep01wire}; 
     end           
     
     reg [31:0] gain;
@@ -102,7 +102,7 @@ module stretch_reflex_xem6010(
         if (reset_global)
             gain <= 32'd0;
         else
-            gain <= {ep02wire, ep01wire};  //firing rate
+            gain <= {ep02wire, ep01wire};  
     end        
     
     reg [31:0] f_gamma_dyn;
@@ -127,7 +127,7 @@ module stretch_reflex_xem6010(
     always @(posedge ep50trig[6] or posedge reset_global)
     begin
         if (reset_global)
-            i_gain_MN <= 32'd1; // gamma_sta reset to 80
+            i_gain_MN <= 32'd1; //
         else
             i_gain_MN <= {ep02wire, ep01wire};  
     end      
@@ -201,8 +201,6 @@ module stretch_reflex_xem6010(
 //    );      
 
 
-
-
     // *** Spindle: f_muscle_len => f_rawfr_Ia
     // Get biceps muscle length from joint angle
     wire    [31:0]  f_force_bic, f_len_bic, IEEE_1p57, IEEE_2p77;
@@ -214,7 +212,7 @@ module stretch_reflex_xem6010(
     spindle bic_bag1_bag2_chain
     (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
         .gamma_sta(f_gamma_sta),
-        .lce(f_len_bic),
+        .lce(f_len_bic), // OR f_len_bic
         .clk(spindle_clk),
         .reset(reset_sim),
         .out0(x_0_bic),
@@ -241,15 +239,56 @@ module stretch_reflex_xem6010(
         .MN_spike(MN_spk_bic),
         .spkid_MN(spkid_MN)
     );     
-    wire    [31:0] i_MN_spkcnt_bic;
-    wire    dummy_slow;        
-    spikecnt count_rawspikes
-    (    .spike(MN_spk_bic), 
-        .int_cnt_out(i_MN_spkcnt_bic), 
-        .fast_clk(neuron_clk), 
-        .slow_clk(sim_clk), 
-        .reset(reset_sim), 
-        .clear_out(dummy_slow));           
+	 
+	 //******** Synapse **********/
+	
+    wire [31:0] I_synapse;
+    wire [31:0] each_I_synapse;
+    wire each_spike;
+    
+    synapse synapse_0(
+                .clk(neuron_clk),
+                .reset(reset_global),
+                .spike_in(MN_spk_bic),
+                .postsynaptic_spike_in(each_spike),
+                .I_out(I_synapse),  // updates once per population (scaling factor 1024) 
+                .each_I(each_I_synapse) // updates on each synapse
+    );
+
+
+	 //********* izneuron *************//
+	 wire [31:0] v;
+    wire spike;
+    wire MN_spike_postSynapse;
+    izneuron neuron_postSynapse(
+                .clk(neuron_clk),
+                .reset(reset_sim),
+                .I_in(I_synapse),
+                .spike(),
+                .each_spike(MN_spike_postSynapse)
+    );
+    
+	 	//new counter
+	 wire    [31:0] i_MN_spkcnt_bic;
+    wire    dummy_slow;      
+    spike_counter spike_cnt_multsen_bic
+	 (		.spike(MN_spk_bic), 
+			.int_cnt_out(i_MN_spkcnt_bic), 
+			.slow_clk(sim_clk), 
+			.reset(reset_sim), 
+			.clear_out(dummy_slow));
+			
+	//new counter
+	 wire    [31:0] i_MN_spkcnt_postSynapse;
+    wire    dummy_slow2;      
+    spike_counter spike_cnt_multsen_postSynapse
+	 (		.spike(MN_spike_postSynapse), 
+			.int_cnt_out(i_MN_spkcnt_postSynapse), 
+			.slow_clk(sim_clk), 
+			.reset(reset_sim), 
+			.clear_out(dummy_slow2));
+	 
+      
             
     // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_actstate_bic, f_MN_spkcnt_bic; 
@@ -323,22 +362,24 @@ module stretch_reflex_xem6010(
 
     okWireOut    wo20 (.ep_datain(f_pos_elbow[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
     okWireOut    wo21 (.ep_datain(f_pos_elbow[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-    okWireOut    wo22 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-    okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-    okWireOut    wo24 (.ep_datain(f_force_bic[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-    okWireOut    wo25 (.ep_datain(f_force_bic[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-    okWireOut    wo26 (.ep_datain(i_emg[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-    okWireOut    wo27 (.ep_datain(i_emg[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
-    okWireOut    wo28 (.ep_datain(f_bicepsfr_II[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
-    okWireOut    wo29 (.ep_datain(f_bicepsfr_II[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
-    okWireOut    wo30 (.ep_datain(f_len_bic[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
-    okWireOut    wo31 (.ep_datain(f_len_bic[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
+    okWireOut    wo22 (.ep_datain(f_len_bic[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+    okWireOut    wo23 (.ep_datain(f_len_bic[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+    okWireOut    wo24 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo26 (.ep_datain(f_force_bic[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(f_force_bic[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo28 (.ep_datain(i_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
+    okWireOut    wo29 (.ep_datain(i_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
+    okWireOut    wo30 (.ep_datain(i_MN_spkcnt_bic[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
+    okWireOut    wo31 (.ep_datain(i_MN_spkcnt_bic[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
+//	 okWireOut    wo32 (.ep_datain(i_MN_spkcnt_postSynapse[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
+ //   okWireOut    wo33 (.ep_datain(i_MN_spkcnt_postSynapse[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
     okBTPipeOut  epA1 (.ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_MN), .ep_ready(1'b1));
 
-    okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
+    okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(sim_clk), .ep_trigger(ep50trig));
 endmodule
 
 

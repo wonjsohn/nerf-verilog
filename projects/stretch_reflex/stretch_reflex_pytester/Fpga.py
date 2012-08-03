@@ -23,8 +23,14 @@ class Model:
         bitfile = BIT_FILE
         assert os.path.exists(bitfile.encode('utf-8')), ".bit file NOT found!"
             
+#        self.xem = ok.FrontPanel()
+#        self.xem.OpenBySerial("")
+#        assert self.xem.IsOpen(), "OpalKelly board NOT found!"
         self.xem = ok.FrontPanel()
-        self.xem.OpenBySerial("")
+        print "count = ",  self.xem.GetDeviceCount()
+        serX = self.xem.GetDeviceListSerial(0)
+        print "serial = ",  serX
+        self.xem.OpenBySerial(serX)
         assert self.xem.IsOpen(), "OpalKelly board NOT found!"
 
         self.xem.LoadDefaultPLLConfiguration()
@@ -132,28 +138,13 @@ class Model:
         else:
             print "Send pipe filed! %d bytes sent" % byteSent
 
-    def SendPara(self, newVal, trigEvent):
-#        if trigEvent == DATA_EVT_GAMMA:
-#            bitVal = ConvertType(newVal, fromType = 'f', toType = 'I')
-#            bitValLo = bitVal & 0xffff
-#            bitValHi = (bitVal >> 16) & 0xffff
-#            self.xem.SetWireInValue(0x01, bitValLo, 0xffff)
-#            self.xem.SetWireInValue(0x02, bitValHi, 0xffff)
-#            self.xem.UpdateWireIns()
-#            self.xem.ActivateTriggerIn(0x50, DATA_EVT_GAMMA)
-
-        if (SEND_TYPE[trigEvent] == 'int32'):
-            bitVal = newVal
-        elif (SEND_TYPE[trigEvent] == 'float32'):
-            bitVal = ConvertType(newVal, fromType = 'f', toType = 'I')
-
+    def SendPara(self, bitVal, trigEvent):
         bitValLo = bitVal & 0xffff
         bitValHi = (bitVal >> 16) & 0xffff
         self.xem.SetWireInValue(0x01, bitValLo, 0xffff)
         self.xem.SetWireInValue(0x02, bitValHi, 0xffff)
         self.xem.UpdateWireIns()            
-        self.xem.ActivateTriggerIn(0x50, trigEvent)        
-
+        self.xem.ActivateTriggerIn(0x50, trigEvent)   
 
     def ReadPipe(self, addr, len = 1000):
         buf = "\x00" * len

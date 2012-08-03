@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module emg(emg_out, i_spk_cnt, clk, reset);
-	parameter NN = 8;  // (log2(neuronCount) - 1)
+	parameter NN = 6;  // (log2(neuronCount) - 1)
 	output wire signed  [17:0] emg_out;
 	input wire [NN:0] i_spk_cnt;
 	input wire  clk, reset;
