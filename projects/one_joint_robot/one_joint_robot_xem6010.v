@@ -64,7 +64,7 @@ module one_joint_robot_xem6010(
     
     wire [15:0] hex_from_py;
     
-    reg [17:0] delay_cnt, delay_cnt_max;
+    reg [31:0] delay_cnt_max;
     
     reg [15:0] rawspikes;
     wire pipe_out_read;
@@ -91,7 +91,7 @@ module one_joint_robot_xem6010(
         if (reset_global)
             delay_cnt_max <= 18'd9;
         else
-            delay_cnt_max <= {2'b00, ep01wire};  //firing rate
+            delay_cnt_max <= {ep02wire, ep01wire};  //firing rate
     end
     
     
@@ -191,23 +191,23 @@ module one_joint_robot_xem6010(
 //            i_gain_mu3_MN <= {ep02wire, ep01wire};  
 //    end  
 
-    reg [31:0] f_len_bic_pxi; // _pxi = from PXI system in BBDL
+    reg [31:0] f_len_bic_pxi_F0; // _pxi = from PXI system in BBDL
     always @(posedge ep50trig[8] or posedge reset_global)
     begin
         if (reset_global)
-            f_len_bic_pxi <= 32'h3F66_6666; //0.9
+            f_len_bic_pxi_F0 <= 32'h3F66_6666; //0.9
         else
-            f_len_bic_pxi <= {ep02wire, ep01wire}; 
+            f_len_bic_pxi_F0 <= {ep02wire, ep01wire}; 
     end   
 
 
-    reg [31:0] f_len_tri_pxi; // _pxi = from PXI system in BBDL
+    reg [31:0] f_len_tri_pxi_F0; // _pxi = from PXI system in BBDL
     always @(posedge ep50trig[9] or posedge reset_global)
     begin
         if (reset_global)
-            f_len_tri_pxi <= 32'h3F66_6666; //0.9
+            f_len_tri_pxi_F0 <= 32'h3F66_6666; //0.9
         else
-            f_len_tri_pxi <= {ep02wire, ep01wire}; 
+            f_len_tri_pxi_F0 <= {ep02wire, ep01wire}; 
     end   
 
 	 
@@ -248,8 +248,8 @@ module one_joint_robot_xem6010(
 
     // *** Deriving clocks from on-board clk1:
     wire neuron_clk, sim_clk, spindle_clk;
-    wire [NN+2:0] neuronCounter;
-    
+//    wire [NN+2:0] neuronCounter;
+    wire [31:0] i_neuronCounter; 
 
     gen_clk #(.NN(NN)) useful_clocks
     (   .rawclk(clk1), 
@@ -257,7 +257,7 @@ module one_joint_robot_xem6010(
         .clk_out1(neuron_clk), 
         .clk_out2(sim_clk), 
         .clk_out3(spindle_clk),
-        .int_neuron_cnt_out(neuronCounter) );
+        .int_neuron_cnt_out(i_neuronCounter) );
                 
     
     // *** Generating waveform to stimulate the spindle
@@ -273,7 +273,16 @@ module one_joint_robot_xem6010(
     );  
     
 // // Get biceps muscle length from joint angle
-
+    reg [31:0] f_len_bic_pxi; // _pxi = from PXI system in BBDL
+    always @(posedge sim_clk or posedge reset_sim)
+	 begin
+	   if (reset_sim)
+		begin
+		  f_len_bic_pxi <= 32'h3f80_0000;
+		end else begin
+		  f_len_bic_pxi <= f_len_bic_pxi_F0;
+		end
+	 end
 
     // *** Spindle: f_muscle_len => f_rawfr_Ia
     wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
@@ -308,24 +317,24 @@ module one_joint_robot_xem6010(
 //        .BDAMP_chain(BDAMP_chain)
 //		);
 
-    wire [31:0] delay_cnt_max32;
-    assign delay_cnt_max32 = {14'b0, delay_cnt_max};
     
 	wire signed [31:0] i_current_out_bic;
 	wire MN_bic_spk;
     wire [15:0] spkid_MN_bic;
+	 wire [31:0] neuron_clk_temp;
     
     neuron_pool #(.NN(NN)) big_pool_bic
     (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
         .f_pps_coef_Ia(f_pps_coef_Ia), //
-        .half_cnt(delay_cnt_max32),
+        .half_cnt(delay_cnt_max),
         .rawclk(clk1),
         .ti_clk(ti_clk),
         .reset_sim(reset_sim),
         .i_gain_MN(i_gain_mu1_MN),
-        .neuronCounter(neuronCounter),
+//        .neuronCounter(neuronCounter),
         .MN_spike(MN_bic_spk),
         .spkid_MN(spkid_MN_bic),
+		  .out3(neuron_clk_temp),
 		.i_current_out(i_current_out_bic) );
 
 
@@ -431,9 +440,10 @@ module one_joint_robot_xem6010(
     assign reset_sim = ep00wire[1];
     
     // *** Endpoint connections:
-    assign pin0 = clk1;   
+    assign pin0 = neuron_clk_temp[0];   
     assign pin1 = sim_clk;
-    assign pin2 = spindle_clk;
+    assign pin2 = neuron_clk;
+	 
     //assign spike_out1 = MN_spk;
     //assign spike_longlatency = spike_in1;
 
@@ -455,8 +465,8 @@ module one_joint_robot_xem6010(
     //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep001wire));
 
 
-    okWireOut    wo20 (.ep_datain(f_len_bic[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
-    okWireOut    wo21 (.ep_datain(f_len_bic[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
+    okWireOut    wo20 (.ep_datain(i_neuronCounter[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
+    okWireOut    wo21 (.ep_datain(i_neuronCounter[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
     okWireOut    wo22 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
     okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(i_MN_bic_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
@@ -474,7 +484,7 @@ module one_joint_robot_xem6010(
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
 
-    okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(sim_clk), .ep_trigger(ep50trig));
+    okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
 endmodule
 
 

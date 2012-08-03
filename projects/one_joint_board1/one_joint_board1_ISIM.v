@@ -24,7 +24,7 @@ module one_joint_board1_ISIM(
     
     wire [15:0] hex_from_py;
      wire         ti_clk;
-    reg [17:0] delay_cnt, delay_cnt_max;
+    reg [31:0] delay_cnt_max;
     
     reg reset_global, reset_sim;
 
@@ -164,7 +164,7 @@ module one_joint_board1_ISIM(
          $timeformat(-9, 1, " ns", 6);
 		   #100;
          clk1 = 1'b0;  reset_global = 1; reset_sim = 1; k = 0; reading = 0; 
-		   delay_cnt_max = 197;   // calculated from the equation in NIPS paper. (F_fpga = 200Mhz, C = 4, F_emul = 1Khz ....) 
+		   delay_cnt_max = 1;   // calculated from the equation in NIPS paper. (F_fpga = 200Mhz, C = 4, F_emul = 1Khz ....) 
 		   #10 reset_sim = 0;
 		   #10 reset_sim = 1;
 		   #10 reset_sim = 0;	 // reset for one more time.   
@@ -172,7 +172,7 @@ module one_joint_board1_ISIM(
 		   outfile = $fopen ("response.txt", "w");   // output file to write.  
 		   #100000; //for reading.
 		  
-		   #40000000;   // 4ms
+		   #16000000;   // ms
 			$fclose (outfile);    // CLOSE THE OUTPUT FILE			 
          $finish; // to shut down the simulation
     end
@@ -189,9 +189,9 @@ module one_joint_board1_ISIM(
 		  end          
 	 end 
   
-    // 200Mhz base clock
+    // 250Mhz base clock
     always begin
-        #5  clk1 = ~clk1;
+        #2  clk1 = ~clk1;
     end
     
 	 wire [31:0] data_output_F0;
@@ -274,18 +274,21 @@ module one_joint_board1_ISIM(
 	 wire signed [31:0] i_current_out;
 	 wire MN_spk;
 	 wire [15:0] spkid_MN;
+	 	 wire [31:0] neuron_clk_temp;
+
 	 
     neuron_pool #(.NN(NN)) big_pool
     (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
         .f_pps_coef_Ia(32'h3F66_6666), //
-        .half_cnt(delay_cnt_max32),
+        .half_cnt(delay_cnt_max),
         .rawclk(clk1),
         .ti_clk(ti_clk),
         .reset_sim(reset_sim),
         .i_gain_MN(32'd1), // not used...
-        .neuronCounter(neuronCounter),
+        //.neuronCounter(neuronCounter),
         .MN_spike(MN_spk),    // probably  neuron_ram doesn't work in ISIM. 
         .spkid_MN(spkid_MN),
+		  .out3(neuron_clk_temp),
 		  .i_current_out(i_current_out)
 
     );
@@ -301,9 +304,6 @@ module one_joint_board1_ISIM(
         .clear_out(dummy_slow));
 
  
-
-    wire [31:0] delay_cnt_max32;
-    assign delay_cnt_max32 = {12'b0, delay_cnt_max};
 
 
 

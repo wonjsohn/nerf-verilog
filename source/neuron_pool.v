@@ -31,7 +31,7 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     input   wire ti_clk,
     input   wire reset_sim,
     input   wire signed [31:0] i_gain_MN,
-    input   wire [NN+2:0] neuronCounter,
+//    input   wire [NN+2:0] neuronCounter,
 
     output  wire MN_spike,
     output  wire [15:0] spkid_MN,
@@ -44,20 +44,40 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 
     parameter NN = 6; // 2^(NN+1) = NUM_NEURON
     
-    //Locally generate neuron_clk
-    reg neuron_clk;
-    reg [31:0] delay_cnt;
-    always @ (posedge rawclk) begin
-        if (delay_cnt < half_cnt) begin
-            neuron_clk <= neuron_clk;
-            delay_cnt <= delay_cnt + 1;
-        end
-        else begin
-            neuron_clk<= ~neuron_clk;
-            delay_cnt <= 0;
-        end
-    end
+//    //Locally generate neuron_clk
+//    reg neuron_clk;
+//    reg [31:0] delay_cnt;
+//    always @ (posedge rawclk) begin
+//        if (delay_cnt < half_cnt) begin
+//            neuron_clk <= neuron_clk;
+//            delay_cnt <= delay_cnt + 1;
+//        end
+//        else begin
+//            neuron_clk<= ~neuron_clk;
+//            delay_cnt <= 0;
+//        end
+//    end
 
+	 reg neuron_clk;
+    reg [31:0] delay_cnt;
+
+    always @ (posedge rawclk or posedge reset_sim) begin
+	     if (reset_sim) begin
+            neuron_clk <= 0;
+		  end 
+		  
+		  else begin
+			  if (delay_cnt < half_cnt) begin
+					neuron_clk <= neuron_clk;
+					delay_cnt <= delay_cnt + 1;
+			  end
+			  else begin
+					neuron_clk <= ~neuron_clk;
+					delay_cnt <= 0;
+			  end
+		  end
+    end	 
+	 
     // *** Izhikevich: f_fr_Ia => spikes
     // *** Convert float_fr to int_I1
 
@@ -89,11 +109,11 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     
    
 	wire [1:0] state;
-	assign state = neuronCounter[1:0];
-    
-	wire [NN:0] neuronIndex;
-	assign neuronIndex = neuronCounter[NN+2:2];
-	
+//	assign state = neuronCounter[1:0];
+//    
+//	wire [NN:0] neuronIndex;
+//	assign neuronIndex = neuronCounter[NN+2:2];
+//	
     //wire MN_spike;
 
 
@@ -155,15 +175,6 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 	 
 	 
 	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
     //reg [15:0] raw_Ia_spikes, raw_II_spikes, raw_MN_spikes;
 	//always @(negedge ti_clk) raw_Ia_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, Ia_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
 //    always @(negedge ti_clk) raw_II_spikes <= {1'b0, neuronIndex[NN:2], 1'b0, 1'b0, II_spike, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
@@ -176,7 +187,7 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
     // *** Count the spikes: rawspikes -> spike -> spike_count_out
 	
     assign out2 = f_rand_Ia;
-    assign out3 = f_randn;
+    assign out3 = {31'b0, neuron_clk};
     assign out4 = f_fr_Ia;
 endmodule
 
