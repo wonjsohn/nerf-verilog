@@ -109,8 +109,11 @@ class User1(QDialog, Ui_Dialog):
     def onClkRate(self, value):   
         """ value = how many times of 1/10 real-time
         """
-        newHalfCnt = 1 * 200 * (10 **6) / SAMPLING_RATE / NUM_NEURON / (value*4) / 2 / 2
-        #newHalfCnt = 1
+        # F_fpga = C * NUM_NEURON * V * F_emu ,  (C : cycles_per_neuron = 2,  V = 365)
+        # if F_fpga = 200Mhz,  F_emu = 1khz)
+        # halfcnt = F_fpga / F_neuron / 2 = F_fpga / (C * NUM_NEURON * V * F_emu) / 2
+        NUM_CYCLE = 2
+        newHalfCnt = 200 * (10 **6) / (NUM_CYCLE * NUM_NEURON * value * SAMPLING_RATE/10 ) /2 
         print 'halfcnt=%d' %newHalfCnt
         print 'value=%d' %value
 
