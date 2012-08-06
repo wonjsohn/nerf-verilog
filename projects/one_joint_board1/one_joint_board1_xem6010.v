@@ -302,7 +302,7 @@ module one_joint_board1_xem6010(
         .ti_clk(ti_clk),
         .reset_sim(reset_sim),
         .i_gain_MN(i_gain_mu1_MN),
-        .neuronCounter(neuronCounter),
+        //.neuronCounter(neuronCounter),
         .MN_spike(MN_spk),
         .spkid_MN(spkid_MN),
 		.i_current_out(i_current_out) );

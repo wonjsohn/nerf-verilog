@@ -181,9 +181,9 @@ module shadmehr_muscle(spike_cnt, pos, vel, clk, reset, total_force_out, current
         
     wire 	[31:0]	weightout, current_A;
     
-    //s_weight  s_func (	.x_i(pos), .weight(weightout));
-    //mult		multA(.x(weightout), .y(current_h), .out(current_A));
-	  assign current_A = current_h;
+    s_weight  s_func (	.x_i(pos), .weight(weightout));
+    mult		multA(.x(weightout), .y(current_h), .out(current_A));
+	 // assign current_A = current_h;
 		  
     wire    [31:0]  current_dT;
     shadmehr_total_force total1

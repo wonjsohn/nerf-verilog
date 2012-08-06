@@ -341,15 +341,27 @@ module one_joint_robot_xem6010(
 
     //counting the spike from the short latency loop.
 		  
-	//new counter
-	 wire    [31:0] i_MN_bic_spkcnt;
-    wire    dummy_slow;      
-    spike_counter spike_cnt_multsen_SL_bic
-	 (		.spike(MN_bic_spk), 
-			.int_cnt_out(i_MN_bic_spkcnt), 
-			.slow_clk(sim_clk), 
-			.reset(reset_sim), 
+//	//new counter
+//	 wire    [31:0] i_MN_bic_spkcnt;
+//    wire    dummy_slow;      
+//    spike_counter spike_cnt_multsen_SL_bic
+//	 (		.spike(MN_bic_spk), 
+//			.int_cnt_out(i_MN_bic_spkcnt), 
+//			.slow_clk(sim_clk), 
+//			.reset(reset_sim), 
+//			.clear_out(dummy_slow));
+
+	wire    [31:0] i_MN_bic_spkcnt;
+	wire    dummy_slow;  
+	spikecnt	spike_cnt_SL_bic 
+	(		.spike(MN_bic_spk),
+			.int_cnt_out(i_MN_bic_spkcnt),
+			.slow_clk(sim_clk),
+			.fast_clk(clk1),
+			.reset(reset_sim),
 			.clear_out(dummy_slow));
+			
+
 
     // ** EMG, Motor neuron (MN)
     wire [17:0] si_emg;
