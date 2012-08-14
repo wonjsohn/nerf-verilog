@@ -11,7 +11,7 @@ module spikecnt(spike, int_cnt_out, fast_clk, slow_clk, reset, clear_out, cnt, s
     always @(posedge reset or posedge slow_clk) begin
         if (reset) begin
             //t1 <= t2;
-				sig1_a <= 1;
+				sig1_a <= 0;
         end
         else begin
             if (~sig1) sig1_a <= ~sig1_a;
