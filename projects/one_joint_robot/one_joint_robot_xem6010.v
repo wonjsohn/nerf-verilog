@@ -155,13 +155,13 @@ module one_joint_robot_xem6010(
             f_gamma_sta <= {ep02wire, ep01wire};  
     end  
     
-    reg signed [31:0] i_gain_mu1_MN;
+    reg signed [31:0] i_gain_mu1_SN;
     always @(posedge ep50trig[6] or posedge reset_global)
     begin
         if (reset_global)
-            i_gain_mu1_MN <= 32'd1; // gamma_sta reset to 80
+            i_gain_mu1_SN <= 32'd1; // gamma_sta reset to 80
         else
-            i_gain_mu1_MN <= {ep02wire, ep01wire};  
+            i_gain_mu1_SN <= {ep02wire, ep01wire};  
     end
 	 
 //    reg signed [31:0] i_gain_mu2_MN;
@@ -319,43 +319,31 @@ module one_joint_robot_xem6010(
 
     
 	wire signed [31:0] i_current_out_bic;
-	wire MN_bic_spk;
-    wire [15:0] spkid_MN_bic;
+	wire SN_bic_spk;
+    wire [15:0] spkid_SN_bic;
 	 wire [31:0] neuron_clk_temp;
     
-    neuron_pool #(.NN(NN)) big_pool_bic
+    neuron_pool #(.NN(NN)) big_SN_pool_bic
     (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
         .f_pps_coef_Ia(f_pps_coef_Ia), //
         .half_cnt(delay_cnt_max),
         .rawclk(clk1),
         .ti_clk(ti_clk),
         .reset_sim(reset_sim),
-        .i_gain_MN(i_gain_mu1_MN),
+        .i_gain(i_gain_mu1_SN),
 //        .neuronCounter(neuronCounter),
-        .MN_spike(MN_bic_spk),
-        .spkid_MN(spkid_MN_bic),
+        .spike(SN_bic_spk),
+        .spkid(spkid_SN_bic),
 		  .out3(neuron_clk_temp),
-		.i_current_out(i_current_out_bic) );
+		  .i_current_out(i_current_out_bic) );
 
 
 
-    //counting the spike from the short latency loop.
-		  
-//	//new counter
-//	 wire    [31:0] i_MN_bic_spkcnt;
-//    wire    dummy_slow;      
-//    spike_counter spike_cnt_multsen_SL_bic
-//	 (		.spike(MN_bic_spk), 
-//			.int_cnt_out(i_MN_bic_spkcnt), 
-//			.slow_clk(sim_clk), 
-//			.reset(reset_sim), 
-//			.clear_out(dummy_slow));
-
-	wire    [31:0] i_MN_bic_spkcnt;
+	wire    [31:0] i_SN_bic_spkcnt;
 	wire    dummy_slow;  
-	spikecnt	spike_cnt_SL_bic 
-	(		.spike(MN_bic_spk),
-			.int_cnt_out(i_MN_bic_spkcnt),
+	spikecnt	spike_cnt_SN_bic 
+	(		.spike(SN_bic_spk),
+			.int_cnt_out(i_SN_bic_spkcnt),
 			.slow_clk(sim_clk),
 			.fast_clk(clk1),
 			.reset(reset_sim),
@@ -363,35 +351,52 @@ module one_joint_robot_xem6010(
 			
 
 
-    // ** EMG, Motor neuron (MN)
-    wire [17:0] si_emg;
-    emg #(.NN(NN)) emg
-    (   .emg_out(si_emg), 
-        .i_spk_cnt(i_MN_bic_spkcnt[NN:0]), 
-        .clk(sim_clk), 
-        .reset(reset_sim) ); 
-    wire [31:0] i_MN_emg;
-    assign i_MN_emg = {{14{si_emg[17]}},si_emg[17:0]};
+
+	//******** Synapse **********/
+	
+    wire [31:0] I_synapse;
+    wire [31:0] each_I_synapse;
+    wire each_spike;
     
+    synapse synapse_SN2MN(
+                .clk(neuron_clk),
+                .reset(reset_sim),
+                .spike_in(SN_bic_spk),
+                .postsynaptic_spike_in(each_spike),
+                .I_out(I_synapse),  // updates once per population (scaling factor 1024) 
+                .each_I(each_I_synapse) // updates on each synapse
+    );
+	//wire [31:0] thirty5k, f_scaled_len;
+	//assign thirty5k = 32'h455AC000;
+	//div div1(.x(f_rawfr_Ia), .y(thirty5k), .out(f_scaled_len));
+	
+	
+   //********* izneuron *************//
+	wire MN_bic_spk;
+	
+    izneuron neuron_pool_MN_bic(
+                .clk(neuron_clk),
+                .reset(reset_sim),
+                .I_in(each_I_synapse),
+                .spike(),
+                .each_spike(MN_bic_spk)
+    );
+	
+	
 
+	wire    [31:0] i_MN_bic_spkcnt;
+	wire    dummy_slow_MN;  
+	spikecnt	spike_cnt_MN_bic 
+	(		.spike(MN_bic_spk),
+			.int_cnt_out(i_MN_bic_spkcnt),
+			.slow_clk(sim_clk),
+			.fast_clk(clk1),
+			.reset(reset_sim),
+			.clear_out(dummy_slow_MN));
+			
 
-//	//******** Synapse **********/
-//	
-//    wire [31:0] I_synapse;
-//    wire [31:0] each_I_synapse;
-//    wire each_spike;
-//    
-//    synapse synapse_0(
-//                .clk(neuron_clk),
-//                .reset(reset_global),
-//                .spike_in(MN_bic_spk),
-//                .postsynaptic_spike_in(each_spike),
-//                .I_out(I_synapse),  // updates once per population (scaling factor 1024) 
-//                .each_I(each_I_synapse) // updates on each synapse
-//    );
-//	//wire [31:0] thirty5k, f_scaled_len;
-//	//assign thirty5k = 32'h455AC000;
-//	//div div1(.x(f_rawfr_Ia), .y(thirty5k), .out(f_scaled_len));
+	
+	
 	
  // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
     wire    [31:0]  f_actstate_bic, f_MN_spkcnt_bic; 
@@ -402,20 +407,21 @@ module one_joint_robot_xem6010(
    // sub get_bic_len(.x(IEEE_2p77), .y(trigger_input?  f_len_bic_pxi: f_len_bic), .out(f_muscleInput_len_bic));  
 
     shadmehr_muscle biceps
-    (   .spike_cnt(i_MN_bic_spkcnt),
+    (   .i_spike_cnt(i_MN_bic_spkcnt),
 //        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
-        .pos(f_len_bic_pxi),  // muscle length
+        .f_pos(f_len_bic_pxi),  // muscle length
         //pos(32'h3F8147AE),  // muscle length 1.01
         //.vel(current_vel),
-        .vel(32'd0),
+        .f_vel(32'd0),
         .clk(sim_clk),
         .reset(reset_sim),
-        .total_force_out(f_force_bic),
-        .current_A(f_actstate_bic),
-        .current_fp_spikes(f_MN_spkcnt_bic), 
-		  .tau(tau)
+        .f_total_force_out(f_force_bic),
+        .f_current_A(f_actstate_bic),
+        .f_current_fp_spikes(f_MN_spkcnt_bic), 
+		  .f_tau(tau)
     );       
         
+		  
 //	    fuglevand_muscle biceps
 //    (   .spike_cnt(i_MN_bic_spkcnt),
 //        //.pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
@@ -430,14 +436,23 @@ module one_joint_robot_xem6010(
 //		  .tau(tau)
 //    );   	  
 //	 
-
+    // ** EMG, Motor neuron (MN)
+    wire [17:0] si_emg;
+    emg #(.NN(NN)) emg
+    (   .emg_out(si_emg), 
+        .i_spk_cnt(i_MN_bic_spkcnt[NN:0]), 
+        .clk(sim_clk), 
+        .reset(reset_sim) ); 
+    wire [31:0] i_MN_emg;
+    assign i_MN_emg = {{14{si_emg[17]}},si_emg[17:0]};
+    
 	 
  // ** LEDs
     assign led[0] = ~reset_global;
     assign led[1] = ~reset_sim;
     assign led[2] = ~0;
-    assign led[3] = ~MN_bic_spk;
-    assign led[4] = ~0;
+    assign led[3] = ~SN_bic_spk;
+    assign led[4] = ~MN_bic_spk;
 	assign led[5] = ~0;
 //    assign led[5] = ~MN_tri_spike;
     assign led[6] = ~spindle_clk; // slow clock
@@ -477,20 +492,20 @@ module one_joint_robot_xem6010(
     //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep001wire));
 
 
-    okWireOut    wo20 (.ep_datain(i_neuronCounter[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
-    okWireOut    wo21 (.ep_datain(i_neuronCounter[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
+    okWireOut    wo20 (.ep_datain(I_synapse[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
+    okWireOut    wo21 (.ep_datain(I_synapse[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
     okWireOut    wo22 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
     okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-    okWireOut    wo24 (.ep_datain(i_MN_bic_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-    okWireOut    wo25 (.ep_datain(i_MN_bic_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-    okWireOut    wo26 (.ep_datain(i_MN_emg[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-    okWireOut    wo27 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo24 (.ep_datain(i_SN_bic_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(i_SN_bic_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo26 (.ep_datain(i_MN_bic_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(i_MN_bic_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
     okWireOut    wo28 (.ep_datain(f_len_bic_pxi[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
     okWireOut    wo29 (.ep_datain(f_len_bic_pxi[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
     okWireOut    wo30 (.ep_datain(f_force_bic[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
     okWireOut    wo31 (.ep_datain(f_force_bic[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h31) );
- //   okWireOut    wo32 (.ep_datain(f_force_tri[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
- //   okWireOut    wo33 (.ep_datain(f_force_tri[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );   
+    okWireOut    wo32 (.ep_datain(i_MN_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h32) );
+    okWireOut    wo33 (.ep_datain(i_MN_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );   
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
