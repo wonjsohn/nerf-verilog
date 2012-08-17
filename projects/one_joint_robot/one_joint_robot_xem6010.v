@@ -155,13 +155,13 @@ module one_joint_robot_xem6010(
             f_gamma_sta <= {ep02wire, ep01wire};  
     end  
     
-    reg signed [31:0] i_gain_mu1_SN;
+    reg signed [31:0] i_gain_syn;
     always @(posedge ep50trig[6] or posedge reset_global)
     begin
         if (reset_global)
-            i_gain_mu1_SN <= 32'd1; // gamma_sta reset to 80
+            i_gain_syn <= 32'd1; // gamma_sta reset to 80
         else
-            i_gain_mu1_SN <= {ep02wire, ep01wire};  
+            i_gain_syn <= {ep02wire, ep01wire};  
     end
 	 
 //    reg signed [31:0] i_gain_mu2_MN;
@@ -330,7 +330,7 @@ module one_joint_robot_xem6010(
         .rawclk(clk1),
         .ti_clk(ti_clk),
         .reset_sim(reset_sim),
-        .i_gain(i_gain_mu1_SN),
+        //.i_gain(i_gain_mu1_SN),
 //        .neuronCounter(neuronCounter),
         .spike(SN_bic_spk),
         .spkid(spkid_SN_bic),
@@ -353,7 +353,9 @@ module one_joint_robot_xem6010(
 
 
 	//******** Synapse **********/
-	
+	//** input: spikes
+    //** output: current (each_I_synapse: updates at neuron_clk)
+    
     wire [31:0] I_synapse;
     wire [31:0] each_I_synapse;
     wire each_spike;
@@ -370,6 +372,12 @@ module one_joint_robot_xem6010(
 	//assign thirty5k = 32'h455AC000;
 	//div div1(.x(f_rawfr_Ia), .y(thirty5k), .out(f_scaled_len));
 	
+
+    //****** Syanpse gain ********//
+    wire signed [63:0] I_synapse_gainAdjusted64;
+    wire signed [31:0] I_synapse_gainAdjusted32;
+    assign I_synapse_gainAdjusted64 = each_I_synapse * i_gain_syn;
+    assign I_synapse_gainAdjusted32 = I_synapse_gainAdjusted64[31:0];
 	
    //********* izneuron *************//
 	wire MN_bic_spk;
@@ -377,7 +385,7 @@ module one_joint_robot_xem6010(
     izneuron neuron_pool_MN_bic(
                 .clk(neuron_clk),
                 .reset(reset_sim),
-                .I_in(each_I_synapse),
+                .I_in(I_synapse_gainAdjusted32),
                 .spike(),
                 .each_spike(MN_bic_spk)
     );
@@ -492,8 +500,8 @@ module one_joint_robot_xem6010(
     //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep001wire));
 
 
-    okWireOut    wo20 (.ep_datain(I_synapse[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
-    okWireOut    wo21 (.ep_datain(I_synapse[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
+    okWireOut    wo20 (.ep_datain(I_synapse_gainAdjusted32[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
+    okWireOut    wo21 (.ep_datain(I_synapse_gainAdjusted32[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
     okWireOut    wo22 (.ep_datain(f_bicepsfr_Ia[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
     okWireOut    wo23 (.ep_datain(f_bicepsfr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(i_SN_bic_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
