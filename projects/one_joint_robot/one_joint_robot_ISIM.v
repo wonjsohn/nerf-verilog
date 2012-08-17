@@ -171,8 +171,8 @@ module one_joint_board1_ISIM(
 		   reading=1;          // to control reading.       
 		   outfile = $fopen ("response.txt", "w");   // output file to write.  
 		   #100000; //for reading.
-		  
-		   #40000000;   // 4ms
+		   #16000000;
+		   //#40000000;   // 4ms
 			$fclose (outfile);    // CLOSE THE OUTPUT FILE			 
          $finish; // to shut down the simulation
     end
@@ -184,7 +184,7 @@ module one_joint_board1_ISIM(
 		  end 
 		  if (reading & (k < DATALINES)) begin
 				data_input <= data[k]; 
-				$fdisplay(outfile, "%x	%x   %x",  data_input, f_bicepsfr_Ia, f_total_force);
+				$fdisplay(outfile, "%x %x %x",  data_input, f_bicepsfr_Ia, i_SN_bic_spkcnt);
 				k <= k + 1;
 		  end          
 	 end 
@@ -253,6 +253,10 @@ module one_joint_board1_ISIM(
 //    );
     // *** Spindle: f_muscle_len => f_rawfr_Ia
     wire [31:0] f_bicepsfr_Ia, x_0_bic, x_1_bic, f_bicepsfr_II;
+    wire [31:0] f_pps_coef_Ia;
+    assign f_pps_coef_Ia = 32'h41F0_0000;  //30.0
+
+    
     
     spindle bic_bag1_bag2_chain
     (	.gamma_dyn(f_gamma_dyn), // 32'h42A0_0000
@@ -270,37 +274,39 @@ module one_joint_board1_ISIM(
 		);
      
 	  
-	 // motorunit module decomposed. 
-	 wire signed [31:0] i_current_out;
-	 wire MN_spk;
-	 wire [15:0] spkid_MN;
-	 
-    neuron_pool #(.NN(NN)) big_pool
+  
+	wire signed [31:0] i_current_out_bic;
+	wire SN_bic_spk;
+    wire [15:0] spkid_SN_bic;
+	 wire [31:0] neuron_clk_temp;
+    
+    neuron_pool #(.NN(NN)) big_SN_pool_bic
     (   .f_rawfr_Ia(f_bicepsfr_Ia),     //
-        .f_pps_coef_Ia(32'h3F66_6666), //
-        .half_cnt(delay_cnt_max32),
+        .f_pps_coef_Ia(f_pps_coef_Ia), //
+        .half_cnt(delay_cnt_max),
         .rawclk(clk1),
         .ti_clk(ti_clk),
         .reset_sim(reset_sim),
-        .i_gain_MN(32'd1), // not used...
-        .neuronCounter(neuronCounter),
-        .MN_spike(MN_spk),    // probably  neuron_ram doesn't work in ISIM. 
-        .spkid_MN(spkid_MN),
-		  .i_current_out(i_current_out)
+        //.i_gain(i_gain_mu1_SN),
+//        .neuronCounter(neuronCounter),
+        .spike(SN_bic_spk),
+        .spkid(spkid_SN_bic),
+		  .out3(neuron_clk_temp),
+		  .i_current_out(i_current_out_bic) );
 
-    );
-	 
-	 wire    [31:0] i_MN_spkcnt;
-    wire    dummy_slow;        
-    spikecnt count_rawspikes
-    (   .spike(MN_spk), 
-        .int_cnt_out(i_MN_spkcnt), 
-        .fast_clk(neuron_clk), 
-        .slow_clk(sim_clk), 
-        .reset(reset_sim), 
-        .clear_out(dummy_slow));
 
- 
+
+	wire    [31:0] i_SN_bic_spkcnt;
+	wire    dummy_slow;  
+	spikecnt	spike_cnt_SN_bic 
+	(		.spike(SN_bic_spk),
+			.int_cnt_out(i_SN_bic_spkcnt),
+			.slow_clk(sim_clk),
+			.fast_clk(clk1),
+			.reset(reset_sim),
+			.clear_out(dummy_slow));
+    wire MN_spk;
+    assign MN_spk = SN_bic_spk;
 
     wire [31:0] delay_cnt_max32;
     assign delay_cnt_max32 = {12'b0, delay_cnt_max};
@@ -375,25 +381,7 @@ module one_joint_board1_ISIM(
         .reset(reset_sim), 
         .clear_out(dummy_slow_delayed));
 
-   // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
-	 // Big motor neuron muscle
-	wire 		[31:0]  f_total_force;
-	wire    [31:0]  f_force;
-   wire    [31:0]  f_actstate, f_MN_spkcnt;
-	
-	wire 	[63:0] t_spkcnt = i_SL_spkcnt;
-    shadmehr_muscle muscles
-    (   .spike_cnt(t_spkcnt[31:0]),
-        .pos(data_input),  // muscle length
-        //.vel(current_vel),
-        .vel(32'd0),
-        .clk(sim_clk),
-        .reset(reset_sim),
-        .total_force_out(f_total_force),
-        .current_A(f_actstate),
-        .current_fp_spikes(f_MN_spkcnt),
-		.tau(IEEE_1)
-    );       
+
 
 
 
