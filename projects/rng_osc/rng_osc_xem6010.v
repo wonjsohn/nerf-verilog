@@ -233,6 +233,8 @@ module rng_osc_xem6010(
     wire [31:0] i_neuronCounter; 
 
 
+    wire [31:0] i_ring_starter, i_ring_final /* synthesis syn_keep=1 */;
+    
     //wire ring1_out /* synthesis syn_keep=1 */;
     fastspk ring_0(.spike_out(i_ring_final[0]), .reset(reset_sim)) /* synthesis syn_noprune=1 */;
 //    
@@ -243,13 +245,17 @@ module rng_osc_xem6010(
 
     generate for ( i = 1; i < 32; i = i + 1 )
     begin: inst
+//      fastspk ring_i ( .spike_out(i_ring_final[i]),
+//                       .reset(i_ring_final[i - 1]) ) /* synthesis syn_noprune=1 */;
+//        fastspk_sanger ring_i(  .clkOut(i_ring_final[i]), 
+//                                .sysClk(i_ring_final[0])) /* synthesis syn_noprune=1 */;
+      
       fastspk ring_i ( .spike_out(i_ring_final[i]),
-                       .reset(i_ring_final[i - 1]) );
+                       .reset(reset_sim) ) /* synthesis syn_noprune=1 */;                       
     end
     endgenerate
     
     
-    wire [31:0] i_ring_final ;
         
     
     gen_clk #(.NN(NN)) useful_clocks
