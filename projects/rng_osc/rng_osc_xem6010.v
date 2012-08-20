@@ -236,7 +236,7 @@ module rng_osc_xem6010(
     wire [31:0] i_ring_starter, i_ring_final /* synthesis syn_keep=1 */;
     
     //wire ring1_out /* synthesis syn_keep=1 */;
-    fastspk ring_0(.spike_out(i_ring_final[0]), .reset(reset_sim)) /* synthesis syn_noprune=1 */;
+    fastspk ring_0(.spike_out(i_ring_final[0]), .reset(clk1)) /* synthesis syn_noprune=1 */;
 //    
 //    wire ring2_out /* synthesis syn_keep=1 */;
 //    fastspk ring2(.spike_out(ring2_out), .reset(ring1_out)) /* synthesis syn_noprune=1 */;
@@ -251,7 +251,7 @@ module rng_osc_xem6010(
 //                                .sysClk(i_ring_final[0])) /* synthesis syn_noprune=1 */;
       
       fastspk ring_i ( .spike_out(i_ring_final[i]),
-                       .reset(reset_sim) ) /* synthesis syn_noprune=1 */;                       
+                       .reset(i_ring_final[i-1]) ) /* synthesis syn_noprune=1 */;                       
     end
     endgenerate
     
