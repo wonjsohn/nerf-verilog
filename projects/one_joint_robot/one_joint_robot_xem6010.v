@@ -201,13 +201,13 @@ module one_joint_robot_xem6010(
     end   
 
 
-    reg [31:0] f_len_tri_pxi_F0; // _pxi = from PXI system in BBDL
+    reg [31:0] f_velocity; //  
     always @(posedge ep50trig[9] or posedge reset_global)
     begin
         if (reset_global)
-            f_len_tri_pxi_F0 <= 32'h3F66_6666; //0.9
+            f_velocity <= 32'd0; //0
         else
-            f_len_tri_pxi_F0 <= {ep02wire, ep01wire}; 
+            f_velocity <= {ep02wire, ep01wire}; 
     end   
 
 	 
@@ -394,7 +394,7 @@ module one_joint_robot_xem6010(
 //	//div div1(.x(f_rawfr_Ia), .y(thirty5k), .out(f_scaled_len));
 	
  // *** Shadmehr muscle: spike_count_out => f_active_state => f_total_force
-    wire    [31:0]  f_actstate_bic, f_MN_spkcnt_bic; 
+    wire    [31:0]  f_actstate_bic, f_MN_spkcnt_bic;
 	 wire    [31:0]   f_force_bic, f_muscleInput_len_bic;
     wire    [31:0] IEEE_1p57, IEEE_2p77;
     assign IEEE_1p57 = 32'h3FC8F5C3; 

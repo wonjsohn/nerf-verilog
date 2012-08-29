@@ -460,10 +460,12 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputAdded"/>
       <status xil_pn:value="InputChanged"/>
       <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="InputChanged"/>
       <status xil_pn:value="OutputChanged"/>
       <status xil_pn:value="OutputRemoved"/>
     </transform>
@@ -488,8 +490,6 @@
     <transform xil_pn:end_ts="1340227280" xil_pn:in_ck="3917293132067003459" xil_pn:name="TRAN_copyPostAbstractToPreSimulation" xil_pn:start_ts="1340227280">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputChanged"/>
       <status xil_pn:value="InputRemoved"/>
@@ -513,10 +513,12 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForProperties"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="InputChanged"/>
       <status xil_pn:value="OutputChanged"/>
       <status xil_pn:value="OutputRemoved"/>
     </transform>
@@ -528,7 +530,7 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1344971934" xil_pn:in_ck="4626989682768643499" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="-7910775998724286998" xil_pn:start_ts="1344971934">
+    <transform xil_pn:end_ts="1346271372" xil_pn:in_ck="-3576252247138894627" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="-7910775998724286998" xil_pn:start_ts="1346271371">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="../../source/io/neuron_ram.ngc"/>
@@ -574,8 +576,6 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputRemoved"/>
       <status xil_pn:value="OutputRemoved"/>
@@ -584,41 +584,50 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputChanged"/>
-      <status xil_pn:value="OutputRemoved"/>
+      <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.pcf"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010_map.map"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010_map.mrp"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010_map.ncd"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010_map.ngm"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010_map.xrpt"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010_summary.xml"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010_usage.xml"/>
     </transform>
     <transform xil_pn:end_ts="1344983713" xil_pn:in_ck="-7412062264376685024" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1344983408">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputRemoved"/>
+      <outfile xil_pn:name="_xmsgs/par.xmsgs"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.ncd"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.pad"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.par"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.ptwx"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.unroutes"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.xpi"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010_pad.csv"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010_pad.txt"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010_par.xrpt"/>
     </transform>
     <transform xil_pn:end_ts="1344983825" xil_pn:in_ck="-7454780895074070403" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1344983713">
       <status xil_pn:value="AbortedRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputRemoved"/>
+      <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.bgn"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.bit"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.drc"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.ut"/>
+      <outfile xil_pn:name="usage_statistics_webtalk.html"/>
+      <outfile xil_pn:name="webtalk.log"/>
+      <outfile xil_pn:name="webtalk_pn.xml"/>
     </transform>
     <transform xil_pn:end_ts="1344983713" xil_pn:in_ck="-3586912116809568093" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1344983664">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="InputRemoved"/>
-      <status xil_pn:value="OutputRemoved"/>
+      <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.twr"/>
+      <outfile xil_pn:name="one_joint_robot_xem6010.twx"/>
     </transform>
   </transforms>
 
