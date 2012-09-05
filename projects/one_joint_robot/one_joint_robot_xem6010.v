@@ -406,8 +406,8 @@ module one_joint_robot_xem6010(
 //        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
         .pos(f_len_bic_pxi),  // muscle length
         //pos(32'h3F8147AE),  // muscle length 1.01
-        //.vel(current_vel),
-        .vel(32'd0),
+        .vel(f_velocity),
+        //.vel(32'd0),
         .clk(sim_clk),
         .reset(reset_sim),
         .total_force_out(f_force_bic),
