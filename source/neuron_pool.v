@@ -30,11 +30,11 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 
     input   wire ti_clk,
     input   wire reset_sim,
-    input   wire signed [31:0] i_gain_MN,
+    input   wire signed [31:0] i_gain,
 //    input   wire [NN+2:0] neuronCounter,
 
-    output  wire MN_spike,
-    output  wire [15:0] spkid_MN,
+    output  wire spike,
+    output  wire [15:0] spkid,
 	 // debug
 	 output reg  [31:0] i_current_out,
 	 output wire signed [31:0] out2,
@@ -155,15 +155,17 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 	 
 	 //********* izneuron *************//
 	 wire [31:0] v;
-    wire spike;
+    wire spike_;
     wire each_spike;
+    
     wire [127:0] population;
     izneuron neuron_0(
                 .clk(neuron_clk),
                 .reset(reset_sim),
                 .I_in(i_current_out),
                 .spike(),
-                .each_spike(MN_spike)
+                .each_spike(spike),
+                .spkid(spkid)
     );
     
 	 
