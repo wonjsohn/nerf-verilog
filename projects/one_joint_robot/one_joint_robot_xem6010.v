@@ -116,13 +116,13 @@ module one_joint_robot_xem6010(
 
 
 
-    reg [31:0] tau;
+    reg [31:0] f_tau;
     always @(posedge ep50trig[2] or posedge reset_global)
     begin
         if (reset_global)
-            tau <= 32'd1; // gamma_sta reset to 80
+            f_tau <= 32'd1; // gamma_sta reset to 80
         else
-            tau <= {ep02wire, ep01wire};  
+            f_tau <= {ep02wire, ep01wire};  
     end      
     
       
@@ -155,13 +155,13 @@ module one_joint_robot_xem6010(
             f_gamma_sta <= {ep02wire, ep01wire};  
     end  
     
-    reg signed [31:0] i_gain_mu1_MN;
+    reg signed [31:0] i_gain_mu1;
     always @(posedge ep50trig[6] or posedge reset_global)
     begin
         if (reset_global)
-            i_gain_mu1_MN <= 32'd1; // gamma_sta reset to 80
+            i_gain_mu1 <= 32'd1; // gamma_sta reset to 80
         else
-            i_gain_mu1_MN <= {ep02wire, ep01wire};  
+            i_gain_mu1 <= {ep02wire, ep01wire};  
     end
 	 
 //    reg signed [31:0] i_gain_mu2_MN;
@@ -320,7 +320,7 @@ module one_joint_robot_xem6010(
     
 	wire signed [31:0] i_current_out_bic;
 	wire MN_bic_spk;
-    wire [15:0] spkid_MN_bic;
+    wire [15:0] spkid_SN;
 	 wire [31:0] neuron_clk_temp;
     
     neuron_pool #(.NN(NN)) big_pool_bic
@@ -330,10 +330,10 @@ module one_joint_robot_xem6010(
         .rawclk(clk1),
         .ti_clk(ti_clk),
         .reset_sim(reset_sim),
-        .i_gain_MN(i_gain_mu1_MN),
+        .i_gain(i_gain_mu1),
 //        .neuronCounter(neuronCounter),
-        .MN_spike(MN_bic_spk),
-        .spkid_MN(spkid_MN_bic),
+        .spike(MN_bic_spk),
+        .spkid(spkid_SN),
 		  .out3(neuron_clk_temp),
 		.i_current_out(i_current_out_bic) );
 
@@ -402,18 +402,18 @@ module one_joint_robot_xem6010(
    // sub get_bic_len(.x(IEEE_2p77), .y(trigger_input?  f_len_bic_pxi: f_len_bic), .out(f_muscleInput_len_bic));  
 
     shadmehr_muscle biceps
-    (   .spike_cnt(i_MN_bic_spkcnt),
+    (   .i_spike_cnt(i_MN_bic_spkcnt),
 //        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
-        .pos(f_len_bic_pxi),  // muscle length
+        .f_pos(f_len_bic_pxi),  // muscle length
         //pos(32'h3F8147AE),  // muscle length 1.01
-        //.vel(current_vel),
-        .vel(32'd0),
+        .f_vel(f_velocity),
+        //.vel(32'd0),
         .clk(sim_clk),
         .reset(reset_sim),
-        .total_force_out(f_force_bic),
-        .current_A(f_actstate_bic),
-        .current_fp_spikes(f_MN_spkcnt_bic), 
-		  .tau(tau)
+        .f_total_force_out(f_force_bic),
+        .f_current_A(f_actstate_bic),
+        .f_current_fp_spikes(f_MN_spkcnt_bic), 
+		.f_tau(f_tau)
     );       
         
 //	    fuglevand_muscle biceps
@@ -493,7 +493,7 @@ module one_joint_robot_xem6010(
  //   okWireOut    wo33 (.ep_datain(f_force_tri[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h33) );   
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
-    //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 5*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(response_nerf), .ep_ready(pipe_out_valid));
+    okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'ha0), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(spkid_SN), .ep_ready(1'b1));
     //okBTPipeOut  epA0 (.ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'ha1), .ep_read(pipe_out_read),  .ep_blockstrobe(), .ep_datain(rawspikes), .ep_ready(1'b1));
 
     okTriggerIn ep50 (.ok1(ok1),  .ep_addr(8'h50), .ep_clk(clk1), .ep_trigger(ep50trig));
