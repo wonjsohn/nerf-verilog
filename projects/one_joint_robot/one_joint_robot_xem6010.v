@@ -201,13 +201,13 @@ module one_joint_robot_xem6010(
     end   
 
 
-    reg [31:0] f_len_tri_pxi_F0; // _pxi = from PXI system in BBDL
+    reg [31:0] f_velocity; // _pxi = from PXI system in BBDL
     always @(posedge ep50trig[9] or posedge reset_global)
     begin
         if (reset_global)
-            f_len_tri_pxi_F0 <= 32'h3F66_6666; //0.9
+            f_velocity <= 32'h0000_0000; //0.0
         else
-            f_len_tri_pxi_F0 <= {ep02wire, ep01wire}; 
+            f_velocity <= {ep02wire, ep01wire}; 
     end   
 
 	 
@@ -420,7 +420,7 @@ module one_joint_robot_xem6010(
         .f_pos(f_len_bic_pxi),  // muscle length
         //pos(32'h3F8147AE),  // muscle length 1.01
         //.vel(current_vel),
-        .f_vel(32'd0),
+        .f_vel(f_velocity),
         .clk(sim_clk),
         .reset(reset_sim),
         .f_total_force_out(f_force_bic),
