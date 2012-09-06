@@ -115,22 +115,22 @@ endmodule
 
 
 
-module shadmehr_active_force(spikes, active_force_out, fp_spikes_out, clk, reset, tau);
+module shadmehr_active_force(i_spikes, f_active_force_out, f_fp_spikes_out, clk, reset, f_tau);
 	//parameter NN = 8;  // (log2(neuronCount) - 1)
-	output   [31:0] fp_spikes_out;  // not used..
-	output reg [31:0]	active_force_out;
-	input  [31:0] spikes;
+	output   [31:0] f_fp_spikes_out;  // not used..
+	output reg [31:0]	f_active_force_out;
+	input  [31:0] i_spikes;
 	input  clk, reset;
-	input  [31:0] tau;
+	input  [31:0] f_tau;
 
     reg [31:0]  spikes_i1, spikes_i2, h_i1, h_i2; 
     wire    [31:0]  spikes_i, h_i, emg_out;
     //assign  spikes_i = spikes * 32'sd1024;// 32'sd128;
-	int_to_float get_fp_spike(.out(spikes_i), .in(spikes ));
+	int_to_float get_fp_spike(.out(spikes_i), .in(i_spikes ));
 	 
 	
     //h_diff_eq gen_h(spikes_i1, spikes_i2, h_i1, h_i2, h_i);
-	 fuglevand_twitch twitch(spikes_i1, spikes_i2, h_i1, h_i2, h_i, tau);
+	 fuglevand_twitch twitch(spikes_i1, spikes_i2, h_i1, h_i2, h_i, f_tau);
 	 
 	 
 	 
@@ -142,14 +142,14 @@ module shadmehr_active_force(spikes, active_force_out, fp_spikes_out, clk, reset
             spikes_i2 <= 32'd0;
             h_i1 <= 32'd0;
             h_i2 <= 32'd0;
-			active_force_out <= 32'd0;
+			f_active_force_out <= 32'd0;
         end
         else begin
             spikes_i1 <= spikes_i;
             spikes_i2 <= spikes_i1;
             h_i1 <= h_i;
             h_i2 <= h_i1;
-			active_force_out <= h_i;
+			f_active_force_out <= h_i;
         end
     end
 
@@ -157,40 +157,40 @@ endmodule
 
 
 // *** Shadmehr muscle: spike_cnt => current_total_force
-module shadmehr_muscle(spike_cnt, pos, vel, clk, reset, total_force_out, current_A, current_fp_spikes, tau);
-    input [31:0] spike_cnt;
-    input [31:0] pos, vel;
+module shadmehr_muscle(i_spike_cnt, f_pos, f_vel, clk, reset, f_total_force_out, f_current_A, f_current_fp_spikes, f_tau);
+    input [31:0] i_spike_cnt;
+    input [31:0] f_pos, f_vel;
     input clk;
     input reset;
-	 input [31:0] tau;
-    output [31:0] total_force_out;
-    output [31:0] current_A;
-    output [31:0] current_fp_spikes;
+	 input [31:0] f_tau;
+    output [31:0] f_total_force_out;
+    output [31:0] f_current_A;
+    output [31:0] f_current_fp_spikes;
     
     //wire [31:0] spike_cnt, pos, vel, total_force_out; // necessary?
 
-    wire    [31:0]  current_h, current_fp_spikes;
+    wire    [31:0]  f_current_h, f_current_fp_spikes;
     shadmehr_active_force active1
-    (		.spikes(spike_cnt), 
-			.active_force_out(current_h), 
-			.fp_spikes_out(current_fp_spikes), 
+    (		.i_spikes(i_spike_cnt), 
+			.f_active_force_out(f_current_h), 
+			.f_fp_spikes_out(f_current_fp_spikes), 
 			.clk(clk),
 			.reset(reset),
-			.tau(tau)
+			.f_tau(f_tau)
     );
         
-    wire 	[31:0]	weightout, current_A;
+    wire 	[31:0]	f_weightout, f_current_A;
     
-    s_weight  s_func (	.x_i(pos), .weight(weightout));
-    mult		multA(.x(weightout), .y(current_h), .out(current_A));
+    s_weight  s_func (	.x_i(f_pos), .weight(f_weightout));
+    mult		multA(.x(f_weightout), .y(f_current_h), .out(f_current_A));
 	 // assign current_A = current_h;
 		  
     wire    [31:0]  current_dT;
     shadmehr_total_force total1
-    (       .A(current_A),
-            .pos(pos),
-            .vel(vel),
-            .total_force_out(total_force_out),
+    (       .f_A(f_current_A),
+            .f_pos(f_pos),
+            .f_vel(f_vel),
+            .f_total_force_out(f_total_force_out),
             .dT_out(current_dT),
             .clk(clk),
             .reset(reset)
@@ -231,11 +231,11 @@ module s_weight(x_i, weight);
 endmodule 
 
     
-module     shadmehr_total_force(A, pos,vel,total_force_out, dT_out, clk,reset);
-    input   [31:0]  A;
-    input   [31:0]  pos;
-    input   [31:0]  vel;
-    output  [31:0]  total_force_out, dT_out;
+module     shadmehr_total_force(f_A, f_pos,f_vel,f_total_force_out, dT_out, clk,reset);
+    input   [31:0]  f_A;
+    input   [31:0]  f_pos;
+    input   [31:0]  f_vel;
+    output  [31:0]  f_total_force_out, dT_out;
     input   clk, reset;
 
     wire    [31:0]  dT_i_F0, T_i_F0;
@@ -243,9 +243,9 @@ module     shadmehr_total_force(A, pos,vel,total_force_out, dT_out, clk,reset);
 
     d_force get_dt_i
     (   .T_i(T_i),
-        .x_i(pos),
-        .dx_i(vel),
-        .A_i(A),
+        .x_i(f_pos),
+        .dx_i(f_vel),
+        .A_i(f_A),
         .dT_i(dT_i_F0)
     );
 	 
@@ -269,7 +269,7 @@ module     shadmehr_total_force(A, pos,vel,total_force_out, dT_out, clk,reset);
             dT_i    <= dT_i_F0;
         end
     end
-    assign  total_force_out = T_i;
+    assign  f_total_force_out = T_i;
     assign  dT_out = dT_i;
 
 

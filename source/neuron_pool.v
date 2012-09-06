@@ -154,18 +154,16 @@ module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk
 	 
 	 
 	 //********* izneuron *************//
-	 wire [31:0] v;
-    wire spike_;
-    wire each_spike;
-    
-    wire [127:0] population;
+	 //wire [31:0] v;
+    //wire spike;
+    //wire each_spike;
+    //wire [127:0] population;
     izneuron neuron_0(
                 .clk(neuron_clk),
                 .reset(reset_sim),
                 .I_in(i_current_out),
                 .spike(),
-                .each_spike(spike),
-                .spkid(spkid)
+                .each_spike(spike)
     );
     
 	 

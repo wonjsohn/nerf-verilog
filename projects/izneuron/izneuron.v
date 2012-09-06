@@ -27,7 +27,7 @@ module izneuron(
                 output reg signed [31:0] v_out,
                 output reg spike,
                 output reg each_spike,
-                output reg [15:0] spkid,
+                
                 output reg [127:0] population
     );
 
@@ -194,7 +194,6 @@ always @ (negedge clk or negedge reset_bar) begin
                 v_out <= v_mem_in;
                 //spike <= fired;
                 spike <= spike_history_mem[14];
-                spkid <= {1'b0, neuron_index[6:0], fired, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0};
                 //population <= {fired, history[126:0]};
                 population <= history;
             end
