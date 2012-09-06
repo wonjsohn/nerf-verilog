@@ -103,32 +103,33 @@ class View(QMainWindow, Ui_Dialog):
         #p = QPainter(self.graphicsView)                         ## our painter
         canvas = QPainter(self)                         ## our painter
         self.drawPoints(canvas, self.ch_all)          ## paint clipped graphics
-#        self.drawRaster(canvas)
+        self.drawRaster(canvas)
 
-#    def drawRaster(self, gp):
-#        for spkid, i_mu in zip(self.spike_all,  xrange(len(self.spike_all))):
-#            spikeSeq = unpack("%d" % len(spkid) + "b", spkid)
-#            
-#            size = self.size()
-#            winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 4;
-#            self.pen.setStyle(Qt.SolidLine)
-#            self.pen.setWidth(1)
-#            self.pen.setBrush(Qt.blue)
-#            self.pen.setCapStyle(Qt.RoundCap)
-#            self.pen.setJoinStyle(Qt.RoundJoin)
-#            gp.setPen(self.pen)
-#            ## display the spike rasters
-#            for i in xrange(0, len(spikeSeq), 2):
-#                neuronID = spikeSeq[i+1]
-#                rawspikes = spikeSeq[i]
-#                ## flexors
-#                if (rawspikes & 64) : ## Ia
-#                    gp.drawLine(self.x-2,(winScale) - 22 ,\
-#                                     self.x, (winScale) -  22)
-#                if (rawspikes & 128) : ## MN
-#    #                gp.drawPoint(self.x, (winScale) - 24 - (neuronID/4)   ) 
-#                    gp.drawLine(self.x-2,(winScale) +22 - (neuronID/4)*0 + i_mu * 15 ,\
-#                                     self.x, (winScale) + 26 - (neuronID/4) *0 + i_mu * 15)
+    def drawRaster(self, gp):
+        for spkid, i_mu in zip(self.spike_all,  xrange(len(self.spike_all))):
+            spikeSeq = unpack("%d" % len(spkid) + "b", spkid)
+            
+            size = self.size()
+            winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 4;
+            self.pen.setStyle(Qt.SolidLine)
+            self.pen.setWidth(1)
+            self.pen.setBrush(Qt.blue)
+            self.pen.setCapStyle(Qt.RoundCap)
+            self.pen.setJoinStyle(Qt.RoundJoin)
+            gp.setPen(self.pen)
+            ## display the spike rasters
+            
+            for i in xrange(0, len(spikeSeq), 2):
+                neuronID = spikeSeq[i+1]
+                rawspikes = spikeSeq[i]
+                ## flexors
+                if (rawspikes & 64) : ## Ia
+                    gp.drawLine(self.x-2,(winScale) - 22 ,\
+                                     self.x, (winScale) -  22)
+                if (rawspikes & 128) : ## MN
+    #                gp.drawPoint(self.x, (winScale) - 24 - (neuronID/4)   ) 
+                    gp.drawLine(self.x-2,(winScale) +22 - (neuronID/4)*0 + i_mu * 15 ,\
+                                     self.x, (winScale) + 26 - (neuronID/4) *0 + i_mu * 15)
 
     def drawPoints(self, qp, ch_all):
         """ 
