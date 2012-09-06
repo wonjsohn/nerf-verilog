@@ -7,14 +7,8 @@ License: this code is in the public domain
 import os
 import sys
 from scipy.io import savemat, loadmat
-#from wx.lib.pubsub import Publisher as pub
-#from opalkelly_4_0_3 import ok
-import platform
-arch = platform.architecture()[0]
-if arch == "32bit":
-    from opalkelly_32bit import ok
-elif arch == "64bit":
-    from opalkelly_64bit import ok
+from wx.lib.pubsub import Publisher as pub
+from opalkelly_4_0_3 import ok
 import numpy as np
 from Utilities import *
 

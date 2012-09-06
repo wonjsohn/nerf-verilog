@@ -9,13 +9,13 @@ BUTTON_ENABLE_SIM = 2
 
 DATA_EVT_CLKRATE = 0
 #            address         name   visual_gain         type            color
-CHIN_PARAM =    (0x20,      'f_len',      50,         'float32',      'Qt.blue'),  \
+CHIN_PARAM =    (0x20,      'f_len',      50,         'int32',      'Qt.blue'),  \
                 (0x22,      'i',      1.0,         'float32',      'Qt.red'),  \
                 (0x24,      'i_CN_spkcnt',      1.0,         'int32',      'Qt.green'),  \
                 (0x26,      'i_emg_bic',      1.0,         'int32',      'Qt.black'),  \
                 (0x28,      'f_lce_bic',      1.0,         'float32',      'Qt.magenta'),  \
                 (0x30,      'f_force_bic',      1.0,         'float32',      'Qt.darkRed'),  \
-                (0x32,      'non',      1.0,         'float32',      'Qt.darkGray'),   \
+                (0x32,      'non',      1.0,         'int32',      'Qt.darkGray'),   \
 #                (0x36,      'i_emg_mu7',     1.0,         'int32',      'Qt.blue'), \
 #                (0x28,      'f_force_mu3',     1.0,         'float32',      'Qt.red')
 NUM_CHANNEL = len(CHIN_PARAM) # Number of channels
