@@ -81,10 +81,10 @@ class User(QDialog, Ui_Dialog):
             
         
 
-        # SEND SINEWAVE ALWAYS 
-        pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0)
-        self.xemList[1].SendPipe(pipeInData)
-        
+#        # SEND SINEWAVE ALWAYS 
+#        pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0)
+#        self.xemList[1].SendPipe(pipeInData)
+#        
         
         #pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0)
         #self.nerfModel.SendPipe(pipeInData)
@@ -129,10 +129,12 @@ class User(QDialog, Ui_Dialog):
 
             #print newData1[0::6]   # printing 
             
-        newData2.append(max(-16777216, min(16777216, self.xemList[1].ReadFPGA(0x20, 'float32'))))  # sine wave
+       # newData2.append(max(-16777216, min(16777216, self.xemList[1].ReadFPGA(0x20, 'float32'))))  # sine wave
+        
         #print self.xemList[1]
-        print newData1
-        print newData2#[0::1]   # printing 
+        #print newData1
+        
+        #print newData2#[0::1]   # printing 
             #        newSpike1 = self.nerfModel.ReadPipe(0xA0, 5000) # read ## bytes
 #        newSpike2 = self.nerfModel.ReadPipe(0xA1, 5000) # read ## bytes
 #        newSpike3 = self.nerfModel.ReadPipe(0xA2, 5000) # read ## bytes
@@ -165,6 +167,13 @@ class User(QDialog, Ui_Dialog):
 
         #self.nerfModel.SendPara(bitVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
         self.xemList[0].SendPara(bitVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
+        
+    def onCorticalSynGain(self, value):   
+        """ set the cortical synapse gain 
+        """
+
+        #self.nerfModel.SendPara(bitVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
+        self.xemList[1].SendPara(bitVal = value, trigEvent = 6)        # 6 is syn gain
         
     def onNewWireIn(self):
         for ctrl in self.ctrl_all:
@@ -273,6 +282,19 @@ class User(QDialog, Ui_Dialog):
 #        """
 #        if state == QtCore.Qt.Checked:
 #            self.nerfModel.SendCheck()
-        
+    
+    @pyqtSignature("int")
+    def on_horizontalSlider_2_valueChanged(self, value):
+        """
+        Slot documentation goes here.
+        """
+        self.onCorticalSynGain(value)
 
-
+    
+    @pyqtSignature("int")
+    def on_horizontalSlider_2_sliderMoved(self, position):
+        """
+        Slot documentation goes here.
+        """
+        self.onCorticalSynGain(position)
+        # TODO: not implemented yet
