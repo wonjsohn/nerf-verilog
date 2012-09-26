@@ -263,16 +263,16 @@ module one_joint_robot2_xem6010(
     
 
 
-	wire    [31:0] i_SN_bic_spkcnt;
-	wire    dummy_slow;  
-	spikecnt	spike_cnt_SN_bic 
-	(		.spike(spike_in1),
-			.int_cnt_out(i_SN_bic_spkcnt),
-			.slow_clk(sim_clk),
-			.fast_clk(clk1),
-			.reset(reset_sim),
-			.clear_out(dummy_slow));
-		
+//	wire    [31:0] i_SN_bic_spkcnt;
+//	wire    dummy_slow;  
+//	spikecnt	spike_cnt_SN_bic 
+//	(		.spike(spike_in1),
+//			.int_cnt_out(i_SN_bic_spkcnt),
+//			.slow_clk(sim_clk),
+//			.fast_clk(clk1),
+//			.reset(reset_sim),
+//			.clear_out(dummy_slow));
+//		
 
 
 	//******** CN1 Synapse **********/
@@ -313,16 +313,16 @@ module one_joint_robot2_xem6010(
                 .each_spike(CN1_bic_spk)
     );
 	
-	wire    [31:0] i_CN1_bic_spkcnt;
-	wire    dummy_slow_CN1;  
-	spikecnt	spike_cnt_MN_bic 
-	(		.spike(CN1_bic_spk),
-			.int_cnt_out(i_CN1_bic_spkcnt),
-			.slow_clk(sim_clk),
-			.fast_clk(clk1),
-			.reset(reset_sim),
-			.clear_out(dummy_slow_CN1));
-			
+//	wire    [31:0] i_CN1_bic_spkcnt;
+//	wire    dummy_slow_CN1;  
+//	spikecnt	spike_cnt_MN_bic 
+//	(		.spike(CN1_bic_spk),
+//			.int_cnt_out(i_CN1_bic_spkcnt),
+//			.slow_clk(sim_clk),
+//			.fast_clk(clk1),
+//			.reset(reset_sim),
+//			.clear_out(dummy_slow_CN1));
+//			
 
 	
 
@@ -337,7 +337,7 @@ module one_joint_robot2_xem6010(
     synapse synapse_CORTICAL2(
                 .clk(neuron_clk),
                 .reset(reset_sim),
-                .spike_in(spike_in1),
+                .spike_in(CN1_bic_spk),
                 .postsynaptic_spike_in(each_spike2),
                 .I_out(I_synapse_CN2),  // updates once per population (scaling factor 1024) 
                 .each_I(each_I_synapse_CN2) // updates on each synapse
@@ -369,12 +369,12 @@ module one_joint_robot2_xem6010(
  // ** LEDs
     assign led[0] = ~reset_global;
     assign led[1] = ~reset_sim;
-    assign led[2] = ~clk1;
+    assign led[2] = ~each_spike;
     assign led[3] = ~0;
 //    assign led[4] = ~MN_bic_spike;
 	 assign led[4] = ~spike_in1;
-    assign led[5] =  ~CN2_bic_spk;
-    assign led[6]  = ~spindle_clk; // slow clock
+    assign led[5] =  ~CN1_bic_spk;
+    assign led[6]  = ~CN2_bic_spk; // slow clock
     //assign led[5] = ~spike;
     //assign led[5] = ~button1_response;
     //assign led[6] = ~button2_response;
@@ -411,14 +411,14 @@ module one_joint_robot2_xem6010(
     //okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep001wire));
 
 
-    okWireOut    wo20 (.ep_datain(i_SN_bic_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
-    okWireOut    wo21 (.ep_datain(i_SN_bic_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
-    okWireOut    wo22 (.ep_datain(I_synapse_CN1[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
-    okWireOut    wo23 (.ep_datain(I_synapse_CN1[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-    okWireOut    wo24 (.ep_datain(i_CN1_bic_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-    okWireOut    wo25 (.ep_datain(i_CN1_bic_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-//    okWireOut    wo26 (.ep_datain(i_CN2_bic_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-//    okWireOut    wo27 (.ep_datain(i_CN2_bic_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo20 (.ep_datain(I_synapse_CN1[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
+    okWireOut    wo21 (.ep_datain(I_synapse_CN1[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
+    okWireOut    wo22 (.ep_datain(I_synapse_CN1_gainAdjusted32[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
+    okWireOut    wo23 (.ep_datain(I_synapse_CN1_gainAdjusted32[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
+    okWireOut    wo24 (.ep_datain(I_synapse_CN2_gainAdjusted32[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
+    okWireOut    wo25 (.ep_datain(I_synapse_CN2_gainAdjusted32[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo26 (.ep_datain(i_gain_syn[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(i_gain_syn[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
 //    okWireOut    wo28 (.ep_datain({15'd0,spike_in1_delayed}),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
 //    okWireOut    wo29 (.ep_datain(16'd0), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
 //    okWireOut    wo30 (.ep_datain(f_tri_len[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h30) );
