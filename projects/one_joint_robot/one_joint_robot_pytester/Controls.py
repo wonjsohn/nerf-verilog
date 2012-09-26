@@ -89,7 +89,7 @@ class User1(QDialog, Ui_Dialog):
 #            if i == 3: 
 #                newData[i] = newData[i] / 100
             newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(xaddr, xtype))))
-            print newData[0::6]   # printing 
+            #print newData[0::6]   # printing 
             #        newSpike1 = self.nerfModel.ReadPipe(0xA0, 5000) # read ## bytes
 #        newSpike2 = self.nerfModel.ReadPipe(0xA1, 5000) # read ## bytes
 #        newSpike3 = self.nerfModel.ReadPipe(0xA2, 5000) # read ## bytes
