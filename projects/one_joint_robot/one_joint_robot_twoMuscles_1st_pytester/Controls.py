@@ -73,16 +73,15 @@ class User(QDialog, Ui_Dialog):
         """    Getting 2 devices   """
         #BIT_FILE_LIST = [BIT_FILE]
 #        for i in xrange(count=2):
-#            
 #            serX = rawxem.GetDeviceListSerial(i)
 #            print "serial = ",  serX    
 #            self.nerfModel = FpgaDevice(serX,  BIT_FILE_LIST[i])
 #            self.xemList.append(self.nerfModel)
         """ Typing in the series numbers directly for each boards"""  
         """ working board choices: 1137000222  /  1201000216/  12320003RM / 12320003RN """
-        self.nerfModel = FpgaDevice("1201000216",  BIT_FILE_LIST[0])  # short latency part + muscle / spindle
+        self.nerfModel = FpgaDevice("1137000222",  BIT_FILE_LIST[0])  # short latency part + muscle / spindle
         self.xemList.append(self.nerfModel)
-        self.nerfModel = FpgaDevice("12320003RM",  BIT_FILE_LIST[1])  # transcortical part
+        self.nerfModel = FpgaDevice("12320003RN",  BIT_FILE_LIST[1])  # transcortical part
         self.xemList.append(self.nerfModel)
             
         

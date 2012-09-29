@@ -370,11 +370,11 @@ module one_joint_robot2_xem6010(
     assign led[0] = ~reset_global;
     assign led[1] = ~reset_sim;
     assign led[2] = ~each_spike;
-    assign led[3] = ~0;
+    assign led[3] = ~spike_in1;
 //    assign led[4] = ~MN_bic_spike;
-	 assign led[4] = ~spike_in1;
-    assign led[5] =  ~CN1_bic_spk;
-    assign led[6]  = ~CN2_bic_spk; // slow clock
+	 assign led[4] = ~CN1_bic_spk;
+    assign led[5] =  ~CN2_bic_spk;
+    assign led[6]  = ~0; // slow clock
     //assign led[5] = ~spike;
     //assign led[5] = ~button1_response;
     //assign led[6] = ~button2_response;
