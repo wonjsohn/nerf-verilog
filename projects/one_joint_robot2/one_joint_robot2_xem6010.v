@@ -313,55 +313,55 @@ module one_joint_robot2_xem6010(
                 .each_spike(CN1_bic_spk)
     );
 	
-//	wire    [31:0] i_CN1_bic_spkcnt;
-//	wire    dummy_slow_CN1;  
-//	spikecnt	spike_cnt_MN_bic 
-//	(		.spike(CN1_bic_spk),
-//			.int_cnt_out(i_CN1_bic_spkcnt),
-//			.slow_clk(sim_clk),
-//			.fast_clk(clk1),
-//			.reset(reset_sim),
-//			.clear_out(dummy_slow_CN1));
-//			
+	wire    [31:0] i_CN1_bic_spkcnt;
+	wire    dummy_slow_CN1;  
+	spikecnt	spike_cnt_MN_bic 
+	(		.spike(CN1_bic_spk),
+			.int_cnt_out(i_CN1_bic_spkcnt),
+			.slow_clk(sim_clk),
+			.fast_clk(clk1),
+			.reset(reset_sim),
+			.clear_out(dummy_slow_CN1));
+			
 
-	
+//	
+//
+//	//******** CN2 Synapse **********/
+//	//** input: spikes
+//    //** output: current (each_I_synapse: updates at neuron_clk)
+//    
+//    wire [31:0] I_synapse_CN2;
+//    wire [31:0] each_I_synapse_CN2;
+//    wire each_spike2;
+//    
+//    synapse synapse_CORTICAL2(
+//                .clk(neuron_clk),
+//                .reset(reset_sim),
+//                .spike_in(CN1_bic_spk),
+//                .postsynaptic_spike_in(each_spike2),
+//                .I_out(I_synapse_CN2),  // updates once per population (scaling factor 1024) 
+//                .each_I(each_I_synapse_CN2) // updates on each synapse
+//    );
+//
+//
+//
+//    //****** CN2 Synapse gain ********//
+//    wire signed [63:0] I_synapse_CN2_gainAdjusted64;
+//    wire signed [31:0] I_synapse_CN2_gainAdjusted32;
+//    assign I_synapse_CN2_gainAdjusted64 = each_I_synapse_CN2 * i_gain_syn;
+//    assign I_synapse_CN2_gainAdjusted32 = I_synapse_CN2_gainAdjusted64[31:0];
 
-	//******** CN2 Synapse **********/
-	//** input: spikes
-    //** output: current (each_I_synapse: updates at neuron_clk)
-    
-    wire [31:0] I_synapse_CN2;
-    wire [31:0] each_I_synapse_CN2;
-    wire each_spike2;
-    
-    synapse synapse_CORTICAL2(
-                .clk(neuron_clk),
-                .reset(reset_sim),
-                .spike_in(CN1_bic_spk),
-                .postsynaptic_spike_in(each_spike2),
-                .I_out(I_synapse_CN2),  // updates once per population (scaling factor 1024) 
-                .each_I(each_I_synapse_CN2) // updates on each synapse
-    );
-
-
-
-    //****** CN2 Synapse gain ********//
-    wire signed [63:0] I_synapse_CN2_gainAdjusted64;
-    wire signed [31:0] I_synapse_CN2_gainAdjusted32;
-    assign I_synapse_CN2_gainAdjusted64 = each_I_synapse_CN2 * i_gain_syn;
-    assign I_synapse_CN2_gainAdjusted32 = I_synapse_CN2_gainAdjusted64[31:0];
-
-     //********* CN1 izneuron *************//
-	wire CN2_bic_spk;
-	
-    izneuron neuron_pool_CN2_bic(
-                .clk(neuron_clk),
-                .reset(reset_sim),
-                .I_in(I_synapse_CN2_gainAdjusted32),
-                .spike(),
-                .each_spike(CN2_bic_spk)
-    );
-	
+//     //********* CN1 izneuron *************//
+//	wire CN2_bic_spk;
+//	
+//    izneuron neuron_pool_CN2_bic(
+//                .clk(neuron_clk),
+//                .reset(reset_sim),
+//                .I_in(I_synapse_CN2_gainAdjusted32),
+//                .spike(),
+//                .each_spike(CN2_bic_spk)
+//    );
+//	
     
 
     
@@ -373,7 +373,7 @@ module one_joint_robot2_xem6010(
     assign led[3] = ~spike_in1;
 //    assign led[4] = ~MN_bic_spike;
 	 assign led[4] = ~CN1_bic_spk;
-    assign led[5] =  ~CN2_bic_spk;
+    assign led[5] =  ~0;
     assign led[6]  = ~0; // slow clock
     //assign led[5] = ~spike;
     //assign led[5] = ~button1_response;
@@ -390,7 +390,7 @@ module one_joint_robot2_xem6010(
     assign pin1 = sim_clk;
     assign pin2 = spindle_clk;
     
-    assign spike_out1 = CN2_bic_spk;
+    assign spike_out1 = CN1_bic_spk;
 
 
   // Instantiate the okHost and connect endpoints.
@@ -415,8 +415,8 @@ module one_joint_robot2_xem6010(
     okWireOut    wo21 (.ep_datain(I_synapse_CN1[31:16]), .ok1(ok1), .ok2(ok2x[  1*17 +: 17 ]), .ep_addr(8'h21) );
     okWireOut    wo22 (.ep_datain(I_synapse_CN1_gainAdjusted32[15:0]), .ok1(ok1), .ok2(ok2x[  2*17 +: 17 ]), .ep_addr(8'h22) );
     okWireOut    wo23 (.ep_datain(I_synapse_CN1_gainAdjusted32[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
-    okWireOut    wo24 (.ep_datain(I_synapse_CN2_gainAdjusted32[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
-    okWireOut    wo25 (.ep_datain(I_synapse_CN2_gainAdjusted32[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
+    okWireOut    wo24 (.ep_datain(i_CN1_bic_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );//
+    okWireOut    wo25 (.ep_datain(i_CN1_bic_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
     okWireOut    wo26 (.ep_datain(i_gain_syn[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
     okWireOut    wo27 (.ep_datain(i_gain_syn[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
 //    okWireOut    wo28 (.ep_datain({15'd0,spike_in1_delayed}),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
