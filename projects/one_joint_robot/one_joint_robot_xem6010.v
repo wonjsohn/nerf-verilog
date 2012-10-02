@@ -412,7 +412,8 @@ module one_joint_robot_xem6010(
     
    
    wire [31:0] each_I_synapse;
-   add Spinal_n_Transcortical_Current(.x(each_I_synapse_SPINAL), .y(each_I_synapse_CN_END), .out(each_I_synapse));  
+   assign each_I_synapse = each_I_synapse_SPINAL + each_I_synapse_CN_END;
+   //add Spinal_n_Transcortical_Current(.x(each_I_synapse_SPINAL), .y(each_I_synapse_CN_END), .out(each_I_synapse));  
 
     //****** Syanpse gain ********//
     wire signed [63:0] I_synapse_gainAdjusted64;

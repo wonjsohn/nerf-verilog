@@ -75,10 +75,10 @@ class FpgaDevice:
 
         self.pll = ok.PLL22393()
         self.pll.SetReference(48)        #base clock frequency
-        self.baseRate = 200 #in MHz
+        self.baseRate = 100 #in MHz
         self.pll.SetPLLParameters(0, self.baseRate, 48,  True)            #multiply up to baseRate 
         self.pll.SetOutputSource(0, ok.PLL22393.ClkSrc_PLL0_0)  #clk1 
-        self.clkRate = 200                                #mhz; 200 is fastest
+        self.clkRate =100                               #mhz; 200 is fastest
         self.pll.SetOutputDivider(0, int(self.baseRate / self.clkRate)) 
         self.pll.SetOutputEnable(0, True)
         ## self.pll.SetOutputSource(1, ok.PLL22393.ClkSrc_PLL0_0)  #clk2
