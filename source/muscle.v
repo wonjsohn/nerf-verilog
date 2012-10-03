@@ -129,8 +129,8 @@ module shadmehr_active_force(i_spikes, f_active_force_out, f_fp_spikes_out, clk,
 	int_to_float get_fp_spike(.out(spikes_i), .in(i_spikes));
 	 
 	
-    //h_diff_eq gen_h(spikes_i1, spikes_i2, h_i1, h_i2, h_i);
-	 fuglevand_twitch twitch(spikes_i1, spikes_i2, h_i1, h_i2, h_i, f_tau);
+    h_diff_eq gen_h(spikes_i1, spikes_i2, h_i1, h_i2, h_i);
+	// fuglevand_twitch twitch(spikes_i1, spikes_i2, h_i1, h_i2, h_i, f_tau);
 	 
 	 
 	 

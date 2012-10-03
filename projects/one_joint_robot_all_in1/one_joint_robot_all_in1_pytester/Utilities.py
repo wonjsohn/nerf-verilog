@@ -24,14 +24,15 @@ CH_TYPE = list(zip(*CHIN_PARAM)[3])
                 
 #            trig_id    name          type          default_value                
 CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      30.0), \
-                (2, 'tau',  'float32',      0.01), \
-                (3, 'close_loop',   'int32',        0), \
+                (2, 'tau',  'float32',      0.03), \
+                (3, 'gain_syn_CN_to_MN',   'int32',       1), \
                 (4, 'gamma_dyn',    'float32',      80.0), \
                 (5, 'gamma_sta',    'float32',      80.0), \
-                (6, 'gain_syn',      'int32',        1),  \
+                (6, 'gain_syn_SN_to_MN',      'int32',        1),  \
                 (7, 'trigger_input',      'int32',        1),  \
                 (10, 'bicep_len_pxi',      'float32',        1.1),  \
-                (11, 'i_m1_drive',      'int32',        0)
+                (11, 'i_m1_drive',      'int32',        0),  \
+                (12, 'gain_syn_SN_to_CN',      'int32',        1)
                 
 
 

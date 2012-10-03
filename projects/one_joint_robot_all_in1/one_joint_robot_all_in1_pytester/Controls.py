@@ -134,7 +134,9 @@ class User1(QDialog, Ui_Dialog):
 #                    print bitVal
                 elif (ctrl.type == 'float32'):
                     bitVal = ConvertType(newWireIn, fromType = 'f', toType = 'I')
-                self.nerfModel.SendPara(bitVal = bitVal, trigEvent = ctrl.id)
+                #self.nerfModel.SendPara(bitVal = bitVal, trigEvent = ctrl.id)
+                bitVal2 = ConvertType(10.0, fromType = 'f', toType = 'I')
+                self.nerfModel.SendMultiPara(bitVal1 = bitVal, bitVal2=bitVal2,  trigEvent = ctrl.id)
                 
 
 

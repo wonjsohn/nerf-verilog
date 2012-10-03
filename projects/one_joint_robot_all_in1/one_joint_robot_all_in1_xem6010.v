@@ -120,20 +120,32 @@ module one_joint_robot_all_in1_xem6010(
     always @(posedge ep50trig[2] or posedge reset_global)
     begin
         if (reset_global)
-            tau <= 32'h3C23_D70A; // 0.01 second
+            tau <= 32'h3CF5_C28F; // 0.03 second
         else
             tau <= {ep02wire, ep01wire};  
     end      
     
-
-    reg [31:0] gain;
+//
+//    reg [31:0] gain;
+//    always @(posedge ep50trig[3] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            gain <= 32'd0;
+//        else
+//            gain <= {ep02wire, ep01wire};  //firing rate
+//    end        
+    
+             
+    /***  Cortical synapse gain  ***/
+    reg signed [31:0] i_gain_syn_CN_to_MN; 
     always @(posedge ep50trig[3] or posedge reset_global)
     begin
         if (reset_global)
-            gain <= 32'd0;
+            i_gain_syn_CN_to_MN <= 32'd1; // gamma_sta reset to 80
         else
-            gain <= {ep02wire, ep01wire};  //firing rate
-    end        
+            i_gain_syn_CN_to_MN <= {ep02wire, ep01wire};  
+    end
+//    
     
     reg [31:0] f_gamma_dyn;
     always @(posedge ep50trig[4] or posedge reset_global)
@@ -153,13 +165,13 @@ module one_joint_robot_all_in1_xem6010(
             f_gamma_sta <= {ep02wire, ep01wire};  
     end  
     
-    reg signed [31:0] i_gain_syn;
+    reg [31:0] i_gain_syn_SN_to_MN;
     always @(posedge ep50trig[6] or posedge reset_global)
     begin
         if (reset_global)
-            i_gain_syn <= 32'd1; // gamma_sta reset to 80
+            i_gain_syn_SN_to_MN <= 32'd1; // gamma_sta reset to 80
         else
-            i_gain_syn <= {ep02wire, ep01wire};  
+            i_gain_syn_SN_to_MN <= {ep02wire, ep01wire};  
     end
 	 
 //    reg signed [31:0] i_gain_mu2_MN;
@@ -179,6 +191,7 @@ module one_joint_robot_all_in1_xem6010(
         else
             trigger_input <= {ep02wire, ep01wire};  
     end  
+    
 
 //    reg signed [31:0] i_gain_mu3_MN;
 //    always @(posedge ep50trig[8] or posedge reset_global)
@@ -234,14 +247,16 @@ module one_joint_robot_all_in1_xem6010(
     end   
      
     /***  MotorCortex synapse gain  ***/
-    reg signed [31:0] i_gain_syn_MC; 
+    reg signed [31:0] i_gain_syn_SN_to_CN; 
     always @(posedge ep50trig[12] or posedge reset_global)
     begin
         if (reset_global)
-            i_gain_syn_MC <= 32'd1; // gamma_sta reset to 80
+            i_gain_syn_SN_to_CN <= 32'd1; // gamma_sta reset to 80
         else
-            i_gain_syn_MC <= {ep02wire, ep01wire};  
+            i_gain_syn_SN_to_CN <= {ep02wire, ep01wire};  
     end
+    
+
 //    
 //    reg [31:0] delay_cnt_max;
 //    always @(posedge ep50trig[7] or posedge reset_global)
@@ -393,12 +408,12 @@ module one_joint_robot_all_in1_xem6010(
 
 
 
-	//******** Synapse **********/
+	//******** Synapse 1**********/
 	//** input: spikes
     //** output: current (each_I_synapse: updates at neuron_clk)
     
     wire [31:0] I_synapse_SN_to_MN;
-    wire [31:0] i_EPSC_SN_to_MN;
+    wire [31:0] i_EPSC_SN_to_MN_preamp;
     wire each_spike_SN_to_MN;
     
     synapse synapse_SN_to_MN(
@@ -407,21 +422,34 @@ module one_joint_robot_all_in1_xem6010(
                 .spike_in(SN_spk),
                 .postsynaptic_spike_in(each_spike_SN_to_MN),
                 .I_out(I_synapse_SN_to_MN),  // updates once per population (scaling factor 1024) 
-                .each_I(i_EPSC_SN_to_MN) // updates on each synapse
+                .each_I(i_EPSC_SN_to_MN_preamp) // updates on each synapse
     );
+    
+    
+   wire [31:0] i_EPSC_SN_to_MN;
+   signed_mult32 syn1_gain(.out(i_EPSC_SN_to_MN), .a(i_EPSC_SN_to_MN_preamp), .b(i_gain_syn_SN_to_MN));
+   
+   
+
     
     /*************************************************************************************************************************/    
     /**************************************** M1 direct drive (voluntary command) ***************************/
     /*************************************************************************************************************************/
    
+   wire [31:0] i_EPSC_SN_to_CN_F0;
+   wire [31:0] i_EPSC_SN_to_CN_preamp;
+ 
+       //****** CN1 Synapse gain ********/
+       
+    wire [31:0] i_EPSC_SN_to_CN;
+   signed_mult32 syn2_gain(.out(i_EPSC_SN_to_CN), .a(i_EPSC_SN_to_CN_preamp), .b(i_gain_syn_SN_to_CN));
+      
+   
+   //***   Addition of two currents ******//
    wire [31:0] i_drive_to_CN_F0;
    assign i_drive_to_CN_F0 = i_EPSC_SN_to_CN + i_M1_drive;   
    
-//    //****** CN1 Synapse gain ********/
-//    wire signed [63:0] i_drive_to_CN_adjusted64;
-//    wire signed [31:0] i_drive_to_CN_F0;
-//    assign i_drive_to_CN_adjusted64 = i_drive_to_CN * i_gain_syn_MC;
-//    assign i_drive_to_CN_F0 = i_drive_to_CN_adjusted64[31:0];
+
     
     
      //********* izneuron *************//
@@ -439,12 +467,11 @@ module one_joint_robot_all_in1_xem6010(
 
 
     
-    //***************************************** CN1 Synapse ***************************************/
+    //***************************************** Synapse 2***************************************/
 	//** input: spikes
     //** output: current (each_I_synapse: updates at neuron_clk)
     
     wire [31:0] I_synapse_CN1;
-    wire [31:0] i_EPSC_SN_to_CN;
     wire each_spike;
     
     synapse SN_to_CN(
@@ -453,15 +480,11 @@ module one_joint_robot_all_in1_xem6010(
                 .spike_in(SN_spk),
                 .postsynaptic_spike_in(each_spike),
                 .I_out(I_synapse_CN1),  // updates once per population (scaling factor 1024) 
-                .each_I(i_EPSC_SN_to_CN) // updates on each synapse
+                .each_I(i_EPSC_SN_to_CN_preamp) // updates on each synapse
     );
     
-//    
-//    //****** CN1 Synapse gain ********/
-//    wire signed [63:0] I_synapse_CN1_gainAdjusted64;
-//    wire signed [31:0] I_synapse_CN1_gainAdjusted32;
-//    assign I_synapse_CN1_gainAdjusted64 = each_I_synapse_CN1 * i_gain_syn;
-//    assign I_synapse_CN1_gainAdjusted32 = I_synapse_CN1_gainAdjusted64[31:0];
+
+
 //    
 //    /********* CN1 izneuron *************/
 //	wire CN1_bic_spk;
@@ -474,12 +497,12 @@ module one_joint_robot_all_in1_xem6010(
 //                .each_spike(CN1_bic_spk)
 //    );
     
-	//******** Synapse **********/
+	//******** Synapse 3**********/
 	//** input: spikes
     //** output: current (each_I_synapse: updates at neuron_clk)
     
     wire [31:0] I_synapse_CN_to_MN;
-    wire [31:0] i_EPSC_CN_to_MN;
+    wire [31:0] i_EPSC_CN_to_MN_preamp;
     wire each_spike_CN_to_MN;
     
     synapse CN_to_MN(
@@ -488,33 +511,35 @@ module one_joint_robot_all_in1_xem6010(
                 .spike_in(CN_spk),
                 .postsynaptic_spike_in(each_spike_CN_to_MN),
                 .I_out(I_synapse_CN_to_MN),  // updates once per population (scaling factor 1024) 
-                .each_I(i_EPSC_CN_to_MN) // updates on each synapse
+                .each_I(i_EPSC_CN_to_MN_preamp) // updates on each synapse
     );
 
     
    
-   wire [31:0] i_drive_to_MN_F0;
-   assign i_drive_to_MN_F0 = i_EPSC_SN_to_MN + i_EPSC_CN_to_MN;
+   wire [31:0] i_drive_to_MN_F0;   
+    //****** Syanpse gain ********//
+    wire [31:0] i_EPSC_CN_to_MN;
+   signed_mult32 syn524_gain(.out(i_EPSC_CN_to_MN), .a(i_EPSC_CN_to_MN_preamp), .b(i_gain_syn_CN_to_MN));
+ 
+   assign i_drive_to_MN_F0 =i_EPSC_SN_to_MN + i_EPSC_CN_to_MN;
    //add Spinal_n_Transcortical_Current(.x(each_I_synapse_SPINAL), .y(each_I_synapse_CN_END), .out(each_I_synapse));  
 
-    //****** Syanpse gain ********//
-//    wire signed [63:0] i_drive_to_MN_adjusted64;
-//    wire signed [31:0] i_drive_to_MN_adjusted32;
-//    assign i_drive_to_MN_adjusted64 = i_drive_to_MN * i_gain_syn;
-//    assign i_drive_to_MN_F0 = i_drive_to_MN_adjusted64[31:0];
 
     
     reg [31:0] i_drive_to_MN; // _pxi = from PXI system in BBDL
     reg [31:0] i_drive_to_CN;
+
     always @(posedge neuron_clk or posedge reset_sim)
 	 begin
 	   if (reset_sim)
 		begin
 		  i_drive_to_MN <= 32'h0;
           i_drive_to_CN <= 32'h0;
+
 		end else begin
 		  i_drive_to_MN <= i_drive_to_MN_F0;
-          i_drive_to_CN <= i_drive_to_CN_F0;
+          i_drive_to_CN <= i_drive_to_CN_F0; 
+
 		end
       end
     
@@ -678,4 +703,15 @@ module one_joint_robot_all_in1_xem6010(
 endmodule
 
 
+
+
+module signed_mult32 (out, a, b);
+	output 	[31:0]	out;
+	input 	[31:0] 	a;
+	input 	[31:0] 	b;
+    wire    [63:0]   temp_out; 
+
+	assign temp_out = a * b;
+	assign out = temp_out[31:0];
+endmodule
 

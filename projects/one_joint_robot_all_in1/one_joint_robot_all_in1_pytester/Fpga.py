@@ -155,6 +155,22 @@ class Model:
         self.xem.UpdateWireIns()            
         self.xem.ActivateTriggerIn(0x50, trigEvent)   
 
+    """ minimize the frequency of  update wireout to get higher sampling rate """       
+    def SendMultiPara(self, bitVal1, bitVal2,  trigEvent):
+        #1
+        bitValLo1 = bitVal1 & 0xffff
+        bitValHi1 = (bitVal1 >> 16) & 0xffff
+        self.xem.SetWireInValue(0x01, bitValLo1, 0xffff)
+        self.xem.SetWireInValue(0x02, bitValHi1, 0xffff)
+        #2
+        bitValLo2 = bitVal2 & 0xffff
+        bitValHi2 = (bitVal2 >> 16) & 0xffff
+        self.xem.SetWireInValue(0x03, bitValLo2, 0xffff)
+        self.xem.SetWireInValue(0x04, bitValHi2, 0xffff)
+        
+        self.xem.UpdateWireIns()            
+        self.xem.ActivateTriggerIn(0x50, trigEvent)   
+
     def ReadPipe(self, addr, len = 1000):
         buf = "\x00" * len
         self.xem.ReadFromPipeOut(addr, buf)
