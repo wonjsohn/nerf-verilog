@@ -232,7 +232,7 @@ module one_joint_robot_all_in1_xem6010(
         end
         else begin
             f_len_pxi_F0 <= {ep02wire, ep01wire}; 
-            f_velocity_F0 <= {ep03wire, ep04wire}; 
+            f_velocity_F0 <= {ep04wire, ep03wire}; 
         end
     end   
 
@@ -427,7 +427,7 @@ module one_joint_robot_all_in1_xem6010(
     
     
    wire [31:0] i_EPSC_SN_to_MN;
-   signed_mult32 syn1_gain(.out(i_EPSC_SN_to_MN), .a(i_EPSC_SN_to_MN_preamp), .b(i_gain_syn_SN_to_MN));
+   unsigned_mult32 syn1_gain(.out(i_EPSC_SN_to_MN), .a(i_EPSC_SN_to_MN_preamp), .b(i_gain_syn_SN_to_MN));
    
    
 
@@ -442,7 +442,7 @@ module one_joint_robot_all_in1_xem6010(
        //****** CN1 Synapse gain ********/
        
     wire [31:0] i_EPSC_SN_to_CN;
-   signed_mult32 syn2_gain(.out(i_EPSC_SN_to_CN), .a(i_EPSC_SN_to_CN_preamp), .b(i_gain_syn_SN_to_CN));
+   unsigned_mult32 syn2_gain(.out(i_EPSC_SN_to_CN), .a(i_EPSC_SN_to_CN_preamp), .b(i_gain_syn_SN_to_CN));
       
    
    //***   Addition of two currents ******//
@@ -519,7 +519,7 @@ module one_joint_robot_all_in1_xem6010(
    wire [31:0] i_drive_to_MN_F0;   
     //****** Syanpse gain ********//
     wire [31:0] i_EPSC_CN_to_MN;
-   signed_mult32 syn524_gain(.out(i_EPSC_CN_to_MN), .a(i_EPSC_CN_to_MN_preamp), .b(i_gain_syn_CN_to_MN));
+   unsigned_mult32 syn524_gain(.out(i_EPSC_CN_to_MN), .a(i_EPSC_CN_to_MN_preamp), .b(i_gain_syn_CN_to_MN));
  
    assign i_drive_to_MN_F0 =i_EPSC_SN_to_MN + i_EPSC_CN_to_MN;
    //add Spinal_n_Transcortical_Current(.x(each_I_synapse_SPINAL), .y(each_I_synapse_CN_END), .out(each_I_synapse));  
@@ -592,24 +592,32 @@ module one_joint_robot_all_in1_xem6010(
     assign IEEE_1p57 = 32'h3FC8F5C3; 
     assign IEEE_2p77 = 32'h403147AE;    
    // sub get_bic_len(.x(IEEE_2p77), .y(trigger_input?  f_len_bic_pxi: f_len_bic), .out(f_muscleInput_len_bic));  
-
-    shadmehr_muscle muscle_foo
-    (   .i_spike_cnt(i_MN_spkcnt),
-//        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
-        .f_pos(f_len_pxi),  // muscle length
-        //pos(32'h3F8147AE),  // muscle length 1.01
-        //.vel(current_vel),
-        .f_vel(f_velocity),
-        .clk(sim_clk),
+//
+//    shadmehr_muscle muscle_foo
+//    (   .i_spike_cnt(i_MN_spkcnt),
+////        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
+//        .f_pos(f_len_pxi),  // muscle length
+//        //pos(32'h3F8147AE),  // muscle length 1.01
+//        //.vel(current_vel),
+//        .f_vel(f_velocity),
+//        .clk(sim_clk),
+//        .reset(reset_sim),
+//        .f_total_force_out(f_force),
+//        .f_current_A(f_actstate),
+//        .f_current_fp_spikes(f_MN_spkcnt), 
+//		  .f_tau(tau)
+//    );   
+    wire    [31:0]  f_current_h, f_current_fp_spikes;
+     shadmehr_active_force fuglevand_foo
+    (   .i_spikes(i_MN_spkcnt),
+        .f_active_force_out(f_force),
+        .f_fp_spikes_out(f_MN_spkcnt),
+        .clk(sim_clk), 
         .reset(reset_sim),
-        .f_total_force_out(f_force),
-        .f_current_A(f_actstate),
-        .f_current_fp_spikes(f_MN_spkcnt), 
-		  .f_tau(tau)
-    );   
-
+        .f_tau(tau)
+     );   
+    wire 	[31:0]	f_weightout;
     
-
                
 //    // ** EMG, Motor neuron (MN)
 //    wire [17:0] si_emg;
@@ -705,7 +713,7 @@ endmodule
 
 
 
-module signed_mult32 (out, a, b);
+module unsigned_mult32 (out, a, b);
 	output 	[31:0]	out;
 	input 	[31:0] 	a;
 	input 	[31:0] 	b;
