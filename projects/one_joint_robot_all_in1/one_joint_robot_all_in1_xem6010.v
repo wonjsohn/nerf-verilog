@@ -144,8 +144,7 @@ module one_joint_robot_all_in1_xem6010(
             i_gain_syn_CN_to_MN <= 32'd1; // gamma_sta reset to 80
         else
             i_gain_syn_CN_to_MN <= {ep02wire, ep01wire};  
-    end
-//    
+    end 
     
     reg [31:0] f_gamma_dyn;
     always @(posedge ep50trig[4] or posedge reset_global)
@@ -192,7 +191,25 @@ module one_joint_robot_all_in1_xem6010(
             trigger_input <= {ep02wire, ep01wire};  
     end  
     
-
+    /***  MotorCortex direct drive ***/
+    reg [31:0] i_M1_CN2_drive; 
+    always @(posedge ep50trig[8] or posedge reset_global)
+    begin
+        if (reset_global)
+            i_M1_CN2_drive <= 32'h0000_0000; //0.0
+        else
+            i_M1_CN2_drive <= {ep02wire, ep01wire}; 
+    end   
+    
+    reg [31:0] i_gain_syn_CN2_to_MN;
+    always @(posedge ep50trig[9] or posedge reset_global)
+    begin
+        if (reset_global)
+            i_gain_syn_CN2_to_MN <= 32'd1; 
+        else
+            i_gain_syn_CN2_to_MN <= {ep02wire, ep01wire};  
+    end
+    
 //    reg signed [31:0] i_gain_mu3_MN;
 //    always @(posedge ep50trig[8] or posedge reset_global)
 //    begin
@@ -210,7 +227,6 @@ module one_joint_robot_all_in1_xem6010(
 //        else
 //            f_len_bic_pxi_F0 <= {ep02wire, ep01wire}; 
 //    end   
-//
 //
 //    reg [31:0] f_velocity; // _pxi = from PXI system in BBDL
 //    always @(posedge ep50trig[9] or posedge reset_global)
@@ -237,13 +253,13 @@ module one_joint_robot_all_in1_xem6010(
     end   
 
     /***  MotorCortex direct drive ***/
-    reg [31:0] i_M1_drive; 
+    reg [31:0] i_M1_CN_drive; 
     always @(posedge ep50trig[11] or posedge reset_global)
     begin
         if (reset_global)
-            i_M1_drive <= 32'h0000_0000; //0.0
+            i_M1_CN_drive <= 32'h0000_0000; //0.0
         else
-            i_M1_drive <= {ep02wire, ep01wire}; 
+            i_M1_CN_drive <= {ep02wire, ep01wire}; 
     end   
      
     /***  MotorCortex synapse gain  ***/
@@ -435,22 +451,18 @@ module one_joint_robot_all_in1_xem6010(
     /*************************************************************************************************************************/    
     /**************************************** M1 direct drive (voluntary command) ***************************/
     /*************************************************************************************************************************/
-   
-   wire [31:0] i_EPSC_SN_to_CN_F0;
-   wire [31:0] i_EPSC_SN_to_CN_preamp;
  
-       //****** CN1 Synapse gain ********/
-       
+    //****** SN to CN Synapse gain ********/
+    wire [31:0] i_EPSC_SN_to_CN_preamp;
     wire [31:0] i_EPSC_SN_to_CN;
    unsigned_mult32 syn2_gain(.out(i_EPSC_SN_to_CN), .a(i_EPSC_SN_to_CN_preamp), .b(i_gain_syn_SN_to_CN));
       
    
    //***   Addition of two currents ******//
    wire [31:0] i_drive_to_CN_F0;
-   assign i_drive_to_CN_F0 = i_EPSC_SN_to_CN + i_M1_drive;   
+   assign i_drive_to_CN_F0 = i_EPSC_SN_to_CN + i_M1_CN_drive;   
    
-
-    
+   
     
      //********* izneuron *************//
 	wire CN_spk;
@@ -484,6 +496,47 @@ module one_joint_robot_all_in1_xem6010(
     );
     
 
+    
+    //***************************************** Synapse 5***************************************/
+	//** input: spikes
+    //** output: current (each_I_synapse: updates at neuron_clk)
+    
+    wire [31:0] I_synapse_CN2;
+    wire each_spike_SN_to_CN2;
+    
+    synapse SN_to_CN2(
+                .clk(neuron_clk),
+                .reset(reset_sim),
+                .spike_in(SN_spk),
+                .postsynaptic_spike_in(each_spike_SN_to_CN2),
+                .I_out(I_synapse_CN2),  // updates once per population (scaling factor 1024) 
+                .each_I(i_EPSC_SN_to_CN2_preamp) // updates on each synapse
+    );
+    
+    /****** SN to CN2 Synapse gain ********/
+    wire [31:0] i_EPSC_SN_to_CN2_preamp;
+    wire [31:0] i_EPSC_SN_to_CN2;
+    unsigned_mult32 syn520_gain(.out(i_EPSC_SN_to_CN2), .a(i_EPSC_SN_to_CN2_preamp), .b(i_gain_syn_SN_to_CN)); // sharing same gain in CN's
+
+   //***   Addition of two currents ******//
+   wire [31:0] i_drive_to_CN2_F0;
+   assign i_drive_to_CN2_F0 = i_EPSC_SN_to_CN2 + i_M1_CN2_drive;   
+
+        
+   //********* izneuron *************/
+	wire CN2_spk;
+    izneuron neuron_pool_CN2(
+                .clk(neuron_clk),
+                .reset(reset_sim),
+                .I_in(i_drive_to_CN2),
+                .spike(),
+                .each_spike(CN2_spk)
+    );
+	
+    
+
+
+
 
 //    
 //    /********* CN1 izneuron *************/
@@ -514,31 +567,58 @@ module one_joint_robot_all_in1_xem6010(
                 .each_I(i_EPSC_CN_to_MN_preamp) // updates on each synapse
     );
 
-    
    
    wire [31:0] i_drive_to_MN_F0;   
     //****** Syanpse gain ********//
     wire [31:0] i_EPSC_CN_to_MN;
    unsigned_mult32 syn524_gain(.out(i_EPSC_CN_to_MN), .a(i_EPSC_CN_to_MN_preamp), .b(i_gain_syn_CN_to_MN));
+   
+   
+       
+    //******** Synapse 4**********/
+	//** input: spikes
+    //** output: current (each_I_synapse: updates at neuron_clk)
+    
+    wire [31:0] I_synapse_CN2_to_MN;
+    wire [31:0] i_EPSC_CN2_to_MN_preamp;
+    wire each_spike_CN2_to_MN;
+    
+    synapse CN2_to_MN(
+                .clk(neuron_clk),
+                .reset(reset_sim),
+                .spike_in(CN2_spk),
+                .postsynaptic_spike_in(each_spike_CN2_to_MN),
+                .I_out(I_synapse_CN2_to_MN),  // updates once per population (scaling factor 1024) 
+                .each_I(i_EPSC_CN2_to_MN_preamp) // updates on each synapse
+    );
+    //****** Syanpse gain ********//
+    wire [31:0] i_EPSC_CN2_to_MN;
+   unsigned_mult32 syn551_gain(.out(i_EPSC_CN2_to_MN), .a(i_EPSC_CN2_to_MN_preamp), .b(i_gain_syn_CN2_to_MN));
+
+    
  
-   assign i_drive_to_MN_F0 =i_EPSC_SN_to_MN + i_EPSC_CN_to_MN;
+   assign i_drive_to_MN_F0 =i_EPSC_SN_to_MN + i_EPSC_CN_to_MN + i_EPSC_CN2_to_MN;
    //add Spinal_n_Transcortical_Current(.x(each_I_synapse_SPINAL), .y(each_I_synapse_CN_END), .out(each_I_synapse));  
 
 
     
     reg [31:0] i_drive_to_MN; // _pxi = from PXI system in BBDL
     reg [31:0] i_drive_to_CN;
+    reg [31:0] i_drive_to_CN2;
 
+    // latching 
     always @(posedge neuron_clk or posedge reset_sim)
 	 begin
 	   if (reset_sim)
 		begin
 		  i_drive_to_MN <= 32'h0;
           i_drive_to_CN <= 32'h0;
+          i_drive_to_CN2 <= 32'h0;
 
 		end else begin
 		  i_drive_to_MN <= i_drive_to_MN_F0;
           i_drive_to_CN <= i_drive_to_CN_F0; 
+          i_drive_to_CN2 <= i_drive_to_CN2_F0;
 
 		end
       end
@@ -644,10 +724,10 @@ module one_joint_robot_all_in1_xem6010(
  // ** LEDs
     assign led[0] = ~reset_global;
     assign led[1] = ~reset_sim;
-    assign led[2] = ~0;
-    assign led[3] = ~spike_in1;
-    assign led[4] = ~SN_spk;
-	assign led[5] = ~CN_spk;  // SN_bic_spk + spike_in1
+    assign led[2] = ~spike_in1;
+    assign led[3] = ~SN_spk;
+    assign led[4] = ~CN_spk;
+	assign led[5] = ~CN2_spk;  // SN_bic_spk + spike_in1
 //    assign led[5] = ~MN_tri_spike;
     assign led[6] = ~MN_spk; // slow clock
     //assign led[5] = ~spike;
