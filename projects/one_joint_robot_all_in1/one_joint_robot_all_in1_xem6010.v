@@ -57,7 +57,7 @@ module one_joint_robot_all_in1_xem6010(
     wire         ti_clk;
     wire [30:0]  ok1;
     wire [16:0]  ok2;   
-    wire [15:0]  ep00wire, ep01wire, ep02wire, ep03wire, ep04wire, ep50trig, ep20wire, ep21wire, ep22wire, ep23wire;
+    wire [15:0]  ep00wire, ep01wire, ep02wire, ep03wire, ep04wire, ep05wire, ep06wire, ep07wire, ep08wire, ep50trig, ep20wire, ep21wire, ep22wire, ep23wire;
     wire [15:0]  ep24wire, ep25wire, ep26wire, ep27wire, ep28wire, ep29wire, ep30wire, ep31wire;
     wire reset_global, reset_sim;
     wire        is_pipe_being_written, is_lce_valid;
@@ -191,15 +191,15 @@ module one_joint_robot_all_in1_xem6010(
             trigger_input <= {ep02wire, ep01wire};  
     end  
     
-    /***  MotorCortex direct drive ***/
-    reg [31:0] i_M1_CN2_drive; 
-    always @(posedge ep50trig[8] or posedge reset_global)
-    begin
-        if (reset_global)
-            i_M1_CN2_drive <= 32'h0000_0000; //0.0
-        else
-            i_M1_CN2_drive <= {ep02wire, ep01wire}; 
-    end   
+//    /***  MotorCortex direct drive ***/
+//    reg [31:0] i_M1_CN2_drive; 
+//    always @(posedge ep50trig[8] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            i_M1_CN2_drive <= 32'h0000_0000; //0.0
+//        else
+//            i_M1_CN2_drive <= {ep02wire, ep01wire}; 
+//    end   
     
     reg [31:0] i_gain_syn_CN2_to_MN;
     always @(posedge ep50trig[9] or posedge reset_global)
@@ -240,27 +240,34 @@ module one_joint_robot_all_in1_xem6010(
     /**** Update  pos and vel at the same time ****/
     reg [31:0] f_len_pxi_F0; // _pxi = from PXI system in BBDL
     reg [31:0] f_velocity_F0; // _pxi = from PXI system in BBDL
+    reg [31:0] i_M1_CN_drive;
+    reg [31:0] i_M1_CN2_drive;     
+    
     always @(posedge ep50trig[10] or posedge reset_global)
     begin
         if (reset_global) begin
             f_len_pxi_F0 <= 32'h3F66_6666; //0.9
-            f_velocity_F0 <= 32'h0000_0000; //0.0
+            f_velocity_F0 <= 32'h0000_0000; //0.0       
+            i_M1_CN_drive <= 32'd0;             
+            i_M1_CN2_drive <= 32'd0;
         end
         else begin
             f_len_pxi_F0 <= {ep02wire, ep01wire}; 
-            f_velocity_F0 <= {ep04wire, ep03wire}; 
+            f_velocity_F0 <= {ep04wire, ep03wire};             
+            i_M1_CN_drive <= {ep06wire, ep05wire};             
+            i_M1_CN2_drive <= {ep08wire, ep07wire}; 
         end
     end   
 
-    /***  MotorCortex direct drive ***/
-    reg [31:0] i_M1_CN_drive; 
-    always @(posedge ep50trig[11] or posedge reset_global)
-    begin
-        if (reset_global)
-            i_M1_CN_drive <= 32'h0000_0000; //0.0
-        else
-            i_M1_CN_drive <= {ep02wire, ep01wire}; 
-    end   
+//    /***  MotorCortex direct drive ***/
+//    reg [31:0] i_M1_CN_drive; 
+//    always @(posedge ep50trig[11] or posedge reset_global)
+//    begin
+//        if (reset_global)
+//            i_M1_CN_drive <= 32'h0000_0000; //0.0
+//        else
+//            i_M1_CN_drive <= {ep02wire, ep01wire}; 
+//    end   
      
     /***  MotorCortex synapse gain  ***/
     reg signed [31:0] i_gain_syn_SN_to_CN; 
@@ -765,7 +772,10 @@ module one_joint_robot_all_in1_xem6010(
     okWireIn     wi02 (.ok1(ok1),                           .ep_addr(8'h02), .ep_dataout(ep02wire));
     okWireIn     wi03 (.ok1(ok1),                           .ep_addr(8'h03), .ep_dataout(ep03wire));
     okWireIn     wi04 (.ok1(ok1),                           .ep_addr(8'h04), .ep_dataout(ep04wire));
-
+    okWireIn     wi05 (.ok1(ok1),                           .ep_addr(8'h05), .ep_dataout(ep05wire));
+    okWireIn     wi06 (.ok1(ok1),                           .ep_addr(8'h06), .ep_dataout(ep06wire));
+    okWireIn     wi07 (.ok1(ok1),                           .ep_addr(8'h07), .ep_dataout(ep07wire));
+    okWireIn     wi08 (.ok1(ok1),                           .ep_addr(8'h08), .ep_dataout(ep08wire));
 
 
     okWireOut    wo20 (.ep_datain(i_EPSC_SN_to_MN[15:0]), .ok1(ok1), .ok2(ok2x[  0*17 +: 17 ]), .ep_addr(8'h20) );
