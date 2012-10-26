@@ -165,8 +165,8 @@ class Model:
         #2
         bitValLo2 = bitVal2 & 0xffff
         bitValHi2 = (bitVal2 >> 16) & 0xffff
-        self.xem.SetWireInValue(0x05, bitValLo2, 0xffff)
-        self.xem.SetWireInValue(0x06, bitValHi2, 0xffff)
+        self.xem.SetWireInValue(0x03, bitValLo2, 0xffff)
+        self.xem.SetWireInValue(0x04, bitValHi2, 0xffff)
         
         self.xem.UpdateWireIns()            
         self.xem.ActivateTriggerIn(0x50, trigEvent)   
