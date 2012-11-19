@@ -499,6 +499,7 @@
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAD_EXCEL_REPORT" xil_pn:name="velocity_encoder_xem6010_pad.csv" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAD_TXT_REPORT" xil_pn:name="velocity_encoder_xem6010_pad.txt" xil_pn:subbranch="Par"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="velocity_encoder_xem6010_par.xrpt"/>
+    <file xil_pn:fileType="FILE_HTML" xil_pn:name="velocity_encoder_xem6010_summary.html"/>
     <file xil_pn:fileType="FILE_FITTER_REPORT" xil_pn:name="velocity_encoder_xem6010_summary.xml"/>
     <file xil_pn:fileType="FILE_WEBTALK" xil_pn:name="velocity_encoder_xem6010_usage.xml"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="velocity_encoder_xem6010_xst.xrpt"/>
@@ -538,10 +539,7 @@
       <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForProperties"/>
-      <outfile xil_pn:name="../../source/io/neuron_ram.ngc"/>
-      <outfile xil_pn:name="../../source/io/neuron_ram.v"/>
-      <outfile xil_pn:name="ipcore_dir/blk_mem_gen_v6_1.ngc"/>
-      <outfile xil_pn:name="ipcore_dir/blk_mem_gen_v6_1.v"/>
+      <status xil_pn:value="InputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1345243589" xil_pn:in_ck="1892375844914793642" xil_pn:name="TRAN_copyPostAbstractToPreSimulation" xil_pn:start_ts="1345243589">
       <status xil_pn:value="SuccessfullyRun"/>
@@ -582,11 +580,9 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1351287153" xil_pn:in_ck="-3576252247138894627" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="-663664718537483538" xil_pn:start_ts="1351287153">
+    <transform xil_pn:end_ts="1353366608" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="-663664718537483538" xil_pn:start_ts="1353366608">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="../../source/io/neuron_ram.ngc"/>
-      <outfile xil_pn:name="../../source/io/neuron_ram.v"/>
     </transform>
     <transform xil_pn:end_ts="1351287153" xil_pn:in_ck="-3918241064082997573" xil_pn:name="TRAN_SubProjectAbstractToPreProxy" xil_pn:start_ts="1351287153">
       <status xil_pn:value="SuccessfullyRun"/>
@@ -604,7 +600,7 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1351287244" xil_pn:in_ck="3397781684016872905" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="4665537936111142461" xil_pn:start_ts="1351287235">
+    <transform xil_pn:end_ts="1353366621" xil_pn:in_ck="-7030008111433861196" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="4665537936111142461" xil_pn:start_ts="1353366608">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -626,7 +622,7 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1351287249" xil_pn:in_ck="6987693160232574268" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-9191123682613661105" xil_pn:start_ts="1351287244">
+    <transform xil_pn:end_ts="1353366627" xil_pn:in_ck="-1240589720435190077" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-9191123682613661105" xil_pn:start_ts="1353366621">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -636,11 +632,9 @@
       <outfile xil_pn:name="velocity_encoder_xem6010.ngd"/>
       <outfile xil_pn:name="velocity_encoder_xem6010_ngdbuild.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1351287282" xil_pn:in_ck="-158254910422138417" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1351287249">
+    <transform xil_pn:end_ts="1353366673" xil_pn:in_ck="-158254910422138417" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1353366627">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <status xil_pn:value="OutOfDateForOutputs"/>
-      <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
       <outfile xil_pn:name="velocity_encoder_xem6010.pcf"/>
       <outfile xil_pn:name="velocity_encoder_xem6010_map.map"/>
@@ -651,7 +645,7 @@
       <outfile xil_pn:name="velocity_encoder_xem6010_summary.xml"/>
       <outfile xil_pn:name="velocity_encoder_xem6010_usage.xml"/>
     </transform>
-    <transform xil_pn:end_ts="1351287321" xil_pn:in_ck="4727265429814745576" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1351287282">
+    <transform xil_pn:end_ts="1353366724" xil_pn:in_ck="4727265429814745576" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1353366673">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -666,12 +660,11 @@
       <outfile xil_pn:name="velocity_encoder_xem6010_pad.txt"/>
       <outfile xil_pn:name="velocity_encoder_xem6010_par.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1351287339" xil_pn:in_ck="1949238269043827969" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1351287321">
+    <transform xil_pn:end_ts="1353366746" xil_pn:in_ck="1949238269043827969" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1353366724">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
-      <outfile xil_pn:name="usage_statistics_webtalk.html"/>
       <outfile xil_pn:name="velocity_encoder_xem6010.bgn"/>
       <outfile xil_pn:name="velocity_encoder_xem6010.bit"/>
       <outfile xil_pn:name="velocity_encoder_xem6010.drc"/>
@@ -679,7 +672,7 @@
       <outfile xil_pn:name="webtalk.log"/>
       <outfile xil_pn:name="webtalk_pn.xml"/>
     </transform>
-    <transform xil_pn:end_ts="1351287321" xil_pn:in_ck="6099308057818190667" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1351287312">
+    <transform xil_pn:end_ts="1353366724" xil_pn:in_ck="6099308057818190667" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1353366713">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
