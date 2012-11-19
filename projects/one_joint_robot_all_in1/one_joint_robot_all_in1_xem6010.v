@@ -680,29 +680,32 @@ module one_joint_robot_all_in1_xem6010(
     assign IEEE_2p77 = 32'h403147AE;    
    // sub get_bic_len(.x(IEEE_2p77), .y(trigger_input?  f_len_bic_pxi: f_len_bic), .out(f_muscleInput_len_bic));  
 //
-//    shadmehr_muscle muscle_foo
-//    (   .i_spike_cnt(i_MN_spkcnt),
-////        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
-//        .f_pos(f_len_pxi),  // muscle length
-//        //pos(32'h3F8147AE),  // muscle length 1.01
-//        //.vel(current_vel),
-//        .f_vel(f_velocity),
-//        .clk(sim_clk),
-//        .reset(reset_sim),
-//        .f_total_force_out(f_force),
-//        .f_current_A(f_actstate),
-//        .f_current_fp_spikes(f_MN_spkcnt), 
-//		  .f_tau(tau)
-//    );   
-    wire    [31:0]  f_current_h, f_current_fp_spikes;
-     shadmehr_active_force fuglevand_foo
-    (   .i_spikes(i_MN_spkcnt),
-        .f_active_force_out(f_force),
-        .f_fp_spikes_out(f_MN_spkcnt),
-        .clk(sim_clk), 
+    shadmehr_muscle muscle_foo
+    (   .i_spike_cnt(i_MN_spkcnt),
+//        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
+        .f_pos(f_len_pxi),  // muscle length
+        //pos(32'h3F8147AE),  // muscle length 1.01
+        //.vel(current_vel),
+        .f_vel(f_velocity),
+        .clk(sim_clk),
         .reset(reset_sim),
-        .f_tau(tau)
-     );   
+        .f_total_force_out(f_force),
+        .f_current_A(f_actstate),
+        .f_current_fp_spikes(f_MN_spkcnt), 
+		  .f_tau(tau)
+    );   
+    
+    
+    /*** fuglevand twitch model for force ***/
+//    wire    [31:0]  f_current_h, f_current_fp_spikes;
+//     shadmehr_active_force fuglevand_foo
+//    (   .i_spikes(i_MN_spkcnt),
+//        .f_active_force_out(f_force),
+//        .f_fp_spikes_out(f_MN_spkcnt),
+//        .clk(sim_clk), 
+//        .reset(reset_sim),
+//        .f_tau(tau)
+//     );   
     wire 	[31:0]	f_weightout;
     
                
