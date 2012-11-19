@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Tasks SYSTEM "Tasks-4.2.dtd">
+<!-- eric4 tasks file for project one_joint_robot_wireout -->
+<!-- Saved: 2012-07-27, 10:38:20 -->
+<Tasks version="4.2">
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: make note of transform.R.set() -&gt; transform.angle =</Summary>
+    <Description></Description>
+    <Created>2012-07-24, 21:41:43</Created>
+    <Resource>
+      <Filename>limb_box2d.py</Filename>
+      <Linenumber>25</Linenumber>
+    </Resource>
+  </Task>
+</Tasks>
