@@ -226,12 +226,10 @@
     <file xil_pn:fileType="FILE_CMD_LOG" xil_pn:name="one_joint_robot_all_in1_xem6010.cmd_log"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_DRC" xil_pn:name="one_joint_robot_all_in1_xem6010.drc" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_LSO" xil_pn:name="one_joint_robot_all_in1_xem6010.lso"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NCD" xil_pn:name="one_joint_robot_all_in1_xem6010.ncd" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGC" xil_pn:name="one_joint_robot_all_in1_xem6010.ngc"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGD" xil_pn:name="one_joint_robot_all_in1_xem6010.ngd"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGR" xil_pn:name="one_joint_robot_all_in1_xem6010.ngr"/>
     <file xil_pn:fileType="FILE_PAD_MISC" xil_pn:name="one_joint_robot_all_in1_xem6010.pad"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAR_REPORT" xil_pn:name="one_joint_robot_all_in1_xem6010.par" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PCF" xil_pn:name="one_joint_robot_all_in1_xem6010.pcf" xil_pn:subbranch="Map"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="one_joint_robot_all_in1_xem6010.prj"/>
     <file xil_pn:fileType="FILE_TRCE_MISC" xil_pn:name="one_joint_robot_all_in1_xem6010.ptwx"/>
@@ -239,7 +237,6 @@
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_REPORT" xil_pn:name="one_joint_robot_all_in1_xem6010.syr"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_TIMING_TXT_REPORT" xil_pn:name="one_joint_robot_all_in1_xem6010.twr" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_TIMING_XML_REPORT" xil_pn:name="one_joint_robot_all_in1_xem6010.twx" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_UNROUTES" xil_pn:name="one_joint_robot_all_in1_xem6010.unroutes" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_REPORT" xil_pn:name="one_joint_robot_all_in1_xem6010.ut" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:fileType="FILE_XPI" xil_pn:name="one_joint_robot_all_in1_xem6010.xpi"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST" xil_pn:name="one_joint_robot_all_in1_xem6010.xst"/>
@@ -251,8 +248,6 @@
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGM" xil_pn:name="one_joint_robot_all_in1_xem6010_map.ngm" xil_pn:subbranch="Map"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="one_joint_robot_all_in1_xem6010_map.xrpt"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="one_joint_robot_all_in1_xem6010_ngdbuild.xrpt"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAD_EXCEL_REPORT" xil_pn:name="one_joint_robot_all_in1_xem6010_pad.csv" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAD_TXT_REPORT" xil_pn:name="one_joint_robot_all_in1_xem6010_pad.txt" xil_pn:subbranch="Par"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="one_joint_robot_all_in1_xem6010_par.xrpt"/>
     <file xil_pn:fileType="FILE_HTML" xil_pn:name="one_joint_robot_all_in1_xem6010_summary.html"/>
     <file xil_pn:fileType="FILE_FITTER_REPORT" xil_pn:name="one_joint_robot_all_in1_xem6010_summary.xml"/>
@@ -264,12 +259,10 @@
     <file xil_pn:fileType="FILE_CMD_LOG" xil_pn:name="one_joint_robot_xem6010.cmd_log"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_DRC" xil_pn:name="one_joint_robot_xem6010.drc" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_LSO" xil_pn:name="one_joint_robot_xem6010.lso"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NCD" xil_pn:name="one_joint_robot_xem6010.ncd" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGC" xil_pn:name="one_joint_robot_xem6010.ngc"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGD" xil_pn:name="one_joint_robot_xem6010.ngd"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGR" xil_pn:name="one_joint_robot_xem6010.ngr"/>
     <file xil_pn:fileType="FILE_PAD_MISC" xil_pn:name="one_joint_robot_xem6010.pad"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAR_REPORT" xil_pn:name="one_joint_robot_xem6010.par" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PCF" xil_pn:name="one_joint_robot_xem6010.pcf" xil_pn:subbranch="Map"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="one_joint_robot_xem6010.prj"/>
     <file xil_pn:fileType="FILE_TRCE_MISC" xil_pn:name="one_joint_robot_xem6010.ptwx"/>
@@ -277,7 +270,6 @@
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST_REPORT" xil_pn:name="one_joint_robot_xem6010.syr"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_TIMING_TXT_REPORT" xil_pn:name="one_joint_robot_xem6010.twr" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_TIMING_XML_REPORT" xil_pn:name="one_joint_robot_xem6010.twx" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_UNROUTES" xil_pn:name="one_joint_robot_xem6010.unroutes" xil_pn:subbranch="Par"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_BITGEN_REPORT" xil_pn:name="one_joint_robot_xem6010.ut" xil_pn:subbranch="FPGAConfiguration"/>
     <file xil_pn:fileType="FILE_XPI" xil_pn:name="one_joint_robot_xem6010.xpi"/>
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_XST" xil_pn:name="one_joint_robot_xem6010.xst"/>
@@ -290,8 +282,6 @@
     <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGM" xil_pn:name="one_joint_robot_xem6010_map.ngm" xil_pn:subbranch="Map"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="one_joint_robot_xem6010_map.xrpt"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="one_joint_robot_xem6010_ngdbuild.xrpt"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAD_EXCEL_REPORT" xil_pn:name="one_joint_robot_xem6010_pad.csv" xil_pn:subbranch="Par"/>
-    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_PAD_TXT_REPORT" xil_pn:name="one_joint_robot_xem6010_pad.txt" xil_pn:subbranch="Par"/>
     <file xil_pn:fileType="FILE_XRPT" xil_pn:name="one_joint_robot_xem6010_par.xrpt"/>
     <file xil_pn:fileType="FILE_HTML" xil_pn:name="one_joint_robot_xem6010_summary.html"/>
     <file xil_pn:fileType="FILE_FITTER_REPORT" xil_pn:name="one_joint_robot_xem6010_summary.xml"/>
@@ -622,33 +612,31 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1353366627" xil_pn:in_ck="-1240589720435190077" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-9191123682613661105" xil_pn:start_ts="1353366621">
+    <transform xil_pn:end_ts="1353366988" xil_pn:in_ck="-4383297004214162419" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-9191123682613661105" xil_pn:start_ts="1353366981">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_ngo"/>
-      <outfile xil_pn:name="_xmsgs/ngdbuild.xmsgs"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010.bld"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010.ngd"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010_ngdbuild.xrpt"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
-    <transform xil_pn:end_ts="1353366673" xil_pn:in_ck="-158254910422138417" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1353366627">
+    <transform xil_pn:end_ts="1353367030" xil_pn:in_ck="-2441342705607256602" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1353366988">
       <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010.pcf"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010_map.map"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010_map.mrp"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010_map.ncd"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010_map.ngm"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010_map.xrpt"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010_summary.xml"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010_usage.xml"/>
+      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
-    <transform xil_pn:end_ts="1353366724" xil_pn:in_ck="4727265429814745576" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1353366673">
+    <transform xil_pn:end_ts="1353367068" xil_pn:in_ck="-2406001638499378900" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1353367030">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
-      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="InputRemoved"/>
       <outfile xil_pn:name="_xmsgs/par.xmsgs"/>
       <outfile xil_pn:name="velocity_encoder_xem6010.ncd"/>
       <outfile xil_pn:name="velocity_encoder_xem6010.pad"/>
@@ -660,10 +648,11 @@
       <outfile xil_pn:name="velocity_encoder_xem6010_pad.txt"/>
       <outfile xil_pn:name="velocity_encoder_xem6010_par.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1353366746" xil_pn:in_ck="1949238269043827969" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1353366724">
+    <transform xil_pn:end_ts="1353367090" xil_pn:in_ck="1949238269043827969" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1353367068">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
       <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
       <outfile xil_pn:name="velocity_encoder_xem6010.bgn"/>
       <outfile xil_pn:name="velocity_encoder_xem6010.bit"/>
@@ -673,11 +662,12 @@
       <outfile xil_pn:name="webtalk_pn.xml"/>
     </transform>
     <transform xil_pn:end_ts="1353366724" xil_pn:in_ck="6099308057818190667" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1353366713">
-      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="AbortedRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010.twr"/>
-      <outfile xil_pn:name="velocity_encoder_xem6010.twx"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="InputChanged"/>
+      <status xil_pn:value="InputRemoved"/>
     </transform>
   </transforms>
 
