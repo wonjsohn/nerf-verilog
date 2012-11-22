@@ -5,7 +5,7 @@ Module implementing Control.
 """
 
 from PyQt4.QtGui import QDialog
-from PyQt4.QtCore import pyqtSignature
+from PyQt4.QtCore import pyqtSignature, pyqtSlot
 from PyQt4.QtCore import QTimer,  SIGNAL, SLOT, Qt,  QRect
 from PyQt4 import QtCore, QtGui
 
@@ -15,33 +15,35 @@ from generate_tri import gen as gen_tri
 from generate_spikes import spike_train
 from generate_sequence import gen as gen_ramp
 from math import floor
-
+import types
 
 class CtrlChannel:
-    def __init__(self, hostDialog, name, id, type, value = 0.0):
-        exec interp('self.id = #{id}')
+    def __init__(self, hostDialog, id, name, type, value = 0.0):
         exec interp('self.currVal = #{value}')
-        exec interp('self.type = type')
+        self.type = type
 
-        exec interp('self.doubleSpinBox = QtGui.QDoubleSpinBox(hostDialog)')
-        exec interp('self.doubleSpinBox.setGeometry(QtCore.QRect(230, #{id} * 35, 105, 30))')
-        exec interp('self.doubleSpinBox.setProperty("value", value)')
-        exec interp('self.doubleSpinBox.setObjectName("param_#{name}")')
-        exec interp('self.doubleSpinBox.setSingleStep(0.1)')
-        exec interp('self.doubleSpinBox.setMaximum(100000.0)')
+        self.doubleSpinBox = QtGui.QDoubleSpinBox(hostDialog)
+        self.doubleSpinBox.setGeometry(QtCore.QRect(230, id * 35, 105, 30))
+        self.doubleSpinBox.setProperty("value", value)
+        self.doubleSpinBox.setObjectName("param_"+name)
+        self.doubleSpinBox.setSingleStep(0.1)
+        self.doubleSpinBox.setMaximum(100000.0)
         
-        exec interp('self.label = QtGui.QLabel(hostDialog)')
-        exec interp('self.label.setObjectName("label_#{name}")')
-        exec interp('self.label.setText("#{name}")')        
-        exec interp('self.label.setGeometry(QtCore.QRect(350, #{id} * 35, 105, 30))')
+        self.label = QtGui.QLabel(hostDialog)
+        self.label.setObjectName("label_"+name)
+        self.label.setText(name)
+        self.label.setGeometry(QtCore.QRect(350, id * 35, 105, 30))
              
-             
+         
+
 from Ui_Controls import Ui_Dialog
 class SingleDutTester(QDialog, Ui_Dialog):
     """
     Class documentation goes here.
     """
-    def __init__(self, nerfModel, dispView, parent = None):
+    
+    
+    def __init__(self, nerfModel, dispView, TESTABLE_INPUTS, parent = None):
         """
         Constructor
         """
@@ -54,22 +56,21 @@ class SingleDutTester(QDialog, Ui_Dialog):
         self.dispView.show()
         self.data = []
         self.isLogData = False
-        
-        # Create float_spin for each input channel
-        self.ctrl_all = []
-        for (trig_id, name, type, value) in CHOUT_PARAM:
-            exec interp('self.ctrl_#{name} = CtrlChannel(hostDialog=self, name=name, id=trig_id, type=type, value=value)')
-            exec interp('self.connect(self.ctrl_#{name}.doubleSpinBox, SIGNAL("editingFinished()"), self.onNewWireIn)')
-            exec interp('self.connect(self.ctrl_#{name}.doubleSpinBox, SIGNAL("valueChanged(double)"), self.onNewWireIn)')
-            exec interp('self.ctrl_all.append(self.ctrl_#{name})')        
-        
+
+        # Prepare the widgets for each control channel to Fpga
+        self.ctrl_all = {}
+        i = 1
+        for (name, type, value) in TESTABLE_INPUTS:    
+            self.ctrl_all[name] = CtrlChannel(hostDialog=self, id = i, name=name, type=type, value=value) 
+            i += 1
+
         # Timer for pulling data, separated from timer_display
         self.timer = QTimer(self)
         self.connect(self.timer, SIGNAL("timeout()"), self.onTimer)       
         self.timer.start(VIEWER_REFRESH_RATE )
         
         
-        self.on_horizontalSlider_valueChanged(5)      
+        self.on_horizontalSlider_valueChanged(5)   
 
     def updateTrigger(trigEvent):
         def realUpdateTrigger(function):
@@ -124,10 +125,10 @@ class SingleDutTester(QDialog, Ui_Dialog):
 
         #self.nerfModel.SendPara(bitVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
         
-    def onNewWireIn(self, forceUpdate = False):
+    def onNewWireIn(self):
         for ctrl in self.ctrl_all:
             newWireIn = ctrl.doubleSpinBox.value()
-            if (newWireIn != ctrl.currVal) | (forceUpdate):
+            if (newWireIn != ctrl.currVal):
                 ctrl.currValue = newWireIn
                 if (ctrl.type == 'int32'):
                     bitVal = ConvertType(floor(newWireIn),  fromType = 'i',  toType = 'I')

@@ -23,23 +23,35 @@ DATA_OUT_ADDR = list(zip(*CHIN_PARAM)[0])
 CH_TYPE = list(zip(*CHIN_PARAM)[3])
                 
 #            trig_id    name          type          default_value                
-CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      30.0), \
-                (2, 'tau',  'float32',      0.03), \
-                (3, 'gain_syn_CN_to_MN',   'int32',       1), \
-                (4, 'gamma_dyn',    'float32',      80.0), \
-                (5, 'gamma_sta',    'float32',      80.0), \
-                (6, 'gain_syn_SN_to_MN',      'int32',        1),  \
-                (7, 'trigger_input',      'int32',        1),  \
-                (8, 'i_M1_CN2_drive',      'int32',        1),  \
-                (9, 'i_gain_syn_CN2_to_MN',      'int32',        1),  \
-                (10, 'bicep_len_pxi',      'float32',        1.1),  \
-                (11, 'i_m1_drive',      'int32',        0),  \
-                (12, 'gain_syn_SN_to_CN',      'int32',        1)
-                
+#TESTABLE_INPUTS =   (1, 'pps_coef_Ia',  'float32',      30.0), \
+#                    (2, 'tau',  'float32',      0.03), \
+#                    (3, 'gain_syn_CN_to_MN',   'int32',       1), \
+#                    (4, 'gamma_dyn',    'float32',      80.0), \
+#                    (5, 'gamma_sta',    'float32',      80.0), \
+#                    (6, 'gain_syn_SN_to_MN',      'int32',        1),  \
+#                    (7, 'trigger_input',      'int32',        1),  \
+#                    (8, 'i_M1_CN2_drive',      'int32',        1),  \
+#                    (9, 'i_gain_syn_CN2_to_MN',      'int32',        1),  \
+#                    (10, 'bicep_len_pxi',      'float32',        1.1),  \
+#                    (11, 'i_m1_drive',      'int32',        0),  \
+#                    (12, 'gain_syn_SN_to_CN',      'int32',        1)
+#                        
+TESTABLE_INPUTS =   ('pps_coef_Ia',  'float32',      30.0), \
+                    ('tau',  'float32',      0.03), \
+                    ('gain_syn_CN_to_MN',   'int32',       1), \
+                    ('gamma_dyn',    'float32',      80.0), \
+                    ('gamma_sta',    'float32',      80.0), \
+                    ('gain_syn_SN_to_MN',      'int32',        1),  \
+                    ('trigger_input',      'int32',        1),  \
+                    ('i_M1_CN2_drive',      'int32',        1),  \
+                    ('i_gain_syn_CN2_to_MN',      'int32',        1),  \
+                    ('bicep_len_pxi',      'float32',        1.1),  \
+                    ('i_m1_drive',      'int32',        0),  \
+                    ('gain_syn_SN_to_CN',      'int32',        1)
 
 
                 
-SEND_TYPE = list(zip(*CHOUT_PARAM)[2])   
+SEND_TYPE = list(zip(*TESTABLE_INPUTS)[2])   
 
 BIT_FILE = "velocity_encoder_xem6010.bit"
 #BIT_FILE2 = "../one_joint_robot_xem6010 (copy).bit"
