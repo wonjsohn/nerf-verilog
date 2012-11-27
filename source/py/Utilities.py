@@ -57,25 +57,3 @@ def interp(string):
   return string
 
 
-import types
-import inspect
-
-# A trick for generating functions with dynamic names
-updater_macro = """
-@pyqtSlot('double')
-def #{realUpdaterName}(self, value = 0):
-    frame = inspect.currentframe()
-    info = inspect.getframeinfo(frame)
-    chanName = info.function.split("__")[-1]
-    self.tellFpga(chanName, value)
-    print chanName, " is now ", value
-"""
-
-def dynamicConnect(obj, methodName = "__onNewValue__"):
-    for name, eachCh in obj.ch_all.iteritems():
-        realUpdaterName = methodName + name #KEY of dynamic binding -- Create functions with customizable names
-        exec interp(updater_macro)
-        obj.__dict__[realUpdaterName] = types.MethodType(eval(realUpdaterName), obj)        
-        obj.connect(eachCh.doubleSpinBox, SIGNAL("valueChanged(double)"), obj.__getattribute__(realUpdaterName))
-        obj.connect(eachCh.doubleSpinBox, SIGNAL("editingFinished()"), obj.__getattribute__(realUpdaterName))
-    

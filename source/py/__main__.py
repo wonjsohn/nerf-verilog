@@ -37,7 +37,7 @@ if __name__ == "__main__":
     
     # Pass device and dispView to the main GUI
     testerGui = SingleDutTester(xem, dispWindow, USER_INPUT)
-    dynamicConnect(obj = testerGui, methodName = "__onNewValue__")
+    #dynamicConnect(obj = testerGui, methodName = "__onNewValue__")
     testerGui.show()
         
     sys.exit(app.exec_())
