@@ -64,7 +64,7 @@ class SomeFpga:
             intValLo = self.xem.GetWireOutValue(getAddr) & 0xffff # length = 16-bit
             intValHi = self.xem.GetWireOutValue(getAddr + 0x01) & 0x0003 # length = 2-bit
             intVal = ((intValHi << 16) + intValLo) & 0xFFFFFFFF
-#            intVal = ConvertType(intVal, 'I', 'i')
+#            intVal = convertType(intVal, 'I', 'i')
             if intVal > 0x1FFFF:
                 intVal = -(0x3FFFF - intVal + 0x1)
             outVal = float(intVal) # in mV De-Scaling factor = 0xFFFF
@@ -74,14 +74,14 @@ class SomeFpga:
             outValLo = self.xem.GetWireOutValue(getAddr) & 0xffff # length = 16-bit
             outValHi = self.xem.GetWireOutValue(getAddr + 0x01) & 0xffff
             outVal = ((outValHi << 16) + outValLo) & 0xFFFFFFFF
-            outVal = ConvertType(outVal, 'I', 'f')
+            outVal = convertType(outVal, 'I', 'f')
             #print outVal
         ## Read 32-bit signed integer from FPGA
         elif type == "int32" :
             intValLo = self.xem.GetWireOutValue(getAddr) & 0xffff # length = 16-bit
             intValHi = self.xem.GetWireOutValue(getAddr + 0x01) & 0xffff # length = 16-bit
             intVal = ((intValHi << 16) + intValLo) & 0xFFFFFFFF
-            outVal = ConvertType(intVal, 'I',  'i')  # in mV De-Scaling factor = 128  #????
+            outVal = convertType(intVal, 'I',  'i')  # in mV De-Scaling factor = 128  #????
 
         ## if getAddr == DATA_OUT_ADDR[0]:
         ## print "%2.4f" % outVal, 

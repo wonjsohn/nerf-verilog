@@ -59,15 +59,14 @@ class SingleDutTester(QDialog, Ui_Dialog):
         self.isLogData = False
 
         # Prepare the widgets for each control channel to Fpga
-        self.ctrl_all = {}
+        self.ch_all = {}
         for (id, name, type, value) in TESTABLE_INPUTS:    
-            self.ctrl_all[name] = CtrlChannel(hostDialog=self, id = id, name=name, type=type, value=value) 
+            self.ch_all[name] = CtrlChannel(hostDialog=self, id = id, name=name, type=type, value=value) 
 
         # Timer for pulling data, separated from timer_display
         self.timer = QTimer(self)
         self.connect(self.timer, SIGNAL("timeout()"), self.onTimer)       
         self.timer.start(VIEWER_REFRESH_RATE )
-        
         
         self.on_horizontalSlider_valueChanged(5)   
 
@@ -125,13 +124,13 @@ class SingleDutTester(QDialog, Ui_Dialog):
         #self.nerfModel.SendPara(bitVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
         
     def tellFpga(self, chanName, newWireIn):
-        ctrl = self.ctrl_all[chanName] # Handle of the Tester channel
+        ctrl = self.ch_all[chanName] # Handle of the Tester channel
         ctrl.currValue = newWireIn
         if (ctrl.type == 'int32'):
-            bitVal = ConvertType(floor(newWireIn),  fromType = 'i',  toType = 'I')
+            bitVal = convertType(floor(newWireIn),  fromType = 'i',  toType = 'I')
         elif (ctrl.type == 'float32'):
-            bitVal = ConvertType(newWireIn, fromType = 'f', toType = 'I')
-        bitVal2 = ConvertType(1000.0, fromType = 'f', toType = 'I')
+            bitVal = convertType(newWireIn, fromType = 'f', toType = 'I')
+        bitVal2 = convertType(1000.0, fromType = 'f', toType = 'I')
         self.nerfModel.SendMultiPara(bitVal1 = bitVal, bitVal2=bitVal2,  trigEvent = ctrl.id)
                 
 
