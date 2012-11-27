@@ -21,8 +21,8 @@ from Ui_Display import Ui_Dialog
 
 class ViewChannel:
     def __init__(self, hostDialog, name, id, width = 2, color = 'Qt.blue'):
-        exec interp('self.id = #{id}')
-        exec interp('self.width = #{width}')
+        self.id = id
+        self.width = width
         exec interp('self.color = #{color}')
         exec interp('self.vscale = 0.0')
         exec interp('self.yoffset = 1.0')
@@ -59,11 +59,11 @@ class View(QMainWindow, Ui_Dialog):
 
         self.numPt = PIXEL_OFFSET
         self.isPause = False
-        self.NUM_CHANNEL = len(CHIN_PARAM)
+        self.NUM_CHANNEL = len(ch_all)
 
         # Create a gain_slider for each channel
         self.ch_all = []
-        for (addr, name, visual_gain, type, color), i in zip(CHIN_PARAM, xrange(NUM_CHANNEL)):
+        for (addr, name, visual_gain, type, color), i in zip(ch_all, xrange(NUM_CHANNEL)):
             exec interp('self.ch_#{name} = ViewChannel(hostDialog=self, name=name, id=i, color = color)')
             exec interp('self.connect(self.ch_#{name}.slider, SIGNAL("valueChanged(int)"), self.onChInGain)')
             exec interp('self.ch_all.append(self.ch_#{name})')

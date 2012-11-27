@@ -21,6 +21,7 @@ class CtrlChannel:
     def __init__(self, hostDialog, id, name, type, value = 0.0):
         exec interp('self.currVal = #{value}')
         self.type = type
+        self.id = id
 
         self.doubleSpinBox = QtGui.QDoubleSpinBox(hostDialog)
         self.doubleSpinBox.setGeometry(QtCore.QRect(230, id * 35, 105, 30))
@@ -39,7 +40,7 @@ class CtrlChannel:
 from Ui_Controls import Ui_Dialog
 class SingleDutTester(QDialog, Ui_Dialog):
     """
-    Class documentation goes here.
+    GUI class for feeding waveforms or user inputs to OpalKelly boards
     """
     
     
@@ -59,10 +60,8 @@ class SingleDutTester(QDialog, Ui_Dialog):
 
         # Prepare the widgets for each control channel to Fpga
         self.ctrl_all = {}
-        i = 1
-        for (name, type, value) in TESTABLE_INPUTS:    
-            self.ctrl_all[name] = CtrlChannel(hostDialog=self, id = i, name=name, type=type, value=value) 
-            i += 1
+        for (id, name, type, value) in TESTABLE_INPUTS:    
+            self.ctrl_all[name] = CtrlChannel(hostDialog=self, id = id, name=name, type=type, value=value) 
 
         # Timer for pulling data, separated from timer_display
         self.timer = QTimer(self)
@@ -82,7 +81,7 @@ class SingleDutTester(QDialog, Ui_Dialog):
 
     def onTimer(self):
         """
-        Core function of Controller, which polls data from Model(fpga) and sends them to Viewer.
+        Core function of Controller, polling data from Model(fpga) and sending to Viewer.
         """
         newData = []
         for xaddr, xtype in zip(DATA_OUT_ADDR, CH_TYPE):
@@ -119,27 +118,22 @@ class SingleDutTester(QDialog, Ui_Dialog):
         # halfcnt = F_fpga / F_neuron / 2 = F_fpga / (C * NUM_NEURON * V * F_emu) / 2
         NUM_CYCLE = 2
         newHalfCnt = 200 * (10 **6) / (NUM_CYCLE * NUM_NEURON * value * SAMPLING_RATE/10 ) /2 
-        print 'halfcnt=%d' %newHalfCnt
-        print 'value=%d' %value
+#        print 'halfcnt=%d' %newHalfCnt
+#        print 'value=%d' %value
         return newHalfCnt
 
         #self.nerfModel.SendPara(bitVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
         
-    def onNewWireIn(self):
-        for ctrl in self.ctrl_all:
-            newWireIn = ctrl.doubleSpinBox.value()
-            if (newWireIn != ctrl.currVal):
-                ctrl.currValue = newWireIn
-                if (ctrl.type == 'int32'):
-                    bitVal = ConvertType(floor(newWireIn),  fromType = 'i',  toType = 'I')
-#                    print bitVal
-                elif (ctrl.type == 'float32'):
-                    bitVal = ConvertType(newWireIn, fromType = 'f', toType = 'I')
-                #self.nerfModel.SendPara(bitVal = bitVal, trigEvent = ctrl.id)
-                bitVal2 = ConvertType(1000.0, fromType = 'f', toType = 'I')
-                self.nerfModel.SendMultiPara(bitVal1 = bitVal, bitVal2=bitVal2,  trigEvent = ctrl.id)
+    def tellFpga(self, chanName, newWireIn):
+        ctrl = self.ctrl_all[chanName] # Handle of the Tester channel
+        ctrl.currValue = newWireIn
+        if (ctrl.type == 'int32'):
+            bitVal = ConvertType(floor(newWireIn),  fromType = 'i',  toType = 'I')
+        elif (ctrl.type == 'float32'):
+            bitVal = ConvertType(newWireIn, fromType = 'f', toType = 'I')
+        bitVal2 = ConvertType(1000.0, fromType = 'f', toType = 'I')
+        self.nerfModel.SendMultiPara(bitVal1 = bitVal, bitVal2=bitVal2,  trigEvent = ctrl.id)
                 
-
 
     def plotData(self, data):
         from pylab import plot, show, subplot
@@ -205,7 +199,7 @@ class SingleDutTester(QDialog, Ui_Dialog):
     @pyqtSignature("bool")
     def on_pushButton_5_clicked(self, checked):
         """
-        Slot documentation goes here.
+        Toggle reset_sim, doesn't stop Fpga clock.
         """
         newResetSim = checked
         self.nerfModel.SendButton(newResetSim, BUTTON_RESET_SIM)
@@ -221,16 +215,7 @@ class SingleDutTester(QDialog, Ui_Dialog):
     @pyqtSignature("bool")
     def on_pushButtonData_clicked(self, checked):
         """
-        Slot documentation goes here.
+        Toggling data logging for Matlab use.
         """
         self.isLogData = checked
 
-
-#    @pyqtSignature("bool")
-#    def on_checkbox_checked(self, state):
-#        """
-#        Slot documentation goes here.
-#        """
-#        if state == QtCore.Qt.Checked:
-#            self.nerfModel.SendCheck()
-        
