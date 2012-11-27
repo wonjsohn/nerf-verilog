@@ -16,6 +16,7 @@ from generate_spikes import spike_train
 from generate_sequence import gen as gen_ramp
 from math import floor
 import types
+from functools import partial
 
 class CtrlChannel:
     def __init__(self, hostDialog, id, name, type, value = 0.0):
@@ -33,17 +34,22 @@ class CtrlChannel:
         self.label = QtGui.QLabel(hostDialog)
         self.label.setObjectName("label_"+name)
         self.label.setText(name)
-        self.label.setGeometry(QtCore.QRect(350, id * 35, 105, 30))
-             
-         
+        self.label.setGeometry(QtCore.QRect(350, id * 35, 105, 30))           
 
+def onNewWireIn(self, whichCh, value = -1):
+    if value == -1: value = self.ch_all[whichCh].doubleSpinBox.value() 
+    self.tellFpga(whichCh, value)
+    print whichCh, " is now ", value
+        
+        
 from Ui_Controls import Ui_Dialog
 class SingleDutTester(QDialog, Ui_Dialog):
     """
     GUI class for feeding waveforms or user inputs to OpalKelly boards
     """
     
-    
+
+
     def __init__(self, nerfModel, dispView, TESTABLE_INPUTS, parent = None):
         """
         Constructor
@@ -62,6 +68,12 @@ class SingleDutTester(QDialog, Ui_Dialog):
         self.ch_all = {}
         for (id, name, type, value) in TESTABLE_INPUTS:    
             self.ch_all[name] = CtrlChannel(hostDialog=self, id = id, name=name, type=type, value=value) 
+            
+        # VERY important: dynamically connect SIGNAL to SLOT, with curried arguments
+        for eachName, eachCh in self.ch_all.iteritems():
+            fn = partial(onNewWireIn, self, eachName) # Customizing onNewWireIn() into channel-specific 
+            eachCh.doubleSpinBox.valueChanged.connect(fn)
+            eachCh.doubleSpinBox.editingFinished.connect(fn)           
 
         # Timer for pulling data, separated from timer_display
         self.timer = QTimer(self)
@@ -69,6 +81,7 @@ class SingleDutTester(QDialog, Ui_Dialog):
         self.timer.start(VIEWER_REFRESH_RATE )
         
         self.on_horizontalSlider_valueChanged(5)   
+
 
     def updateTrigger(trigEvent):
         def realUpdateTrigger(function):
