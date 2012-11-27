@@ -20,27 +20,28 @@ from Ui_Display import Ui_Dialog
 
 
 class ViewChannel:
-    def __init__(self, hostDialog, name, id, width = 2, color = 'Qt.blue'):
+    def __init__(self, hostDialog, name, id, width = 2, color = Qt.blue):
         self.id = id
         self.width = width
-        exec interp('self.color = #{color}')
-        exec interp('self.vscale = 0.0')
-        exec interp('self.yoffset = 1.0')
-        exec interp('self.data = deque([0]*100, maxlen=100)')
-        exec interp('self.slider = QtGui.QSlider(hostDialog)')
-        exec interp('self.slider.setGeometry(QtCore.QRect(100, 130+#{id}*100, 29, 100))')
-        exec interp('self.slider.setOrientation(QtCore.Qt.Vertical)')
-        exec interp('self.slider.setObjectName("gain_#{name}")')
+        self.color = color
+        self.vscale = 0.0
+        self.yoffset = 1.0
+        self.data = deque([0]*100, maxlen=100)
+        self.slider = QtGui.QSlider(hostDialog)
+        self.slider.setGeometry(QtCore.QRect(100, 130+ id*100, 29, 100))
+        self.slider.setOrientation(QtCore.Qt.Vertical)
+        self.slider.setObjectName("gain_"+name)
         
 
-        exec interp('self.label = QtGui.QLabel(hostDialog)')
-        exec interp('pal = self.label.palette()')        
-        exec interp('pal.setColor( QtGui.QPalette.Foreground, #{color} )')        
-        exec interp('self.label.setPalette(pal)')        
-        exec interp('self.label.setObjectName("label_#{name}")')
-        exec interp('self.label.setText("#{name}")')        
-        exec interp('self.label.setGeometry(QtCore.QRect(10, 90+#{id}*100, 80, 100))')
-        exec interp('self.label.show()')        
+        self.label = QtGui.QLabel(hostDialog)
+        pal = self.label.palette()
+        pal.setColor( QtGui.QPalette.Foreground, color )
+        self.label.setPalette(pal)
+        self.label.setObjectName("label_"+name)
+        self.label.setText(name)
+        self.label.setGeometry(QtCore.QRect(10, 90+ id*100, 80, 100))
+        self.label.show()
+     
 
 
 class View(QMainWindow, Ui_Dialog):

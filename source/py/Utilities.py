@@ -1,5 +1,5 @@
 from struct import pack, unpack
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import Qt, SIGNAL, SLOT, pyqtSignature, pyqtSlot
 
 VIEWER_REFRESH_RATE = 10 # in ms, This the T for calculating digital freq
 PIPE_IN_ADDR = 0x80
@@ -9,15 +9,13 @@ BUTTON_ENABLE_SIM = 2
 
 DATA_EVT_CLKRATE = 0
 #            address         name   visual_gain         type            color
-FPGA_OUTPUT =    (0x20,      'i_vel',      50,         'int32',      'Qt.blue'),  \
-                (0x22,      'i',      1.0,         'float32',      'Qt.red'),  \
-                (0x24,      'i_CN_spkcnt',      1.0,         'int32',      'Qt.green'),  \
-                (0x26,      'i_emg_bic',      1.0,         'int32',      'Qt.black'),  \
-                (0x28,      'f_lce_bic',      1.0,         'int32',      'Qt.magenta'),  \
-                (0x30,      'f_force_bic',      1.0,         'float32',      'Qt.darkRed'),  \
-                (0x32,      'non',      1.0,         'int32',      'Qt.darkGray'),   \
-#                (0x36,      'i_emg_mu7',     1.0,         'int32',      'Qt.blue'), \
-#                (0x28,      'f_force_mu3',     1.0,         'float32',      'Qt.red')
+FPGA_OUTPUT =    (0x20,      'i_vel',      50,         'int32',      Qt.blue),  \
+                (0x22,      'i',      1.0,         'float32',      Qt.red),  \
+                (0x24,      'i_CN_spkcnt',      1.0,         'int32',      Qt.green),  \
+                (0x26,      'i_emg_bic',      1.0,         'int32',      Qt.black),  \
+                (0x28,      'f_lce_bic',      1.0,         'int32',      Qt.magenta),  \
+                (0x30,      'f_force_bic',      1.0,         'float32',      Qt.darkRed),  \
+                (0x32,      'non',      1.0,         'int32',      Qt.darkGray)
 NUM_CHANNEL = len(FPGA_OUTPUT) # Number of channels
 DATA_OUT_ADDR = list(zip(*FPGA_OUTPUT)[0])
 CH_TYPE = list(zip(*FPGA_OUTPUT)[3])
@@ -35,22 +33,17 @@ USER_INPUT =   (1, 'pps_coef_Ia',  'float32',      30.0), \
                     (10, 'bicep_len_pxi',      'float32',        1.1),  \
                     (11, 'i_m1_drive',      'int32',        0),  \
                     (12, 'gain_syn_SN_to_CN',      'int32',        1)
-                        
-
 
                 
 SEND_TYPE = list(zip(*USER_INPUT)[2])   
 
-BIT_FILE = "velocity_encoder_xem6010.bit"
-#BIT_FILE2 = "../one_joint_robot_xem6010 (copy).bit"
 
 
 SAMPLING_RATE = 1024
-#NUM_NEURON = 512
 NUM_NEURON = 128
 
 
-def ConvertType(val, fromType, toType):
+def convertType(val, fromType, toType):
     return unpack(toType, pack(fromType, val))[0]
     
 
@@ -63,3 +56,26 @@ def interp(string):
                             str(eval(item, globals, locals)))
   return string
 
+
+import types
+import inspect
+
+# A trick for generating functions with dynamic names
+updater_macro = """
+@pyqtSlot('double')
+def #{realUpdaterName}(self, value = 0):
+    frame = inspect.currentframe()
+    info = inspect.getframeinfo(frame)
+    chanName = info.function.split("__")[-1]
+    self.tellFpga(chanName, value)
+    print chanName, " is now ", value
+"""
+
+def dynamicConnect(obj, methodName = "__onNewValue__"):
+    for name, eachCh in obj.ch_all.iteritems():
+        realUpdaterName = methodName + name #KEY of dynamic binding -- Create functions with customizable names
+        exec interp(updater_macro)
+        obj.__dict__[realUpdaterName] = types.MethodType(eval(realUpdaterName), obj)        
+        obj.connect(eachCh.doubleSpinBox, SIGNAL("valueChanged(double)"), obj.__getattribute__(realUpdaterName))
+        obj.connect(eachCh.doubleSpinBox, SIGNAL("editingFinished()"), obj.__getattribute__(realUpdaterName))
+    

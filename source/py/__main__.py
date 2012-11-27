@@ -11,20 +11,6 @@ from Fpga import SomeFpga # Model in MVC
 from Display import View # Viewer in MVC
 from Utilities import *
 import os
-import types
-import inspect
-
-# A trick for generating functions with dynamic names
-updater_macro = """
-@pyqtSlot('double')
-def #{realUpdaterName}(self, value):
-    frame = inspect.currentframe()
-    info = inspect.getframeinfo(frame)
-    chanName = info.function.split("__onNewValue__")[1]
-    self.tellFpga(chanName, value)
-    print chanName, " is now ", value
-"""
-
 
 
 if __name__ == "__main__":        
@@ -51,12 +37,7 @@ if __name__ == "__main__":
     
     # Pass device and dispView to the main GUI
     testerGui = SingleDutTester(xem, dispWindow, USER_INPUT)
-    for name in testerGui.ctrl_all:
-        eachCtrl = testerGui.ctrl_all[name]
-        realUpdaterName = "__onNewValue__" + name
-        exec interp(updater_macro)
-        testerGui.__dict__[realUpdaterName] = types.MethodType(eval(realUpdaterName), testerGui)        
-        testerGui.connect(eachCtrl.doubleSpinBox, SIGNAL("valueChanged(double)"), testerGui.__getattribute__(realUpdaterName))
+    dynamicConnect(obj = testerGui, methodName = "__onNewValue__")
     testerGui.show()
         
     sys.exit(app.exec_())
