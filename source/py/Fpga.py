@@ -20,9 +20,11 @@ from Utilities import *
 class SomeFpga:
     """ The FPGA class
     """
-    def __init__(self, BITFILE_NAME):        
+    def __init__(self, BITFILE_NAME, NUM_NEURON, SAMPLING_RATE):        
         self.BITFILE_NAME = BITFILE_NAME.encode('utf-8')
         self.myMoney = 0
+        self.NUM_NEURON = NUM_NEURON
+        self.SAMPLING_RATE = SAMPLING_RATE
         self.ConfigureXEM()            
 
     def ConfigureXEM(self):
@@ -54,6 +56,12 @@ class SomeFpga:
         self.xem.SetPLL22393Configuration(self.pll)
         self.xem.ConfigureFPGA(self.BITFILE_NAME)        
         
+        
+    def HalfCountRealTime(self):
+        NUM_CYCLE = 2
+        newHalfCnt = self.clkRate * (10 **6) / (NUM_CYCLE * self.NUM_NEURON * self.SAMPLING_RATE ) /2      
+        return newHalfCnt
+            
     def ReadFPGA(self, getAddr, type):
 
         """ getAddr = 0x20 -- 0x3F (maximal in OkHost)

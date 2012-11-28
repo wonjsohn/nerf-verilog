@@ -3,13 +3,11 @@
 
 import sys, PyQt4
 from PyQt4.QtGui import QFileDialog
-from PyQt4.QtCore import pyqtSignature, pyqtSlot
 
 from PyQt4.QtCore import QTimer,  SIGNAL, SLOT, Qt,  QRect
 from GuiPanel import SingleDutTester, CtrlChannel # Controller in MVC
 from Fpga import SomeFpga # Model in MVC
 from Display import View # Viewer in MVC
-from Utilities import *
 import os
 
 
@@ -27,16 +25,18 @@ if __name__ == "__main__":
     print BITFILE_NAME
     assert os.path.exists(BITFILE_NAME.encode('utf-8')), ".bit file NOT found!"
     
+    sys.path.append(PROJECT_PATH)
+    from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT, USER_INPUT
 
     # Connect to an OpalKelly device on USB
     # Bind the .bit file with the device
-    xem = SomeFpga(BITFILE_NAME)
+    xem = SomeFpga(BITFILE_NAME, NUM_NEURON, SAMPLING_RATE)
     
     # Customize a curve plotting window 
-    dispWindow = View(VIEWER_REFRESH_RATE, FPGA_OUTPUT)
+    dispWindow = View(FPGA_OUTPUT)
     
     # Pass device and dispView to the main GUI
-    testerGui = SingleDutTester(xem, dispWindow, USER_INPUT)
+    testerGui = SingleDutTester(xem, dispWindow, USER_INPUT, xem.HalfCountRealTime())
     #dynamicConnect(obj = testerGui, methodName = "__onNewValue__")
     testerGui.show()
         
