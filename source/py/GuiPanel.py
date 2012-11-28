@@ -47,10 +47,7 @@ class SingleDutTester(QDialog, Ui_Dialog):
     """
     GUI class for feeding waveforms or user inputs to OpalKelly boards
     """
-    
-
-
-    def __init__(self, nerfModel, dispView, TESTABLE_INPUTS, parent = None):
+    def __init__(self, nerfModel, dispView, rawChanList, halfCountRealTime, parent = None):
         """
         Constructor
         """
@@ -59,6 +56,7 @@ class SingleDutTester(QDialog, Ui_Dialog):
 
         self.nerfModel = nerfModel
         self.dispView = dispView
+        self.halfCountRealTime = halfCountRealTime
 
         self.dispView.show()
         self.data = []
@@ -66,22 +64,21 @@ class SingleDutTester(QDialog, Ui_Dialog):
 
         # Prepare the widgets for each control channel to Fpga
         self.ch_all = {}
-        for (id, name, type, value) in TESTABLE_INPUTS:    
+        for (id, name, type, value) in rawChanList:    
             self.ch_all[name] = CtrlChannel(hostDialog=self, id = id, name=name, type=type, value=value) 
             
         # VERY important: dynamically connect SIGNAL to SLOT, with curried arguments
-        for eachName, eachCh in self.ch_all.iteritems():
+        for eachName, eachChan in self.ch_all.iteritems():
             fn = partial(onNewWireIn, self, eachName) # Customizing onNewWireIn() into channel-specific 
-            eachCh.doubleSpinBox.valueChanged.connect(fn)
-            eachCh.doubleSpinBox.editingFinished.connect(fn)           
+            eachChan.doubleSpinBox.valueChanged.connect(fn)
+            eachChan.doubleSpinBox.editingFinished.connect(fn)           
 
         # Timer for pulling data, separated from timer_display
         self.timer = QTimer(self)
         self.connect(self.timer, SIGNAL("timeout()"), self.onTimer)       
-        self.timer.start(VIEWER_REFRESH_RATE )
+        self.timer.start(REFRESH_RATE )
         
         self.on_horizontalSlider_valueChanged(5)   
-
 
     def updateTrigger(trigEvent):
         def realUpdateTrigger(function):
@@ -96,11 +93,9 @@ class SingleDutTester(QDialog, Ui_Dialog):
         Core function of Controller, polling data from Model(fpga) and sending to Viewer.
         """
         newData = []
-        for xaddr, xtype in zip(DATA_OUT_ADDR, CH_TYPE):
-            #newData[i] = self.nerfModel.ReadFPGA(DATA_OUT_ADDR[i], CH_TYPE[i])
-#            if i == 3: 
-#                newData[i] = newData[i] / 100
-            newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(xaddr, xtype))))
+        
+        for name, chan in self.dispView.ch_all.iteritems(): # Sweep thru channels coming out of Fpga
+            newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(chan.addr, chan.type))))
             #print newData[0::6]   # printing 
             #        newSpike1 = self.nerfModel.ReadPipe(0xA0, 5000) # read ## bytes
 #        newSpike2 = self.nerfModel.ReadPipe(0xA1, 5000) # read ## bytes
@@ -113,24 +108,20 @@ class SingleDutTester(QDialog, Ui_Dialog):
         newSpike4 = ""
         newSpike5 = ""
         
-
-        #newSpike = "" # read ## bytes
-        
         self.dispView.newDataIO(newData, [newSpike1, newSpike2, newSpike3, newSpike4, newSpike5])
         #self.dispView.newDataIO(newData, [])
         if (self.isLogData):
             self.data.append(newData)          
     
-    @updateTrigger(DATA_EVT_CLKRATE) # This nice syntax runs updateTrigger after onClkRate()
+    @updateTrigger(TRIG_CLKRATE) # This nice syntax runs updateTrigger after onClkRate()
     def onClkRate(self, value):   
         """ value = how many times of 1/10 real-time
         """
         # F_fpga = C * NUM_NEURON * V * F_emu ,  (C : cycles_per_neuron = 2,  V = 365)
         # if F_fpga = 200Mhz,  F_emu = 1khz)
         # halfcnt = F_fpga / F_neuron / 2 = F_fpga / (C * NUM_NEURON * V * F_emu) / 2
-        NUM_CYCLE = 2
-        newHalfCnt = 200 * (10 **6) / (NUM_CYCLE * NUM_NEURON * value * SAMPLING_RATE/10 ) /2 
-#        print 'halfcnt=%d' %newHalfCnt
+        newHalfCnt = self.halfCountRealTime * 10 / value
+        #print 'halfcnt=%d' %newHalfCnt
 #        print 'value=%d' %value
         return newHalfCnt
 
