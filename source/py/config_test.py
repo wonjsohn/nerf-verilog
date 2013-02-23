@@ -3,11 +3,11 @@ from PyQt4.QtCore import Qt
 #            address         name   visual_gain         type            color
 FPGA_OUTPUT =    (0x20,      'i_EPSC_SN_to_MN',      50,         'int32',      Qt.blue),  \
                 (0x22,      'f_fr_Ia',      1.0,         'float32',      Qt.red),  \
-                (0x24,      'i_SN_spkcnt',      1.0,         'int32',      Qt.green),  \
+                (0x24,      'f_len_pxi',      1.0,         'float32',      Qt.green),  \
                 (0x26,      'i_MN_spkcnt',      1.0,         'int32',      Qt.black),  \
                 (0x28,      'i_EPSC_CN_to_MN',      1.0,         'int32',      Qt.magenta),  \
-                (0x30,      'f_force_bic',      1.0,         'float32',      Qt.darkRed),  \
-                (0x32,      'i_emg',      1.0,         'int32',      Qt.darkGray)
+                (0x2A,      'f_force_bic',      1.0,         'float32',      Qt.darkRed),  \
+                (0x2C,      'i_emg',      1.0,         'int32',      Qt.darkGray)
 
 #            trig_id    name          type          default_value                
 USER_INPUT =   (1, 'pps_coef_Ia',  'float32',      30.0), \

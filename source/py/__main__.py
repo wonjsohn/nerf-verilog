@@ -64,8 +64,13 @@ if __name__ == "__main__":
     BUTTON_RESET_SIM = 1;
     # current convention = board '0': flexor /  board '1': extensor (two board setting) 
     xemList[0].SendButton(True, BUTTON_RESET_SIM)   # send to FPGA (flexor)
-    xemList[0].SendButton(True, BUTTON_RESET_SIM)   # send to FPGA (extensor)
-    xemList[1].SendButton(False, BUTTON_RESET_SIM)
+    xemList[1].SendButton(True, BUTTON_RESET_SIM)   # send to FPGA (extensor)
+    xemList[0].SendButton(False, BUTTON_RESET_SIM)
+    xemList[1].SendButton(False, BUTTON_RESET_SIM)   
+    
+    xemList[0].SendButton(True, BUTTON_RESET_SIM)   # send to FPGA (flexor)
+    xemList[1].SendButton(True, BUTTON_RESET_SIM)   # send to FPGA (extensor)
+    xemList[0].SendButton(False, BUTTON_RESET_SIM)
     xemList[1].SendButton(False, BUTTON_RESET_SIM)   
     
     
