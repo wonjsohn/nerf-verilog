@@ -25,11 +25,13 @@ class muscle_properties:
         self.search()
         
     def search(self):
-        jointRadius = 0.1
-        self.flexor_len = 1.0 + jointRadius*self.jointAngle
-        self.extensor_len = 2.04 - self.flexor_len 
-        
-            
+        jointRadius = 0.2
+        self.flexor_len = min(1.0 + jointRadius*self.jointAngle,  1.4)
+        self.extensor_len = min(1.0 + jointRadius*self.jointAngle,  1.4)
+#        self.extensor_len = max(2.30 - self.flexor_len,  1.0) 
+#        self.flexor_len = 1.1
+#        self.extensor_len = 1.1
+#            
             
             
             

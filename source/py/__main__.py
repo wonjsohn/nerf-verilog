@@ -25,6 +25,7 @@ if __name__ == "__main__":
 
     ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
     PROJECT_NAME = "one_joint_parameterSearch"
+#    PROJECT_NAME = "ucf_newWiringTest"
     PROJECT_PATH = ROOT_PATH + PROJECT_NAME
     DEVICE_MODEL = "xem6010"
     
@@ -55,7 +56,11 @@ if __name__ == "__main__":
     xemList.append(xem)
     
 #    # Customize a curve plotting window 
-    dispWindow = View(FPGA_OUTPUT)
+    dispWindow = []
+    dispWin1 = View(FPGA_OUTPUT)
+    dispWindow.append(dispWin1)
+    dispWin2 = View(FPGA_OUTPUT)
+    dispWindow.append(dispWin2)
 #    
 #  
     
