@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/Display_Each_Channel.ui'
 #
-# Created: Thu Feb 28 17:55:41 2013
+# Created: Fri Mar  1 15:22:16 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!

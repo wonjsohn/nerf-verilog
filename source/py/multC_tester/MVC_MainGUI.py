@@ -21,7 +21,7 @@ from functools import partial
 from Utilities import convertType
 #from M_Fpga import SendPara
 
-from Ui_Controls_Global import Ui_Dialog
+from Ui_MVC_MainGUI import Ui_Dialog
 class MultiXemScheduler(QDialog, Ui_Dialog):
     """
     GUI class for feeding waveforms or user inputs to OpalKelly boards
@@ -121,4 +121,16 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
 #        self.running = True
         for eachC in self.cList:
             eachC.startSim()
-
+    
+    @pyqtSignature("bool")
+    def on_pushButton_burn_clicked(self, checked):
+        """
+        Slot documentation goes here.
+        """
+        bitFileList = []
+        for eachV in self.vList:
+            bitFileList.append(str(eachV.listWidget.currentItem().text()))
+         
+        print bitFileList
+        for eachXem, eachBitFile in zip(self.xemList, bitFileList):
+            eachXem.BurnBitFile(eachBitFile)

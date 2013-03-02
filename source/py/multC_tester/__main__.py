@@ -26,16 +26,20 @@ if __name__ == "__main__":
 #    ROOT_PATH = QFileDialog.getExistingDirectory(None, "Path for the Verilog .bit file", os.getcwd() + "../../")
 
     ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
-    PROJECT_NAME = "one_joint_parameterSearch"
+    PROJECT_NAME1 = "one_joint_parameterSearch"
+    PROJECT_NAME2 = "size_principle"
+    PROJECT_NAME3 = "one_joint_robot_all_in1"
 #    PROJECT_NAME = "ucf_newWiringTest"
-    PROJECT_PATH = ROOT_PATH + PROJECT_NAME
+    PROJECT_PATH1 = ROOT_PATH + PROJECT_NAME1
+    PROJECT_PATH2 = ROOT_PATH + PROJECT_NAME2
+    PROJECT_PATH3 = ROOT_PATH + PROJECT_NAME3
     DEVICE_MODEL = "xem6010"
     
-    BITFILE_NAME = PROJECT_PATH + "/" + PROJECT_NAME + "_" + DEVICE_MODEL + ".bit"
-    print BITFILE_NAME
-    assert os.path.exists(BITFILE_NAME.encode('utf-8')), ".bit file NOT found!"
+    #BITFILE_NAME = PROJECT_PATH1 + "/" + PROJECT_NAME + "_" + DEVICE_MODEL + ".bit"
+    #print BITFILE_NAME
+    #assert os.path.exists(BITFILE_NAME.encode('utf-8')), ".bit file NOT found!"
     
-    sys.path.append(PROJECT_PATH)
+    #sys.path.append(PROJECT_PATH)
     from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT, USER_INPUT
 
         
@@ -54,7 +58,7 @@ if __name__ == "__main__":
     for idx,  name in enumerate(xemSerialList):
         print idx,  name
         serX = xemSerialList[idx]
-        xem = SomeFpga(BITFILE_NAME, NUM_NEURON, SAMPLING_RATE, serX)
+        xem = SomeFpga(NUM_NEURON, SAMPLING_RATE, serX)
         xemList.append(xem)
     
     
@@ -68,15 +72,17 @@ if __name__ == "__main__":
     ### Building V in MVC
     
     vList = []
-    dispWin = View(nerfModel = xemList[0],  fpgaOutput = FPGA_OUTPUT,  userInput = USER_INPUT)
+    dispWin = View(projectPath = PROJECT_PATH1,  nerfModel = xemList[0],  fpgaOutput = FPGA_OUTPUT,  userInput = USER_INPUT)
     vList.append(dispWin)
-    dispWin = View(nerfModel = xemList[1],  fpgaOutput = FPGA_OUTPUT,  userInput = USER_INPUT)
+    dispWin = View(projectPath = PROJECT_PATH2, nerfModel = xemList[1],  fpgaOutput = FPGA_OUTPUT,  userInput = USER_INPUT)
     vList.append(dispWin)
-        
+    dispWin = View(projectPath = PROJECT_PATH3,  nerfModel = xemList[2],  fpgaOutput = FPGA_OUTPUT,  userInput = USER_INPUT)
+    vList.append(dispWin)    
       
     # display VIEW windows for each channel
     vList[0].show()
     vList[1].show()
+    vList[2].show()
     
     ### Building C::(M,V)->C in MVC
     
@@ -84,6 +90,8 @@ if __name__ == "__main__":
     testerGui = SingleXemTester(xemList[0], vList[0], USER_INPUT,  xem.HalfCountRealTime())
     cList.append(testerGui)
     testerGui = SingleXemTester(xemList[1], vList[1], USER_INPUT,  xem.HalfCountRealTime())
+    cList.append(testerGui)
+    testerGui = SingleXemTester(xemList[2], vList[2], USER_INPUT,  xem.HalfCountRealTime())
     cList.append(testerGui)
     
 
