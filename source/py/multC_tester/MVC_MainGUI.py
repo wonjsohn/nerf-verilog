@@ -22,6 +22,9 @@ from Utilities import convertType
 #from M_Fpga import SendPara
 
 from Ui_MVC_MainGUI import Ui_Dialog
+
+
+
 class MultiXemScheduler(QDialog, Ui_Dialog):
     """
     GUI class for feeding waveforms or user inputs to OpalKelly boards
@@ -32,13 +35,13 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         """
         QDialog.__init__(self, parent)
         self.setupUi(self)
-
+        self.move(300, 10)   # windows position
         self.xemList = xemList
         self.cList = cList
         self.vList = vList
         self.halfCountRealTime = halfCountRealTime
 
-#        self.cList.setWindowTitle('board1')
+#        self.cList.setWindowTitle('Global Control')
         #self.cList.show() 
 
         self.data = []
@@ -68,7 +71,7 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         print value,  newHalfCnt
         
         for eachXem in self.xemList:
-            eachXem.SendPara(bitVal = newHalfCnt, trigEvent = TRIG_CLKRATE)
+            eachXem.SendPara(bitVal = newHalfCnt, trigEvent = 7)
 #
     @pyqtSignature("int")
     def on_horizontalSlider_sliderMoved(self, position):

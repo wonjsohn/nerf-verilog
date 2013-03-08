@@ -101,7 +101,7 @@ class SomeFpga:
             else :
                 self.xem.SetWireInValue(0x00, 0x00, 0x01)
             self.xem.UpdateWireIns()
-        elif evt == BUTTON_RESET_SIM:
+        elif evt == BUTTON_INPUT_FROM_TRIGGER:
             if (buttonValue) :
                 self.xem.SetWireInValue(0x00, 0x02, 0xff)
             else :

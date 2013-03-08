@@ -1,4 +1,4 @@
-module spikecnt(spike, int_cnt_out, fast_clk, slow_clk, reset, clear_out, cnt, sig1, sig2, read);
+module spikecnt_async(spike, int_cnt_out, fast_clk, slow_clk, reset, clear_out, cnt, sig1, sig2, read);
     input   spike, slow_clk, fast_clk, reset;
     output  reg [31:0] int_cnt_out, cnt;
     output  clear_out;

@@ -40,7 +40,7 @@ class SingleXemTester(QDialog):
         self.dispView = dispView
         self.halfCountRealTime = halfCountRealTime
 
-        self.dispView.show()
+        #self.dispView.show()
         self.data = []
         self.isLogData = False
         self.running = False

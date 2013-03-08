@@ -26,10 +26,14 @@ if __name__ == "__main__":
 #    ROOT_PATH = QFileDialog.getExistingDirectory(None, "Path for the Verilog .bit file", os.getcwd() + "../../")
 
     ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
-    PROJECT_NAME1 = "one_joint_parameterSearch"
-    PROJECT_NAME2 = "size_principle"
-    PROJECT_NAME3 = "one_joint_robot_all_in1"
-#    PROJECT_NAME = "ucf_newWiringTest"
+#    ROOT_PATH = "/home/eric/"
+#    PROJECT_NAME1 = "one_joint_parameterSearch"
+#    PROJECT_NAME2 = "size_principle"
+#    PROJECT_NAME3 = "one_joint_robot_all_in1"
+    PROJECT_NAME1 = "rack_test"
+    PROJECT_NAME2 = "rack_mid_node1"
+    PROJECT_NAME3 = "rack_mn_muscle"
+    
     PROJECT_PATH1 = ROOT_PATH + PROJECT_NAME1
     PROJECT_PATH2 = ROOT_PATH + PROJECT_NAME2
     PROJECT_PATH3 = ROOT_PATH + PROJECT_NAME3
@@ -40,7 +44,7 @@ if __name__ == "__main__":
     #assert os.path.exists(BITFILE_NAME.encode('utf-8')), ".bit file NOT found!"
     
     #sys.path.append(PROJECT_PATH)
-    from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT, USER_INPUT
+    from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT_B1, FPGA_OUTPUT_B2, FPGA_OUTPUT_B3,   USER_INPUT_B1,  USER_INPUT_B2,  USER_INPUT_B3
 
         
     # Connect to an OpalKelly device on USB
@@ -63,20 +67,23 @@ if __name__ == "__main__":
     
     
     """ RESET FPGAs  """
-    BUTTON_RESET_SIM = 1;
+    BUTTON_RESET =0
+    BUTTON_INPUT_FROM_TRIGGER = 1
     
     for idx,  name in enumerate(xemSerialList):
-        xemList[idx].SendButton(True, BUTTON_RESET_SIM)   # send to FPGA (flexor)
-        xemList[idx].SendButton(False, BUTTON_RESET_SIM)
-        print "reset_sim board:",  idx
+        xemList[idx].SendButton(True, BUTTON_RESET)   # send to FPGA (flexor)
+        xemList[idx].SendButton(False, BUTTON_RESET)
+        print "reset_global board:",  idx
     ### Building V in MVC
     
     vList = []
-    dispWin = View(projectPath = PROJECT_PATH1,  nerfModel = xemList[0],  fpgaOutput = FPGA_OUTPUT,  userInput = USER_INPUT)
+#    print PROJECT_PATH1,  xemList[0]
+#    print PROJECT_PATH2,  xemList[1]
+    dispWin = View(count = 0,  projectPath = PROJECT_PATH1,  nerfModel = xemList[0],  fpgaOutput = FPGA_OUTPUT_B1,  userInput = USER_INPUT_B1)
     vList.append(dispWin)
-    dispWin = View(projectPath = PROJECT_PATH2, nerfModel = xemList[1],  fpgaOutput = FPGA_OUTPUT,  userInput = USER_INPUT)
+    dispWin = View(count = 1,  projectPath = PROJECT_PATH2, nerfModel = xemList[1],  fpgaOutput = FPGA_OUTPUT_B2,  userInput = USER_INPUT_B2)
     vList.append(dispWin)
-    dispWin = View(projectPath = PROJECT_PATH3,  nerfModel = xemList[2],  fpgaOutput = FPGA_OUTPUT,  userInput = USER_INPUT)
+    dispWin = View(count = 2,  projectPath = PROJECT_PATH3,  nerfModel = xemList[2],  fpgaOutput = FPGA_OUTPUT_B3,  userInput = USER_INPUT_B3)
     vList.append(dispWin)    
       
     # display VIEW windows for each channel
@@ -87,11 +94,11 @@ if __name__ == "__main__":
     ### Building C::(M,V)->C in MVC
     
     cList = []
-    testerGui = SingleXemTester(xemList[0], vList[0], USER_INPUT,  xem.HalfCountRealTime())
+    testerGui = SingleXemTester(xemList[0], vList[0], USER_INPUT_B1,  xem.HalfCountRealTime())
     cList.append(testerGui)
-    testerGui = SingleXemTester(xemList[1], vList[1], USER_INPUT,  xem.HalfCountRealTime())
+    testerGui = SingleXemTester(xemList[1], vList[1], USER_INPUT_B2,  xem.HalfCountRealTime())
     cList.append(testerGui)
-    testerGui = SingleXemTester(xemList[2], vList[2], USER_INPUT,  xem.HalfCountRealTime())
+    testerGui = SingleXemTester(xemList[2], vList[2], USER_INPUT_B3,  xem.HalfCountRealTime())
     cList.append(testerGui)
     
 
