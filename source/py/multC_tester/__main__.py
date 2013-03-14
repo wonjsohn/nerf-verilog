@@ -57,7 +57,8 @@ if __name__ == "__main__":
     numFpga = testrun.GetDeviceCount()
     assert numFpga > 0, "No OpalKelly boards found, is one connected?"
     print "Found ",  numFpga, " OpalKelly devices:"                        
-    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
+    #xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
+    xemSerialList = ['124300046A', '12320003RM', '1201000216']
     
     for idx,  name in enumerate(xemSerialList):
         print idx,  name
