@@ -72,7 +72,7 @@ class SingleXemTester(QDialog):
         Core function of Controller, polling data from Model(fpga) and sending to Viewer.
         """
         newData = self.dispView.reportData()
-         
+        #print newData[0::3] 
             #        newSpike1 = self.nerfModel.ReadPipe(0xA0, 5000) # read ## bytes
 #        newSpike2 = self.nerfModel.ReadPipe(0xA1, 5000) # read ## bytes
 #        newSpike3 = self.nerfModel.ReadPipe(0xA2, 5000) # read ## bytes
