@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project dut_tester_eric4 -->
-<!-- Saved: 2012-11-19, 18:41:53 -->
-<!-- Copyright (C) 2012 C. Minos Niu,  -->
+<!-- Saved: 2013-02-22, 17:21:27 -->
+<!-- Copyright (C) 2013 C. Minos Niu,  -->
 <Project version="4.6">
   <Language>en</Language>
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -16,9 +16,11 @@
     <Source>Fpga.py</Source>
     <Source>__main__.py</Source>
     <Source>Utilities.py</Source>
+    <Source>GuiPanel.py</Source>
+    <Source>par_search.py</Source>
+    <Source>config_test.py</Source>
     <Source>Ui_Controls.py</Source>
     <Source>Ui_Display.py</Source>
-    <Source>GuiPanel.py</Source>
   </Sources>
   <Forms>
     <Form>Controls.ui</Form>
