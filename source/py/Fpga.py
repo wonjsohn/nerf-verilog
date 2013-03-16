@@ -20,22 +20,23 @@ from Utilities import *
 class SomeFpga:
     """ The FPGA class
     """
-    def __init__(self, BITFILE_NAME, NUM_NEURON, SAMPLING_RATE):        
+    def __init__(self, BITFILE_NAME, NUM_NEURON, SAMPLING_RATE,  serX=""):        
         self.BITFILE_NAME = BITFILE_NAME.encode('utf-8')
         self.myMoney = 0
         self.NUM_NEURON = NUM_NEURON
         self.SAMPLING_RATE = SAMPLING_RATE
-        self.ConfigureXEM()            
+        self.ConfigureXEM(serX)   
+      
 
-    def ConfigureXEM(self):
+    def ConfigureXEM(self,  serX=""):
         self.xem = ok.FrontPanel()
-        numFpga = self.xem.GetDeviceCount()
-        assert numFpga > 0, "No OpalKelly boards found, is one connected?"
-        print "Found ",  numFpga, " OpalKelly devices:"                        
-        xemSerialList = [self.xem.GetDeviceListSerial(i) for i in xrange(numFpga)]
-        for name in xemSerialList: print name
+#        numFpga = self.xem.GetDeviceCount()
+#        assert numFpga > 0, "No OpalKelly boards found, is one connected?"
+#        print "Found ",  numFpga, " OpalKelly devices:"                        
+#        xemSerialList = [self.xem.GetDeviceListSerial(i) for i in xrange(numFpga)]
+#        for name in xemSerialList: print name
         
-        serX = xemSerialList[0]
+#        serX = xemSerialList[0]
         print "Connected to OpaKelly of serial number: ",  serX
         self.xem.OpenBySerial(serX)
         assert self.xem.IsOpen(), "Failed opening the OpalKelly board!"

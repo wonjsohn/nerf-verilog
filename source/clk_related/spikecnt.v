@@ -1,4 +1,58 @@
-module spikecnt(spike, int_cnt_out, fast_clk, slow_clk, reset, clear_out, cnt, sig1, sig2, read);
+module spikecnt_async(spike, int_cnt_out, fast_clk, slow_clk, reset, clear_out, cnt, sig1, sig2, read);
+    input   spike, slow_clk, fast_clk, reset;
+    output  reg [31:0] int_cnt_out, cnt;
+    reg [31:0] acc_cnt_d1, acc_cnt_d0;
+    output  clear_out;
+    
+    output read;
+    output reg sig1, sig2;
+    
+    reg t1, t2;
+    wire t = t1 ^ t2;
+	 
+	 reg [31:0] status_counter;
+     
+    always @(posedge reset or posedge slow_clk) begin
+        if (reset)
+            t1 <= 0;
+        else
+            t1 <= ~t2;
+    end
+    
+    wire [31:0] temp_cnt = (acc_cnt_d0 - acc_cnt_d1);
+    always @(posedge reset or posedge t) begin
+        if (reset) begin
+            t2 <= 0;
+            acc_cnt_d0 <= 32'd0;
+            acc_cnt_d1 <= 32'd0;
+            int_cnt_out <= 32'd0;
+        end
+        else begin
+            //int_cnt_out <= temp_cnt > 32'd128 ? int_cnt_out : temp_cnt;
+            int_cnt_out <= temp_cnt;
+            acc_cnt_d1 <= acc_cnt_d0;
+            acc_cnt_d0 <= cnt;        
+            t2 <= t1;
+        end
+    end
+    
+    
+    always @(posedge reset or posedge spike) begin
+        if (reset) begin
+            cnt <= 32'd0;
+        end
+        else begin
+            cnt <= t ? cnt : cnt + 32'd1;
+            //cnt <= cnt + 32'd1;
+        end
+    end
+    
+    assign clear_out = t;
+	
+endmodule
+
+
+module spikecnt_async_old(spike, int_cnt_out, fast_clk, slow_clk, reset, clear_out, cnt, sig1, sig2, read);
     input   spike, slow_clk, fast_clk, reset;
     output  reg [31:0] int_cnt_out, cnt;
     output  clear_out;
@@ -60,6 +114,8 @@ module spikecnt(spike, int_cnt_out, fast_clk, slow_clk, reset, clear_out, cnt, s
         end
     end
 endmodule
+
+
 
 
 

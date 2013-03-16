@@ -24,6 +24,8 @@ module waveform_from_pipe_bram_2s(
                                 input wire pipe_clk,
                                 input wire pipe_in_write,
                                 input wire [15:0] pipe_in_data,
+                                input wire is_from_trigger,
+                                input wire [31:0] data_from_trig,	// data from one of ep50 channel
                                 input wire pipe_out_read,
                                 output wire [15:0] pipe_out_data,
                                 input wire pop_clk,
@@ -31,6 +33,10 @@ module waveform_from_pipe_bram_2s(
                                 
                              
     );
+
+
+assign wave = (is_from_trigger)? data_from_trig : wave_temp  ;
+
 
 // Pipe in functionality
 reg [11:0] pipe_addr;
@@ -53,6 +59,7 @@ always @ (posedge pop_clk) begin
     end
 end
 
+wire [31:0] wave_temp;
 bram_2048 block_ram (
   .clka(pipe_clk), // input clka
   .wea(pipe_in_write), // input [0 : 0] wea
@@ -63,7 +70,7 @@ bram_2048 block_ram (
   .web(1'b0), // input [0 : 0] web
   .addrb(pop_addr), // input [10 : 0] addrb
   .dinb(31'd0), // input [31 : 0] dinb
-  .doutb(wave) // output [31 : 0] doutb
+  .doutb(wave_temp) // output [31 : 0] doutb
 );
 /*
 wire [31:0] ram_0_data;
