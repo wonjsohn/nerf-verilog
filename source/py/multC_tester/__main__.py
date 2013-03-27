@@ -24,8 +24,8 @@ if __name__ == "__main__":
     app = PyQt4.QtGui.QApplication(sys.argv)
     
 #    ROOT_PATH = QFileDialog.getExistingDirectory(None, "Path for the Verilog .bit file", os.getcwd() + "../../")
-
-    ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
+  
+    ROOT_PATH = "C:\\Code\\nerf_verilog\\projects\\"
 #    ROOT_PATH = "/home/eric/"
 #    PROJECT_NAME1 = "one_joint_parameterSearch"
 #    PROJECT_NAME2 = "size_principle"
