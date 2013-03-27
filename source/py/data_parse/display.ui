@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>878</width>
-    <height>678</height>
+    <width>1248</width>
+    <height>493</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -145,7 +145,7 @@
     <rect>
      <x>20</x>
      <y>260</y>
-     <width>241</width>
+     <width>221</width>
      <height>201</height>
     </rect>
    </property>
@@ -156,9 +156,9 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>280</x>
+     <x>260</x>
      <y>260</y>
-     <width>241</width>
+     <width>221</width>
      <height>201</height>
     </rect>
    </property>
@@ -169,9 +169,9 @@
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>550</x>
-     <y>20</y>
-     <width>241</width>
+     <x>500</x>
+     <y>260</y>
+     <width>221</width>
      <height>201</height>
     </rect>
    </property>
@@ -182,9 +182,9 @@
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>550</x>
-     <y>240</y>
-     <width>241</width>
+     <x>750</x>
+     <y>260</y>
+     <width>221</width>
      <height>201</height>
     </rect>
    </property>
@@ -195,14 +195,76 @@
   <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
-     <x>550</x>
-     <y>450</y>
-     <width>241</width>
+     <x>1000</x>
+     <y>260</y>
+     <width>221</width>
      <height>201</height>
     </rect>
    </property>
    <property name="text">
     <string>PINKY</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_2">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>40</y>
+     <width>81</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>remove lastline</string>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="listWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>520</x>
+     <y>40</y>
+     <width>281</width>
+     <height>151</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>200</y>
+     <width>81</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>emg files</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_3">
+   <property name="geometry">
+    <rect>
+     <x>810</x>
+     <y>170</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>plot</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_4">
+   <property name="geometry">
+    <rect>
+     <x>450</x>
+     <y>10</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>REFRESH</string>
    </property>
   </widget>
  </widget>

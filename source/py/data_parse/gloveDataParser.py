@@ -17,25 +17,21 @@ from numpy.random import randn
    
 
 
-class ParseView():
+class ParseGloveData():
     
-    def __init__(self, file, digit_to_plot, parent = None):
-        file = file
+    def __init__(self, txtfile, digit_to_plot, gloveDataPath,  parent = None):
+        txtfile = txtfile
         indexList=[]
         j1List=[]
         j2List=[]
         j3List=[]
         
-#        digit_to_plot
-        
-        
-        for line in open(file,  "r").readlines()[digit_to_plot::10]:  # digit1
+        for line in open(gloveDataPath+txtfile,  "r").readlines()[digit_to_plot::10]:  # read a row in every 10 rows, starting from the row =(digit_to_plot) 
             index, j1 ,  j2,  j3= line.split()
             indexList.append(index)
             j1List.append(j1)   #joint1
             j2List.append(j2)   #joint2
             j3List.append(j3)  #joint3
-    #        print d1
         
         digits = ['thumb',  'index', 'middle', 'ring',  'pinky'] 
 
@@ -53,17 +49,22 @@ class ParseView():
         ax4.plot(indexList)
     #    plot(randn(1000).cumsum())
         
-        ax1.set_title('sub title')
-        ax1.set_xlabel('time')
+        ax1.set_title('joint1')
+#        x1.set_xlabel('time')
+        ax2.set_title('joint2')
+        ax2.set_xlabel('time')
+        ax3.set_title('joint3')
+        ax3.set_xlabel('time')
+        
         
         fig.suptitle(str(digits[digit_to_plot-2]))
 #        print digits[digit_to_plot-2]
-        savefig(file+"_"+str(digits[digit_to_plot-2])+".png")
+        savefig("glove_figures\\"+txtfile+"_"+str(digits[digit_to_plot-2])+".png")
         
 #        led = QLabel() 
 #        led.setPixmap(QPixmap(file+"_"+str(digits[digit_to_plot-2])+".png")) 
 #        led.show()
         
 
-        show()
+        #show()
         

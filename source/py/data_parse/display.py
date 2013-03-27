@@ -14,9 +14,10 @@ import sys, random
 from struct import unpack
 from functools import partial
 from math import floor
-from gloveDataParser import ParseView 
+from gloveDataParser import ParseGloveData 
+from emgDataParser import ParseEmgData 
 from glob import glob
-
+import os
 
 PIXEL_OFFSET = 200 # pixels offsets
  
@@ -46,21 +47,32 @@ class View(QMainWindow, Ui_Dialog):
 
         self.numPt = PIXEL_OFFSET
         self.isPause = False
+        self.projectPath = projectPath
         self.setWindowTitle(projectPath)
         
         # Search all .bit files, make them selectable 
         sys.path.append(projectPath)
-        import os
+        self.gloveDataPath = projectPath + "\\glove_data\\"
+        self.emgDataPath = projectPath + "\\emg_data\\"
+        
+        
+        
         print projectPath
         self.lineEdit.setText(str(projectPath))
         self.lineEdit.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")
         
-        for eachBitFile in glob(projectPath+"/*.txt"): 
-            (filepath, filename) = os.path.split(eachBitFile) 
-#            print filename
+        for eachTxtFile in glob(projectPath+"/glove_data/*.txt"): 
+            (filepath, filename) = os.path.split(eachTxtFile) 
             self.listWidget.addItem(filename)
         self.listWidget.setCurrentRow(0)
         self.listWidget.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")
+        
+        
+        for eachTxtFile in glob(projectPath+"/emg_data/*.txt"): 
+            (filepath, filename) = os.path.split(eachTxtFile) 
+            self.listWidget_2.addItem(filename)
+        self.listWidget_2.setCurrentRow(0)
+        self.listWidget_2.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")
         
         ## initialization 
         self.digit1=0
@@ -86,7 +98,7 @@ class View(QMainWindow, Ui_Dialog):
         """
         Slot documentation goes here.
         """
-        self.item = item
+        self.glove_item = item
         
 
 
@@ -131,40 +143,82 @@ class View(QMainWindow, Ui_Dialog):
         """
         Slot documentation goes here.
         """
+        self.label_3.hide() 
+        self.label_4.hide() 
+        self.label_5.hide() 
+        self.label_6.hide() 
+        self.label_7.hide() 
+        
         
         if self.digit1: 
-            pv1= ParseView(str(self.item.text()), 2 )
-            self.label_3.setPixmap((QPixmap(str(self.item.text())+"_thumb.png")))
+            pv1= ParseGloveData(str(self.glove_item.text()), 2,  self.gloveDataPath )
+            self.label_3.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_thumb.png")))
             self.label_3.setScaledContents(True)
             self.label_3.show() 
         if self.digit2: 
-            pv2=ParseView(str(self.item.text()), 3 )
-            self.label_4.setPixmap((QPixmap(str(self.item.text())+"_index.png")))
+            pv2=ParseGloveData(str(self.glove_item.text()), 3,  self.gloveDataPath )
+            self.label_4.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_index.png")))
             self.label_4.setScaledContents(True)
             self.label_4.show()
         if self.digit3: 
-            pv3=ParseView(str(self.item.text()), 4 )
-            self.label_5.setPixmap((QPixmap(str(self.item.text())+"_middle.png")))
+            pv3=ParseGloveData(str(self.glove_item.text()), 4,  self.gloveDataPath )
+            self.label_5.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_middle.png")))
             self.label_5.setScaledContents(True)
             self.label_5.show()
         
         if self.digit4: 
-            pv4=ParseView(str(self.item.text()), 5 ) 
-            self.label_6.setPixmap((QPixmap(str(self.item.text())+"_ring.png")))
+            pv4=ParseGloveData(str(self.glove_item.text()), 5,  self.gloveDataPath ) 
+            self.label_6.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_ring.png")))
             self.label_6.setScaledContents(True)
             self.label_6.show()
         
         if self.digit5: 
-            pv5=ParseView(str(self.item.text()), 6 ) 
-            self.label_7.setPixmap((QPixmap(str(self.item.text())+"_pinky.png")))
+            pv5=ParseGloveData(str(self.glove_item.text()), 6,  self.gloveDataPath ) 
+            self.label_7.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_pinky.png")))
             self.label_7.setScaledContents(True)
             self.label_7.show()
+    
+    @pyqtSignature("")
+    def on_pushButton_2_clicked(self):
+        """
+        remove the last line of the text file
+        """
+        txtfile = str(self.glove_item.text())
+        lines = file(self.gloveDataPath+txtfile,  'r').readlines()
+        del lines[-1] 
+        file(self.gloveDataPath+txtfile, 'w').writelines(lines) 
+    
+    @pyqtSignature("QListWidgetItem*")
+    def on_listWidget_2_itemClicked(self, item):
+        """
+        Slot documentation goes here.
+        """
+        self.emg_item = item
 
+    
+    @pyqtSignature("")
+    def on_pushButton_3_clicked(self):
+        """
+        plot emg data.
+        """
+        ParseEmgData(str(self.emg_item.text()), self.emgDataPath ) 
+    
+    @pyqtSignature("")
+    def on_pushButton_4_clicked(self):
+        """
+        Slot documentation goes here.
+        """
+        self.listWidget.clear()
+        self.listWidget_2.clear()
+        for eachTxtFile in glob(self.projectPath+"/glove_data/*.txt"): 
+            (filepath, filename) = os.path.split(eachTxtFile) 
+            self.listWidget.addItem(filename)
+#        self.listWidget.setCurrentRow(0)
+#        self.listWidget.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")
         
         
-        
-      
-        
-        
-        
-        
+        for eachTxtFile in glob(self.projectPath+"/emg_data/*.txt"): 
+            (filepath, filename) = os.path.split(eachTxtFile) 
+            self.listWidget_2.addItem(filename)
+#        self.listWidget_2.setCurrentRow(0)
+#        self.listWidget_2.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")

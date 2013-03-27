@@ -6,7 +6,7 @@ from PyQt4.QtGui import QFileDialog
 
 from PyQt4.QtCore import QTimer,  SIGNAL, SLOT, Qt,  QRect
 from display import View
-from gloveDataParser import ParseView
+from gloveDataParser import ParseGloveData
 
 
 if __name__ == "__main__":        
