@@ -15,9 +15,9 @@ from struct import unpack
 from functools import partial
 from math import floor
 from gloveDataParser import ParseGloveData 
-from emgDataParser import ParseEmgData 
 from glob import glob
 import os
+from ampDetection import AmpAnalysis
 
 PIXEL_OFFSET = 200 # pixels offsets
  
@@ -68,12 +68,7 @@ class View(QMainWindow, Ui_Dialog):
         self.listWidget.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")
         
         
-        for eachTxtFile in glob(projectPath+"/emg_data/*.txt"): 
-            (filepath, filename) = os.path.split(eachTxtFile) 
-            self.listWidget_2.addItem(filename)
-        self.listWidget_2.setCurrentRow(0)
-        self.listWidget_2.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")
-        
+     
         ## initialization 
         self.digit1=0
         self.digit2=0
@@ -143,65 +138,36 @@ class View(QMainWindow, Ui_Dialog):
         """
         Slot documentation goes here.
         """
-        self.label_3.hide() 
-        self.label_4.hide() 
-        self.label_5.hide() 
-        self.label_6.hide() 
-        self.label_7.hide() 
-        
-        
-        if self.digit1: 
-            pv1= ParseGloveData(str(self.glove_item.text()), 2,  self.gloveDataPath )
-            self.label_3.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_thumb.png")))
-            self.label_3.setScaledContents(True)
-            self.label_3.show() 
         if self.digit2: 
-            pv2=ParseGloveData(str(self.glove_item.text()), 3,  self.gloveDataPath )
-            self.label_4.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_index.png")))
-            self.label_4.setScaledContents(True)
-            self.label_4.show()
+            ParseGloveData(str(self.glove_item.text()), 3, self.gloveDataPath,  self.pivot,  self.startTimeIndex )
+#            self.label_4.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_index.png")))
+#            self.label_4.setScaledContents(True)
+#            self.label_4.show()
         if self.digit3: 
-            pv3=ParseGloveData(str(self.glove_item.text()), 4,  self.gloveDataPath )
-            self.label_5.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_middle.png")))
-            self.label_5.setScaledContents(True)
-            self.label_5.show()
-        
-        if self.digit4: 
-            pv4=ParseGloveData(str(self.glove_item.text()), 5,  self.gloveDataPath ) 
-            self.label_6.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_ring.png")))
-            self.label_6.setScaledContents(True)
-            self.label_6.show()
-        
-        if self.digit5: 
-            pv5=ParseGloveData(str(self.glove_item.text()), 6,  self.gloveDataPath ) 
-            self.label_7.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_pinky.png")))
-            self.label_7.setScaledContents(True)
-            self.label_7.show()
+            ParseGloveData(str(self.glove_item.text()), 4,  self.gloveDataPath,  self.pivot,  self.startTimeIndex )
+#            self.label_5.setPixmap((QPixmap(str("glove_figures\\"+self.glove_item.text())+"_middle.png")))
+#            self.label_5.setScaledContents(True)
+#            self.label_5.show()
+       
     
     @pyqtSignature("")
     def on_pushButton_2_clicked(self):
         """
-        remove the last line of the text file
+        just show the plot
         """
-        txtfile = str(self.glove_item.text())
-        lines = file(self.gloveDataPath+txtfile,  'r').readlines()
-        del lines[-1] 
-        file(self.gloveDataPath+txtfile, 'w').writelines(lines) 
-    
-    @pyqtSignature("QListWidgetItem*")
-    def on_listWidget_2_itemClicked(self, item):
-        """
-        Slot documentation goes here.
-        """
-        self.emg_item = item
+        self.label_4.hide()
+        self.label_5.hide()
+        
+        if self.digit2: 
+            self.label_4.setPixmap((QPixmap(self.projectPath+str("\\glove_figures\\"+self.glove_item.text())+"_index.png")))
+            print self.projectPath+str("\\glove_figures\\"+self.glove_item.text())+"_index.png"
+            self.label_4.setScaledContents(True)
+            self.label_4.show()
+        if self.digit3: 
+            self.label_5.setPixmap((QPixmap(self.projectPath+str("\\glove_figures\\"+self.glove_item.text())+"_middle.png")))
+            self.label_5.setScaledContents(True)
+            self.label_5.show()
 
-    
-    @pyqtSignature("")
-    def on_pushButton_3_clicked(self):
-        """
-        plot emg data.
-        """
-        ParseEmgData(str(self.emg_item.text()), self.emgDataPath ) 
     
     @pyqtSignature("")
     def on_pushButton_4_clicked(self):
@@ -216,19 +182,17 @@ class View(QMainWindow, Ui_Dialog):
 #        self.listWidget.setCurrentRow(0)
 #        self.listWidget.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")
         
-        
-        for eachTxtFile in glob(self.projectPath+"/emg_data/*.txt"): 
-            (filepath, filename) = os.path.split(eachTxtFile) 
-            self.listWidget_2.addItem(filename)
-#        self.listWidget_2.setCurrentRow(0)
-#        self.listWidget_2.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")
     
-    @pyqtSignature("")
-    def on_pushButton_5_clicked(self):
+    @pyqtSignature("double")
+    def on_doubleSpinBox_valueChanged(self, p0):
         """
-        remove the last line of the text file
+        pivot value input
         """
-        txtfile = str(self.emg_item.text())
-        lines = file(self.emgDataPath+txtfile,  'r').readlines()
-        del lines[-1] 
-        file(self.emgDataPath+txtfile, 'w').writelines(lines) 
+        self.pivot = p0
+    
+    @pyqtSignature("int")
+    def on_spinBox_valueChanged(self, t0):
+        """
+        starting time index input
+        """
+        self.startTimeIndex = t0
