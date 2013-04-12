@@ -1,4 +1,5 @@
 
+
 `timescale 1ns / 1ps
 
 // rack_mid_node1_xem6010.v
@@ -183,7 +184,7 @@
         // Triggered Input triggered_input4 Instance Definition (clk_divider)
         always @ (posedge ep50trig[7] or posedge reset_global)
         if (reset_global)
-            triggered_input4 <= triggered_input4;         //reset to triggered_input4      
+            triggered_input4 <= 32'd762;         //rhard coded half count for 0.5x real speed      
         else
             triggered_input4 <= {ep02wire, ep01wire};      
         
@@ -216,7 +217,17 @@
 
         // Output and OpalKelly Interface Instance Definitions
         //assign led = 0;
-        assign reset_global = ep00wire[0];
+        //wire reset_external;
+        reg reset_external_clean;
+       always @ (posedge sim_clk)
+        if (spikein14)
+            reset_external_clean <= spikein14;      
+        else
+            reset_external_clean <= 0;    
+
+        
+        
+        assign reset_global = ep00wire[0] | reset_external_clean;
         assign is_from_trigger = ~ep00wire[1];
         okWireOR # (.N(8)) wireOR (ok2, ok2x);
         okHost okHI(
@@ -274,7 +285,7 @@
     assign led[2] = ~spikeout1;
     assign led[3] = ~0;
     assign led[4] = ~0;
-    assign led[5] = ~0;
+    assign led[5] = ~clk1;
     assign led[6] = ~neuron_clk; // 
     assign led[7] = ~sim_clk; // clock
     

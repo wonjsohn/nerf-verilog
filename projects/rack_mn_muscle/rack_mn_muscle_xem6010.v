@@ -270,8 +270,16 @@
     assign spikeout14 = 1'b0;
 
         // Output and OpalKelly Interface Instance Definitions
-        //assign led = 0;
-        assign reset_global = ep00wire[0];
+          reg reset_external_clean;
+       always @ (posedge sim_clk)
+        if (spikein14)
+            reset_external_clean <= spikein14;      
+        else
+            reset_external_clean <= 0;    
+
+        
+        
+        assign reset_global = ep00wire[0] | reset_external_clean;
         assign is_from_trigger = ~ep00wire[1];
         okWireOR # (.N(13)) wireOR (ok2, ok2x);
         okHost okHI(
