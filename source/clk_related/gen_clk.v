@@ -44,7 +44,7 @@ module gen_clk(rawclk, reset, half_cnt, clk_out1, clk_out2, clk_out3, int_neuron
         end else begin
             neuronCounter <= neuronCounter + 1'b1;
             clk_out2 <= {neuronIndex == 0};
-            clk_out3 <= {(neuronIndex == 0) || (neuronIndex == 9'd60) ||
+            clk_out3 <= {(neuronIndex == 40) || (neuronIndex == 9'd80) ||
                         (neuronIndex == 9'd120)};
             end
 	end

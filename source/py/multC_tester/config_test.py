@@ -1,10 +1,10 @@
 from PyQt4.QtCore import Qt
 
 #            address         name   visual_gain         type            color
-FPGA_OUTPUT_B1 =    (0x20,      'waveform',      1.0,         'float32',      Qt.blue),  \
+FPGA_OUTPUT_B1 =    (0x20,      'Ia_raster_ch20',      1.0,         'spike32',      Qt.blue),  \
                 (0x22,      'Ia_spindle0',      1.0,         'float32',      Qt.red),  \
                 (0x24,      'II_spindle0',      1.0,         'float32',      Qt.green),  \
-                (0x26,      'blank',      1.0,         'int32',      Qt.black),  \
+                (0x26,      'blank',      1.0,         'spike32',      Qt.black),  \
                 (0x28,      'blank',      1.0,         'float32',      Qt.magenta),  \
                 (0x2A,      'blank',      1.0,         'float32',      Qt.darkRed),  \
                 (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
@@ -23,8 +23,8 @@ FPGA_OUTPUT_B3 =    (0x20,      'mixed_input0',      1.0,         'float32',    
                 (0x22,      'total_force_out_muscle0_sync',      1.0,         'float32',      Qt.red),  \
                 (0x24,      'spike_count_neuron0_sync',      1.0,         'int32',      Qt.green),  \
                 (0x26,      'spike_count_neuron0',      1.0,         'int32',      Qt.black),  \
-                (0x28,      'i_EPSC_synapse0',      1.0,         'int32',      Qt.magenta),  \
-                (0x2A,      'total_force_out_muscle0',      1.0,         'float32',      Qt.darkRed),  \
+                (0x28,      'I_synapse0',      1.0,         'int32',      Qt.magenta),  \
+                (0x2A,      'blank',      1.0,         'float32',      Qt.darkRed),  \
                 (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
                 
 #            address         name   visual_gain         type            color

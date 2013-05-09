@@ -217,7 +217,7 @@
         // Triggered Input triggered_input6 Instance Definition (clk_divider)
         always @ (posedge ep50trig[7] or posedge reset_global)
         if (reset_global)
-            triggered_input6 <= triggered_input6;         //reset to triggered_input6      
+            triggered_input6 <= 32'd381;     //half count for 0.5x real speed, 381 for real time speed  ;         //reset to triggered_input6      
         else
             triggered_input6 <= {ep02wire, ep01wire};      
         

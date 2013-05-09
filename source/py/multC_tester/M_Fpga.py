@@ -87,6 +87,12 @@ class SomeFpga:
             intValHi = self.xem.GetWireOutValue(getAddr + 0x01) & 0xffff # length = 16-bit
             intVal = ((intValHi << 16) + intValLo) & 0xFFFFFFFF
             outVal = convertType(intVal, 'I',  'i')  # in mV De-Scaling factor = 128  #????
+        ## Read 32-bit spike train from FPGA
+        elif type == "spike32" :
+            intValLo = self.xem.GetWireOutValue(getAddr) & 0xffff # length = 16-bit
+            intValHi = self.xem.GetWireOutValue(getAddr + 0x01) & 0xffff # length = 16-bit
+            intVal = ((intValHi << 16) + intValLo) & 0xFFFFFFFF
+            outVal = convertType(intVal, 'I',  'I')  # in mV De-Scaling factor = 128  #????
 
         ## if getAddr == DATA_OUT_ADDR[0]:
         ## print "%2.4f" % outVal, 

@@ -71,6 +71,7 @@ if __name__ == "__main__":
     #xemSerialList = ['124300046A', '12320003RM', '1201000216']
 #    xemSerialList = ['12320003RN', '11160001CJ', '12430003T2']
     xemSerialList = ['12320003RN', '12430003T2']
+#    xemSerialList = ['124300046A', '1201000216']
     print xemSerialList
     
     for idx,  name in enumerate(xemSerialList):
@@ -96,7 +97,7 @@ if __name__ == "__main__":
     for i in xrange(len(xemList)):
         dispWin = View(count = i,  projectPath = PROJECT_PATH[i],  nerfModel = xemList[i],  fpgaOutput = FPGA_OUTPUT_B[i],  userInput = USER_INPUT_B[i])
         vList.append(dispWin)
-    print "vList = ",  vList
+
       
     # display VIEW windows for each channel
     for i in xrange(len(xemList)):
@@ -108,7 +109,7 @@ if __name__ == "__main__":
         testerGui = SingleXemTester(xemList[i], vList[i], USER_INPUT_B[i],  xem.HalfCountRealTime())
         cList.append(testerGui)
     
-    print "cList: ",  cList
+
     #testerGui.show()
     
     ### global control for MVC

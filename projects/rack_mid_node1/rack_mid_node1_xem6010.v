@@ -184,7 +184,7 @@
         // Triggered Input triggered_input4 Instance Definition (clk_divider)
         always @ (posedge ep50trig[7] or posedge reset_global)
         if (reset_global)
-            triggered_input4 <= 32'd762;         //rhard coded half count for 0.5x real speed      
+            triggered_input4 <= 32'd381;         //rhard coded half count for 0.5x real speed, 381 for real time speed  
         else
             triggered_input4 <= {ep02wire, ep01wire};      
         

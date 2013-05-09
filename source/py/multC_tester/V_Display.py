@@ -163,7 +163,8 @@ class View(QMainWindow, Ui_Dialog):
     def reportData(self):
         newData = []
         for name, chan in self.allFpgaOutput.iteritems(): # Sweep thru channels coming out of Fpga
-            newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(chan.addr, chan.type))))
+#            newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(chan.addr, chan.type))))
+            newData.append(self.nerfModel.ReadFPGA(chan.addr, chan.type))
         return newData
 
 
@@ -196,10 +197,34 @@ class View(QMainWindow, Ui_Dialog):
 
         #p = QPainter(self.graphicsView)                         ## our painter
         canvas = QPainter(self)                         ## our painter
-        self.drawPoints(canvas, self.allFpgaOutput)          ## paint clipped graphics
-#        self.drawRaster(canvas)
+        
+        for name, ch in self.allFpgaOutput.iteritems():
+            if ch.type == "spike32":
+                self.drawRaster(canvas, ch)
+            else:
+                self.drawPoints(canvas, ch)          ## paint clipped graphics
 
-    def drawRaster(self, gp):
+    def drawRaster(self, gp, ch):           
+        size = self.size()
+        winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 4;
+        self.pen.setStyle(Qt.SolidLine)
+        self.pen.setWidth(2)
+        self.pen.setBrush(ch.color)
+        self.pen.setCapStyle(Qt.RoundCap)
+        self.pen.setJoinStyle(Qt.RoundJoin)
+        gp.setPen(self.pen)
+
+        bit_mask = 0x0000001
+        ## display the spike rasters
+#        print ch.data[0]
+        for i in xrange(32):
+            ## flexors
+            if (bit_mask & ch.data[0]) : ## Ia
+                gp.drawLine(self.x-10,(winScale) - 22 + i ,\
+                                 self.x+10, (winScale) -  22 + i)
+            bit_mask = bit_mask << 1
+
+    def drawRaster_old(self, gp):
         for spkid, i_mu in zip(self.spike_all,  xrange(len(self.spike_all))):
             spikeSeq = unpack("%d" % len(spkid) + "b", spkid)
             
@@ -217,35 +242,34 @@ class View(QMainWindow, Ui_Dialog):
                 rawspikes = spikeSeq[i]
                 ## flexors
                 if (rawspikes & 64) : ## Ia
-                    gp.drawLine(self.x-2,(winScale) - 22 ,\
-                                     self.x, (winScale) -  22)
+                    gp.drawLine(self.x-2,(winScale) - 22 + i ,\
+                                     self.x, (winScale) -  22 + i)
                 if (rawspikes & 128) : ## MN
     #                gp.drawPoint(self.x, (winScale) - 24 - (neuronID/4)   ) 
                     gp.drawLine(self.x-2,(winScale) +22 - (neuronID/4)*0 + i_mu * 15 ,\
                                      self.x, (winScale) + 26 - (neuronID/4) *0 + i_mu * 15)
 
-    def drawPoints(self, qp, allFpgaOutput):
+    def drawPoints(self, qp, ch):
         """ 
         Draw a line between previous and current data points.
         """
         size = self.size()
         
 
-        for name, ch in allFpgaOutput.iteritems():
-            self.pen.setStyle(Qt.SolidLine)
-            self.pen.setWidth(2)
-            self.pen.setBrush(ch.color)
-            self.pen.setCapStyle(Qt.RoundCap)
-            self.pen.setJoinStyle(Qt.RoundJoin)
-            qp.setPen(self.pen)
+        #for name, ch in allFpgaOutput.iteritems():
+        self.pen.setStyle(Qt.SolidLine)
+        self.pen.setWidth(2)
+        self.pen.setBrush(ch.color)
+        self.pen.setCapStyle(Qt.RoundCap)
+        self.pen.setJoinStyle(Qt.RoundJoin)
+        qp.setPen(self.pen)
 
 
-            yOffset = int(size.height()*0.20 + size.height()*0.818/self.NUM_CHANNEL * ch.id)
-            y0 = yOffset - ch.data[1] * ch.vscale
-            y1 = yOffset - ch.data[0] * ch.vscale
+        yOffset = int(size.height()*0.20 + size.height()*0.818/self.NUM_CHANNEL * ch.id)
+        y0 = yOffset - ch.data[1] * ch.vscale
+        y1 = yOffset - ch.data[0] * ch.vscale
 
-
-            qp.drawLine(self.x - 1 , y0, self.x + 1 , y1)
+        qp.drawLine(self.x - 1 , y0, self.x + 1 , y1)
             
             
 
@@ -349,5 +373,6 @@ class View(QMainWindow, Ui_Dialog):
         Slot documentation goes here.
         """
         newInput = checked
+        print newInput
         self.nerfModel.SendButton(newInput, BUTTON_INPUT_FROM_TRIGGER)
     
