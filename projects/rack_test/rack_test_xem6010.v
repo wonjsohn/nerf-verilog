@@ -123,7 +123,7 @@
 
         // Output and OpalKelly Interface Wire Definitions
         
-        wire [7*17-1:0] ok2x;
+        wire [12*17-1:0] ok2x;
         wire [15:0] ep00wire, ep01wire, ep02wire;
         wire [15:0] ep50trig;
         
@@ -252,7 +252,7 @@
         // Triggered Input triggered_input7 Instance Definition (clk_divider)
         always @ (posedge ep50trig[7] or posedge reset_global)
         if (reset_global)
-            triggered_input7 <= triggered_input7;         //reset to triggered_input7      
+            triggered_input7 <= 32'd381;        //count for 0.5x real speed, 381 for real time speed   
         else
             triggered_input7 <= {ep02wire, ep01wire};      
         
@@ -308,7 +308,7 @@
         
         assign reset_global = ep00wire[0] | reset_external_clean;
         assign is_from_trigger = ~ep00wire[1];
-        okWireOR # (.N(7)) wireOR (ok2, ok2x);
+        okWireOR # (.N(12)) wireOR (ok2, ok2x);
         okHost okHI(
             .hi_in(hi_in),  .hi_out(hi_out),    .hi_inout(hi_inout),    .hi_aa(hi_aa),
             .ti_clk(ti_clk),    .ok1(ok1),  .ok2(ok2)   );
@@ -323,14 +323,17 @@
         okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
                             .ep_blockstrobe(), .ep_dataout(pipe_in_data), .ep_ready(1'b1));
         
-        okWireOut wo20 (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h20)    );
-        okWireOut wo21 (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h21)   );    
+        okWireOut wo20 (    .ep_datain(population_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h20)    );
+        okWireOut wo21 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h21)   );    
         
         okWireOut wo22 (    .ep_datain(Ia_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h22)    );
         okWireOut wo23 (    .ep_datain(Ia_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h23)   );    
         
         okWireOut wo24 (    .ep_datain(II_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h24)    );
         okWireOut wo25 (    .ep_datain(II_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h25)   );    
+        
+        okWireOut wo26 (    .ep_datain(population_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
+        okWireOut wo27 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   );    
         
 
         // Clock Generator clk_gen0 Instance Definition

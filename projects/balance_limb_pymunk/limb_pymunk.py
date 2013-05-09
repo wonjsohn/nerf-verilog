@@ -51,7 +51,7 @@ def main():
     j = pymunk.RotaryLimitJoint(forearm_body, elbot_joint_body, JOINT_MIN, JOINT_MAX)
     
     JOINT_DAMPING_SCHEIDT2007 = 2.1
-    JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 1
+    JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.2
     s = pymunk.DampedRotarySpring(forearm_body, elbot_joint_body, -0.0, 0.0, JOINT_DAMPING)
     space.add(j, s)
 
@@ -66,7 +66,7 @@ def main():
         # Get forces
         force_bic = max(0.0, xem_muscle_bic.ReadFPGA(0x22, "float32")) / 128 #- 0.2
         force_tri = max(0.0, xem_muscle_tri.ReadFPGA(0x22, "float32")) / 128 #- 2.64
-        forearm_body.torque = (force_bic - force_tri) * -1.0
+        forearm_body.torque = (force_bic - force_tri) * 0.8
         
         #lce = 1.0
                              
@@ -74,20 +74,34 @@ def main():
         
 #        lce_bic = angle / (2*M_PI) * 1.5 + rest_len
 #        lce_tri = 2 * rest_len - lce_bic 
-        lce_bic = angle2length(angle)+ 0.02
-        lce_tri = 2.04 - lce_bic;
+        lce_tri = angle2length(angle)+ 0.02
+        lce_bic = 2.04 - lce_tri;
         
         # Send lce of biceps 
         bitVal = convertType(lce_bic, fromType = 'f', toType = 'I')
         xem_muscle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
         xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
         
+        # Alpha-gamma coactivation
+        ag_coact, ag_bias = 30.0, -70.0
+        #ag_coact, ag_bias = 0.0, 50.0
+        gd_bic = force_bic * ag_coact + ag_bias
+        bitval = convertType(gd_bic, fromType = 'f', toType = 'I')
+        xem_spindle_bic.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
+        
         # Send lce of triceps
         bitVal = convertType(lce_tri, fromType = 'f', toType = 'I')
         xem_muscle_tri.SendPara(bitVal = bitVal, trigEvent = 9)
         xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 9)
+        
+        # Alpha-gamma coactivation
+        gd_tri = force_tri * ag_coact + ag_bias
+
+        bitval = convertType(gd_tri, fromType = 'f', toType = 'I')
+        xem_spindle_tri.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
+        
         print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_bic, lce_tri, forearm_body.torque),                           
-        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f" % (force_bic, force_tri,  angle)                            
+        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f" % (force_bic, force_tri,  angle,  gd_bic)                            
 
         
         #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
@@ -98,11 +112,11 @@ def main():
             elif event.type == KEYDOWN and event.key == K_ESCAPE:
                 running = False
             elif event.type == KEYDOWN and event.key == K_j:
-                forearm_body.torque -= 5.0
+                forearm_body.torque -= 20.0
                 pass
             elif event.type == KEYDOWN and event.key == K_f:
                 #forearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
-                forearm_body.torque += 5.0
+                forearm_body.torque += 20.0
             elif event.type == KEYDOWN and event.key == K_z:
                 rest_joint_angle = angle 
         ### Clear screen
