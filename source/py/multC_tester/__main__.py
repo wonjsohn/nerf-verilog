@@ -31,12 +31,13 @@ if __name__ == "__main__":
 #    PROJECT_NAME2 = "size_principle"
 #    PROJECT_NAME3 = "one_joint_robot_all_in1"
     PROJECT_NAME1 = "rack_test"
-    PROJECT_NAME2 = "rack_mid_node1"
+#    PROJECT_NAME2 = "rack_mid_node1"
+    PROJECT_NAME2 = "rack_CN_general"
     PROJECT_NAME3 = "rack_mn_muscle"
     
     PROJECT_PATH = []
     PROJECT_PATH.append(ROOT_PATH + PROJECT_NAME1)
-#    PROJECT_PATH.append(ROOT_PATH + PROJECT_NAME2)
+    PROJECT_PATH.append(ROOT_PATH + PROJECT_NAME2)
     PROJECT_PATH.append(ROOT_PATH + PROJECT_NAME3)
     DEVICE_MODEL = "xem6010"
     
@@ -48,11 +49,11 @@ if __name__ == "__main__":
     from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT_B1, FPGA_OUTPUT_B2, FPGA_OUTPUT_B3,   USER_INPUT_B1,  USER_INPUT_B2,  USER_INPUT_B3
     FPGA_OUTPUT_B = []
     FPGA_OUTPUT_B.append(FPGA_OUTPUT_B1)
-    #FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
+    FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
     FPGA_OUTPUT_B.append(FPGA_OUTPUT_B3)
     USER_INPUT_B = []
     USER_INPUT_B.append(USER_INPUT_B1)
-#    USER_INPUT_B.append(USER_INPUT_B2)
+    USER_INPUT_B.append(USER_INPUT_B2)
     USER_INPUT_B.append(USER_INPUT_B3)
         
 
@@ -69,8 +70,9 @@ if __name__ == "__main__":
     print "Found ",  numFpga, " OpalKelly devices:"                        
     #xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
     #xemSerialList = ['124300046A', '12320003RM', '1201000216']
-#    xemSerialList = ['12320003RN', '11160001CJ', '12430003T2']
-    xemSerialList = ['12320003RN', '12430003T2']
+#    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
+    xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
+#    xemSerialList = ['12320003RN', '12430003T2']
 #    xemSerialList = ['124300046A', '1201000216']
     print xemSerialList
     
@@ -98,7 +100,6 @@ if __name__ == "__main__":
         dispWin = View(count = i,  projectPath = PROJECT_PATH[i],  nerfModel = xemList[i],  fpgaOutput = FPGA_OUTPUT_B[i],  userInput = USER_INPUT_B[i])
         vList.append(dispWin)
 
-      
     # display VIEW windows for each channel
     for i in xrange(len(xemList)):
         vList[i].show()
@@ -108,7 +109,6 @@ if __name__ == "__main__":
     for i in xrange(len(xemList)):
         testerGui = SingleXemTester(xemList[i], vList[i], USER_INPUT_B[i],  xem.HalfCountRealTime())
         cList.append(testerGui)
-    
 
     #testerGui.show()
     

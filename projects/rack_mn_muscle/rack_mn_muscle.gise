@@ -696,6 +696,7 @@
     <transform xil_pn:end_ts="1368056194" xil_pn:in_ck="2966925084471072993" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="-7456053312847965149" xil_pn:start_ts="1368056194">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
       <outfile xil_pn:name="remote_sources/_/_/source/io/neuron_ram.ngc"/>
       <outfile xil_pn:name="remote_sources/_/_/source/io/neuron_ram.v"/>
     </transform>
@@ -710,15 +711,18 @@
     <transform xil_pn:end_ts="1362609523" xil_pn:in_ck="1402939086501607071" xil_pn:name="TRAN_SubProjectPreToStructuralProxy" xil_pn:prop_ck="-2098939838453108159" xil_pn:start_ts="1362609523">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
     </transform>
     <transform xil_pn:end_ts="1362609523" xil_pn:name="TRAN_platgen" xil_pn:prop_ck="-3768315996441244691" xil_pn:start_ts="1362609523">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
     </transform>
     <transform xil_pn:end_ts="1368056561" xil_pn:in_ck="618992192995852586" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="596808338819440850" xil_pn:start_ts="1368056194">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="_xmsgs/xst.xmsgs"/>
@@ -736,65 +740,56 @@
     <transform xil_pn:end_ts="1362609528" xil_pn:in_ck="-8473062663502168545" xil_pn:name="TRAN_compileBCD2" xil_pn:prop_ck="-2161752975945815723" xil_pn:start_ts="1362609527">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
     </transform>
     <transform xil_pn:end_ts="1368056576" xil_pn:in_ck="-8247178637617342698" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-1593125474150891132" xil_pn:start_ts="1368056561">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_ngo"/>
-      <outfile xil_pn:name="_xmsgs/ngdbuild.xmsgs"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.bld"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.ngd"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010_ngdbuild.xrpt"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1368056745" xil_pn:in_ck="8441753922097228665" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1368056576">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.pcf"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010_map.map"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010_map.mrp"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010_map.ncd"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010_map.ngm"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010_map.xrpt"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010_summary.xml"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010_usage.xml"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1368056927" xil_pn:in_ck="607203777342813010" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1368056745">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/par.xmsgs"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.ncd"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.pad"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.par"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.ptwx"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.unroutes"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.xpi"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010_pad.csv"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010_pad.txt"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010_par.xrpt"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1368056988" xil_pn:in_ck="-8473062663502176170" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1368056927">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.bgn"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.bit"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.drc"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.ut"/>
-      <outfile xil_pn:name="usage_statistics_webtalk.html"/>
-      <outfile xil_pn:name="webtalk.log"/>
-      <outfile xil_pn:name="webtalk_pn.xml"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1368056927" xil_pn:in_ck="-564132472985637387" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1368056896">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.twr"/>
-      <outfile xil_pn:name="rack_mn_muscle_xem6010.twx"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
   </transforms>
 
