@@ -163,8 +163,8 @@ class View(QMainWindow, Ui_Dialog):
     def reportData(self):
         newData = []
         for name, chan in self.allFpgaOutput.iteritems(): # Sweep thru channels coming out of Fpga
-#            newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(chan.addr, chan.type))))
-            newData.append(self.nerfModel.ReadFPGA(chan.addr, chan.type))
+            newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(chan.addr, chan.type))))
+#            newData.append(self.nerfModel.ReadFPGA(chan.addr, chan.type))
         return newData
 
 
@@ -268,7 +268,10 @@ class View(QMainWindow, Ui_Dialog):
         yOffset = int(size.height()*0.20 + size.height()*0.818/self.NUM_CHANNEL * ch.id)
         y0 = yOffset - ch.data[1] * ch.vscale
         y1 = yOffset - ch.data[0] * ch.vscale
-
+        
+        print "self.x=",  self.x
+        print "y0=" ,  y0
+        print "y1=" ,  y1
         qp.drawLine(self.x - 1 , y0, self.x + 1 , y1)
             
             
@@ -315,9 +318,9 @@ class View(QMainWindow, Ui_Dialog):
         """
         choice = p0
         if choice == "waveform 1":
-#            pipeInData = spike_train(firing_rate = 1) 
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.04, 1., 1.0, 1.0], FILT = False)
             print "waveform 1 fed"
-            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 
+#            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 
         elif choice == "waveform 2":
 #            pipeInData = spike_train(firing_rate = 10)      
 #            pipeInData = gen_sin(F = 4.0, AMP = 0.3)

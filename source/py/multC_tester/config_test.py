@@ -61,7 +61,7 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
                     (5, 'xxx',    'float32',      80.0), \
                     (6, 'xxx',      'int32',        0),  \
                     (7, 'clk_halfCnt',      'int32',        0),  \
-                    (8, 'xxx',      'int32',        0),  \
+                    (8, 'cortial_input',      'int32',        0),  \
                     (9, 'xxx',      'int32',        1),  \
                     (10, 'p_delta',      'float32',        0.0),  \
                     (11, 'ltd',      'int32',        0),  \
