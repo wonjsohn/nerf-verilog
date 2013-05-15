@@ -269,9 +269,9 @@ class View(QMainWindow, Ui_Dialog):
         y0 = yOffset - ch.data[1] * ch.vscale
         y1 = yOffset - ch.data[0] * ch.vscale
         
-        print "self.x=",  self.x
-        print "y0=" ,  y0
-        print "y1=" ,  y1
+#        print "self.x=",  self.x
+#        print "y0=" ,  y0
+#        print "y1=" ,  y1
         qp.drawLine(self.x - 1 , y0, self.x + 1 , y1)
             
             
@@ -318,7 +318,7 @@ class View(QMainWindow, Ui_Dialog):
         """
         choice = p0
         if choice == "waveform 1":
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.04, 1., 1.0, 1.0], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.15, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.04, 1.04, 1.0, 1.0], FILT = False)
             print "waveform 1 fed"
 #            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 
         elif choice == "waveform 2":

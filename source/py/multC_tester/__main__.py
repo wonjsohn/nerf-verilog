@@ -25,20 +25,14 @@ if __name__ == "__main__":
     
 #    ROOT_PATH = QFileDialog.getExistingDirectory(None, "Path for the Verilog .bit file", os.getcwd() + "../../")
 
-    ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
-#    ROOT_PATH = "/home/eric/"
+    ROOT_PATH = "/home/minos001/Code/nerf-verilog/projects/"
+    
 #    PROJECT_NAME1 = "one_joint_parameterSearch"
 #    PROJECT_NAME2 = "size_principle"
 #    PROJECT_NAME3 = "one_joint_robot_all_in1"
-    PROJECT_NAME1 = "rack_test"
-#    PROJECT_NAME2 = "rack_mid_node1"
-    PROJECT_NAME2 = "rack_CN_general"
-    PROJECT_NAME3 = "rack_mn_muscle"
-    
-    PROJECT_PATH = []
-    PROJECT_PATH.append(ROOT_PATH + PROJECT_NAME1)
-    PROJECT_PATH.append(ROOT_PATH + PROJECT_NAME2)
-    PROJECT_PATH.append(ROOT_PATH + PROJECT_NAME3)
+    PROJECT_LIST = ["rack_test", "rack_CN_general", "rack_mn_muscle"]    
+    PROJECT_PATH = [(ROOT_PATH + p) for p in PROJECT_LIST]
+
     DEVICE_MODEL = "xem6010"
     
     #BITFILE_NAME = PROJECT_PATH1 + "/" + PROJECT_NAME + "_" + DEVICE_MODEL + ".bit"
@@ -68,10 +62,10 @@ if __name__ == "__main__":
     numFpga = testrun.GetDeviceCount()
     assert numFpga > 0, "No OpalKelly boards found, is one connected?"
     print "Found ",  numFpga, " OpalKelly devices:"                        
-    #xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
+    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
     #xemSerialList = ['124300046A', '12320003RM', '1201000216']
 #    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
-    xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
+    #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
 #    xemSerialList = ['12320003RN', '12430003T2']
 #    xemSerialList = ['124300046A', '1201000216']
     print xemSerialList
