@@ -663,6 +663,8 @@
     <transform xil_pn:end_ts="1368656025" xil_pn:in_ck="-2336393191928262765" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1368655682">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
       <outfile xil_pn:name="rack_test_xem6010.pcf"/>
       <outfile xil_pn:name="rack_test_xem6010_map.map"/>

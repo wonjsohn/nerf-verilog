@@ -38,6 +38,7 @@ class SingleXemTester(QDialog):
 
         self.nerfModel = nerfModel
         self.dispView = dispView
+        self.rawChanList = rawChanList
         self.halfCountRealTime = halfCountRealTime
 
         #self.dispView.show()
@@ -55,6 +56,7 @@ class SingleXemTester(QDialog):
 
     def close(self):
         self.dispView.close()
+        self.plotData(self.data)
         
         
     def startSim(self):
@@ -121,13 +123,13 @@ class SingleXemTester(QDialog):
         from scipy.io import savemat, loadmat
         import numpy as np
         
+        dim = np.shape(self.data)
         if (data != []):
             forplot = np.array(data)
-            for i in xrange(NUM_CHANNEL):
-                subplot(NUM_CHANNEL, 1, i+1)
+            for i in xrange(dim[1]):
+                subplot(dim[1], 1, i+1)
                 plot(forplot[:, i])
             show()
             savemat("./matlab_cmn.mat", {"lce": forplot[:, 0], "Ia": forplot[:, 1], \
-                                         "II": forplot[:, 2], "force": forplot[:, 3], \
-                                         "emg": forplot[:, 4]})
+                                         "II": forplot[:, 2], "force": forplot[:, 3]})
    

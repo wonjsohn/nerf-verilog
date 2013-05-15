@@ -44,8 +44,6 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
 #        self.cList.setWindowTitle('Global Control')
         #self.cList.show() 
 
-        self.data = []
-        self.isLogData = False
 #        self.jointAngle = 0.0  # initial joint 
 #        self.best_ForceDiff = 1.0 * 0xFFFF  #inital muscle length difference (arbitrary)
 #        self.start = False
@@ -87,8 +85,6 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         """
         for eachC in self.cList:
             eachC.close()
-       
-        #self.plotData(self.data)
 
     @pyqtSignature("int")
     def on_horizontalSlider_valueChanged(self, value):
@@ -112,8 +108,8 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         """
         Toggling data logging for Matlab use.
         """
-        self.isLogData = checked
-
+        for eachC in self.cList:
+            eachC.isLogData = checked
 
     # this button starts the simulation 
     @pyqtSignature("bool")
