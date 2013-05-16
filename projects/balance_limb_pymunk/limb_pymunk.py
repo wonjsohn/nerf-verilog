@@ -51,7 +51,7 @@ def main():
     j = pymunk.RotaryLimitJoint(forearm_body, elbot_joint_body, JOINT_MIN, JOINT_MAX)
     
     JOINT_DAMPING_SCHEIDT2007 = 2.1
-    JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.2
+    JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.1
     s = pymunk.DampedRotarySpring(forearm_body, elbot_joint_body, -0.0, 0.0, JOINT_DAMPING)
     space.add(j, s)
 
@@ -84,7 +84,7 @@ def main():
         
         # Alpha-gamma coactivation
         ag_coact, ag_bias = 30.0, -70.0
-        #ag_coact, ag_bias = 0.0, 50.0
+#        ag_coact, ag_bias = 0.0, 50.0
         gd_bic = force_bic * ag_coact + ag_bias
         bitval = convertType(gd_bic, fromType = 'f', toType = 'I')
         xem_spindle_bic.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
