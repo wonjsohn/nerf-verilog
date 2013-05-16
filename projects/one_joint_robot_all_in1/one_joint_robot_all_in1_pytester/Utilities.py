@@ -41,7 +41,8 @@ CHOUT_PARAM =   (1, 'pps_coef_Ia',  'float32',      30.0), \
                 
 SEND_TYPE = list(zip(*CHOUT_PARAM)[2])   
 
-BIT_FILE = "../one_joint_robot_all_in1_xem6010_twitch.bit"
+BIT_FILE = "../one_joint_robot_all_in1_xem6010.bit"
+#BIT_FILE = "../one_joint_robot_all_in1_xem6010_twitch.bit"
 #BIT_FILE2 = "../one_joint_robot_xem6010 (copy).bit"
 
 

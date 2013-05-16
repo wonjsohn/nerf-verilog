@@ -320,7 +320,7 @@ module one_joint_robot_all_in1_xem6010(
 //    wire [NN+2:0] neuronCounter;
     wire [31:0] i_neuronCounter; 
 
-    gen_clk #(.NN(NN)) useful_clocks
+    gen_clk useful_clocks
     (   .rawclk(clk1), 
         .half_cnt(delay_cnt_max), 
         .clk_out1(neuron_clk), 
@@ -409,18 +409,24 @@ module one_joint_robot_all_in1_xem6010(
 		  .out3(neuron_clk_temp),
 		  .i_current_out(i_current_out) );
 
+    wire [31:0]  i_SN_spkcnt;
+    spike_counter  sync_counter
+     (                 .clk(neuron_clk),
+                        .reset(reset_sim),
+                        .spike_in(SN_spk),
+                        .spike_count(i_SN_spkcnt) );
 
-
-	wire    [31:0] i_SN_spkcnt;
-	wire    dummy_slow;  
-	spikecnt	spike_cnt_SN 
-	(		.spike(SN_spk),
-			.int_cnt_out(i_SN_spkcnt),
-			.slow_clk(sim_clk),
-			.fast_clk(clk1),
-			.reset(reset_sim),
-			.clear_out(dummy_slow));
-			
+//
+//	wire    [31:0] i_SN_spkcnt;
+//	wire    dummy_slow;  
+//	spike_counter	spike_cnt_SN 
+//	(		.spike(SN_spk),
+//			.int_cnt_out(i_SN_spkcnt),
+//			.slow_clk(sim_clk),
+//			.fast_clk(clk1),
+//			.reset(reset_sim),
+//			.clear_out(dummy_slow));
+//			
 
     
     
@@ -643,18 +649,25 @@ module one_joint_robot_all_in1_xem6010(
                 .each_spike(MN_spk)
     );
 	
-    
-    
-	wire    [31:0] i_MN_spkcnt;
-	wire    dummy_slow_MN;  
-	spikecnt	spike_cnt_MN 
-	(		.spike(MN_spk),
-			.int_cnt_out(i_MN_spkcnt),
-			.slow_clk(sim_clk),
-			.fast_clk(clk1),
-			.reset(reset_sim),
-			.clear_out(dummy_slow_MN));
-    
+ 
+     wire [31:0]  i_MN_spkcnt;
+    spike_counter  sync_counter_MN
+     (                 .clk(neuron_clk),
+                        .reset(reset_sim),
+                        .spike_in(MN_spk),
+                        .spike_count(i_MN_spkcnt) );
+
+//    
+//	wire    [31:0] i_MN_spkcnt;
+//	wire    dummy_slow_MN;  
+//	spikecnt	spike_cnt_MN 
+//	(		.spike(MN_spk),
+//			.int_cnt_out(i_MN_spkcnt),
+//			.slow_clk(sim_clk),
+//			.fast_clk(clk1),
+//			.reset(reset_sim),
+//			.clear_out(dummy_slow_MN));
+//    
 
     
 //            
