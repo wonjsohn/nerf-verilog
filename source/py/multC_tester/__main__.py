@@ -25,7 +25,7 @@ if __name__ == "__main__":
     
 #    ROOT_PATH = QFileDialog.getExistingDirectory(None, "Path for the Verilog .bit file", os.getcwd() + "../../")
 
-    ROOT_PATH = "/home/minos001/Code/nerf-verilog/projects/"
+    ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
     
 #    PROJECT_NAME1 = "one_joint_parameterSearch"
 #    PROJECT_NAME2 = "size_principle"
@@ -62,8 +62,8 @@ if __name__ == "__main__":
     numFpga = testrun.GetDeviceCount()
     assert numFpga > 0, "No OpalKelly boards found, is one connected?"
     print "Found ",  numFpga, " OpalKelly devices:"                        
-    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
-    #xemSerialList = ['124300046A', '12320003RM', '1201000216']
+#    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
+    xemSerialList = ['124300046A', '12320003RM', '1201000216']
 #    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
     #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
 #    xemSerialList = ['12320003RN', '12430003T2']
@@ -91,7 +91,7 @@ if __name__ == "__main__":
 
     
     for i in xrange(len(xemList)):
-        dispWin = View(count = i,  projectPath = PROJECT_PATH[i],  nerfModel = xemList[i],  fpgaOutput = FPGA_OUTPUT_B[i],  userInput = USER_INPUT_B[i])
+        dispWin = View(count = i,  projectName = PROJECT_LIST[i] ,  projectPath = PROJECT_PATH[i],  nerfModel = xemList[i],  fpgaOutput = FPGA_OUTPUT_B[i],  userInput = USER_INPUT_B[i])
         vList.append(dispWin)
 
     # display VIEW windows for each channel
