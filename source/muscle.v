@@ -205,28 +205,35 @@ module s_weight(x_i, weight);
 	wire		[31:0]	temp_weight1, temp_weight2;
 	wire 		[31:0]	out1, out2, out3, out4, out5;
 	wire 		[31:0]	w_i, weight;
-	wire		[31:0]	minus4, eight, three, two, point5, one;
+	wire		[31:0]	IEEE_minus4, IEEE_eight, IEEE_three, IEEE_two, IEEE_point5, IEEE_one;
 
-	assign minus4	 = 32'hC0800000; // -4
-	assign eight	 = 32'h41000000; // +8
-	assign three 	 = 32'h40400000;  // +3
-	assign two 		 = 32'h40000000; // +2
+	assign IEEE_minus4	 = 32'hC0800000; // -4
+	assign IEEE_eight	 = 32'h41000000; // +8
+	assign IEEE_three 	 = 32'h40400000;  // +3
+	assign IEEE_two 		 = 32'h40000000; // +2
 	
-	assign point5	 = 32'h3F000000; //+0.5
-	assign one 		= 	32'h3F800000; //+1.0
+	assign IEEE_point5	 = 32'h3F000000; //+0.5
+	assign IEEE_one 		= 	32'h3F800000; //+1.0
 	
 //	//assign 	temp_weight1= -4.0*x**2 + 8.0*x-3.0;
 		mult 	mult_a(.x(x_i), 	.y(x_i), 	.out(out1));
-		mult 	mult_b(.x(minus4),.y(out1), 	.out(out2));//-4
-		mult	mult_c(.x(eight), .y(x_i),		.out(out3));//8
+		mult 	mult_b(.x(IEEE_minus4),.y(out1), 	.out(out2));//-4
+		mult	mult_c(.x(IEEE_eight), .y(x_i),		.out(out3));//8
 		add	add_a( .x(out2), 	.y(out3), 	.out(out4)); //4
-		sub	sub_a( .x(out4),	.y(three), 	.out(temp_weight1)); //1
+		sub	sub_a( .x(out4),	.y(IEEE_three), 	.out(temp_weight1)); //1
 	
 	//	//assign 	temp_weight2 = -x**2 + 2.0*x
-		mult	mult_e(.x(x_i), .y(two), .out(out5));
+		mult	mult_e(.x(x_i), .y(IEEE_two), .out(out5));
 		sub	sub_b(.x(out5), .y(out1), .out(temp_weight2)); 
 		
-		assign weight=(x_i<=point5)? 32'd0: (x_i<=one)? temp_weight1: (x_i<=two)? temp_weight2: 32'd0;
+		// wrong!  floating point operation. assign weight=(x_i<=point5)? 32'd0: (x_i<=one)? temp_weight1: (x_i<=two)? temp_weight2: 32'd0;
+        wire [31:0] case1, case2, case3;
+        sub sub_case1(.x(x_i), .y(IEEE_point5), .out(case1));  // case x<= 0.5
+        sub sub_case2(.x(x_i), .y(IEEE_one), .out(case2));  // case 0.5<=x < 1
+        sub sub_case3(.x(x_i), .y(IEEE_two), .out(case3));  // case 1<= x < 2
+        
+
+         assign weight=(case1[31])? 32'd0: (case2[31])? temp_weight1: (case3[31])? temp_weight2: 32'd0;
 		//assign weight = temp_weight1;  //for the time being.
 endmodule 
 
