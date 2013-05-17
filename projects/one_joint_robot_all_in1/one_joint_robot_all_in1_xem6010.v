@@ -259,15 +259,15 @@ module one_joint_robot_all_in1_xem6010(
         end
     end   
 
-//    /***  MotorCortex direct drive ***/
-//    reg [31:0] i_M1_CN_drive; 
-//    always @(posedge ep50trig[11] or posedge reset_global)
-//    begin
-//        if (reset_global)
-//            i_M1_CN_drive <= 32'h0000_0000; //0.0
-//        else
-//            i_M1_CN_drive <= {ep02wire, ep01wire}; 
-//    end   
+    /***  II sensory spindle  ***/
+    reg [31:0] f_pps_coef_II; 
+    always @(posedge ep50trig[11] or posedge reset_global)
+    begin
+        if (reset_global)
+            f_pps_coef_II <= 32'h3F66_6666;
+        else
+            f_pps_coef_II <= {ep02wire, ep01wire}; 
+    end   
      
     /***  MotorCortex synapse gain  ***/
     reg signed [31:0] i_gain_syn_SN_to_CN; 
@@ -389,13 +389,13 @@ module one_joint_robot_all_in1_xem6010(
 //        .BDAMP_chain(BDAMP_chain)
 //		);
 
-    
+     ////********************Ia sensory ***************************************///
 	wire signed [31:0] i_current_out;
 	wire SN_spk;
     wire [15:0] spkid_SN;
 	 wire [31:0] neuron_clk_temp;
     
-    neuron_pool #(.NN(NN)) SN_pool
+    neuron_pool #(.NN(NN)) SN_pool_Ia
     (   .f_rawfr_Ia(f_fr_Ia),     //
         .f_pps_coef_Ia(f_pps_coef_Ia), //
         .half_cnt(delay_cnt_max),
@@ -408,13 +408,40 @@ module one_joint_robot_all_in1_xem6010(
         .spkid(spkid_SN),
 		  .out3(neuron_clk_temp),
 		  .i_current_out(i_current_out) );
-
+          
     wire [31:0]  i_SN_spkcnt;
     spike_counter  sync_counter
      (                 .clk(neuron_clk),
                         .reset(reset_sim),
                         .spike_in(SN_spk),
                         .spike_count(i_SN_spkcnt) );
+          
+    ////********************II sensory ***************************************///
+    wire signed [31:0] i_current_out_II;
+	wire SN_spk_II;
+    wire [15:0] spkid_SN_II;
+	 wire [31:0] neuron_clk_temp_II;
+    
+    neuron_pool #(.NN(NN)) SN_pool_II
+    (   .f_rawfr_Ia(f_fr_II),     //
+        .f_pps_coef_Ia(f_pps_coef_II), //
+        .half_cnt(delay_cnt_max),
+        .rawclk(clk1),
+        .ti_clk(ti_clk),
+        .reset_sim(reset_sim),
+        //.i_gain(i_gain_mu1_SN),
+//        .neuronCounter(neuronCounter),
+        .spike(SN_spk_II),
+        .spkid(spkid_SN_II),
+		  .out3(neuron_clk_temp_II),
+		  .i_current_out(i_current_out_II) );
+
+    wire [31:0]  i_SN_spkcnt_II;
+    spike_counter  sync_counter_II
+     (                 .clk(neuron_clk),
+                        .reset(reset_sim),
+                        .spike_in(SN_spk_II),
+                        .spike_count(i_SN_spkcnt_II) );
 
 //
 //	wire    [31:0] i_SN_spkcnt;
@@ -457,6 +484,29 @@ module one_joint_robot_all_in1_xem6010(
     
    wire [31:0] i_EPSC_SN_to_MN;
    unsigned_mult32 syn1_gain(.out(i_EPSC_SN_to_MN), .a(i_EPSC_SN_to_MN_preamp), .b(i_gain_syn_SN_to_MN));
+   
+   
+
+//******** Synapse II to MN **********/
+	//** input: spikes
+    //** output: current (each_I_synapse: updates at neuron_clk)
+    
+    wire [31:0] I_synapse_SN_to_MN_II;
+    wire [31:0] i_EPSC_SN_to_MN_preamp_II;
+    wire each_spike_SN_to_MN_II;
+    
+    synapse synapse_SN_to_MN_II(
+                .clk(neuron_clk),
+                .reset(reset_sim),
+                .spike_in(SN_spk_II),
+                .postsynaptic_spike_in(each_spike_SN_to_MN_II),
+                .I_out(I_synapse_SN_to_MN_II),  // updates once per population (scaling factor 1024) 
+                .each_I(i_EPSC_SN_to_MN_preamp_II) // updates on each synapse
+    );
+    
+    
+   wire [31:0] i_EPSC_SN_to_MN_II;
+   unsigned_mult32 syn1_gain_II(.out(i_EPSC_SN_to_MN_II), .a(i_EPSC_SN_to_MN_preamp_II), .b(i_gain_syn_SN_to_MN));
    
    
 
@@ -610,7 +660,7 @@ module one_joint_robot_all_in1_xem6010(
 
     
  
-   assign i_drive_to_MN_F0 =i_EPSC_SN_to_MN + i_EPSC_CN_to_MN + i_EPSC_CN2_to_MN;
+   assign i_drive_to_MN_F0 =i_EPSC_SN_to_MN + i_EPSC_SN_to_MN_II + i_EPSC_CN_to_MN + i_EPSC_CN2_to_MN;
    //add Spinal_n_Transcortical_Current(.x(each_I_synapse_SPINAL), .y(each_I_synapse_CN_END), .out(each_I_synapse));  
 
 
