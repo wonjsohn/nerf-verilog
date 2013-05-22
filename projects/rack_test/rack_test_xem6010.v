@@ -170,8 +170,10 @@
 	//gain control for spindle output rate 
     
     
-	wire [31:0] Ia_gain_controlled_spindle0;
-	mult mult_spindle0(.x(f_temp_spindle_remove_offset), .y(triggered_input6), .out(Ia_gain_controlled_spindle0));
+	wire [31:0] Ia_gain_controlled_spindle0, Ia_gain_controlled_temp;
+	mult mult_spindle0(.x(f_temp_spindle_remove_offset), .y(triggered_input6), .out(Ia_gain_controlled_temp));
+    
+    assign Ia_gain_controlled_spindle0 = Ia_gain_controlled_temp[31] ? 32'd0 : Ia_gain_controlled_temp;
 
         // Ia Afferent datatype conversion (floating point -> integer -> fixed point)
         floor   ia_spindle0_float_to_int(
@@ -326,8 +328,10 @@
         okWireOut wo20 (    .ep_datain(population_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h20)    );
         okWireOut wo21 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h21)   );    
         
-        okWireOut wo22 (    .ep_datain(Ia_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h22)    );
-        okWireOut wo23 (    .ep_datain(Ia_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h23)   );    
+        //okWireOut wo22 (    .ep_datain(Ia_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h22)    );
+        //okWireOut wo23 (    .ep_datain(Ia_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h23)   );    
+        okWireOut wo22 (    .ep_datain(Ia_gain_controlled_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h22)    );
+        okWireOut wo23 (    .ep_datain(Ia_gain_controlled_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h23)   );  
         
         okWireOut wo24 (    .ep_datain(II_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h24)    );
         okWireOut wo25 (    .ep_datain(II_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h25)   );    
