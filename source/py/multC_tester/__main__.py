@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys, PyQt4
@@ -25,7 +25,8 @@ if __name__ == "__main__":
     
 #    ROOT_PATH = QFileDialog.getExistingDirectory(None, "Path for the Verilog .bit file", os.getcwd() + "../../")
 
-    ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
+    #ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
+    ROOT_PATH = "/home/sirish/Documents/nerf/projects/"
     
 #    PROJECT_NAME1 = "one_joint_parameterSearch"
 #    PROJECT_NAME2 = "size_principle"
@@ -43,12 +44,12 @@ if __name__ == "__main__":
     from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT_B1, FPGA_OUTPUT_B2, FPGA_OUTPUT_B3,   USER_INPUT_B1,  USER_INPUT_B2,  USER_INPUT_B3
     FPGA_OUTPUT_B = []
     FPGA_OUTPUT_B.append(FPGA_OUTPUT_B1)
-    FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
-    FPGA_OUTPUT_B.append(FPGA_OUTPUT_B3)
+    #FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
+    #FPGA_OUTPUT_B.append(FPGA_OUTPUT_B3)
     USER_INPUT_B = []
     USER_INPUT_B.append(USER_INPUT_B1)
-    USER_INPUT_B.append(USER_INPUT_B2)
-    USER_INPUT_B.append(USER_INPUT_B3)
+    #USER_INPUT_B.append(USER_INPUT_B2)
+    #USER_INPUT_B.append(USER_INPUT_B3)
         
 
     # Connect to an OpalKelly device on USB
@@ -63,11 +64,14 @@ if __name__ == "__main__":
     assert numFpga > 0, "No OpalKelly boards found, is one connected?"
     print "Found ",  numFpga, " OpalKelly devices:"                        
 #    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
-    xemSerialList = ['124300046A', '12320003RM', '1201000216']
+    #xemSerialList = ['124300046A', '12320003RM', '1201000216']
 #    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
     #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
 #    xemSerialList = ['12320003RN', '12430003T2']
 #    xemSerialList = ['124300046A', '1201000216']
+   # xemSerialList = ['1137000222']
+    xemSerialList = ['0000000542']
+   
     print xemSerialList
     
     for idx,  name in enumerate(xemSerialList):
