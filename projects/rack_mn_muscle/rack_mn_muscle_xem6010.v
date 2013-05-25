@@ -1,4 +1,4 @@
-
+`default_nettype none
 `timescale 1ns / 1ps
 
 // rack_mn_muscle_xem6010.v
@@ -308,8 +308,8 @@
         okWireOut wo26 (    .ep_datain(spike_count_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
         okWireOut wo27 (    .ep_datain(spike_count_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   );    
         
-        okWireOut wo28 (    .ep_datain(I_synapse0[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
-        okWireOut wo29 (    .ep_datain(I_synapse0[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   );    
+        okWireOut wo28 (    .ep_datain(i_emg[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
+        okWireOut wo29 (    .ep_datain(i_emg[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   );    
          
         
         wire [31:0] total_force_out_muscle0_sync;
@@ -350,6 +350,18 @@
             .each_spike(each_spike_neuron0), // raw spikes
             .population(population_neuron0)  // spikes of population per 1ms simulation time
         );
+            
+        // ** EMG 
+        wire [17:0] si_emg;
+        emg emg_foo
+        (   .emg_out(si_emg), 
+            .i_spk_cnt(spike_count_neuron0_sync[6:0]), 
+            .clk(sim_clk), 
+            .reset(reset_global) ); 
+        wire [31:0] i_emg;
+        assign i_emg = {{14{si_emg[17]}},si_emg[17:0]};
+        
+	 
         
 /////////////////////// END INSTANCE DEFINITIONS //////////////////////////
 

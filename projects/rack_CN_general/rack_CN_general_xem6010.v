@@ -1,5 +1,5 @@
 
-
+`default_nettype none
 `timescale 1ns / 1ps
 
 // rack_mid_node1_xem6010.v

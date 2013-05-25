@@ -4,7 +4,7 @@ from PyQt4.QtCore import Qt
 FPGA_OUTPUT_B1 =    (0x20,      'Ia_raster_ch20',      1.0,         'spike32',      Qt.blue),  \
                 (0x22,      'Ia_spindle0',      1.0,         'float32',      Qt.red),  \
                 (0x24,      'II_spindle0',      1.0,         'float32',      Qt.green),  \
-                (0x26,      'Ia_raster',      1.0,         'spike32',      Qt.black),  \
+                (0x26,      'mixed_input',      1.0,         'float32',      Qt.black),  \
                 (0x28,      'blank',      1.0,         'float32',      Qt.magenta),  \
                 (0x2A,      'blank',      1.0,         'float32',      Qt.darkRed),  \
                 (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
@@ -18,15 +18,34 @@ FPGA_OUTPUT_B2 =   (0x20,      'v_neuron0',      1.0,         'float32',      Qt
                 (0x2A,      'blank',      1.0,         'float32',      Qt.darkRed),  \
                 (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
                 
-#            address         name   visual_gain         type            color
+##            address         name   visual_gain         type            color
+#FPGA_OUTPUT_B3 =    (0x20,      'mixed_input0',      1.0,         'float32',      Qt.blue),  \
+#                (0x22,      'total_force_out_muscle0_sync',      1.0,         'float32',      Qt.red),  \
+#                (0x24,      'spike_count_neuron0_sync',      1.0,         'int32',      Qt.green),  \
+#                (0x26,      'spike_count_neuron0',      1.0,         'int32',      Qt.black),  \
+#                (0x28,      'i_emg',      1.0,         'int32',      Qt.magenta),  \
+#                (0x2A,      'blank',      1.0,         'float32',      Qt.darkRed),  \
+#                (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
+                
+                #            address         name   visual_gain         type            color
 FPGA_OUTPUT_B3 =    (0x20,      'mixed_input0',      1.0,         'float32',      Qt.blue),  \
-                (0x22,      'total_force_out_muscle0_sync',      1.0,         'float32',      Qt.red),  \
+                (0x22,      'f_emg',      1.0,         'float32',      Qt.red),  \
                 (0x24,      'spike_count_neuron0_sync',      1.0,         'int32',      Qt.green),  \
-                (0x26,      'spike_count_neuron0',      1.0,         'int32',      Qt.black),  \
-                (0x28,      'I_synapse0',      1.0,         'int32',      Qt.magenta),  \
+                (0x26,      'f_spikes_cnt_1',      1.0,         'float32',      Qt.black),  \
+                (0x28,      'f_total_emg_F0',      1.0,         'float32',      Qt.magenta),  \
                 (0x2A,      'blank',      1.0,         'float32',      Qt.darkRed),  \
                 (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
-                
+ 
+### For video recording: only display force 
+##            address         name   visual_gain         type            color
+#FPGA_OUTPUT_B3 =    (0x20,      'blank',      1.0,         'float32',      Qt.blue),  \
+#                (0x22,      'total_force_out_muscle0_sync',      1.0,         'float32',      Qt.red),  \
+#                (0x24,      'blank',      1.0,         'int32',      Qt.green),  \
+#                (0x26,      'blank',      1.0,         'int32',      Qt.black),  \
+#                (0x28,      'blank',      1.0,         'int32',      Qt.magenta),  \
+#                (0x2A,      'blank',      1.0,         'float32',      Qt.darkRed),  \
+#                (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
+#                
 #            address         name   visual_gain         type            color
 FPGA_OUTPUT_DEFAULT =    (0x20,      'f_len',      1.0,         'float32',      Qt.blue),  \
                 (0x22,      'f_fr_Ia',      1.0,         'float32',      Qt.red),  \
@@ -37,16 +56,16 @@ FPGA_OUTPUT_DEFAULT =    (0x20,      'f_len',      1.0,         'float32',      
                 (0x2C,      'i_emg',      1.0,         'int32',      Qt.darkGray)
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B1 =   (1, 'spindle_gain',  'float32',      4.0), \
+USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      4.0), \
                     (2, 'tau',  'float32',      0.03), \
-                    (3, 'spindl_offset',   'float32',   10.12), \
+                    (3, 'spindl_Ia_offset',   'float32',   10.12), \
                     (4, 'gamma_dyn',    'float32',      80.0), \
                     (5, 'gamma_sta',    'float32',      80.0), \
-                    (6, 'xxx',      'int32',        0),  \
+                    (6, 'spindl_II_offset',      'float32',        10.12),  \
                     (7, 'clk_halfCnt',      'int32',        0),  \
                     (8, 'xxx',      'int32',        0),  \
                     (9, 'Lce',      'float32',        1.1),  \
-                    (10, 'xxx',      'float32',        1.1),  \
+                    (10, 'spindle_II_gain',      'float32',        4.0),  \
                     (11, 'xxx',      'int32',        0),  \
                     (12, 'xxx',      'int32',        0),  \
                     (13, 'BDAMP1',      'float32',        0.2356),  \

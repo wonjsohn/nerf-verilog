@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/MVC_MainGUI.ui'
 #
-# Created: Tue Mar 12 16:20:11 2013
+# Created: Tue May 21 13:04:38 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -30,8 +30,8 @@ class Ui_Dialog(object):
         self.horizontalSlider.setGeometry(QtCore.QRect(201, 1, 181, 16))
         self.horizontalSlider.setMinimum(1)
         self.horizontalSlider.setMaximum(100)
-        self.horizontalSlider.setProperty("value", 5)
-        self.horizontalSlider.setSliderPosition(5)
+        self.horizontalSlider.setProperty("value", 10)
+        self.horizontalSlider.setSliderPosition(10)
         self.horizontalSlider.setTracking(True)
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider.setInvertedControls(True)
@@ -187,7 +187,8 @@ class Ui_Dialog(object):
         self.lcdNumber.setLineWidth(0)
         self.lcdNumber.setMidLineWidth(8)
         self.lcdNumber.setSegmentStyle(QtGui.QLCDNumber.Flat)
-        self.lcdNumber.setProperty("intValue", 5)
+        self.lcdNumber.setProperty("value", 10.0)
+        self.lcdNumber.setProperty("intValue", 10)
         self.lcdNumber.setObjectName(_fromUtf8("lcdNumber"))
         self.label_RT = QtGui.QLabel(Dialog)
         self.label_RT.setGeometry(QtCore.QRect(220, 20, 101, 16))
