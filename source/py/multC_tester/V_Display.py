@@ -82,8 +82,8 @@ class ViewChannel:
      
 
 def onVisualSlider(self, whichCh, value = -1):
-    if value == -1: value = self.allUserInput[whichCh].slider.value()
-    self.allUserInput[whichCh].vscale = value * 0.1   
+    if value == -1: value = self.allFpgaOutput[whichCh].slider.value()
+    self.allFpgaOutput[whichCh].vscale = value * 0.1   
     print "VisualGain of ", whichCh, " is now ", value
     
     
@@ -327,7 +327,7 @@ class View(QMainWindow, Ui_Dialog):
         """
         choice = p0
         if choice == "waveform 1":
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.15, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.04, 1.04, 1.0, 1.0], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.15, 0.65, 0.7, 2.0], L = [1.0, 1.0, 1.20, 1.20, 1.0, 1.0], FILT = False)
             print "waveform 1 fed"
 #            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 
         elif choice == "waveform 2":
@@ -373,12 +373,19 @@ class View(QMainWindow, Ui_Dialog):
     @pyqtSignature("QListWidgetItem*")
     def on_listWidget_itemClicked(self, item):
         """
-        Slot documentation goes here.
+        item burnt upon clicking the .bit file
         """
         self.nerfModel.BurnBitFile(str(item.text()))
     
-  
     
+#    @pyqtSignature("QListWidgetItem*")
+#      
+#    def on_listWidget_itemActivated(self, item):
+#        """
+#        Default selection of .bit file burnt without clicking burn button
+#        """
+#        self.nerfModel.BurnBitFile(str(item.text()))
+#    
     @pyqtSignature("bool")
     def on_checkBox_2_clicked(self, checked):
         """
@@ -388,3 +395,4 @@ class View(QMainWindow, Ui_Dialog):
         print newInput
         self.nerfModel.SendButton(newInput, BUTTON_INPUT_FROM_TRIGGER)
     
+

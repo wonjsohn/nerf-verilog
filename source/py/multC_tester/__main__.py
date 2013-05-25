@@ -30,7 +30,8 @@ if __name__ == "__main__":
 #    PROJECT_NAME1 = "one_joint_parameterSearch"
 #    PROJECT_NAME2 = "size_principle"
 #    PROJECT_NAME3 = "one_joint_robot_all_in1"
-    PROJECT_LIST = ["rack_test", "rack_CN_general", "rack_mn_muscle"]    
+#    PROJECT_LIST = ["rack_test", "rack_CN_general", "rack_mn_muscle"]   
+    PROJECT_LIST = ["rack_test", "rack_CN_general", "rack_emg"]   
     PROJECT_PATH = [(ROOT_PATH + p) for p in PROJECT_LIST]
 
     DEVICE_MODEL = "xem6010"
@@ -63,11 +64,13 @@ if __name__ == "__main__":
     assert numFpga > 0, "No OpalKelly boards found, is one connected?"
     print "Found ",  numFpga, " OpalKelly devices:"                        
 #    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
-    xemSerialList = ['124300046A', '12320003RM', '1201000216']
-#    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
+#    xemSerialList = ['1137000222', '11160001CJ', '12430003T2']
+#    xemSerialList = ['124300046A', '12320003RM', '1201000216']
+    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
     #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
 #    xemSerialList = ['12320003RN', '12430003T2']
 #    xemSerialList = ['124300046A', '1201000216']
+#    xemSerialList = ['12320003RN']
     print xemSerialList
     
     for idx,  name in enumerate(xemSerialList):

@@ -1,4 +1,4 @@
-
+`default_nettype none
 `timescale 1ns / 1ps
 
 // rack_test_xem6010.v
@@ -192,7 +192,7 @@
     //******************* II spindle output ****************************     
     //Remove the offset in spindle output rate
     wire [31:0] f_temp_spindle_remove_offset_II;
-    sub sub_spindle0_II(.x(II_spindle0), .y(f_spindle_offset), .out(f_temp_spindle_remove_offset_II));
+    sub sub_spindle0_II(.x(II_spindle0), .y(f_spindle_offset_II), .out(f_temp_spindle_remove_offset_II));
 	
     //gain control for spindle output rate  
 	wire [31:0] Ia_gain_controlled_spindle0_II;
@@ -203,6 +203,7 @@
             .in(Ia_gain_controlled_spindle0_II),
             .out(int_II_spindle0)
         );
+
         
         assign fixed_II_spindle0 = int_II_spindle0 <<< 6;
         
@@ -242,13 +243,19 @@
         
         
         reg [31:0] f_spindle_offset;
-        // Triggered Input triggered_input3 Instance Definition (BDAMP_1)
         always @ (posedge ep50trig[3] or posedge reset_global)
         if (reset_global)
-            f_spindle_offset <= 32'h3e714120;         //reset to 0.2356      
+            f_spindle_offset <= 32'h4121EB85;         //reset to 10.12    
         else
-            f_spindle_offset <= {ep02wire, ep01wire};            
+            f_spindle_offset <= {ep02wire, ep01wire};
+
         
+        reg [31:0] f_spindle_offset_II;
+        always @ (posedge ep50trig[6] or posedge reset_global)
+        if (reset_global)
+            f_spindle_offset_II <= 32'h4121EB85;         //reset to 10.12      
+        else
+            f_spindle_offset_II <= {ep02wire, ep01wire};              
         
 
         // Triggered Input triggered_input4 Instance Definition (BDAMP_2)
@@ -320,11 +327,11 @@
     assign spikeout4 = 1'b0;
     assign spikeout5 = 1'b0;
     assign spikeout6 = 1'b0;
-    assign spikeout7 = 1'b0;
+    assign spikeout7 = spike_neuron0;
     assign spikeout8 = 1'b0;
     assign spikeout9 = 1'b0;
     assign spikeout10 = 1'b0;
-    assign spikeout11 = 1'b0;
+    assign spikeout11 = spike_neuron0_II;
     assign spikeout12 = 1'b0;
     assign spikeout13 = 1'b0;
     assign spikeout14 = 1'b0;
@@ -365,8 +372,8 @@
         okWireOut wo24 (    .ep_datain(II_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h24)    );
         okWireOut wo25 (    .ep_datain(II_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h25)   );    
         
-        okWireOut wo26 (    .ep_datain(population_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
-        okWireOut wo27 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   );    
+        okWireOut wo26 (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
+        okWireOut wo27 (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   );    
         
 
         // Clock Generator clk_gen0 Instance Definition
