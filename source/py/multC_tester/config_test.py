@@ -28,13 +28,13 @@ FPGA_OUTPUT_B2 =   (0x20,      'v_neuron0',      1.0,         'float32',      Qt
 #                (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
                 
                 #            address         name   visual_gain         type            color
-FPGA_OUTPUT_B3 =    (0x20,      'mixed_input0',      1.0,         'float32',      Qt.blue),  \
-                (0x22,      'f_emg',      1.0,         'float32',      Qt.red),  \
-                (0x24,      'spike_count_neuron0_sync',      1.0,         'int32',      Qt.green),  \
-                (0x26,      'f_spikes_cnt_1',      1.0,         'float32',      Qt.black),  \
-                (0x28,      'f_total_emg_F0',      1.0,         'float32',      Qt.magenta),  \
-                (0x2A,      'blank',      1.0,         'float32',      Qt.darkRed),  \
-                (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
+FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.blue),  \
+                (0x22,      'spike_count_neuron_MN1',      1.0,         'int32',      Qt.red),  \
+                (0x24,      'spike_count_neuron_MN2',      1.0,         'int32',      Qt.green),  \
+                (0x26,      'spike_count_neuron_MN3',      1.0,         'int32',      Qt.black),  \
+                (0x28,      'spike_count_neuron_MN4',      1.0,         'int32',      Qt.magenta),  \
+                (0x2A,      'spike_count_neuron_MN5',      1.0,         'int32',      Qt.darkRed),  \
+                (0x2C,      'spike_count_neuron_MN6',      1.0,         'int32',      Qt.darkGray)
  
 ### For video recording: only display force 
 ##            address         name   visual_gain         type            color
