@@ -5,7 +5,7 @@
 // Engineer: 
 // 
 // Design Name: 
-// Module Name:    neuron_pool.v
+// Module Name:    
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -21,15 +21,14 @@
 
 
 // 
-module neuron_pool (//(f_muscle_length, f_rawfr_Ia, f_pps_coef_Ia, gain, sim_clk, neuron_clk, reset_sim, f_total_force);
-    //input   [31:0]  vel,            // change of muscle length
-    input   wire [31:0]  f_rawfr_Ia,     //
-    input   wire [31:0]  f_pps_coef_Ia,  //
+module neuron_pool (
+    input   wire [31:0]  f_fr_Ia,     //
+    //input   wire [31:0]  f_pps_coef_Ia,  //
     input   wire [31:0]  half_cnt,
     input   wire rawclk,
 
     input   wire ti_clk,
-    input   wire reset_sim,
+    input   wire reset_global,
     input   wire signed [31:0] i_gain,
 //    input   wire [NN+2:0] neuronCounter,
 

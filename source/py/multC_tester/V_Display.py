@@ -38,17 +38,20 @@ class CtrlChannel:
         self.doubleSpinBox = QtGui.QDoubleSpinBox(hostDialog)
         self.doubleSpinBox.setStyleSheet("background-color: rgb(255, 255, 255);"
                                         "border:1px solid rgb(100, 200, 255);"
-                                        "max-width: 70px;"
+                                        "max-width: 90px;"
                                         "max-height: 20px;")
                                         #"border-left: 1px solid none;"
                       # "border-right: 1px solid none; border-bottom: 1px solid black; width: 0px; height: 0px;")
         SPINBOX_VOFFSET = 130
         SPINBOX_HOFFSET = 180
         self.doubleSpinBox.setGeometry(QtCore.QRect(SPINBOX_HOFFSET + 620, SPINBOX_VOFFSET+ id * 30, 205, 30))
+        self.doubleSpinBox.setSingleStep(0.000001)
+        self.doubleSpinBox.setDecimals(6)
+        self.doubleSpinBox.setMaximum(100000.0)
+        self.doubleSpinBox.setMinimum(-100000.0)
         self.doubleSpinBox.setProperty("value", value)
         self.doubleSpinBox.setObjectName("param_"+name)
-        self.doubleSpinBox.setSingleStep(0.01)
-        self.doubleSpinBox.setMaximum(100000.0)
+        
 
         self.label = QtGui.QLabel(hostDialog)
         self.label.setObjectName("label_"+name)
@@ -83,19 +86,17 @@ class ViewChannel:
 
 def onVisualSlider(self, whichCh, value = -1):
     if value == -1: value = self.allFpgaOutput[whichCh].slider.value()
-    self.allFpgaOutput[whichCh].vscale = value * 0.1   
+    self.allFpgaOutput[whichCh].vscale = value * 0.5   
     print "VisualGain of ", whichCh, " is now ", value
     
     
 def onNewWireIn(self, whichCh, value = -1):
     if value == -1: 
-        value = self.allUserInput[whichCh].doubleSpinBox.value() 
+        value = self.allUserInput[whichCh].doubleSpinBox.value()         
     self.tellFpga(whichCh, value)
     #self.tellWhichFpga(0, whichCh, value)
     print "board",  whichCh, " is now ", value
-#    self.tellWhichFpga(1, whichCh, value)
-#    print "board 1", whichCh, " is now ", value
-#
+
 
 
 class View(QMainWindow, Ui_Dialog):
@@ -110,7 +111,7 @@ class View(QMainWindow, Ui_Dialog):
 #        QMainWindow.__init__(self, parent, Qt.FramelessWindowHint)
         QMainWindow.__init__(self, parent)
         self.setStyleSheet("background-color:  rgb(240, 235, 235); margin: 2px;")
-        self.setWindowOpacity(0.95)
+        self.setWindowOpacity(0.75)
                                                             
 #                                    "QLineEdit { border-width: 20px;border-style: solid; border-color: darkblue; };")
         self.setupUi(self)
@@ -194,7 +195,7 @@ class View(QMainWindow, Ui_Dialog):
     def newDataIO(self, newData, newSpikeAll = []):
         for (name, ch), pt in zip(self.allFpgaOutput.iteritems(), newData):
             ch.data.appendleft(pt)
-            ch.label.setText("%4.2f" % pt)      
+            ch.label.setText("%4.6f" % pt)      
 
         self.spike_all = newSpikeAll
 
@@ -327,7 +328,8 @@ class View(QMainWindow, Ui_Dialog):
         """
         choice = p0
         if choice == "waveform 1":
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.3, 2.0], L = [0.5, 0.5, 1.40, 1.40, 0.5, 0.5], FILT = False)
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
             print "waveform 1 fed"
 #            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 
         elif choice == "waveform 2":
@@ -342,7 +344,7 @@ class View(QMainWindow, Ui_Dialog):
 
 #            pipeInData = spike_train(firing_rate = 1) 
             print "waveform 3 fed"
-            pipeInData = gen_sin(F = 1.0, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
+            pipeInData = gen_sin(F = 1.0, AMP = 0.3,  BIAS = 1.05,  T = 2.0) 
             #pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.3, 1.3, 1.0, 1.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.4, 1.5, 1.55,  1.6,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)
 #                pipeInData = gen_ramp(T = [0.0, 0.2, 0.25, 1.75,  1.8,  2.0], L = [1.0,  1.0,  5000.0, 5000.0, 1.0, 1.0], FILT = False)  # abrupt rise / fall

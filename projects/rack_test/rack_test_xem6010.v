@@ -128,7 +128,7 @@
 
         // Output and OpalKelly Interface Wire Definitions
         
-        wire [12*17-1:0] ok2x;
+        wire [20*17-1:0] ok2x;
         wire [15:0] ep00wire, ep01wire, ep02wire;
         wire [15:0] ep50trig;
         
@@ -277,7 +277,7 @@
         // Triggered Input triggered_input6 Instance Definition (spindle_Ia_gain)
         always @ (posedge ep50trig[1] or posedge reset_global)
         if (reset_global)
-            triggered_input6 <= 32'h40800000;         //reset to 4.0      
+            triggered_input6 <= 32'h3F800000;         //reset to 1.0      
         else
             triggered_input6 <= {ep02wire, ep01wire};      
         
@@ -285,28 +285,18 @@
         // Triggered Input triggered_input7 Instance Definition (clk_divider)
         always @ (posedge ep50trig[7] or posedge reset_global)
         if (reset_global)
-            triggered_input7 <= 32'd381;        //count for 0.5x real speed, 381 for real time speed   
+            triggered_input7 <= 32'd381;        //count for 0.5x real speed, 762 for real time speed   
         else
             triggered_input7 <= {ep02wire, ep01wire};     
 
        // Triggered Input triggered_input8 Instance Definition (spindle_II_gain)
         always @ (posedge ep50trig[10] or posedge reset_global)
         if (reset_global)
-            triggered_input8 <= 32'h40800000;         //reset to 4.0      
+            triggered_input8 <= 32'h3F8000000;         //reset to 1.0      
         else
             triggered_input8 <= {ep02wire, ep01wire};                  
         
 
-        // Spike Counter spike_counter0 Instance Definition
-	wire    dummy_slow;
-        spikecnt_async	spike_counter0
-        (      .spike(each_spike_neuron0),
-                .int_cnt_out(spike_count_neuron0),
-                .slow_clk(sim_clk),
-                .fast_clk(clk1),
-                .reset(reset_global),
-                .clear_out(dummy_slow));
-        
 
         // Waveform Generator mixed_input0 Instance Definition
         waveform_from_pipe_bram_2s gen_mixed_input0(
@@ -325,7 +315,7 @@
     assign spikeout2 = each_spike_neuron0_II;
     assign spikeout3 = 1'b0;
     assign spikeout4 = 1'b0;
-    assign spikeout5 = 1'b0;
+    assign spikeout5 = each_spike_neuron0_len2spk;
     assign spikeout6 = 1'b0;
     assign spikeout7 = spike_neuron0;
     assign spikeout8 = 1'b0;
@@ -348,7 +338,7 @@
         
         assign reset_global = ep00wire[0] | reset_external_clean;
         assign is_from_trigger = ~ep00wire[1];
-        okWireOR # (.N(12)) wireOR (ok2, ok2x);
+        okWireOR # (.N(20)) wireOR (ok2, ok2x);
         okHost okHI(
             .hi_in(hi_in),  .hi_out(hi_out),    .hi_inout(hi_inout),    .hi_aa(hi_aa),
             .ti_clk(ti_clk),    .ok1(ok1),  .ok2(ok2)   );
@@ -375,6 +365,18 @@
         okWireOut wo26 (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
         okWireOut wo27 (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   );    
         
+        okWireOut wo28 (    .ep_datain(spike_count_length2spk[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
+        okWireOut wo29 (    .ep_datain(spike_count_length2spk[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   );    
+        
+        okWireOut wo2A (    .ep_datain(i_rand_current_out[15:0]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2A)    );
+        okWireOut wo2B (    .ep_datain(i_rand_current_out[31:16]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2B)   );    
+        
+        okWireOut wo2C (    .ep_datain(fixed_Ia_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
+        okWireOut wo2D (    .ep_datain(fixed_Ia_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
+        
+        okWireOut wo2E (    .ep_datain(spike_count_Ia_normal[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
+        okWireOut wo2F (    .ep_datain(spike_count_Ia_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
+        
 
         // Clock Generator clk_gen0 Instance Definition
         gen_clk clocks(
@@ -387,12 +389,12 @@
         );
         
 
-
         // Neuron neuron0 Instance Definition (connected by Ia afferent)
-        izneuron neuron0(
+        izneuron_th_control neuron0(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_global),           // reset to initial conditions
             .I_in(  fixed_Ia_spindle0 ),          // input current from synapse
+            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron0),               // membrane potential
             .spike(spike_neuron0),           // spike sample
             .each_spike(each_spike_neuron0), // raw spikes
@@ -402,15 +404,98 @@
         
         
        // Neuron neuron0 Instance Definition (connected by II afferent)
-        izneuron neuron0_II(
+        izneuron_th_control neuron0_II(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_global),           // reset to initial conditions
             .I_in(  fixed_II_spindle0 ),          // input current from synapse
+            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron0_II),               // membrane potential
             .spike(spike_neuron0_II),           // spike sample
             .each_spike(each_spike_neuron0_II), // raw spikes
             .population(population_neuron0_II)  // spikes of population per 1ms simulation time
         );
+        
+        
+        
+        // for size principle testing purpose only. (by-pass spindle) to compare with Minos's simulink result 
+        // ramp up length -> spike
+            
+//        // *** Izhikevich: f_fr_Ia => spikes
+//        // *** Convert float_fr to int_I1
+//
+////        wire [31:0] f_fr_Ia_F0;
+//        
+//        wire [31:0] rand_out;
+//        rng rng_0(
+//                .clk1(clk1),
+//                .clk2(clk1),
+//                .reset(reset_global),
+//                .out(rand_out)
+//        );    
+//        
+//        wire [31:0] f_randn_F0 = {12'h3F8, rand_out[19:0]};
+//        wire [31:0] f_rand_Ia_F0; 
+//        mult get_rand_Ia( .x(Ia_gain_controlled_spindle0), .y(f_randn), .out(f_rand_Ia_F0));
+//
+//        wire signed [31:0] i_synI_Ia, fixed_synI_Ia;
+//        floor float_to_int_Ia( .in(f_rand_Ia), .out(i_synI_Ia) );   
+//
+//        assign fixed_synI_Ia = i_synI_Ia <<< 6;
+//
+//         reg [31:0] i_current_out;
+//         reg    [31:0] f_rand_Ia, f_randn;
+//         always @(posedge neuron_clk or posedge reset_global) begin
+//            if (reset_global) begin
+//                i_current_out <= 32'd0;
+////                f_fr_Ia <= 32'd0;
+//                f_rand_Ia <= 32'd0;
+//                f_randn <= 32'd0;
+//            end
+//            else begin
+//                i_current_out <= fixed_synI_Ia;
+////                f_fr_Ia <= f_fr_Ia_F0; 
+//                f_rand_Ia <= f_rand_Ia_F0;                  
+//                f_randn <= f_randn_F0;
+//            end
+//         end
+        wire [31:0] i_rand_current_out;
+        fr_2_current_rand current1(
+                .f_rawfr_Ia(Ia_gain_controlled_spindle0),     //
+                .neuron_clk(neuron_clk),
+                .reset_global(reset_global),
+                .i_current_out(i_rand_current_out)
+    );
+              
+        wire [31:0] v_neuron0_len2spk;
+        wire each_spike_neuron0_len2spk, spike_neuron0_len2spk;
+        wire [127:0] population_neuron0_len2spk;
+        izneuron_th_control length2spk(
+            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+            .reset(reset_global),           // reset to initial conditions
+            .I_in(  i_rand_current_out ),          // input current from synapse
+            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
+            .v_out(v_neuron0_len2spk),               // membrane potential
+            .spike(spike_neuron0_len2spk),           // spike sample
+            .each_spike(each_spike_neuron0_len2spk), // raw spikes
+            .population(population_neuron0_len2spk)  // spikes of population per 1ms simulation time
+        );
+        
+     wire [31:0]  spike_count_Ia_normal;
+      spike_counter  sync_counter_normal
+      (                 .clk(neuron_clk),
+                        .reset(reset_global),
+                        .spike_in(each_spike_neuron0),
+                        .spike_count(spike_count_Ia_normal) );
+
+        
+      wire [31:0]  spike_count_length2spk;
+      spike_counter  sync_counter_length2spk
+      (                 .clk(neuron_clk),
+                        .reset(reset_global),
+                        .spike_in(each_spike_neuron0_len2spk),
+                        .spike_count(spike_count_length2spk) );
+
+
         
 /////////////////////// END INSTANCE DEFINITIONS //////////////////////////
 

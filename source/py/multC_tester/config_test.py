@@ -5,9 +5,10 @@ FPGA_OUTPUT_B1 =    (0x20,      'Ia_raster_ch20',      1.0,         'spike32',  
                 (0x22,      'Ia_spindle0',      1.0,         'float32',      Qt.red),  \
                 (0x24,      'II_spindle0',      1.0,         'float32',      Qt.green),  \
                 (0x26,      'mixed_input',      1.0,         'float32',      Qt.black),  \
-                (0x28,      'blank',      1.0,         'float32',      Qt.magenta),  \
-                (0x2A,      'blank',      1.0,         'float32',      Qt.darkRed),  \
-                (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
+                (0x28,      'each__spike_count_length2spk',      1.0,         'int32',      Qt.magenta),  \
+                (0x2A,      'i_rand_current_out',      1.0,         'int32',      Qt.darkRed),  \
+                (0x2C,      'fixed_Ia_spindle',      1.0,         'int32',      Qt.darkGray),  \
+                (0x2E,      'each__spike_count_Ia_normal',      1.0,         'int32',      Qt.blue)
                 
 #            address         name   visual_gain         type            color
 FPGA_OUTPUT_B2 =   (0x20,      'v_neuron0',      1.0,         'float32',      Qt.blue),  \
@@ -34,7 +35,11 @@ FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.bl
                 (0x26,      'spike_count_neuron_MN3',      1.0,         'int32',      Qt.black),  \
                 (0x28,      'spike_count_neuron_MN4',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'spike_count_neuron_MN5',      1.0,         'int32',      Qt.darkRed),  \
-                (0x2C,      'spike_count_neuron_MN6',      1.0,         'int32',      Qt.darkGray)
+                (0x2C,      'spike_count_neuron_MN6',      1.0,         'int32',      Qt.darkGray),  \
+                (0x2E,      'total_spike_count',      1.0,         'int32',      Qt.blue),  \
+                (0x30,      'i_ranmomized_I',      1.0,         'int32',      Qt.red),  \
+                (0x32,      'total_force',      1.0,         'float32',      Qt.green),  \
+                (0x34,      'spike_count_neuron_sync_inputPin',      1.0,         'int32',      Qt.black)
  
 ### For video recording: only display force 
 ##            address         name   visual_gain         type            color
@@ -56,7 +61,7 @@ FPGA_OUTPUT_DEFAULT =    (0x20,      'f_len',      1.0,         'float32',      
                 (0x2C,      'i_emg',      1.0,         'int32',      Qt.darkGray)
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      4.0), \
+USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      1.0), \
                     (2, 'tau',  'float32',      0.03), \
                     (3, 'spindl_Ia_offset',   'float32',   10.12), \
                     (4, 'gamma_dyn',    'float32',      80.0), \
@@ -65,7 +70,7 @@ USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      4.0), \
                     (7, 'clk_halfCnt',      'int32',        0),  \
                     (8, 'xxx',      'int32',        0),  \
                     (9, 'Lce',      'float32',        1.1),  \
-                    (10, 'spindle_II_gain',      'float32',        4.0),  \
+                    (10, 'spindle_II_gain',      'float32',        1.0),  \
                     (11, 'xxx',      'int32',        0),  \
                     (12, 'xxx',      'int32',        0),  \
                     (13, 'BDAMP1',      'float32',        0.2356),  \
@@ -87,16 +92,16 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
                     (12, 'ltp',      'int32',        0)
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B3 =   (1, 'xxx',  'float32',      30.0), \
+USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001524), \
                     (2, 'tau',  'float32',      0.03), \
                     (3, 'synapse_gain',   'int32',       1), \
-                    (4, 'xxx',    'float32',      80.0), \
-                    (5, 'xxx',    'float32',      80.0), \
-                    (6, 'xxx',      'int32',        0),  \
+                    (4, 'b2',    'float32',      -0.001555), \
+                    (5, 'a1',    'float32',      -2.566), \
+                    (6, 'a2',      'float32',        2.195),  \
                     (7, 'clk_halfCnt',      'int32',        0),  \
-                    (8, 'xxx',      'int32',        0),  \
+                    (8, 'a3',      'float32',        -0.6258),  \
                     (9, 'Lce',      'float32',        1.0),  \
-                    (10, 'p_delta',      'float32',        0.0),  \
+                    (10, 'threshold',      'int32',        30),  \
                     (11, 'ltd',      'int32',        0),  \
                     (12, 'ltp',      'int32',        0)
 
