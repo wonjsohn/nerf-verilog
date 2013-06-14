@@ -22,8 +22,8 @@
 
 // 
 module neuron_pool (
-    input   wire [31:0]  f_fr_Ia,     //
-    //input   wire [31:0]  f_pps_coef_Ia,  //
+    input   wire [31:0]  f_rawfr_Ia,     //
+    input   wire [31:0]  f_pps_coef_Ia,  //
     input   wire [31:0]  half_cnt,
     input   wire rawclk,
 
@@ -33,6 +33,8 @@ module neuron_pool (
 //    input   wire [NN+2:0] neuronCounter,
 
     output  wire spike,
+    output  wire each_spike,
+    output wire [127:0] population,
     output  wire [15:0] spkid,
 	 // debug
 	 output reg  [31:0] i_current_out,
@@ -60,8 +62,8 @@ module neuron_pool (
 	 reg neuron_clk;
     reg [31:0] delay_cnt;
 
-    always @ (posedge rawclk or posedge reset_sim) begin
-	     if (reset_sim) begin
+    always @ (posedge rawclk or posedge reset_global) begin
+	     if (reset_global) begin
             neuron_clk <= 0;
 		  end 
 		  
@@ -86,7 +88,7 @@ module neuron_pool (
     rng rng_0(
             .clk1(rawclk),
             .clk2(rawclk),
-            .reset(reset_sim),
+            .reset(reset_global),
             .out(rand_out)
     );    
     wire [22:0] i23_rand = {1'b0, rand_out[21:0]};
@@ -116,13 +118,13 @@ module neuron_pool (
     //wire MN_spike;
 
 
-    wire signed [31:0] i_synI_Ia;
-    floor float_to_int_Ia( .in(f_fr_Ia), .out(i_synI_Ia) );    
+    wire signed [31:0] i_current_out_F0;
+    floor float_to_int_Ia( .in(f_fr_Ia), .out(i_current_out_F0) );    
 
 	 //reg [31:0] i_current_out;
-     reg    [31:0] f_fr_Ia, f_rand_Ia, f_randn;
-	 always @(posedge neuron_clk or posedge reset_sim) begin
-		if (reset_sim) begin
+     reg    [31:0]  f_fr_Ia, f_rand_Ia, f_randn;
+	 always @(posedge neuron_clk or posedge reset_global) begin
+		if (reset_global) begin
 			i_current_out <= 32'd0;
             f_fr_Ia <= 32'd0;
             f_rand_Ia <= 32'd0;
@@ -130,7 +132,7 @@ module neuron_pool (
 		end
 		else begin
 			//i_current_out <= i_current_F0;
-			i_current_out <= i_synI_Ia;
+			i_current_out <= i_current_out_F0;
 //            f_fr_Ia <= (flag_fr_Ia[2]) ? f_fr_Ia_F0 : f_fr_Ia; 
 //            f_rand_Ia <= (flag_rand_Ia[2]) ? f_rand_Ia_F0 : f_rand_Ia;      
             f_fr_Ia <= f_fr_Ia_F0; 
@@ -157,12 +159,14 @@ module neuron_pool (
     //wire spike;
     //wire each_spike;
     //wire [127:0] population;
-    izneuron neuron_0(
+    izneuron_th_control IZN_neuron_pool(
                 .clk(neuron_clk),
-                .reset(reset_sim),
+                .reset(reset_global),
                 .I_in(i_current_out),
-                .spike(),
-                .each_spike(spike)
+                .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
+                .spike(spike),
+                .each_spike(each_spike),
+                .population(population)
     );
     
 	 

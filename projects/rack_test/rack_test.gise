@@ -627,7 +627,7 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1370910686" xil_pn:in_ck="-7469274862483783394" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="-8770597174576098001" xil_pn:start_ts="1370910137">
+    <transform xil_pn:end_ts="1370979053" xil_pn:in_ck="-7469274862483783394" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="-8770597174576098001" xil_pn:start_ts="1370978517">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -649,7 +649,7 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
     </transform>
-    <transform xil_pn:end_ts="1370910707" xil_pn:in_ck="5281907238062757934" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="6393091311410050081" xil_pn:start_ts="1370910686">
+    <transform xil_pn:end_ts="1370979072" xil_pn:in_ck="5281907238062757934" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="6393091311410050081" xil_pn:start_ts="1370979053">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -659,9 +659,11 @@
       <outfile xil_pn:name="rack_test_xem6010.ngd"/>
       <outfile xil_pn:name="rack_test_xem6010_ngdbuild.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1370911025" xil_pn:in_ck="-2336393191928262765" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1370910707">
+    <transform xil_pn:end_ts="1370979384" xil_pn:in_ck="-2336393191928262765" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1370979072">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
       <outfile xil_pn:name="rack_test_xem6010.pcf"/>
       <outfile xil_pn:name="rack_test_xem6010_map.map"/>
@@ -672,7 +674,7 @@
       <outfile xil_pn:name="rack_test_xem6010_summary.xml"/>
       <outfile xil_pn:name="rack_test_xem6010_usage.xml"/>
     </transform>
-    <transform xil_pn:end_ts="1370911312" xil_pn:in_ck="8333486539872910668" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1370911025">
+    <transform xil_pn:end_ts="1370979664" xil_pn:in_ck="8333486539872910668" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1370979384">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -687,7 +689,7 @@
       <outfile xil_pn:name="rack_test_xem6010_pad.txt"/>
       <outfile xil_pn:name="rack_test_xem6010_par.xrpt"/>
     </transform>
-    <transform xil_pn:end_ts="1370911404" xil_pn:in_ck="-4781330663995000717" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1370911312">
+    <transform xil_pn:end_ts="1370979755" xil_pn:in_ck="-4781330663995000717" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1370979664">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -700,7 +702,7 @@
       <outfile xil_pn:name="webtalk.log"/>
       <outfile xil_pn:name="webtalk_pn.xml"/>
     </transform>
-    <transform xil_pn:end_ts="1370911312" xil_pn:in_ck="8130301426219029647" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1370911274">
+    <transform xil_pn:end_ts="1370979664" xil_pn:in_ck="8130301426219029647" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1370979626">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
