@@ -554,7 +554,7 @@ module one_joint_robot_all_in1_xem6010(
         .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
         .v_out(v_neuron0_CN),               // membrane potential
         .spike(spike_neuron0_CN),           // spike sample
-        .each_spike(each_spike_neuron0_CN), // raw spikes
+        .each_spike(CN_spk), // raw spikes
         .population(population_neuron0_CN)  // spikes of population per 1ms simulation time
     );   
 
@@ -624,7 +624,7 @@ module one_joint_robot_all_in1_xem6010(
         .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
         .v_out(v_neuron0_CN2),               // membrane potential
         .spike(spike_neuron0_CN2),           // spike sample
-        .each_spike(each_spike_neuron0_CN2), // raw spikes
+        .each_spike(CN2_spk), // raw spikes
         .population(population_neuron0_CN2)  // spikes of population per 1ms simulation time
     );   
 
@@ -739,7 +739,7 @@ module one_joint_robot_all_in1_xem6010(
         .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
         .v_out(v_neuron0_MN),               // membrane potential
         .spike(spike_neuron0_MN),           // spike sample
-        .each_spike(each_spike_neuron0_MN), // raw spikes
+        .each_spike(MN_spk), // raw spikes
         .population(population_neuron0_MN)  // spikes of population per 1ms simulation time
     );
 
@@ -788,21 +788,21 @@ module one_joint_robot_all_in1_xem6010(
     assign IEEE_2p77 = 32'h403147AE;    
    // sub get_bic_len(.x(IEEE_2p77), .y(trigger_input?  f_len_bic_pxi: f_len_bic), .out(f_muscleInput_len_bic));  
 //
-    shadmehr_muscle muscle_foo
-    (   .i_spike_cnt(i_MN_spkcnt),
-//        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
-        .f_pos(f_len_pxi),  // muscle length
-        //pos(32'h3F8147AE),  // muscle length 1.01
-        //.vel(current_vel),
-        .f_vel(f_velocity),
-        .clk(sim_clk),
-        .reset(reset_sim),
-        .f_total_force_out(f_force),
-        .f_current_A(f_actstate),
-        .f_current_fp_spikes(f_MN_spkcnt), 
-		  .f_tau(tau)
-    );   
-    
+//    shadmehr_muscle muscle_foo
+//    (   .i_spike_cnt(i_MN_spkcnt),
+////        .pos(trigger_input?  f_len_bic_pxi: f_len_bic),  // muscle length
+//        .f_pos(f_len_pxi),  // muscle length
+//        //pos(32'h3F8147AE),  // muscle length 1.01
+//        //.vel(current_vel),
+//        .f_vel(f_velocity),
+//        .clk(sim_clk),
+//        .reset(reset_sim),
+//        .f_total_force_out(f_force),
+//        .f_current_A(f_actstate),
+//        .f_current_fp_spikes(f_MN_spkcnt), 
+//		  .f_tau(tau)
+//    );   
+//    
     
     /*** fuglevand twitch model for force ***/
 //    wire    [31:0]  f_current_h, f_current_fp_spikes;
@@ -848,7 +848,7 @@ module one_joint_robot_all_in1_xem6010(
         .a2_F0(32'h400C7AE1),       //2.195 (a2 default)
         .a3_F0(32'hBF20346E),       // - 0.6258 (a3 default)
         .clk(sim_clk), 
-        .reset(reset_global) ); 
+        .reset(reset_sim) ); 
 
 
 
@@ -918,7 +918,11 @@ module one_joint_robot_all_in1_xem6010(
     okWireOut    wo2C (.ep_datain(f_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h2C) );
     okWireOut    wo2D (.ep_datain(f_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h2D) );   
     okWireOut    wo2E (.ep_datain(population_neuron0_MN[15:0]),  .ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h2E) );
-    okWireOut    wo2F (.ep_datain(population_neuron0_MN[31:16]), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'h2F) );  
+    okWireOut    wo2F (.ep_datain(population_neuron0_MN[31:16]), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'h2F) ); 
+//    okWireOut    wo30 (.ep_datain(I_synapse_SN_to_MN[15:0]),  .ok1(ok1), .ok2(ok2x[ 16*17 +: 17 ]), .ep_addr(8'h30) );
+//    okWireOut    wo31 (.ep_datain(I_synapse_SN_to_MN[31:16]), .ok1(ok1), .ok2(ok2x[ 17*17 +: 17 ]), .ep_addr(8'h31) );  
+//    okWireOut    wo32 (.ep_datain(i_SN_spkcnt_II[15:0]),  .ok1(ok1), .ok2(ok2x[ 18*17 +: 17 ]), .ep_addr(8'h32) );
+//    okWireOut    wo33 (.ep_datain(i_SN_spkcnt_II[31:16]), .ok1(ok1), .ok2(ok2x[ 19*17 +: 17 ]), .ep_addr(8'h33) );       
     
     //ep_ready = 1 (always ready to receive)
     okBTPipeIn   ep80 (.ok1(ok1), .ok2(ok2x[ 16*17 +: 17 ]), .ep_addr(8'h80), .ep_write(is_pipe_being_written), .ep_blockstrobe(), .ep_dataout(hex_from_py), .ep_ready(1'b1));
