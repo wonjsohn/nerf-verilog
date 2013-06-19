@@ -61,12 +61,12 @@ FPGA_OUTPUT_DEFAULT =    (0x20,      'f_len',      1.0,         'float32',      
                 (0x2C,      'i_emg',      1.0,         'int32',      Qt.darkGray)
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      1.0), \
+USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      0.2), \
                     (2, 'tau',  'float32',      0.03), \
                     (3, 'spindl_Ia_offset',   'float32',   10.12), \
                     (4, 'gamma_dyn',    'float32',      80.0), \
                     (5, 'gamma_sta',    'float32',      80.0), \
-                    (6, 'spindl_II_offset',      'float32',        10.12),  \
+                    (6, 'spindl_II_offset',      'float32',        70.12),  \
                     (7, 'clk_halfCnt',      'int32',        0),  \
                     (8, 'xxx',      'int32',        0),  \
                     (9, 'Lce',      'float32',        1.1),  \
@@ -92,14 +92,14 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
                     (12, 'ltp',      'int32',        0)
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001524), \
+USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001208), \
                     (2, 'tau',  'float32',      0.03), \
                     (3, 'synapse_gain',   'int32',       1), \
-                    (4, 'b2',    'float32',      -0.001555), \
-                    (5, 'a1',    'float32',      -2.566), \
-                    (6, 'a2',      'float32',        2.195),  \
+                    (4, 'b2',    'float32',      -0.001273), \
+                    (5, 'a1',    'float32',      -2.238), \
+                    (6, 'a2',      'float32',        1.67),  \
                     (7, 'clk_halfCnt',      'int32',        0),  \
-                    (8, 'a3',      'float32',        -0.6258),  \
+                    (8, 'a3',      'float32',        -0.4152),  \
                     (9, 'Lce',      'float32',        1.0),  \
                     (10, 'threshold',      'int32',        30),  \
                     (11, 'ltd',      'int32',        0),  \

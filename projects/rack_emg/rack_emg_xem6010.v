@@ -652,9 +652,18 @@
                         .spike_count(spike_count_neuron_sync_MN7) );                               
 
     wire [31:0] total_spike_count_sync;
-    assign total_spike_count_sync = spike_count_neuron_sync_MN1 + spike_count_neuron_sync_MN2+ spike_count_neuron_sync_MN3+ spike_count_neuron_sync_MN4 + spike_count_neuron_sync_MN5 + spike_count_neuron_sync_MN6 + spike_count_neuron_sync_MN7;
+    //assign total_spike_count_sync = spike_count_neuron_sync_MN1 + spike_count_neuron_sync_MN2+ spike_count_neuron_sync_MN3+ spike_count_neuron_sync_MN4 + spike_count_neuron_sync_MN5 + spike_count_neuron_sync_MN6 + spike_count_neuron_sync_MN7;
 
-                        
+    assign total_spike_count_sync = (spike_count_neuron_sync_MN1*32'd8) +  //MN1 is smallest MN (fires first) ->need to scale MUAP small.  
+                                (spike_count_neuron_sync_MN2*32'd10 ) + 
+                                (spike_count_neuron_sync_MN3*32'd13 ) +
+                                (spike_count_neuron_sync_MN4*32'd17 ) + 
+                                (spike_count_neuron_sync_MN5*32'd30 ) + 
+                                (spike_count_neuron_sync_MN6*32'd49 ) + 
+                                (spike_count_neuron_sync_MN7*32'd75 );  // MN7 is largest MN (fires last) -> need to scale MUAP big
+
+                   
+                   
 //    // ** EMG                
 //    wire [31:0] f_emg;
 //    emg emg_fool
