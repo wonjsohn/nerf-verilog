@@ -15,8 +15,8 @@ CHIN_PARAM =    (0x20,      'f_len',      50,         'float32',      'Qt.blue')
                 (0x26,      'i_MN_spkcnt',      1.0,         'int32',      'Qt.black'),  \
                 (0x28,      'i_EPSC_CN_to_MN',      1.0,         'int32',      'Qt.magenta'),  \
                 (0x2A,      'f_force',      1.0,         'float32',      'Qt.darkRed'),  \
-                (0x2C,      'f_emg',      1.0,         'float32',      'Qt.darkGray'),   \
-                (0x2E,      'raster32',      1.0,         'int32',      'Qt.darkGray')
+                (0x2C,      'f_emg',      1.0,         'float32',      'Qt.darkGray')
+               # (0x2E,      'raster32',      0.0,         'int32',      'Qt.darkGray')
 #                (0x36,      'i_emg_mu7',     1.0,         'int32',      'Qt.blue'), \
 #                (0x28,      'f_force_mu3',     1.0,         'float32',      'Qt.red')
 NUM_CHANNEL = len(CHIN_PARAM) # Number of channels
