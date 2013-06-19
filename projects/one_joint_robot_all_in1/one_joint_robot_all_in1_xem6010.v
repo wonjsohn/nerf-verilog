@@ -717,10 +717,33 @@ module one_joint_robot_all_in1_xem6010(
 		end
       end
     
-    
+    //randomize current input before entering MN.
+     wire [31:0] i_rng_drive_to_MN1;
+     randomized_integer MN_rng1(
+            .i_in(i_drive_to_MN),     //
+            .neuron_clk(neuron_clk),
+            .reset_global(reset_global),
+            .i_rand_out(i_rng_drive_to_MN1)
+     );
+     
+     wire [31:0] i_rng_drive_to_MN2;
+     randomized_integer MN_rng2(
+            .i_in(i_drive_to_MN),     //
+            .neuron_clk(neuron_clk),
+            .reset_global(reset_global),
+            .i_rand_out(i_rng_drive_to_MN2)
+     );
+     
+     wire [31:0] i_rng_drive_to_MN3;
+     randomized_integer MN_rng3(
+            .i_in(i_drive_to_MN),     //
+            .neuron_clk(neuron_clk),
+            .reset_global(reset_global),
+            .i_rand_out(i_rng_drive_to_MN3)
+     );
     
    //********* izneuron *************//
-	wire MN_spk;
+
 	
 //    izneuron neuron_pool_MN(
 //                .clk(neuron_clk),
@@ -729,28 +752,83 @@ module one_joint_robot_all_in1_xem6010(
 //                .spike(),
 //                .each_spike(MN_spk)
 //    );
-    wire [31:0] v_neuron0_MN;
-    wire each_spike_neuron0_MN, spike_neuron0_MN;
-    wire [127:0] population_neuron0_MN;
-    izneuron_th_control izneuronMN(
+
+    //MN's for size principle
+    //MN1
+    wire MN1_spk;
+    wire [31:0] v_neuron0_MN1;
+    wire each_spike_neuron0_MN, spike_neuron0_MN1;
+    wire [127:0] population_neuron0_MN1;
+    izneuron_th_control izneuronMN1(
         .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
         .reset(reset_global),           // reset to initial conditions
-        .I_in(  i_drive_to_MN ),          // input current from synapse
+        .I_in(  ((i_rng_drive_to_MN1)*75)>>4 ),          // input current from synapse
         .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
-        .v_out(v_neuron0_MN),               // membrane potential
-        .spike(spike_neuron0_MN),           // spike sample
-        .each_spike(MN_spk), // raw spikes
-        .population(population_neuron0_MN)  // spikes of population per 1ms simulation time
+        .v_out(v_neuron0_MN1),               // membrane potential
+        .spike(spike_neuron0_MN1),           // spike sample
+        .each_spike(MN1_spk), // raw spikes
+        .population(population_neuron0_MN1)  // spikes of population per 1ms simulation time
     );
-
+    
+    
+    //MN3 
+	wire MN3_spk;
+    wire [31:0] v_neuron0_MN3;
+    wire each_spike_neuron0_MN3, spike_neuron0_MN3;
+    wire [127:0] population_neuron0_MN3;
+    izneuron_th_control izneuronMN3(
+        .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+        .reset(reset_global),           // reset to initial conditions
+        .I_in( ((i_rng_drive_to_MN2)*30)>>4 ),          // input current from synapse
+        .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
+        .v_out(v_neuron0_MN3),               // membrane potential
+        .spike(spike_neuron0_MN3),           // spike sample
+        .each_spike(MN3_spk), // raw spikes
+        .population(population_neuron0_MN3)  // spikes of population per 1ms simulation time
+    );
+    
+     //MN5
+	wire MN5_spk;
+    wire [31:0] v_neuron0_MN5;
+    wire each_spike_neuron0_MN5, spike_neuron0_MN5;
+    wire [127:0] population_neuron0_MN5;
+    izneuron_th_control izneuronMN5(
+        .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+        .reset(reset_global),           // reset to initial conditions
+        .I_in( ((i_rng_drive_to_MN3)*30)>>4 ),          // input current from synapse
+        .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
+        .v_out(v_neuron0_MN5),               // membrane potential
+        .spike(spike_neuron0_MN5),           // spike sample
+        .each_spike(MN5_spk), // raw spikes
+        .population(population_neuron0_MN5)  // spikes of population per 1ms simulation time
+    );
 	
  
-     wire [31:0]  i_MN_spkcnt;
-    spike_counter  sync_counter_MN
+     wire [31:0]  i_MN1_spkcnt;
+    spike_counter  sync_counter_MN1
      (                 .clk(neuron_clk),
                         .reset(reset_sim),
-                        .spike_in(MN_spk),
-                        .spike_count(i_MN_spkcnt) );
+                        .spike_in(MN1_spk),
+                        .spike_count(i_MN1_spkcnt) );
+                        
+     wire [31:0]  i_MN3_spkcnt;
+    spike_counter  sync_counter_MN3
+     (                 .clk(neuron_clk),
+                        .reset(reset_sim),
+                        .spike_in(MN3_spk),
+                        .spike_count(i_MN3_spkcnt) );
+                        
+    wire [31:0]  i_MN5_spkcnt;
+    spike_counter  sync_counter_MN5
+     (                 .clk(neuron_clk),
+                        .reset(reset_sim),
+                        .spike_in(MN5_spk),
+                        .spike_count(i_MN5_spkcnt) );
+
+   wire [31:0] i_total_spike_count_sync_MNs;
+    //assign total_spike_count_sync = spike_count_neuron_sync_MN1 + spike_count_neuron_sync_MN2+ spike_count_neuron_sync_MN3+ spike_count_neuron_sync_MN4 + spike_count_neuron_sync_MN5 + spike_count_neuron_sync_MN6 + spike_count_neuron_sync_MN7;
+
+    assign i_total_spike_count_sync_MNs = (i_MN1_spkcnt*32'd13) + (i_MN3_spkcnt*32'd30) + (i_MN5_spkcnt*32'd75);
 
 //    
 //	wire    [31:0] i_MN_spkcnt;
@@ -841,12 +919,12 @@ module one_joint_robot_all_in1_xem6010(
     wire [31:0] f_emg;
     emg_parameter emg_parater_foo
     (   .f_total_emg_out(f_emg), 
-        .i_spike_cnt(i_MN_spkcnt), 
-        .b1_F0(32'h3AC7C0F4),      //0.001524 (b1 default)
-        .b2_F0(32'hBACBD124),       //-0.001555 (b2 default)
-        .a1_F0(32'hC0243958),       //- 2.566 (a1 default)
-        .a2_F0(32'h400C7AE1),       //2.195 (a2 default)
-        .a3_F0(32'hBF20346E),       // - 0.6258 (a3 default)
+        .i_spike_cnt(i_total_spike_count_sync_MNs), 
+        .b1_F0(32'h3A9E55C1),      //0.001208 (b1 default)
+        .b2_F0(32'hBAA6DACB),       //-0.001273 (b2 default)
+        .a1_F0(32'hC00F3B64),       //- 2.238 (a1 default)
+        .a2_F0(32'h3FD5C28F),       //1.67 (a2 default)
+        .a3_F0(32'hBED49518),       // - 0.4152 (a3 default)
         .clk(sim_clk), 
         .reset(reset_sim) ); 
 
@@ -861,7 +939,7 @@ module one_joint_robot_all_in1_xem6010(
     assign led[4] = ~CN_spk;
 	assign led[5] = ~CN2_spk;  // SN_bic_spk + spike_in1
 //    assign led[5] = ~MN_tri_spike;
-    assign led[6] = ~MN_spk; // slow clock
+    assign led[6] = ~MN1_spk; // slow clock
     //assign led[5] = ~spike;
     //assign led[5] = ~button1_response;
     //assign led[6] = ~button2_response;
@@ -909,16 +987,16 @@ module one_joint_robot_all_in1_xem6010(
     okWireOut    wo23 (.ep_datain(f_fr_Ia[31:16]), .ok1(ok1), .ok2(ok2x[  3*17 +: 17 ]), .ep_addr(8'h23) );
     okWireOut    wo24 (.ep_datain(f_fr_II[15:0]), .ok1(ok1), .ok2(ok2x[  4*17 +: 17 ]), .ep_addr(8'h24) );
     okWireOut    wo25 (.ep_datain(f_fr_II[31:16]), .ok1(ok1), .ok2(ok2x[  5*17 +: 17 ]), .ep_addr(8'h25) );
-    okWireOut    wo26 (.ep_datain(i_MN_spkcnt[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
-    okWireOut    wo27 (.ep_datain(i_MN_spkcnt[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
+    okWireOut    wo26 (.ep_datain(i_total_spike_count_sync_MNs[15:0]), .ok1(ok1), .ok2(ok2x[  6*17 +: 17 ]), .ep_addr(8'h26) );
+    okWireOut    wo27 (.ep_datain(i_total_spike_count_sync_MNs[31:16]), .ok1(ok1), .ok2(ok2x[  7*17 +: 17 ]), .ep_addr(8'h27) );
     okWireOut    wo28 (.ep_datain(i_EPSC_CN_to_MN[15:0]),  .ok1(ok1), .ok2(ok2x[ 8*17 +: 17 ]), .ep_addr(8'h28) );
     okWireOut    wo29 (.ep_datain(i_EPSC_CN_to_MN[31:16]), .ok1(ok1), .ok2(ok2x[ 9*17 +: 17 ]), .ep_addr(8'h29) );
-    okWireOut    wo2A (.ep_datain(f_force[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h2A) );
-    okWireOut    wo2B (.ep_datain(f_force[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h2B) );
+    okWireOut    wo2A (.ep_datain(i_rng_drive_to_MN1[15:0]),  .ok1(ok1), .ok2(ok2x[ 10*17 +: 17 ]), .ep_addr(8'h2A) );
+    okWireOut    wo2B (.ep_datain(i_rng_drive_to_MN1[31:16]), .ok1(ok1), .ok2(ok2x[ 11*17 +: 17 ]), .ep_addr(8'h2B) );
     okWireOut    wo2C (.ep_datain(f_emg[15:0]),  .ok1(ok1), .ok2(ok2x[ 12*17 +: 17 ]), .ep_addr(8'h2C) );
     okWireOut    wo2D (.ep_datain(f_emg[31:16]), .ok1(ok1), .ok2(ok2x[ 13*17 +: 17 ]), .ep_addr(8'h2D) );   
-    okWireOut    wo2E (.ep_datain(population_neuron0_MN[15:0]),  .ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h2E) );
-    okWireOut    wo2F (.ep_datain(population_neuron0_MN[31:16]), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'h2F) ); 
+    okWireOut    wo2E (.ep_datain(population_neuron0_MN1[15:0]),  .ok1(ok1), .ok2(ok2x[ 14*17 +: 17 ]), .ep_addr(8'h2E) );
+    okWireOut    wo2F (.ep_datain(population_neuron0_MN1[31:16]), .ok1(ok1), .ok2(ok2x[ 15*17 +: 17 ]), .ep_addr(8'h2F) ); 
 //    okWireOut    wo30 (.ep_datain(I_synapse_SN_to_MN[15:0]),  .ok1(ok1), .ok2(ok2x[ 16*17 +: 17 ]), .ep_addr(8'h30) );
 //    okWireOut    wo31 (.ep_datain(I_synapse_SN_to_MN[31:16]), .ok1(ok1), .ok2(ok2x[ 17*17 +: 17 ]), .ep_addr(8'h31) );  
 //    okWireOut    wo32 (.ep_datain(i_SN_spkcnt_II[15:0]),  .ok1(ok1), .ok2(ok2x[ 18*17 +: 17 ]), .ep_addr(8'h32) );
