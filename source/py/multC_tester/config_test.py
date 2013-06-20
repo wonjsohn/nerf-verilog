@@ -63,10 +63,10 @@ FPGA_OUTPUT_DEFAULT =    (0x20,      'f_len',      1.0,         'float32',      
 #            trig_id    name          type          default_value                
 USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      0.2), \
                     (2, 'tau',  'float32',      0.03), \
-                    (3, 'spindl_Ia_offset',   'float32',   10.12), \
+                    (3, 'spindl_Ia_offset',   'float32',   70.12), \
                     (4, 'gamma_dyn',    'float32',      80.0), \
                     (5, 'gamma_sta',    'float32',      80.0), \
-                    (6, 'spindl_II_offset',      'float32',        70.12),  \
+                    (6, 'spindl_II_offset',      'float32',        10.12),  \
                     (7, 'clk_halfCnt',      'int32',        0),  \
                     (8, 'xxx',      'int32',        0),  \
                     (9, 'Lce',      'float32',        1.1),  \
