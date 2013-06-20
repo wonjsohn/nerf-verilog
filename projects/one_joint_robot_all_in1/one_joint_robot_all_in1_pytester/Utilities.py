@@ -12,9 +12,9 @@ DATA_EVT_CLKRATE = 0
 CHIN_PARAM =    (0x20,      'f_len',      50,         'float32',      'Qt.blue'),  \
                 (0x22,      'f_fr_I',      1.0,         'float32',      'Qt.red'),  \
                 (0x24,      'f_fr_II',      1.0,         'float32',      'Qt.green'),  \
-                (0x26,      'i_MN_spkcnt',      1.0,         'int32',      'Qt.black'),  \
+                (0x26,      'i_total_spike_count_sync_MNs',      1.0,         'int32',      'Qt.black'),  \
                 (0x28,      'i_EPSC_CN_to_MN',      1.0,         'int32',      'Qt.magenta'),  \
-                (0x2A,      'f_force',      1.0,         'float32',      'Qt.darkRed'),  \
+                (0x2A,      'i_MN1_spkcnt',      1.0,         'int32',      'Qt.darkRed'),  \
                 (0x2C,      'f_emg',      1.0,         'float32',      'Qt.darkGray')
                # (0x2E,      'raster32',      0.0,         'int32',      'Qt.darkGray')
 #                (0x36,      'i_emg_mu7',     1.0,         'int32',      'Qt.blue'), \
