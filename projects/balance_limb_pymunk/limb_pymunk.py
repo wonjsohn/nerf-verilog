@@ -64,9 +64,9 @@ def main():
     while running:
         
         # Get forces
-        force_bic = max(0.0, xem_muscle_bic.ReadFPGA(0x22, "float32")) / 128 #- 0.2
-        force_tri = max(0.0, xem_muscle_tri.ReadFPGA(0x22, "float32")) / 128 #- 2.64
-        forearm_body.torque = (force_bic - force_tri) * 0.8
+        force_bic = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
+        force_tri = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
+        forearm_body.torque = (force_bic - force_tri) * 0.002
         
         #lce = 1.0
                              
@@ -83,8 +83,8 @@ def main():
         xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
         
         # Alpha-gamma coactivation
-        ag_coact, ag_bias = 30.0, -70.0
-#        ag_coact, ag_bias = 0.0, 50.0
+#        ag_coact, ag_bias = 30.0, -70.0
+        ag_coact, ag_bias = 0.0, 50.0
         gd_bic = force_bic * ag_coact + ag_bias
         bitval = convertType(gd_bic, fromType = 'f', toType = 'I')
         xem_spindle_bic.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn

@@ -270,35 +270,40 @@
         // b1
         always @ (posedge ep50trig[1] or posedge reset_global)
         if (reset_global)
-            triggered_input7 <= 32'h3AC7C0F4;     //0.001524 (b1 default)
+            triggered_input7 <= 32'h3A9E55C1;     //0.001208 (b1 default)
         else
             triggered_input7 <= {ep02wire, ep01wire};      
-            
+            //        .b1_F0(32'h3A9E55C1),      //0.001208 (b1 default)
+//        .b2_F0(32'hBAA6DACB),       //-0.001273 (b2 default)
+//        .a1_F0(32'hC00F3B64),       //- 2.238 (a1 default)
+//        .a2_F0(32'h3FD5C28F),       //1.67 (a2 default)
+//        .a3_F0(32'hBED49518),       // - 0.4152 (a3 default)
+//        .clk(sim_clk), 
             
         // b2
         always @ (posedge ep50trig[4] or posedge reset_global)
         if (reset_global)
-            triggered_input8 <= 32'hBACBD124;     //-0.001555 (b2 default)
+            triggered_input8 <= 32'hBAA6DACB;     //-0.001273 (b2 default)
         else
             triggered_input8 <= {ep02wire, ep01wire};  
 
         // a1
         always @ (posedge ep50trig[5] or posedge reset_global)
         if (reset_global)
-            triggered_input9 <= 32'hC0243958;     //- 2.566 (a1 default)
+            triggered_input9 <= 32'hC00F3B64;     //- 2.238 (a1 default)
         else
             triggered_input9 <= {ep02wire, ep01wire};   
 
         // a2
         always @ (posedge ep50trig[6] or posedge reset_global)
         if (reset_global)
-            triggered_input10 <= 32'h400C7AE1;     //2.195 (a2 default)
+            triggered_input10 <= 32'h3FD5C28F;     //1.67 (a2 default)
         else
             triggered_input10 <= {ep02wire, ep01wire};   
         // a3
         always @ (posedge ep50trig[8] or posedge reset_global)
         if (reset_global)
-            triggered_input11 <= 32'hBF20346E;     // - 0.6258 (a3 default)
+            triggered_input11 <= 32'hBED49518;     // - 0.4152(a3 default)
         else
             triggered_input11 <= {ep02wire, ep01wire};   
             
