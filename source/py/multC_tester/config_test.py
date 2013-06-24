@@ -36,10 +36,11 @@ FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.bl
                 (0x28,      'spike_count_neuron_MN4',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'spike_count_neuron_MN5',      1.0,         'int32',      Qt.darkRed),  \
                 (0x2C,      'spike_count_neuron_MN6',      1.0,         'int32',      Qt.darkGray),  \
-                (0x2E,      'total_spike_count',      1.0,         'int32',      Qt.blue),  \
-                (0x30,      'i_ranmomized_I',      1.0,         'int32',      Qt.red),  \
+                (0x2E,      'spike_count_neuron_MN7',      1.0,         'int32',      Qt.blue),  \
+                (0x30,      'total_spike_count_sync',      1.0,         'int32',      Qt.red),  \
                 (0x32,      'total_force',      1.0,         'float32',      Qt.green),  \
-                (0x34,      'spike_count_neuron_sync_inputPin',      1.0,         'int32',      Qt.black)
+                (0x34,      'spike_count_neuron_sync_inputPin',      1.0,         'int32',      Qt.magenta),  \
+                (0x36,      'i_rng_current_to_MN1',      1.0,         'int32',      Qt.black)
  
 ### For video recording: only display force 
 ##            address         name   visual_gain         type            color
@@ -61,9 +62,9 @@ FPGA_OUTPUT_DEFAULT =    (0x20,      'f_len',      1.0,         'float32',      
                 (0x2C,      'i_emg',      1.0,         'int32',      Qt.darkGray)
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      0.2), \
+USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      0.3), \
                     (2, 'tau',  'float32',      0.03), \
-                    (3, 'spindl_Ia_offset',   'float32',   70.12), \
+                    (3, 'spindl_Ia_offset',   'float32',   30.12), \
                     (4, 'gamma_dyn',    'float32',      80.0), \
                     (5, 'gamma_sta',    'float32',      80.0), \
                     (6, 'spindl_II_offset',      'float32',        10.12),  \
@@ -91,15 +92,27 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
                     (11, 'ltd',      'int32',        0),  \
                     (12, 'ltp',      'int32',        0)
 
+
+#Transfer function:  (close to simulink)
+#0.001635 z^2 - 0.001636 z + 7.263e-19
+#-------------------------------------
+# z^3 - 2.668 z^2 + 2.373 z - 0.7036
+
+#Transfer function: (1/128 pulse width)
+#1.524e-05 z^2 - 1.524e-05 z + 3.383e-21
+#---------------------------------------
+#  z^3 - 2.997 z^2 + 2.995 z - 0.9973
+ 
+
 #            trig_id    name          type          default_value                
-USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001208), \
+USER_INPUT_B3 =   (1, 'b1',  'float32',      0.00001524), \
                     (2, 'tau',  'float32',      0.03), \
                     (3, 'synapse_gain',   'int32',       1), \
-                    (4, 'b2',    'float32',      -0.001273), \
-                    (5, 'a1',    'float32',      -2.238), \
-                    (6, 'a2',      'float32',        1.67),  \
+                    (4, 'b2',    'float32',      -0.00001524), \
+                    (5, 'a1',    'float32',      -2.997), \
+                    (6, 'a2',      'float32',        2.995),  \
                     (7, 'clk_halfCnt',      'int32',        0),  \
-                    (8, 'a3',      'float32',        -0.4152),  \
+                    (8, 'a3',      'float32',        -0.9973),  \
                     (9, 'Lce',      'float32',        1.0),  \
                     (10, 'threshold',      'int32',        30),  \
                     (11, 'ltd',      'int32',        0),  \

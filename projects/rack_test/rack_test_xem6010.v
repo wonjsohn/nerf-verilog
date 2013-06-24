@@ -315,7 +315,7 @@
     assign spikeout2 = each_spike_neuron0_II;
     assign spikeout3 = 1'b0;
     assign spikeout4 = 1'b0;
-    assign spikeout5 = each_spike_neuron0_len2spk;
+    assign spikeout5 = spike_neuron0_len2spk;
     assign spikeout6 = 1'b0;
     assign spikeout7 = spike_neuron0;
     assign spikeout8 = 1'b0;
@@ -492,7 +492,7 @@
       spike_counter  sync_counter_length2spk
       (                 .clk(neuron_clk),
                         .reset(reset_global),
-                        .spike_in(each_spike_neuron0_len2spk),
+                        .spike_in(spike_neuron0_len2spk),
                         .spike_count(spike_count_length2spk) );
 
 
