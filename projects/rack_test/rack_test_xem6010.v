@@ -315,12 +315,12 @@
     assign spikeout2 = each_spike_neuron0_II;
     assign spikeout3 = 1'b0;
     assign spikeout4 = 1'b0;
-    assign spikeout5 = spike_neuron0_len2spk;
+    assign spikeout5 = each_spike_neuron0_len2spk;
     assign spikeout6 = 1'b0;
     assign spikeout7 = spike_neuron0;
     assign spikeout8 = 1'b0;
     assign spikeout9 = 1'b0;
-    assign spikeout10 = 1'b0;
+    assign spikeout10 = spike_neuron0_len2spk;
     assign spikeout11 = spike_neuron0_II;
     assign spikeout12 = 1'b0;
     assign spikeout13 = 1'b0;

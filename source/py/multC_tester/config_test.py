@@ -40,7 +40,7 @@ FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.bl
                 (0x30,      'total_spike_count_sync',      1.0,         'int32',      Qt.red),  \
                 (0x32,      'total_force',      1.0,         'float32',      Qt.green),  \
                 (0x34,      'spike_count_neuron_sync_inputPin',      1.0,         'int32',      Qt.magenta),  \
-                (0x36,      'i_rng_current_to_MN1',      1.0,         'int32',      Qt.black)
+                (0x36,      'int_I_synapse',      1.0,         'int32',      Qt.black)
  
 ### For video recording: only display force 
 ##            address         name   visual_gain         type            color
@@ -62,7 +62,7 @@ FPGA_OUTPUT_DEFAULT =    (0x20,      'f_len',      1.0,         'float32',      
                 (0x2C,      'i_emg',      1.0,         'int32',      Qt.darkGray)
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      0.3), \
+USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      1.5), \
                     (2, 'tau',  'float32',      0.03), \
                     (3, 'spindl_Ia_offset',   'float32',   30.12), \
                     (4, 'gamma_dyn',    'float32',      80.0), \
@@ -105,18 +105,18 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
  
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B3 =   (1, 'b1',  'float32',      0.00001524), \
+USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001635), \
                     (2, 'tau',  'float32',      0.03), \
-                    (3, 'synapse_gain',   'int32',       1), \
-                    (4, 'b2',    'float32',      -0.00001524), \
-                    (5, 'a1',    'float32',      -2.997), \
-                    (6, 'a2',      'float32',        2.995),  \
+                    (3, 'synapse_gain',   'float32',       200), \
+                    (4, 'b2',    'float32',      -0.001636), \
+                    (5, 'a1',    'float32',      -2.668), \
+                    (6, 'a2',      'float32',        2.373),  \
                     (7, 'clk_halfCnt',      'int32',        0),  \
-                    (8, 'a3',      'float32',        -0.9973),  \
+                    (8, 'a3',      'float32',        -0.7036),  \
                     (9, 'Lce',      'float32',        1.0),  \
                     (10, 'threshold',      'int32',        30),  \
                     (11, 'ltd',      'int32',        0),  \
-                    (12, 'ltp',      'int32',        0)
+                    (12, 'synapse_offset',      'float32',        0)
 
 #            trig_id    name          type          default_value                
 USER_INPUT_DEFAULT =   (1, 'pps_coef_Ia',  'float32',      30.0), \
