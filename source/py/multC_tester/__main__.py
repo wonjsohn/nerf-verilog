@@ -69,8 +69,8 @@ if __name__ == "__main__":
 #    xemSerialList = ['124300046A', '12320003RM', '1201000216']
 #    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
     #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
-    xemSerialList = ['12320003RN', '12430003T2']
-#    xemSerialList = ['124300046A', '1201000216']
+#    xemSerialList = ['12320003RN', '12430003T2']
+    xemSerialList = ['124300046A', '1201000216']
 #    xemSerialList = ['12320003RN']
     print xemSerialList
     

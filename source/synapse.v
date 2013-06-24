@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+`default_nettype none
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -19,18 +20,91 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 
+
+
+module synapse_simple(
+    input wire clk, //sim_clk
+    input wire reset,
+    input wire spike_in,
+    //input wire postsynaptic_spike_in,
+    output wire [31:0] f_I_out  // updates once per population (scaling factor 1024) 
+    //output reg signed [31:0] each_I // updates on each synapse
+ ); 
+    wire [31:0] IEEE_1;
+    reg [31:0] f_spikes_in; 
+    assign IEEE_1 = 32'h3F800000;
+ 
+ 
+    reg [31:0]      f_spikes_in_1,  f_spikes_in_2;
+    reg signed   	 [31:0] f_total_I_out1, f_total_I_out2;
+    reg signed  	 [31:0] f_total_I_out;     
+    wire signed      [31:0] f_total_I_out_F0;
+    
+    wire signed [31:0] a0, a1, a2, a3, b1, b2;
+    wire signed [31:0] b1x1, b2x2, a1y1, a2y2, bx_terms, ay_terms;
+    
+    
+    //filter coefficients: 
+//    num_syn =  0    2.2179   -2.1644
+//    den_syn = 1.0000   -1.9518    0.9523
+    assign b1 = 32'h400DF213;   //2.2179 
+    assign b2 = 32'hC00A8588 ;    // -2.1644
+    assign a1 = 32'hBFF9D495;     //-1.9518
+    assign a2 = 32'h3F73C9EF;    //0.9523
+    
+     // ********************implementing difference equation ********************
+    // y[n] = b1*x[n-1] + b2*x[n-2] - a1*y[n-1] - a2*y[n-2] - a3*y[n-3]
+    // ***************************************************************************************
+    mult  mult_b1(.x(b1), .y(f_spikes_in_1), .out(b1x1));
+    mult  mult_b2(.x(b2), .y(f_spikes_in_2), .out(b2x2));
+    mult  mult_a1(.x(a1), .y(f_total_I_out1), .out(a1y1));
+    mult  mult_a2(.x(a2), .y(f_total_I_out2), .out(a2y2));
+    
+    add   add_b1b2(.x(b1x1), .y(b2x2), .out(bx_terms));
+    add   add_a1a2(.x(a1y1), .y(a2y2), .out(ay_terms));
+    sub   sub_b1b2_a1a2a3(.x(bx_terms), .y(ay_terms), .out(f_total_I_out_F0));
+    
+    
+    
+    
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            f_spikes_in_1 <= 32'd0;
+            f_spikes_in_2 <= 32'd0;
+            f_total_I_out1 <= 32'd0;
+            f_total_I_out2 <= 32'd0;
+			f_total_I_out <= 32'd0;
+            f_spikes_in <= 32'h0;
+
+        end
+        else begin
+            f_spikes_in_1 <= f_spikes_in;
+            f_spikes_in_2 <= f_spikes_in_1;
+            f_total_I_out1 <= f_total_I_out_F0;
+            f_total_I_out2 <= f_total_I_out1;
+			f_total_I_out <= f_total_I_out_F0;
+            f_spikes_in <= (spike_in)? IEEE_1 : 32'h0;
+
+        end
+    end
+    
+    assign f_I_out = f_total_I_out;
+                
+              
+ endmodule
+
+
+
+
+
 // max frequency 88.746 MHz
-module synapse(
+module synapse_stdp(
                 input wire clk,
                 input wire reset,
                 input wire spike_in,
                 input wire postsynaptic_spike_in,
                 output reg signed [31:0] I_out,  // updates once per population (scaling factor 1024) 
-                output reg signed [31:0] each_I, // updates on each synapse
-                
-                input wire [31:0] ltp,              // long term potentiation delta
-                input wire [31:0] ltd,              // long term depression delta
-                input wire [31:0] p_delta           // probability of plasticity event
+                output reg signed [31:0] each_I // updates on each synapse
     );
 
 // COMPUTE EACH SYNAPTIC CURRENT /////////////////////////////////////////////////////////////////
@@ -51,43 +125,27 @@ assign i_mem_in = first_pass ? 0 : (i_mem >>> 1) + (i_mem >>> 2) + (i_mem >>> 3)
 wire [31:0] spike_history_mem;
 wire [31:0] spike_history_mem_in;
 
-assign spike_history_mem_in = first_pass ? 0 : {spike_history_mem[30:0], spike};
+assign spike_history_mem_in = first_pass ? 0 : {spike_history_mem[31:1], spike};
 
 wire [31:0] delta_w;
 
-assign delta_w = postsynaptic_spike ? ((spike_history_mem == 32'd0) ? 0 : ltp) :
+assign delta_w = postsynaptic_spike ? ((spike_history_mem == 32'd0) ? 0 : 32'd1024) :
                         0 ;
 
 wire [31:0] ps_spike_history_mem;
 wire [31:0] ps_spike_history_mem_in;
 
-assign ps_spike_history_mem_in = first_pass ? 0 : {ps_spike_history_mem[30:0], postsynaptic_spike};
+assign ps_spike_history_mem_in = first_pass ? 0 : {ps_spike_history_mem[31:1], postsynaptic_spike};
 
 wire [31:0] delta_w_ltd;
 
-assign delta_w_ltd = spike ? ((ps_spike_history_mem == 32'd0) ? 0 : ltd) :
+assign delta_w_ltd = spike ? ((ps_spike_history_mem == 32'd0) ? 0 : -32'd512) :
                         0 ;
-                        
-wire [31:0] random_out;
-wire [31:0] impulse_decay;
 
-assign impulse_decay = (random_out <= p_delta) ? impulse_mem >>> 7 : 0; 
-    
-    rng decay_rng(
-            .clk1(clk),
-            .clk2(clk),
-            .reset(reset),
-            .out(random_out),
-            
-            .lfsr(),
-            .casr()
-    );
-    
 wire [31:0] impulse_mem;
 wire [31:0] impulse_mem_in;
 
-assign impulse_mem_in = first_pass ? 32'd10240 : impulse_mem+delta_w+delta_w_ltd-impulse_decay;
-
+assign impulse_mem_in = first_pass ? 32'd10240 : impulse_mem+delta_w+delta_w_ltd;
 
 // STATE MACHINE //////////////////////////////////////////////////////////////////////////////////////
     
@@ -174,19 +232,6 @@ end
   .dinb(32'd0), // input [31 : 0] dinb
   .doutb() // output [31 : 0] doutb
     );
-    
-     neuron_ram ps_spike_history_ram (
-  .clka(~clk), // input clka
-  .wea(write), // input [0 : 0] wea
-  .addra(neuron_index), // input [6 : 0] addra
-  .dina(ps_spike_history_mem_in), // input [31 : 0] dina
-  .douta(ps_spike_history_mem), // output [31 : 0] douta
-  .clkb(clk), // input clkb
-  .web(1'b0), // input [0 : 0] web
-  .addrb(7'd0), // input [6 : 0] addrb
-  .dinb(32'd0), // input [31 : 0] dinb
-  .doutb() // output [31 : 0] doutb
-    );
 
     neuron_ram impulse_ram (
   .clka(~clk), // input clka
@@ -203,70 +248,3 @@ end
 endmodule
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-//
-//////////////////////////////////////////
-////// Synapse ///////////////////////////
-//////////////////////////////////////////
-//// Acts to create an exponentially falling current at the output 
-//// from a spike input and a weight which can be +/-
-//// up to three spike inputs are defined, each with its own weight
-//module synapse_int(I_out,spk1,w1,spk2,w2,spk3,w3,clk,reset);
-//
-//	output reg [17:0] I_out; 				//the simulated current
-//	input spk1,spk2,spk3;     			// the spike inputs
-//	input signed [17:0] w1,w2,w3;   //weights
-//
-//	input clk, reset;
-//	reg  [17:0] syn1_trace, syn2_trace, syn3_trace;  // current synaptic traces
-//	wire  [17:0] I_F0, syn1_trace_F0, syn2_trace_F0, syn3_trace_F0; // synaptic traces delayed by 1 clk cycle
-//	
-//	//maintain "traces" that are decaying functions of the last spike time
-//	//if spike comes in then reset count, otherwise multiply by 0.875 = 0.5 + 0.25 + 0.125
-//
-//	//assign syn1_trace_F0 = spk1 ? 9'sh0ff : ((syn1_trace >>> 1) + (syn1_trace >>> 2) + (syn1_trace >>> 3));
-//	//assign syn2_trace_F0 = spk2 ? 9'sh0ff : ((syn2_trace >>> 1) + (syn2_trace >>> 2) + (syn2_trace >>> 3));
-//	//assign syn3_trace_F0 = spk3 ? 9'sh0ff : ((syn3_trace >>> 1) + (syn3_trace >>> 2) + (syn3_trace >>> 3));	//not used
-//    
-//    
-////	assign syn1_trace_F0 = spk1 ? 18'sh3ffff : (syn1_trace - (syn1_trace >>> 10));  // allow half life in 500 clk cycles.
-////    assign syn2_trace_F0 = spk2 ? 18'sh3ffff : (syn2_trace - (syn2_trace >>> 10));  // xn = (0.9991)*xn_1  (for 10 bit shift)
-////	assign syn3_trace_F0 = spk3 ? 18'sh3ffff : (syn3_trace - (syn3_trace >>> 10)); 
-//	
-//    assign syn1_trace_F0 = spk1 ? 18'sh3ffff : ((syn1_trace >>> 1) + (syn1_trace >>> 2) + (syn1_trace >>> 3) + (syn1_trace >>> 4) + (syn1_trace >>> 5) + (syn1_trace >>> 6) + (syn1_trace >>> 7) + (syn1_trace >>> 8) + (syn1_trace >>> 9));  // allow half life in 500 clk cycles.
-//    assign syn2_trace_F0 = spk2 ? 18'sh3ffff : ((syn2_trace >>> 1) + (syn2_trace >>> 2) + (syn2_trace >>> 3) + (syn2_trace >>> 4) + (syn2_trace >>> 5) + (syn2_trace >>> 6) + (syn2_trace >>> 7) + (syn2_trace >>> 8) + (syn2_trace >>> 9));  // xn = (0.9991)*xn_1  (for 10 bit shift)
-//	assign syn3_trace_F0 = spk3 ? 18'sh3ffff : ((syn3_trace >>> 1) + (syn3_trace >>> 2) + (syn3_trace >>> 3) + (syn3_trace >>> 4) + (syn3_trace >>> 5) + (syn3_trace >>> 6) + (syn3_trace >>> 7) + (syn3_trace >>> 8) + (syn3_trace >>> 9));
-//    
-//	assign I_F0 = syn1_trace * w1 + syn2_trace * w2 + syn3_trace * w3;
-//	
-//   always @(posedge clk or posedge reset) begin
-//        if (reset) begin
-//				syn1_trace <= 18'd0;
-//				syn2_trace <= 18'd0;
-//				syn3_trace <= 18'd0;
-//				I_out <= 18'd0;
-//        end
-//        else begin
-//				I_out <= I_F0;
-//				syn1_trace <= syn1_trace_F0;
-//				syn2_trace <= syn2_trace_F0;
-//				syn3_trace <= syn3_trace_F0;
-//        end
-//    end
-//
-//endmodule
-//

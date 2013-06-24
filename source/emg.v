@@ -14,10 +14,10 @@ module emg_parameter(f_total_emg_out, i_spike_cnt, clk, reset, b1_F0, b2_F0, a1_
     input [31:0] b1_F0, b2_F0, a1_F0, a2_F0, a3_F0;
 	input wire  clk, reset;
     
-    reg signed		 [31:0] f_spikes_cnt_1, f_spikes_cnt_2;
+    reg 		 [31:0] f_spikes_cnt_1, f_spikes_cnt_2;
     reg signed   	 [31:0] f_total_emg1, f_total_emg2, f_total_emg3;
     reg signed  	 [31:0] f_total_emg; 
-    reg [31:0]  b1, b2, a1, a2, a3;     
+    reg signed      [31:0]  b1, b2, a1, a2, a3;     
     wire signed      [31:0] f_total_emg_F0;
     wire [31:0]  f_spikes_cnt;
 //    wire signed [31:0] a0, a1, a2, a3, b1, b2;
