@@ -344,7 +344,7 @@ class View(QMainWindow, Ui_Dialog):
 
 #            pipeInData = spike_train(firing_rate = 1) 
             print "waveform 3 fed"
-            pipeInData = gen_sin(F = 0.5, AMP = 0.3,  BIAS = 1.05,  T = 2.0) 
+            pipeInData = gen_sin(F = 0.5, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
             #pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.3, 1.3, 1.0, 1.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.4, 1.5, 1.55,  1.6,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)
 #                pipeInData = gen_ramp(T = [0.0, 0.2, 0.25, 1.75,  1.8,  2.0], L = [1.0,  1.0,  5000.0, 5000.0, 1.0, 1.0], FILT = False)  # abrupt rise / fall
