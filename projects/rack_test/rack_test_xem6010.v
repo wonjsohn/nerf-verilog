@@ -317,12 +317,12 @@
     assign spikeout4 = 1'b0;
     assign spikeout5 = each_spike_neuron0_len2spk;
     assign spikeout6 = 1'b0;
-    assign spikeout7 = spike_neuron0;
-    assign spikeout8 = 1'b0;
+    assign spikeout7 = 1'b0;
+    assign spikeout8 = spike_neuron0;
     assign spikeout9 = 1'b0;
-    assign spikeout10 = spike_neuron0_len2spk;
-    assign spikeout11 = spike_neuron0_II;
-    assign spikeout12 = 1'b0;
+    assign spikeout10 = spike_neuron0_len2spk;   // Ia afferent spike output,  (randomized I input, in floating point way. )
+    assign spikeout11 = 1'b0;
+    assign spikeout12 = spike_neuron0_II;
     assign spikeout13 = 1'b0;
     assign spikeout14 = 1'b0;
 
@@ -371,11 +371,11 @@
         okWireOut wo2A (    .ep_datain(i_rand_current_out[15:0]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2A)    );
         okWireOut wo2B (    .ep_datain(i_rand_current_out[31:16]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2B)   );    
         
-        okWireOut wo2C (    .ep_datain(fixed_Ia_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
-        okWireOut wo2D (    .ep_datain(fixed_Ia_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
+        okWireOut wo2C (    .ep_datain(spike_count_Ia_normal[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
+        okWireOut wo2D (    .ep_datain(spike_count_Ia_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
         
-        okWireOut wo2E (    .ep_datain(spike_count_Ia_normal[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
-        okWireOut wo2F (    .ep_datain(spike_count_Ia_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
+        okWireOut wo2E (    .ep_datain(spike_count_II_normal[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
+        okWireOut wo2F (    .ep_datain(spike_count_II_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
         
 
         // Clock Generator clk_gen0 Instance Definition
@@ -388,12 +388,36 @@
             .int_neuron_cnt_out()
         );
         
-
+    
+    
+       wire [31:0] SN_Ia_rand_out;
+       rng rng_SN_Ia(               
+          .clk1(neuron_clk),
+          .clk2(neuron_clk),
+          .reset(reset_global),
+          .out(SN_Ia_rand_out)
+        );     
+        
+       wire [31:0] i_rng_current_to_SN_Ia;
+       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:6] , SN_Ia_rand_out[5:0]};
+       
+       
+       wire [31:0] SN_II_rand_out;
+       rng rng_SN_II(               
+          .clk1(neuron_clk),
+          .clk2(neuron_clk),
+          .reset(reset_global),
+          .out(SN_II_rand_out)
+        );     
+        
+       wire [31:0] i_rng_current_to_SN_II;
+       assign i_rng_current_to_SN_II= {fixed_II_spindle0[31:6] , SN_II_rand_out[5:0]};
+        
         // Neuron neuron0 Instance Definition (connected by Ia afferent)
         izneuron_th_control neuron0(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_global),           // reset to initial conditions
-            .I_in(  fixed_Ia_spindle0 ),          // input current from synapse
+            .I_in(  i_rng_current_to_SN_Ia ),          // input current from synapse
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron0),               // membrane potential
             .spike(spike_neuron0),           // spike sample
@@ -403,11 +427,12 @@
         
         
         
+        
        // Neuron neuron0 Instance Definition (connected by II afferent)
         izneuron_th_control neuron0_II(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_global),           // reset to initial conditions
-            .I_in(  fixed_II_spindle0 ),          // input current from synapse
+            .I_in(  i_rng_current_to_SN_II ),          // input current from synapse
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron0_II),               // membrane potential
             .spike(spike_neuron0_II),           // spike sample
@@ -481,12 +506,21 @@
         );
         
      wire [31:0]  spike_count_Ia_normal;
-      spike_counter  sync_counter_normal
+      spike_counter  sync_counter_Ia
       (                 .clk(neuron_clk),
                         .reset(reset_global),
-                        .spike_in(each_spike_neuron0),
+                        .spike_in(spike_neuron0),
                         .spike_count(spike_count_Ia_normal) );
 
+      
+     wire [31:0]  spike_count_II_normal;
+      spike_counter  sync_counter_II
+      (                 .clk(neuron_clk),
+                        .reset(reset_global),
+                        .spike_in(spike_neuron0_II),
+                        .spike_count(spike_count_II_normal) );
+        
+        
         
       wire [31:0]  spike_count_length2spk;
       spike_counter  sync_counter_length2spk
@@ -496,7 +530,7 @@
                         .spike_count(spike_count_length2spk) );
 
 
-        
+
 /////////////////////// END INSTANCE DEFINITIONS //////////////////////////
 
 	// ** LEDs
