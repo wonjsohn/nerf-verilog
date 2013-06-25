@@ -329,13 +329,26 @@
 //            //.p_delta(32'd0)                 // chance for decay 
 //        );
         
-        wire [31:0] f_I_synapse;
-        synapse_simple synapse_simple1(
+        wire [31:0] f_I_synapse_Ia;
+        synapse_simple synapse_simple_from_Ia(
             .clk(sim_clk),
             .reset(reset_global),
             .spike_in(spikein1),
-            .f_I_out(f_I_synapse)
+            .f_I_out(f_I_synapse_Ia)
         );
+        
+        
+         wire [31:0] f_I_synapse_II;
+        synapse_simple synapse_simple_from_II(
+            .clk(sim_clk),
+            .reset(reset_global),
+            .spike_in(spikein5),
+            .f_I_out(f_I_synapse_II)
+        );
+        
+        wire [31:0] f_I_synapse;
+        add addCurrentsFrom_Ia_and_II(.x(f_I_synapse_Ia), .y(f_I_synapse_II), .out(f_I_synapse));
+        
          
             //******************* synapse output ****************************
         //Remove the offset in synapse output 
