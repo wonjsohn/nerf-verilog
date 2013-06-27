@@ -4,10 +4,10 @@ from PyQt4.QtCore import Qt
 FPGA_OUTPUT_B1 =    (0x20,      'Ia_raster_ch20',      1.0,         'spike32',      Qt.blue),  \
                 (0x22,      'Ia_spindle0',      1.0,         'float32',      Qt.red),  \
                 (0x24,      'II_spindle0',      1.0,         'float32',      Qt.green),  \
-                (0x26,      'Ia_raster',      1.0,         'spike32',      Qt.black),  \
-                (0x28,      'blank',      1.0,         'float32',      Qt.magenta),  \
-                (0x2A,      'blank',      1.0,         'float32',      Qt.darkRed),  \
-                (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
+                (0x26,      'Ia_membrane',      1.0,         'int32',      Qt.black),  \
+                (0x28,      'II_membrane',      1.0,         'int32',      Qt.magenta),  \
+                (0x2A,      'lce',      1.0,         'float32',      Qt.darkRed),  \
+                (0x2C,      'u_neuron0',      1.0,         'int32',      Qt.darkGray)
                 
 #            address         name   visual_gain         type            color
 FPGA_OUTPUT_B2 =   (0x20,      'v_neuron0',      1.0,         'float32',      Qt.blue),  \
@@ -44,14 +44,14 @@ USER_INPUT_B1 =   (1, 'spindle_gain',  'float32',      4.0), \
                     (5, 'gamma_sta',    'float32',      80.0), \
                     (6, 'xxx',      'int32',        0),  \
                     (7, 'clk_halfCnt',      'int32',        0),  \
-                    (8, 'xxx',      'int32',        0),  \
+                    (8, 'spindle_II_gain',      'float32',        1.0),  \
                     (9, 'Lce',      'float32',        1.1),  \
-                    (10, 'xxx',      'float32',        1.1),  \
-                    (11, 'xxx',      'int32',        0),  \
-                    (12, 'xxx',      'int32',        0),  \
-                    (13, 'BDAMP1',      'float32',        0.2356),  \
-                    (14, 'BDAMP2',      'float32',        0.0362),  \
-                    (15, 'BDAMP_chain',      'float32',        0.0132)
+                    (10, 'spindle_II_offset',      'float32',        0.0),  \
+                    (11, 'II_neuron_gain',      'int32',        1),  \
+                    (12, 'Ia_neuron_gain',      'int32',        1),  \
+                    (13, 'hard limit u',      'int32',      -5000),  \
+                    (14, 'izneuron d',      'int32',        2048),  \
+                    (15, 'izneuron a',      'int32',       82)
 
 #            trig_id    name          type          default_value                
 USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \

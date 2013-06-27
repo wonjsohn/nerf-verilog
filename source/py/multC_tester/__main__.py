@@ -70,8 +70,8 @@ if __name__ == "__main__":
 #    xemSerialList = ['12320003RN', '12430003T2']
 #    xemSerialList = ['124300046A', '1201000216']
    # xemSerialList = ['1137000222']
-    xemSerialList = ['0000000542']
-   
+#    xemSerialList = ['0000000542']
+    xemSerialList = ['000000054P']
     print xemSerialList
     
     for idx,  name in enumerate(xemSerialList):
