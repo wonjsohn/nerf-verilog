@@ -57,7 +57,7 @@
         wire         ti_clk;
         wire [30:0]  ok1;
         wire [16:0]  ok2;   
-        wire reset_global;
+        wire reset_global, reset_sim;
         wire is_from_trigger;
 
         // *** Target interface bus:
@@ -187,13 +187,17 @@
 
 
 
-        // Triggered Input triggered_input0 Instance Definition (lce)
+        // Triggered Input triggered_input0 Instance Definition (lce & vel _ from PXI)
+        reg [31:0] f_velocity;
         always @ (posedge ep50trig[9] or posedge reset_global)
-        if (reset_global)
-            triggered_input0 <= 32'h3f8ccccd;         //reset to 1.1      
-        else
-            triggered_input0 <= {ep02wire, ep01wire};      
-        
+        if (reset_global) begin
+            triggered_input0 <= 32'h3f8ccccd;         //reset to 1.1     
+            f_velocity <= 32'h0;         //reset to 0                  
+        end
+        else  begin
+            triggered_input0 <= {ep02wire, ep01wire};  
+            //f_velocity <= {ep04wire, ep03wire};                
+        end
 
         // Triggered Input triggered_input1 Instance Definition (tau)
         always @ (posedge ep50trig[2] or posedge reset_global)
@@ -211,12 +215,23 @@
             triggered_input2 <= {ep02wire, ep01wire};      
         
 
-        // Triggered Input triggered_input3 Instance Definition (ltd)
+//        // Triggered Input triggered_input3 Instance Definition (ltd)
+//        always @ (posedge ep50trig[11] or posedge reset_global)
+//        if (reset_global)
+//            triggered_input3 <= 32'd0;         //reset to 0      
+//        else
+//            triggered_input3 <= {ep02wire, ep01wire};      
+            
+            
+        // Triggered Input triggered_input3 Instance Definition 
+        reg [31:0] f_syn2_gain;
         always @ (posedge ep50trig[11] or posedge reset_global)
         if (reset_global)
-            triggered_input3 <= 32'd0;         //reset to 0      
+            f_syn2_gain <= 32'h42C80000;         //reset to 100     
         else
-            triggered_input3 <= {ep02wire, ep01wire};      
+            f_syn2_gain <= {ep02wire, ep01wire};    
+
+            
         
         reg [31:0] triggered_input4_a;    //
         reg [31:0] triggered_input4_b;    //
@@ -246,10 +261,10 @@
             triggered_input4_g <= {ep02wire, ep01wire} - 32'd12;
         end
 
-        // Triggered Input triggered_input5 Instance Definition (syn_gain)
+        // Triggered Input triggered_input5 Instance Definition (syn1_gain)
         always @ (posedge ep50trig[3] or posedge reset_global)
         if (reset_global)
-            triggered_input5 <= 32'd1;         // gain 1.0     
+            triggered_input5 <= 32'h42C80000;         // gain 100    
         else
             triggered_input5 <= {ep02wire, ep01wire};      
         
@@ -311,7 +326,7 @@
      wire [31:0]  i_spike_count_neuron_sync_inputPin;
       spike_counter  sync_counter_input
       (                 .clk(neuron_clk),
-                        .reset(reset_global),
+                        .reset(reset_sim),
                         .spike_in(spikein1),
                         .spike_count(i_spike_count_neuron_sync_inputPin) );   
             
@@ -332,7 +347,7 @@
         wire [31:0] f_I_synapse_Ia;
         synapse_simple synapse_simple_from_Ia(
             .clk(sim_clk),
-            .reset(reset_global),
+            .reset(reset_sim),
             .spike_in(spikein1),
             .f_I_out(f_I_synapse_Ia)
         );
@@ -341,30 +356,45 @@
          wire [31:0] f_I_synapse_II;
         synapse_simple synapse_simple_from_II(
             .clk(sim_clk),
-            .reset(reset_global),
+            .reset(reset_sim),
             .spike_in(spikein5),
             .f_I_out(f_I_synapse_II)
         );
         
-        wire [31:0] f_I_synapse;
-        add addCurrentsFrom_Ia_and_II(.x(f_I_synapse_Ia), .y(f_I_synapse_II), .out(f_I_synapse));
         
          
-            //******************* synapse output ****************************
+        //******************* synapse Ia output ****************************
         //Remove the offset in synapse output 
-        wire [31:0] f_temp_I_synapse_removed_offset;
-        sub sub_spindle0(.x(f_I_synapse), .y(triggered_input2), .out(f_temp_I_synapse_removed_offset));
+        wire [31:0] f_temp_I_synapse_Ia_removed_offset;
+        sub sub_spindle0_Ia(.x(f_I_synapse_Ia), .y(triggered_input2), .out(f_temp_I_synapse_Ia_removed_offset));
 	
         //gain control for synapse output
-        wire [31:0] f_gain_controlled_I_synapse;
-        mult mult_synapse_simple0(.x(f_temp_I_synapse_removed_offset), .y(triggered_input5), .out(f_gain_controlled_I_synapse));
+        wire [31:0] f_gain_controlled_I_synapse_Ia;
+        mult mult_synapse_simple0_Ia(.x(f_temp_I_synapse_Ia_removed_offset), .y(triggered_input5), .out(f_gain_controlled_I_synapse_Ia));
 
         // Ia Afferent datatype conversion (floating point -> integer -> fixed point)   
         wire [31:0] fixed_I_synapse;
         wire [31:0] int_I_synapse;
+        
+        
+        
+        //******************* synapse Ia output ****************************
+        //Remove the offset in synapse output 
+        wire [31:0] f_temp_I_synapse_II_removed_offset;
+        sub sub_spindle0_II(.x(f_I_synapse_II), .y(triggered_input2), .out(f_temp_I_synapse_II_removed_offset));   //  Ia, II have same offset (change later if needed)
+	
+        //gain control for synapse output
+        wire [31:0] f_gain_controlled_I_synapse_II;
+        mult mult_synapse_simple0_II(.x(f_temp_I_synapse_II_removed_offset), .y(f_syn2_gain), .out(f_gain_controlled_I_synapse_II));
+
+        
+        //*********** add currents from two synapse (Ia, II)  *********
+        wire [31:0] f_I_synapse;
+        add addCurrentsFrom_Ia_and_II(.x(f_gain_controlled_I_synapse_Ia), .y(f_gain_controlled_I_synapse_II), .out(f_I_synapse));
+
 
         floor   synapse_float_to_int(
-            .in(f_gain_controlled_I_synapse),
+            .in(f_I_synapse),
             .out(int_I_synapse)
         );
 //        wire [31:0] int_I_synapse;
@@ -380,7 +410,7 @@
 //        wire [17:0] si_I_synapse0;
 //        synapse_int synapse0(
 //            .clk(sim_clk),                           // neuron clock (128 cycles per 1ms simulation time)
-//            .reset(reset_global),                       // reset synaptic weights
+//            .reset(reset_sim),                       // reset synaptic weights
 //            .spk1(spikein1),             // spike from presynaptic neuron
 //            .I_out(each_I_synapse0)                      // raw synaptic currents 
 //        );
@@ -420,7 +450,7 @@
 //     rng rng_MN1(               
 //        .clk1(neuron_clk),
 //        .clk2(neuron_clk),
-//        .reset(reset_global),
+//        .reset(reset_sim),
 //        .out(MN1_rand_out)
 //        ); 
 //        
@@ -432,7 +462,7 @@
 //     rng rng_MN2(               
 //        .clk1(neuron_clk),
 //        .clk2(neuron_clk),
-//        .reset(reset_global),
+//        .reset(reset_sim),
 //        .out(MN2_rand_out)
 //        ); 
 //        
@@ -444,7 +474,7 @@
 //     rng rng_MN3(               
 //        .clk1(neuron_clk),
 //        .clk2(neuron_clk),
-//        .reset(reset_global),
+//        .reset(reset_sim),
 //        .out(MN3_rand_out)
 //        ); 
 //        
@@ -455,7 +485,7 @@
 //     rng rng_MN4(               
 //        .clk1(neuron_clk),
 //        .clk2(neuron_clk),
-//        .reset(reset_global),
+//        .reset(reset_sim),
 //        .out(MN4_rand_out)
 //        ); 
 //        
@@ -466,7 +496,7 @@
 //     rng rng_MN5(               
 //        .clk1(neuron_clk),
 //        .clk2(neuron_clk),
-//        .reset(reset_global),
+//        .reset(reset_sim),
 //        .out(MN5_rand_out)
 //        ); 
 //        
@@ -477,7 +507,7 @@
 //     rng rng_MN6(               
 //        .clk1(neuron_clk),
 //        .clk2(neuron_clk),
-//        .reset(reset_global),
+//        .reset(reset_sim),
 //        .out(MN6_rand_out)
 //        ); 
 //        
@@ -488,7 +518,7 @@
 //     rng rng_MN7(               
 //        .clk1(neuron_clk),
 //        .clk2(neuron_clk),
-//        .reset(reset_global),
+//        .reset(reset_sim),
 //        .out(MN7_rand_out)
 //        ); 
 //        
@@ -500,7 +530,7 @@
      // MN1 Instance Definition
         izneuron_th_control MN1(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
+            .reset(reset_sim),           // reset to initial conditions
             .I_in(  (int_I_synapse*75) >>3 ),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10),                 // threshold
             .v_out(v_neuron_MN1),               // membrane potential
@@ -512,7 +542,7 @@
      // MN2 Instance Definition
         izneuron_th_control MN2(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
+            .reset(reset_sim),           // reset to initial conditions
             .I_in(  (int_I_synapse*49) >>3),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10  ),                 // threshold
             .v_out(v_neuron_MN2),               // membrane potential
@@ -524,7 +554,7 @@
      // MN3  Instance Definition
         izneuron_th_control MN3(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
+            .reset(reset_sim),           // reset to initial conditions
             .I_in( (int_I_synapse*30)>>3 ),          // input current from synapse
             .th_scaled(triggered_input4_a <<< 10   ),                 // threshold
             .v_out(v_neuron_MN3),               // membrane potential
@@ -536,7 +566,7 @@
       // MN4  Instance Definition
         izneuron_th_control MN4(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
+            .reset(reset_sim),           // reset to initial conditions
             .I_in( (int_I_synapse*17) >>3 ),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10  ),                 // threshold
             .v_out(v_neuron_MN4),               // membrane potential
@@ -548,7 +578,7 @@
         // MN5  Instance Definition
         izneuron_th_control MN5(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
+            .reset(reset_sim),           // reset to initial conditions
             .I_in( (int_I_synapse*13) >>3 ),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10  ),                 // threshold
             .v_out(v_neuron_MN5),               // membrane potential
@@ -560,7 +590,7 @@
         // MN6  Instance Definition
         izneuron_th_control MN6(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
+            .reset(reset_sim),           // reset to initial conditions
             .I_in( (int_I_synapse*10) >>3 ),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10  ),                 // threshold
             .v_out(v_neuron_MN6),               // membrane potential
@@ -572,7 +602,7 @@
         // MN7  Instance Definition
         izneuron_th_control MN7(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
+            .reset(reset_sim),           // reset to initial conditions
             .I_in( (int_I_synapse*8) >>3 ),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10  ),                 // threshold
             .v_out(v_neuron_MN7),               // membrane potential
@@ -585,7 +615,7 @@
 //     wire [31:0]  spike_count_neuron0_sync;
 //      spike_counter  sync_counter
 //      (                 .clk(neuron_clk),
-//                        .reset(reset_global),
+//                        .reset(reset_sim),
 //                        .spike_in(spikein1),
 //                        .spike_count(spike_count_neuron0_sync) );
 
@@ -593,7 +623,7 @@
 
         // Waveform Generator mixed_input0 Instance Definition
         waveform_from_pipe_bram_2s gen_mixed_input0(
-            .reset(reset_global),               // reset the waveform
+            .reset(reset_sim),               // reset the waveform
             .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
             .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
             .data_from_trig(triggered_input0),	// data from one of ep50 channel
@@ -628,8 +658,11 @@
             reset_external_clean <= 0;    
 
         
-        
-        assign reset_global = ep00wire[0] | reset_external_clean;
+//        
+//        assign reset_global = ep00wire[0] | reset_external_clean;
+//        assign reset_sim = ep00wire[2] | reset_external_clean;
+        assign reset_global = ep00wire[0];
+        assign reset_sim = ep00wire[2];
         assign is_from_trigger = ~ep00wire[1];
         okWireOR # (.N(27)) wireOR (ok2, ok2x);
         okHost okHI(
@@ -699,49 +732,49 @@
      wire [31:0]  spike_count_neuron_sync_MN1;
       spike_counter  sync_counter_MN1
       (                 .clk(neuron_clk),
-                        .reset(reset_global),
+                        .reset(reset_sim),
                         .spike_in(spike_neuron_MN1),
                         .spike_count(spike_count_neuron_sync_MN1) );
 
      wire [31:0]  spike_count_neuron_sync_MN2;
       spike_counter  sync_counter_MN2
       (                 .clk(neuron_clk),
-                        .reset(reset_global),
+                        .reset(reset_sim),
                         .spike_in(spike_neuron_MN2),
                         .spike_count(spike_count_neuron_sync_MN2) );
                         
      wire [31:0]  spike_count_neuron_sync_MN3;
       spike_counter  sync_counter_MN3
       (                 .clk(neuron_clk),
-                        .reset(reset_global),
+                        .reset(reset_sim),
                         .spike_in(spike_neuron_MN3),
                         .spike_count(spike_count_neuron_sync_MN3) );
 
      wire [31:0]  spike_count_neuron_sync_MN4;
       spike_counter  sync_counter_MN4
       (                 .clk(neuron_clk),
-                        .reset(reset_global),
+                        .reset(reset_sim),
                         .spike_in(spike_neuron_MN4),
                         .spike_count(spike_count_neuron_sync_MN4) );  
                         
      wire [31:0]  spike_count_neuron_sync_MN5;
       spike_counter  sync_counter_MN5
       (                 .clk(neuron_clk),
-                        .reset(reset_global),
+                        .reset(reset_sim),
                         .spike_in(spike_neuron_MN5),
                         .spike_count(spike_count_neuron_sync_MN5) );   
                         
      wire [31:0]  spike_count_neuron_sync_MN6;
       spike_counter  sync_counter_MN6
       (                 .clk(neuron_clk),
-                        .reset(reset_global),
+                        .reset(reset_sim),
                         .spike_in(spike_neuron_MN6),
                         .spike_count(spike_count_neuron_sync_MN6) );       
 
      wire [31:0]  spike_count_neuron_sync_MN7;
       spike_counter  sync_counter_MN7
       (                 .clk(neuron_clk),
-                        .reset(reset_global),
+                        .reset(reset_sim),
                         .spike_in(spike_neuron_MN7),
                         .spike_count(spike_count_neuron_sync_MN7) );                               
 
@@ -792,7 +825,7 @@
         .a2_F0(triggered_input10),
         .a3_F0(triggered_input11),
         .clk(sim_clk), 
-        .reset(reset_global) ); 
+        .reset(reset_sim) ); 
 
 
 
@@ -801,9 +834,9 @@
     shadmehr_muscle muscle0_sync(
         .i_spike_cnt(total_spike_count_sync),
         .f_pos(mixed_input0),
-        .f_vel(32'd0),
+        .f_vel(f_velocity),
         .clk(sim_clk),
-        .reset(reset_global),
+        .reset(reset_sim),
         .f_tau(triggered_input1),
         .f_total_force_out(total_force_out_muscle0_sync)
         //.f_current_A(),

@@ -68,10 +68,10 @@ USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      1.5), \
                     (4, 'gamma_dyn',    'float32',      80.0), \
                     (5, 'gamma_sta',    'float32',      80.0), \
                     (6, 'spindl_II_offset',      'float32',        10.12),  \
-                    (7, 'clk_halfCnt',      'int32',        0),  \
+                    (7, 'xxx',      'int32',        0),  \
                     (8, 'xxx',      'int32',        0),  \
                     (9, 'Lce',      'float32',        1.1),  \
-                    (10, 'spindle_II_gain',      'float32',        0.5),  \
+                    (10, 'spindle_II_gain',      'float32',        1.5),  \
                     (11, 'xxx',      'int32',        0),  \
                     (12, 'xxx',      'int32',        0),  \
                     (13, 'BDAMP1',      'float32',        0.2356),  \
@@ -85,7 +85,7 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
                     (4, 'xxx',    'float32',      80.0), \
                     (5, 'xxx',    'float32',      80.0), \
                     (6, 'xxx',      'int32',        0),  \
-                    (7, 'clk_halfCnt',      'int32',        0),  \
+                    (7, 'xxx',      'int32',        0),  \
                     (8, 'cortial_input',      'int32',        0),  \
                     (9, 'xxx',      'int32',        1),  \
                     (10, 'p_delta',      'float32',        0.0),  \
@@ -105,18 +105,18 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
  
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001635), \
+USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001208), \
                     (2, 'tau',  'float32',      0.03), \
-                    (3, 'synapse1_gain',   'float32',       200), \
-                    (4, 'b2',    'float32',      -0.001636), \
-                    (5, 'a1',    'float32',      -2.668), \
-                    (6, 'a2',      'float32',        2.373),  \
-                    (7, 'clk_halfCnt',      'int32',        0),  \
-                    (8, 'a3',      'float32',        -0.7036),  \
-                    (9, 'Lce',      'float32',        1.0),  \
+                    (3, 'synapse1_gain',   'float32',       100.0), \
+                    (4, 'b2',    'float32',      -0.001273), \
+                    (5, 'a1',    'float32',      -2.238), \
+                    (6, 'a2',      'float32',        1.67),  \
+                    (7, 'xxx',      'int32',        0),  \
+                    (8, 'a3',      'float32',        -0.4152),  \
+                    (9, 'Lce_vel',      'float32',        1.0),  \
                     (10, 'threshold',      'int32',        30),  \
-                    (11, 'ltd',      'int32',        0),  \
-                    (12, 'synapse_offset',      'float32',        0)
+                    (11, 'synapse2_gain',      'float32',        100.0),  \
+                    (12, 'synapse_1n2_offset',      'float32',        0)
 
 #            trig_id    name          type          default_value                
 USER_INPUT_DEFAULT =   (1, 'pps_coef_Ia',  'float32',      30.0), \
