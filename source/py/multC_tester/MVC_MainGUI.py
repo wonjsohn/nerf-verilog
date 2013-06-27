@@ -118,8 +118,13 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         Slot documentation goes here.
         """
 #        self.running = True
+
         for eachC in self.cList:
             eachC.startSim()
+#        for eachV in self.vList:
+#            print eachV
+#            eachV.readParameters()
+
     
     @pyqtSignature("bool")
     def on_pushButton_burn_clicked(self, checked):
@@ -133,3 +138,12 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         print bitFileList
         for eachXem, eachBitFile in zip(self.xemList, bitFileList):
             eachXem.BurnBitFile(eachBitFile)
+    
+    @pyqtSignature("bool")
+    def on_pushButton_reset_sim_clicked(self, checked):
+        """
+        Slot documentation goes here.
+        """
+        newResetSim = checked
+        for eachXem in self.xemList:
+            eachXem.SendButton(newResetSim, BUTTON_RESET_SIM)

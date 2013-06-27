@@ -110,6 +110,7 @@ if __name__ == "__main__":
 
     #testerGui.show()
     
+    print vList
     ### global control for MVC
     threeBoard = MultiXemScheduler(xemList = xemList, cList = cList,  vList = vList, halfCountRealTime = xem.HalfCountRealTime() )
     threeBoard.show()
