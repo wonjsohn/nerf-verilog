@@ -58,6 +58,7 @@
         wire [30:0]  ok1;
         wire [16:0]  ok2;   
         wire reset_global;
+        wire reset_sim;
         wire is_from_trigger;
 
         // *** Target interface bus:
@@ -162,7 +163,7 @@
             .gamma_sta(triggered_input2),    // spindle static gamma input (pps)
             .lce(mixed_input0),                   // length of contractile element (muscle length)
             .clk(spindle_clk),                  // spindle clock (3 cycles per 1ms simulation time) 
-            .reset(reset_global),               // reset the spindle
+            .reset(reset_sim),               // reset the spindle
             .out0(),
             .out1(),
             .out2(II_spindle0),                   // II afferent (pps)
@@ -292,7 +293,7 @@
        // Triggered Input triggered_input8 Instance Definition (spindle_II_gain)
         always @ (posedge ep50trig[10] or posedge reset_global)
         if (reset_global)
-            triggered_input8 <= 32'h3F8000000;         //reset to 1.0      
+            triggered_input8 <= 32'h3F000000;         //reset to 0.5    
         else
             triggered_input8 <= {ep02wire, ep01wire};                  
         
@@ -300,7 +301,7 @@
 
         // Waveform Generator mixed_input0 Instance Definition
         waveform_from_pipe_bram_2s gen_mixed_input0(
-            .reset(reset_global),               // reset the waveform
+            .reset(reset_sim),               // reset the waveform
             .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
             .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
             .data_from_trig(triggered_input0),	// data from one of ep50 channel
@@ -337,6 +338,7 @@
         
         
         assign reset_global = ep00wire[0] | reset_external_clean;
+        assign reset_sim = ep00wire[2] | reset_external_clean;
         assign is_from_trigger = ~ep00wire[1];
         okWireOR # (.N(20)) wireOR (ok2, ok2x);
         okHost okHI(
@@ -394,7 +396,7 @@
        rng rng_SN_Ia(               
           .clk1(neuron_clk),
           .clk2(neuron_clk),
-          .reset(reset_global),
+          .reset(reset_sim),
           .out(SN_Ia_rand_out)
         );     
         
@@ -406,7 +408,7 @@
        rng rng_SN_II(               
           .clk1(neuron_clk),
           .clk2(neuron_clk),
-          .reset(reset_global),
+          .reset(reset_sim),
           .out(SN_II_rand_out)
         );     
         
@@ -416,7 +418,7 @@
         // Neuron neuron0 Instance Definition (connected by Ia afferent)
         izneuron_th_control neuron0(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
+            .reset(reset_sim),           // reset to initial conditions
             .I_in(  i_rng_current_to_SN_Ia ),          // input current from synapse
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron0),               // membrane potential
@@ -431,7 +433,7 @@
        // Neuron neuron0 Instance Definition (connected by II afferent)
         izneuron_th_control neuron0_II(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
+            .reset(reset_sim),           // reset to initial conditions
             .I_in(  i_rng_current_to_SN_II ),          // input current from synapse
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron0_II),               // membrane potential
@@ -454,7 +456,7 @@
 //        rng rng_0(
 //                .clk1(clk1),
 //                .clk2(clk1),
-//                .reset(reset_global),
+//                .reset(reset_sim),
 //                .out(rand_out)
 //        );    
 //        
@@ -487,7 +489,7 @@
         fr_2_current_rand current1(
                 .f_rawfr_Ia(Ia_gain_controlled_spindle0),     //
                 .neuron_clk(neuron_clk),
-                .reset_global(reset_global),
+                .reset_global(reset_sim),
                 .i_current_out(i_rand_current_out)
     );
               
@@ -496,7 +498,7 @@
         wire [127:0] population_neuron0_len2spk;
         izneuron_th_control length2spk(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
+            .reset(reset_sim),           // reset to initial conditions
             .I_in(  i_rand_current_out ),          // input current from synapse
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron0_len2spk),               // membrane potential
@@ -508,16 +510,16 @@
      wire [31:0]  spike_count_Ia_normal;
       spike_counter  sync_counter_Ia
       (                 .clk(neuron_clk),
-                        .reset(reset_global),
-                        .spike_in(spike_neuron0),
+                        .reset(reset_sim),
+                        .spike_in(each_spike_neuron0),
                         .spike_count(spike_count_Ia_normal) );
 
       
      wire [31:0]  spike_count_II_normal;
       spike_counter  sync_counter_II
       (                 .clk(neuron_clk),
-                        .reset(reset_global),
-                        .spike_in(spike_neuron0_II),
+                        .reset(reset_sim),
+                        .spike_in(each_spike_neuron0_II),
                         .spike_count(spike_count_II_normal) );
         
         
@@ -525,7 +527,7 @@
       wire [31:0]  spike_count_length2spk;
       spike_counter  sync_counter_length2spk
       (                 .clk(neuron_clk),
-                        .reset(reset_global),
+                        .reset(reset_sim),
                         .spike_in(spike_neuron0_len2spk),
                         .spike_count(spike_count_length2spk) );
 
@@ -535,9 +537,9 @@
 
 	// ** LEDs
     assign led[0] = ~reset_global;
-    assign led[1] = ~spikeout1;
-    assign led[2] = ~spikeout2;
-    assign led[3] = ~0;
+    assign led[1] = ~reset_sim;
+    assign led[2] = ~spikeout1;
+    assign led[3] = ~spikeout2;
     assign led[4] = ~0;
     assign led[5] = ~0;
     assign led[6] = ~neuron_clk; // 

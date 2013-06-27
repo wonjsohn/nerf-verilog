@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/MVC_MainGUI.ui'
 #
-# Created: Tue May 21 13:04:38 2013
+# Created: Wed Jun 26 16:05:46 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,7 +18,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.setWindowModality(QtCore.Qt.WindowModal)
-        Dialog.resize(751, 39)
+        Dialog.resize(873, 39)
         self.pushButton_2 = QtGui.QPushButton(Dialog)
         self.pushButton_2.setGeometry(QtCore.QRect(0, 0, 71, 31))
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
@@ -27,7 +27,7 @@ class Ui_Dialog(object):
         self.pushButton_4.setCheckable(True)
         self.pushButton_4.setObjectName(_fromUtf8("pushButton_4"))
         self.horizontalSlider = QtGui.QSlider(Dialog)
-        self.horizontalSlider.setGeometry(QtCore.QRect(201, 1, 181, 16))
+        self.horizontalSlider.setGeometry(QtCore.QRect(311, 1, 181, 16))
         self.horizontalSlider.setMinimum(1)
         self.horizontalSlider.setMaximum(100)
         self.horizontalSlider.setProperty("value", 10)
@@ -39,7 +39,7 @@ class Ui_Dialog(object):
         self.horizontalSlider.setTickInterval(10)
         self.horizontalSlider.setObjectName(_fromUtf8("horizontalSlider"))
         self.lcdNumber = QtGui.QLCDNumber(Dialog)
-        self.lcdNumber.setGeometry(QtCore.QRect(150, 20, 81, 21))
+        self.lcdNumber.setGeometry(QtCore.QRect(260, 20, 81, 21))
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -191,21 +191,25 @@ class Ui_Dialog(object):
         self.lcdNumber.setProperty("intValue", 10)
         self.lcdNumber.setObjectName(_fromUtf8("lcdNumber"))
         self.label_RT = QtGui.QLabel(Dialog)
-        self.label_RT.setGeometry(QtCore.QRect(220, 20, 101, 16))
+        self.label_RT.setGeometry(QtCore.QRect(330, 20, 101, 16))
         self.label_RT.setObjectName(_fromUtf8("label_RT"))
         self.pushButtonData = QtGui.QPushButton(Dialog)
-        self.pushButtonData.setGeometry(QtCore.QRect(390, 0, 105, 30))
+        self.pushButtonData.setGeometry(QtCore.QRect(500, 0, 105, 30))
         self.pushButtonData.setCheckable(True)
         self.pushButtonData.setChecked(False)
         self.pushButtonData.setDefault(False)
         self.pushButtonData.setFlat(False)
         self.pushButtonData.setObjectName(_fromUtf8("pushButtonData"))
         self.pushButton = QtGui.QPushButton(Dialog)
-        self.pushButton.setGeometry(QtCore.QRect(660, 0, 91, 31))
+        self.pushButton.setGeometry(QtCore.QRect(770, 0, 91, 31))
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
         self.pushButton_burn = QtGui.QPushButton(Dialog)
-        self.pushButton_burn.setGeometry(QtCore.QRect(500, 0, 91, 31))
+        self.pushButton_burn.setGeometry(QtCore.QRect(610, 0, 91, 31))
         self.pushButton_burn.setObjectName(_fromUtf8("pushButton_burn"))
+        self.pushButton_reset_sim = QtGui.QPushButton(Dialog)
+        self.pushButton_reset_sim.setGeometry(QtCore.QRect(190, 0, 105, 30))
+        self.pushButton_reset_sim.setCheckable(True)
+        self.pushButton_reset_sim.setObjectName(_fromUtf8("pushButton_reset_sim"))
 
         self.retranslateUi(Dialog)
         QtCore.QObject.connect(self.horizontalSlider, QtCore.SIGNAL(_fromUtf8("valueChanged(int)")), self.lcdNumber.display)
@@ -216,11 +220,12 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_2.setText(QtGui.QApplication.translate("Dialog", "Close", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton_4.setText(QtGui.QApplication.translate("Dialog", "Reset Global", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_4.setText(QtGui.QApplication.translate("Dialog", "Wipe All", None, QtGui.QApplication.UnicodeUTF8))
         self.label_RT.setText(QtGui.QApplication.translate("Dialog", "x 0.1 Real-time", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButtonData.setText(QtGui.QApplication.translate("Dialog", "Log Data", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton.setText(QtGui.QApplication.translate("Dialog", "Start", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_burn.setText(QtGui.QApplication.translate("Dialog", "Burn", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_reset_sim.setText(QtGui.QApplication.translate("Dialog", "Reset Sim", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":

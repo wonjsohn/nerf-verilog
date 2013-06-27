@@ -16,6 +16,7 @@ from generate_spikes import spike_train
 from generate_sequence import gen as gen_ramp
 from math import floor
 import types
+from V_Display import *
 from functools import partial
 #
 #def onNewWireIn(self, whichCh, value = -1):
@@ -66,6 +67,8 @@ class SingleXemTester(QDialog):
             self.timer.start(REFRESH_RATE )
             self.running = True
 #            self.on_horizontalSlider_sliderMoved(self, position):
+        
+
               
 
     def onTimer(self):

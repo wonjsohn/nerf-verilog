@@ -4,7 +4,7 @@ from PyQt4.QtCore import Qt, SIGNAL, SLOT, pyqtSignature, pyqtSlot
 REFRESH_RATE = 10 # in ms, both for data update & display. Min = 10ms 
 PIPE_IN_ADDR = 0x80
 BUTTON_RESET = 0
-#BUTTON_RESET_SIM = 1
+BUTTON_RESET_SIM = 2
 #BUTTON_ENABLE_SIM = 2
 BUTTON_INPUT_FROM_TRIGGER = 1
 

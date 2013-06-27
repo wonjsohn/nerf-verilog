@@ -103,19 +103,19 @@ class SomeFpga:
     def SendButton(self, buttonValue, evt = None):
         if evt == BUTTON_RESET:
             if (buttonValue) :
-                self.xem.SetWireInValue(0x00, 0x01, 0xff)
+                self.xem.SetWireInValue(0x00, 0x01, 0x01)
             else :
                 self.xem.SetWireInValue(0x00, 0x00, 0x01)
             self.xem.UpdateWireIns()
         elif evt == BUTTON_INPUT_FROM_TRIGGER:
             if (buttonValue) :
-                self.xem.SetWireInValue(0x00, 0x02, 0xff)
+                self.xem.SetWireInValue(0x00, 0x02, 0x02)
             else :
                 self.xem.SetWireInValue(0x00, 0x00, 0x02)
             self.xem.UpdateWireIns()
-        elif evt == BUTTON_ENABLE_SIM:
+        elif evt == BUTTON_RESET_SIM:
             if (buttonValue) :
-                self.xem.SetWireInValue(0x00, 0x04, 0xff)
+                self.xem.SetWireInValue(0x00, 0x04, 0x04)
             else :
                 self.xem.SetWireInValue(0x00, 0x00, 0x04)
             self.xem.UpdateWireIns()            

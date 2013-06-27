@@ -161,7 +161,19 @@ class View(QMainWindow, Ui_Dialog):
             fn = partial(onVisualSlider, self, eachName) # Customizing onNewWireIn() into channel-specific 
             eachChan.slider.valueChanged.connect(fn)    
             
-                
+    def individualWireIn(self, whichCh, value = -1):
+        if value == -1: 
+            value = self.allUserInput[whichCh].doubleSpinBox.value()         
+        self.tellFpga(whichCh, value)
+        #self.tellWhichFpga(0, whichCh, value)
+        print "board",  whichCh, " is now ", value
+
+    def readParameters(self):        
+        for eachName, eachChan in self.allUserInput.iteritems():
+            val = eachChan.doubleSpinBox.value()   
+            print eachName, val
+            self.individualWireIn(eachName, val)
+
 
     def plotData(self, data):
         from pylab import plot, show, subplot, title
