@@ -122,7 +122,7 @@
         // Output and OpalKelly Interface Wire Definitions
         
         wire [27*17-1:0] ok2x;
-        wire [15:0] ep00wire, ep01wire, ep02wire;
+        wire [15:0] ep00wire, ep01wire, ep02wire, ep03wire, ep04wire, ep05wire, ep06wire, ep07wire, ep08wire;
         wire [15:0] ep50trig;
         
         wire pipe_in_write;
@@ -188,15 +188,19 @@
 
 
         // Triggered Input triggered_input0 Instance Definition (lce & vel _ from PXI)
-        reg [31:0] f_velocity;
+        reg [31:0] f_len_pxi_F0, f_velocity_F0, i_M1_CN_drive, i_M1_CN2_drive;
         always @ (posedge ep50trig[9] or posedge reset_global)
         if (reset_global) begin
-            triggered_input0 <= 32'h3f8ccccd;         //reset to 1.1     
-            f_velocity <= 32'h0;         //reset to 0                  
+            f_len_pxi_F0 <= 32'h3f8ccccd;         //reset to 1.1     
+            f_velocity_F0 <= 32'h0;         //reset to 0   
+            i_M1_CN_drive <= 32'd0;             
+            i_M1_CN2_drive <= 32'd0;            
         end
         else  begin
-            triggered_input0 <= {ep02wire, ep01wire};  
-            //f_velocity <= {ep04wire, ep03wire};                
+            f_len_pxi_F0 <= {ep02wire, ep01wire};  
+            f_velocity_F0 <= {ep04wire, ep03wire};         
+            i_M1_CN_drive <= {ep06wire, ep05wire};             
+            i_M1_CN2_drive <= {ep08wire, ep07wire};             
         end
 
         // Triggered Input triggered_input1 Instance Definition (tau)
@@ -329,6 +333,27 @@
                         .reset(reset_sim),
                         .spike_in(spikein1),
                         .spike_count(i_spike_count_neuron_sync_inputPin) );   
+            
+       //** latch the inputs
+
+    reg [31:0] f_len_pxi; 
+    reg [31:0] f_velocity;
+    always @(posedge sim_clk or posedge reset_global)
+	 begin
+	   if (reset_global)
+		begin
+		  f_len_pxi <= 32'h3f8ccccd;  // reset to 1.1
+          f_velocity <= 32'h0;         // reset to 0
+		end else begin
+		  f_len_pxi <= f_len_pxi_F0;
+          f_velocity <= f_velocity_F0;
+		end
+	 end       
+            
+            
+            
+            
+            
             
             
 //        // Synapse synapse0 Instance Definition
@@ -626,7 +651,7 @@
             .reset(reset_sim),               // reset the waveform
             .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
             .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
-            .data_from_trig(triggered_input0),	// data from one of ep50 channel
+            .data_from_trig(f_len_pxi),	// data from one of ep50 channel
             .is_from_trigger(is_from_trigger),
             .pipe_in_data(pipe_in_data),        // waveform data from opalkelly pipe in
             .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
@@ -675,6 +700,13 @@
         okWireIn    wi00    (.ok1(ok1), .ep_addr(8'h00),    .ep_dataout(ep00wire)   );
         okWireIn    wi01    (.ok1(ok1), .ep_addr(8'h01),    .ep_dataout(ep01wire)   );
         okWireIn    wi02    (.ok1(ok1), .ep_addr(8'h02),    .ep_dataout(ep02wire)   );
+        okWireIn    wi03    (.ok1(ok1), .ep_addr(8'h03),    .ep_dataout(ep03wire)   );
+        okWireIn    wi04    (.ok1(ok1), .ep_addr(8'h04),    .ep_dataout(ep04wire)   );
+        okWireIn    wi05    (.ok1(ok1), .ep_addr(8'h05),    .ep_dataout(ep05wire));
+        okWireIn    wi06    (.ok1(ok1), .ep_addr(8'h06),    .ep_dataout(ep06wire));
+        okWireIn    wi07    (.ok1(ok1), .ep_addr(8'h07),    .ep_dataout(ep07wire));
+        okWireIn    wi08    (.ok1(ok1),  .ep_addr(8'h08),   .ep_dataout(ep08wire));
+
         
         okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
                             .ep_blockstrobe(), .ep_dataout(pipe_in_data), .ep_ready(1'b1));
@@ -700,8 +732,8 @@
         okWireOut wo2C (    .ep_datain(spike_count_neuron_sync_MN6[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
         okWireOut wo2D (    .ep_datain(spike_count_neuron_sync_MN6[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
         
-        okWireOut wo2E (    .ep_datain(spike_count_neuron_sync_MN7[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
-        okWireOut wo2F (    .ep_datain(spike_count_neuron_sync_MN7[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
+        okWireOut wo2E (    .ep_datain(population_neuron_MN2[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
+        okWireOut wo2F (    .ep_datain(population_neuron_MN2[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
 
         okWireOut wo30 (    .ep_datain(total_spike_count_sync[15:0]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h30)    );
         okWireOut wo31 (    .ep_datain(total_spike_count_sync[31:16]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h31)   );         

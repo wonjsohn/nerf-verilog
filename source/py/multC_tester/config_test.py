@@ -36,7 +36,7 @@ FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.bl
                 (0x28,      'spike_count_neuron_MN4',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'spike_count_neuron_MN5',      1.0,         'int32',      Qt.darkRed),  \
                 (0x2C,      'spike_count_neuron_MN6',      1.0,         'int32',      Qt.darkGray),  \
-                (0x2E,      'spike_count_neuron_MN7',      1.0,         'int32',      Qt.blue),  \
+                (0x2E,      'raster0_31_MN2',      1.0,         'spike32',      Qt.blue),  \
                 (0x30,      'total_spike_count_sync',      1.0,         'int32',      Qt.red),  \
                 (0x32,      'total_force',      1.0,         'float32',      Qt.green),  \
                 (0x34,      'spike_count_neuron_sync_inputPin',      1.0,         'int32',      Qt.magenta),  \
@@ -102,7 +102,13 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
 #1.524e-05 z^2 - 1.524e-05 z + 3.383e-21
 #---------------------------------------
 #  z^3 - 2.997 z^2 + 2.995 z - 0.9973
- 
+
+# f= (2*t+350*t.^2).*exp(300*t);   pulse width ~= 5ms, dies out around 40ms 
+
+#Transfer function:
+#0.001208 z^2 - 0.001273 z - 2.826e-19
+#-------------------------------------
+#  z^3 - 2.238 z^2 + 1.67 z - 0.4152
 
 #            trig_id    name          type          default_value                
 USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001208), \
