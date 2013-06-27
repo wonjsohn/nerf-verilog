@@ -56,7 +56,8 @@ class SomeFpga:
         
     def HalfCountRealTime(self):
         NUM_CYCLE = 2
-        newHalfCnt = self.clkRate * (10 **6) / (NUM_CYCLE * self.NUM_NEURON * self.SAMPLING_RATE ) /2      
+       # newHalfCnt = self.clkRate * (10 **6) / (NUM_CYCLE * self.NUM_NEURON * self.SAMPLING_RATE ) /2   
+        newHalfCnt = self.clkRate * (10 **6) / (NUM_CYCLE * self.NUM_NEURON * self.SAMPLING_RATE )       
         return newHalfCnt
             
     def ReadFPGA(self, getAddr, type):

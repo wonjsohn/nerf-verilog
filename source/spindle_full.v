@@ -207,10 +207,29 @@ module spindle(
                             (II_fiber_F2[31]) ? 32'd0 : 
                             II_fiber_F2;
                             
-    wire [31:0] II_muscle_F0;
+    wire [31:0] II_muscle_F0, II_muscle_F00, II_muscle_F01;
     //add II_muscle_a1( .x(II_fiber_2), .y(II_fiber_F0), .out(II_muscle_F0) );
-    add II_muscle_a1( .x(II_fiber_2), .y(II_fiber_chain), .out(II_muscle_F0) );
-
+    add II_muscle_a1( .x(II_fiber_2), .y(II_fiber_chain), .out(II_muscle_F00) );
+    
+    wire [31:0] IEEE_ZERO_POINT_ONE;
+    assign IEEE_ZERO_POINT_ONE = 32'h3DCCCCCD;
+    
+    mult II_muscle_m01 ( .x(II_muscle_F00), .y(IEEE_ZERO_POINT_ONE), .out(II_muscle_F01) );
+    
+    wire [31:0] lce_to_II;
+    wire [31:0] IEEE_500 = 32'h43FA0000;
+    wire [31:0] IEEE_1 = 32'h3F800000;
+    
+    wire [31:0] lce_minus_one;
+    sub lce_s1 ( .x(lce), .y(IEEE_1), .out(lce_minus_one) );
+    mult lce_m1 ( .x(lce_minus_one), .y(IEEE_500), .out(lce_to_II) );
+    
+    wire [31:0] lce_to_II_plus_gamma;
+    add II_muscle_a3 ( .x(lce_to_II), .y(gamma_sta), .out(lce_to_II_plus_gamma) );
+    add II_muscle_a2 ( .x(II_muscle_F01), .y(lce_to_II_plus_gamma), .out(II_muscle_F0) );
+    
+    
+    
     wire [31:0] Ia_bag2chain;
     //add Ia_bag2chain_a1( .x(Ia_fiber_2), .y(Ia_fiber_F0), .out(Ia_bag2chain) );
     add Ia_bag2chain_a1( .x(Ia_fiber_2), .y(Ia_fiber_chain), .out(Ia_bag2chain) );

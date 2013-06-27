@@ -76,6 +76,8 @@
         wire [31:0] int_Ia_spindle0; // Ia afferent integer format
         wire [31:0] fixed_Ia_spindle0; // Ia afferent fixed point format
         
+        wire [31:0] int_II_spindle0; // Ia afferent integer format
+        wire [31:0] fixed_II_spindle0; // Ia afferent fixed point format
 
         // Triggered Input triggered_input0 Wire Definitions
         reg [31:0] triggered_input0;    // Triggered input sent from USB (lce)       
@@ -108,6 +110,13 @@
         // Triggered Input triggered_input7 Wire Definitions
         reg [31:0] triggered_input7;    // Triggered input sent from USB (clk_divider)       
         
+        reg [31:0] triggered_input8;
+        reg [31:0] triggered_input9;
+        
+        reg [31:0] f_spindle_offset;
+        
+        reg [31:0] f_spindle_II_gain;
+        reg [31:0] f_spindle_II_offset;
 
         // Spike Counter spike_counter0 Wire Definitions
         wire [31:0] spike_count_neuron0;
@@ -123,7 +132,7 @@
 
         // Output and OpalKelly Interface Wire Definitions
         
-        wire [12*17-1:0] ok2x;
+        wire [20*17-1:0] ok2x;
         wire [15:0] ep00wire, ep01wire, ep02wire;
         wire [15:0] ep50trig;
         
@@ -139,13 +148,38 @@
 
         // Neuron neuron0 Wire Definitions
         wire [31:0] v_neuron0;   // membrane potential
+        
+        wire [31:0] u_neuron0;  // recovery variable
+        
         wire spike_neuron0;      // spike sample for visualization only
         wire each_spike_neuron0; // raw spike signals
         wire [127:0] population_neuron0; // spike raster for entire population        
+
         
+        
+  
+        // Neuron neuron1 Wire Definitions
+        wire [31:0] v_neuron1;   // membrane potential
+        
+        wire [31:0] u_neuron1;  // recovery variable
+        
+        wire spike_neuron1;      // spike sample for visualization only
+        wire each_spike_neuron1; // raw spike signals
+        wire [127:0] population_neuron1; // spike raster for entire population        
+        
+        
+        // spindle dampings
+        wire [31:0] bdamp_1;
+        wire [31:0] bdamp_2;
+        wire [31:0] bdamp_chain;
+      
 /////////////////////// END WIRE DEFINITIONS //////////////////////////////
 
 /////////////////////// BEGIN INSTANCE DEFINITIONS ////////////////////////
+
+        assign bdamp_1 = 32'h3e714120;         //reset to 0.2356
+        assign bdamp_2 = 32'h3d144674;         //reset to 0.0362 
+        assign bdamp_chain = 32'h3c5844d0;         //reset to 0.0132
 
         // Spindle spindle0 Instance Definition
         spindle spindle0 (
@@ -158,9 +192,9 @@
             .out1(),
             .out2(II_spindle0),                   // II afferent (pps)
             .out3(Ia_spindle0),                   // Ia afferent (pps)
-            .BDAMP_1(triggered_input3),           // Damping coefficient for bag1 fiber
-            .BDAMP_2(triggered_input4),           // Damping coefficient for bag2 fiber
-            .BDAMP_chain(triggered_input5)    // Damping coefficient for chain fiber
+            .BDAMP_1(bdamp_1),           // Damping coefficient for bag1 fiber
+            .BDAMP_2(bdamp_2),           // Damping coefficient for bag2 fiber
+            .BDAMP_chain(bdamp_chain)    // Damping coefficient for chain fiber
         );
     
 
@@ -181,8 +215,31 @@
             .out(int_Ia_spindle0)
         );
         
-        assign fixed_Ia_spindle0 = int_Ia_spindle0 <<< 6;
+        //assign fixed_Ia_spindle0 = int_Ia_spindle0 <<< 6;
+        assign fixed_Ia_spindle0 = int_Ia_spindle0 * triggered_input8;
+
+
+    //Remove the offset in spindle output rate
+    wire [31:0] f_temp_spindle_remove_II_offset;
+    sub sub_II_spindle0(.x(II_spindle0), .y(f_spindle_II_offset), .out(f_temp_spindle_remove_II_offset));
+	//gain control for spindle output rate 
+    
+    
+	wire [31:0] II_gain_controlled_spindle0, II_gain_controlled_temp;
+	mult mult_II_spindle0(.x(f_temp_spindle_remove_II_offset), .y(f_spindle_II_gain), .out(II_gain_controlled_temp));
+    
+    assign II_gain_controlled_spindle0 = II_gain_controlled_temp[31] ? 32'd0 : II_gain_controlled_temp;
+
+        // Ia Afferent datatype conversion (floating point -> integer -> fixed point)
+        floor   ii_spindle0_float_to_int(
+            .in(II_gain_controlled_spindle0),
+            .out(int_II_spindle0)
+        );
         
+        //assign fixed_Ia_spindle0 = int_Ia_spindle0 <<< 6;
+        assign fixed_II_spindle0 = int_II_spindle0 * triggered_input9;
+        
+ 
 
         // Triggered Input triggered_input0 Instance Definition (lce)
         always @ (posedge ep50trig[9] or posedge reset_global)
@@ -208,37 +265,51 @@
             triggered_input2 <= {ep02wire, ep01wire};      
         
 
-        // Triggered Input triggered_input3 Instance Definition (BDAMP_1)
+        // Triggered Input triggered_input3 Instance Definition (izneuron 'a')
         always @ (posedge ep50trig[15] or posedge reset_global)
         if (reset_global)
-            triggered_input3 <= 32'h3e714120;         //reset to 0.2356      
+            triggered_input3 <= 32'd82;         // a = 0.02    
         else
             triggered_input3 <= {ep02wire, ep01wire};      
         
         
         
-        reg [31:0] f_spindle_offset;
+
         // Triggered Input triggered_input3 Instance Definition (BDAMP_1)
         always @ (posedge ep50trig[3] or posedge reset_global)
         if (reset_global)
             f_spindle_offset <= 32'h3e714120;         //reset to 0.2356      
         else
             f_spindle_offset <= {ep02wire, ep01wire};            
-        
-        
+ 
 
-        // Triggered Input triggered_input4 Instance Definition (BDAMP_2)
+        // Triggered Input triggered_input3 Instance Definition (BDAMP_1)
+        always @ (posedge ep50trig[10] or posedge reset_global)
+        if (reset_global)
+            f_spindle_II_offset <= 32'd0;         //reset to 0.2356      
+        else
+            f_spindle_II_offset <= {ep02wire, ep01wire};   
+        
+ 
+        // Triggered Input triggered_input3 Instance Definition (BDAMP_1)
+        always @ (posedge ep50trig[8] or posedge reset_global)
+        if (reset_global)
+            f_spindle_II_gain <= 32'd0;         //reset to 0.2356      
+        else
+            f_spindle_II_gain <= {ep02wire, ep01wire}; 
+
+        // Triggered Input triggered_input4 Instance Definition (izneuron 'd')
         always @ (posedge ep50trig[14] or posedge reset_global)
         if (reset_global)
-            triggered_input4 <= 32'h3d144674;         //reset to 0.0362      
+            triggered_input4 <= 32'd2048;         // d = 2   
         else
             triggered_input4 <= {ep02wire, ep01wire};      
         
 
-        // Triggered Input triggered_input5 Instance Definition (BDAMP_chain)
+        // Triggered Input triggered_input5 Instance Definition (u_hard_limit)
         always @ (posedge ep50trig[13] or posedge reset_global)
         if (reset_global)
-            triggered_input5 <= 32'h3c5844d0;         //reset to 0.0132      
+            triggered_input5 <= 32'd10000;         //reset to 0.0132      
         else
             triggered_input5 <= {ep02wire, ep01wire};      
         
@@ -258,7 +329,21 @@
         else
             triggered_input7 <= {ep02wire, ep01wire};      
         
+        // Triggered Input triggered_input8 Instance Definition (Ia Current Gain)
+        always @ (posedge ep50trig[12] or posedge reset_global)
+        if (reset_global)
+            triggered_input8 <= 32'd1;        //1
+        else
+            triggered_input8 <= {ep02wire, ep01wire};   
+        
+        // Triggered Input triggered_input9 Instance Definition (II current gain)
+        always @ (posedge ep50trig[11] or posedge reset_global)
+        if (reset_global)
+            triggered_input9 <= 32'd1;        //1
+        else
+            triggered_input9 <= {ep02wire, ep01wire};  
 
+            
         // Spike Counter spike_counter0 Instance Definition
 	wire    dummy_slow;
         spikecnt_async	spike_counter0
@@ -310,7 +395,7 @@
         
         assign reset_global = ep00wire[0] | reset_external_clean;
         assign is_from_trigger = ~ep00wire[1];
-        okWireOR # (.N(12)) wireOR (ok2, ok2x);
+        okWireOR # (.N(20)) wireOR (ok2, ok2x);
         okHost okHI(
             .hi_in(hi_in),  .hi_out(hi_out),    .hi_inout(hi_inout),    .hi_aa(hi_aa),
             .ti_clk(ti_clk),    .ok1(ok1),  .ok2(ok2)   );
@@ -333,13 +418,24 @@
         okWireOut wo22 (    .ep_datain(Ia_gain_controlled_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h22)    );
         okWireOut wo23 (    .ep_datain(Ia_gain_controlled_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h23)   );  
         
-        okWireOut wo24 (    .ep_datain(II_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h24)    );
-        okWireOut wo25 (    .ep_datain(II_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h25)   );    
+        okWireOut wo24 (    .ep_datain(II_gain_controlled_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h24)    );
+        okWireOut wo25 (    .ep_datain(II_gain_controlled_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h25)   );    
         
-        okWireOut wo26 (    .ep_datain(population_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
-        okWireOut wo27 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   );    
+        okWireOut wo26 (    .ep_datain(v_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
+        okWireOut wo27 (    .ep_datain(v_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   );    
         
+        okWireOut wo28 (    .ep_datain(v_neuron1[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
+        okWireOut wo29 (    .ep_datain(v_neuron1[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   ); 
 
+        okWireOut wo2a (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2a)    );
+        okWireOut wo2b (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2b)   ); 
+        
+        okWireOut wo2c (    .ep_datain(u_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2c)    );
+        okWireOut wo2d (    .ep_datain(u_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2d)   ); 
+                
+        okWireOut wo2e (    .ep_datain(u_neuron1[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2e)    );
+        okWireOut wo2f (    .ep_datain(u_neuron1[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2f)   ); 
+        
         // Clock Generator clk_gen0 Instance Definition
         gen_clk clocks(
             .rawclk(clk1),
@@ -349,20 +445,57 @@
             .clk_out3(spindle_clk),
             .int_neuron_cnt_out()
         );
+    
+    wire [31:0] a, b, c, d;
         
-
+    assign a = 32'd82; // a = 0.02      (scaling factor 4096)
+    assign b = 32'd205; // b = 0.2      (scaling factor 1024)
+    assign c = -32'd65560; // c = -65   (scaling factor 1024)
+    assign d = 32'd2048; // d = 2       (scaling factor 1024)
 
         // Neuron neuron0 Instance Definition
-        izneuron neuron0(
+        izneuron_abcd_hard_limit_u neuron0(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_global),           // reset to initial conditions
             .I_in(  fixed_Ia_spindle0 ),          // input current from synapse
+            
+            .a(triggered_input3),
+            .b(b),
+            .c(c),
+            .d(triggered_input4),
+            
+            .hard_limit_u(triggered_input5),                 // limit the membrane recovery variable
+            
             .v_out(v_neuron0),               // membrane potential
+            
+            .u_out(u_neuron0),
+            
             .spike(spike_neuron0),           // spike sample
             .each_spike(each_spike_neuron0), // raw spikes
             .population(population_neuron0)  // spikes of population per 1ms simulation time
         );
-        
+
+        // Neuron neuron1 Instance Definition
+        izneuron_abcd_hard_limit_u neuron1(
+            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+            .reset(reset_global),           // reset to initial conditions
+            .I_in(  fixed_II_spindle0 ),          // input current from synapse
+            
+            .a(triggered_input3),
+            .b(b),
+            .c(c),
+            .d(triggered_input4),
+            
+            .hard_limit_u(triggered_input5),                // limit the membrane recovery variable
+            
+            .v_out(v_neuron1),               // membrane potential
+            
+            .u_out(u_neuron1),
+            
+            .spike(spike_neuron1),           // spike sample
+            .each_spike(each_spike_neuron1), // raw spikes
+            .population(population_neuron1)  // spikes of population per 1ms simulation time
+        );        
 /////////////////////// END INSTANCE DEFINITIONS //////////////////////////
 
 	// ** LEDs

@@ -49,6 +49,7 @@ class CtrlChannel:
         self.doubleSpinBox.setObjectName("param_"+name)
         self.doubleSpinBox.setSingleStep(0.01)
         self.doubleSpinBox.setMaximum(100000.0)
+        self.doubleSpinBox.setMinimum(-100000.0)
 
         self.label = QtGui.QLabel(hostDialog)
         self.label.setObjectName("label_"+name)
@@ -194,7 +195,7 @@ class View(QMainWindow, Ui_Dialog):
     def newDataIO(self, newData, newSpikeAll = []):
         for (name, ch), pt in zip(self.allFpgaOutput.iteritems(), newData):
             ch.data.appendleft(pt)
-            ch.label.setText("%4.2f" % pt)      
+            ch.label.setText("%5.2f" % pt)      
 
         self.spike_all = newSpikeAll
 
@@ -327,7 +328,7 @@ class View(QMainWindow, Ui_Dialog):
         """
         choice = p0
         if choice == "waveform 1":
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.15, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.04, 1.04, 1.0, 1.0], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.36, 1.36, 1.0, 1.0], FILT = False)
             print "waveform 1 fed"
 #            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 
         elif choice == "waveform 2":
