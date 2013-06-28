@@ -123,6 +123,7 @@ USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001208), \
                     (10, 'threshold',      'int32',        30),  \
                     (11, 'synapse2_gain',      'float32',        100.0),  \
                     (12, 'synapse_1n2_offset',      'float32',        0)
+               
 
 #            trig_id    name          type          default_value                
 USER_INPUT_DEFAULT =   (1, 'pps_coef_Ia',  'float32',      30.0), \

@@ -320,6 +320,7 @@ class View(QMainWindow, Ui_Dialog):
         elif (ctrl.type == 'float32'):
             bitVal = convertType(newWireIn, fromType = 'f', toType = 'I')
         bitVal2 = convertType(0.0, fromType = 'f', toType = 'I')
+        print "bitval2, ",  bitVal2
         self.nerfModel.SendMultiPara(bitVal1 = bitVal, bitVal2=bitVal2,  trigEvent = ctrl.id)
 
     def tellWhichFpga(self, xemNum, chanName, newWireIn):

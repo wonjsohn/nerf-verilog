@@ -350,8 +350,18 @@
 		end
 	 end       
             
-            
-            
+  
+       // latching 
+    reg [31:0] i_I_drive_to_MN;
+    always @(posedge neuron_clk or posedge reset_global)
+	 begin
+	   if (reset_global)
+		begin
+		  i_I_drive_to_MN <= 32'h0;
+		end else begin
+		  i_I_drive_to_MN <= i_I_drive_to_MN_F0;
+         end
+      end
             
             
             
@@ -400,6 +410,7 @@
         // Ia Afferent datatype conversion (floating point -> integer -> fixed point)   
         wire [31:0] fixed_I_synapse;
         wire [31:0] int_I_synapse;
+        wire [31:0] i_I_drive_to_MN_F0;
         
         
         
@@ -422,6 +433,9 @@
             .in(f_I_synapse),
             .out(int_I_synapse)
         );
+        
+        
+        assign i_I_drive_to_MN_F0 = int_I_synapse + i_M1_CN_drive; 
 //        wire [31:0] int_I_synapse;
 //        unsigned_mult32 synapse_simple1_gain(.out(int_I_synapse), .a(i_spike_count_neuron_sync_inputPin), .b(triggered_input5));    // I to each_I   
         
@@ -556,7 +570,7 @@
         izneuron_th_control MN1(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in(  (int_I_synapse*75) >>3 ),          // input current from synapse
+            .I_in(  (i_I_drive_to_MN*75) >>3 ),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10),                 // threshold
             .v_out(v_neuron_MN1),               // membrane potential
             .spike(spike_neuron_MN1),           // spike sample
@@ -568,7 +582,7 @@
         izneuron_th_control MN2(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in(  (int_I_synapse*49) >>3),          // input current from synapse
+            .I_in(  (i_I_drive_to_MN*49) >>3),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10  ),                 // threshold
             .v_out(v_neuron_MN2),               // membrane potential
             .spike(spike_neuron_MN2),           // spike sample
@@ -580,7 +594,7 @@
         izneuron_th_control MN3(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( (int_I_synapse*30)>>3 ),          // input current from synapse
+            .I_in( (i_I_drive_to_MN*30)>>3 ),          // input current from synapse
             .th_scaled(triggered_input4_a <<< 10   ),                 // threshold
             .v_out(v_neuron_MN3),               // membrane potential
             .spike(spike_neuron_MN3),           // spike sample
@@ -592,7 +606,7 @@
         izneuron_th_control MN4(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( (int_I_synapse*17) >>3 ),          // input current from synapse
+            .I_in( (i_I_drive_to_MN*17) >>3 ),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10  ),                 // threshold
             .v_out(v_neuron_MN4),               // membrane potential
             .spike(spike_neuron_MN4),           // spike sample
@@ -604,7 +618,7 @@
         izneuron_th_control MN5(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( (int_I_synapse*13) >>3 ),          // input current from synapse
+            .I_in( (i_I_drive_to_MN*13) >>3 ),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10  ),                 // threshold
             .v_out(v_neuron_MN5),               // membrane potential
             .spike(spike_neuron_MN5),           // spike sample
@@ -616,7 +630,7 @@
         izneuron_th_control MN6(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( (int_I_synapse*10) >>3 ),          // input current from synapse
+            .I_in( (i_I_drive_to_MN*10) >>3 ),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10  ),                 // threshold
             .v_out(v_neuron_MN6),               // membrane potential
             .spike(spike_neuron_MN6),           // spike sample
@@ -628,7 +642,7 @@
         izneuron_th_control MN7(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( (int_I_synapse*8) >>3 ),          // input current from synapse
+            .I_in( (i_I_drive_to_MN*8) >>3 ),          // input current from synapse
             .th_scaled( triggered_input4_a <<< 10  ),                 // threshold
             .v_out(v_neuron_MN7),               // membrane potential
             .spike(spike_neuron_MN7),           // spike sample
@@ -744,8 +758,8 @@
         okWireOut wo34 (    .ep_datain(i_spike_count_neuron_sync_inputPin[15:0]),  .ok1(ok1),  .ok2(ok2x[21*17 +: 17]), .ep_addr(8'h34)    );
         okWireOut wo35 (    .ep_datain(i_spike_count_neuron_sync_inputPin[31:16]),  .ok1(ok1),  .ok2(ok2x[22*17 +: 17]), .ep_addr(8'h35)   );       
 
-        okWireOut wo36 (    .ep_datain(int_I_synapse[15:0]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h36)    );
-        okWireOut wo37 (    .ep_datain(int_I_synapse[31:16]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h37)   );            
+        okWireOut wo36 (    .ep_datain(i_I_drive_to_MN[15:0]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h36)    );
+        okWireOut wo37 (    .ep_datain(i_I_drive_to_MN[31:16]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h37)   );            
 
       
 

@@ -109,15 +109,16 @@ class SingleXemTester(QDialog):
 
         #self.nerfModel.SendPara(bitVal = newHalfCnt, trigEvent = DATA_EVT_CLKRATE)
         
-    def tellFpga(self, chanName, newWireIn):
-        ctrl = self.ch_all[chanName] # Handle of the Tester channel
-        ctrl.currValue = newWireIn
-        if (ctrl.type == 'int32'):
-            bitVal = convertType(floor(newWireIn),  fromType = 'i',  toType = 'I')
-        elif (ctrl.type == 'float32'):
-            bitVal = convertType(newWireIn, fromType = 'f', toType = 'I')
-        bitVal2 = convertType(1000.0, fromType = 'f', toType = 'I')
-        self.nerfModel.SendMultiPara(bitVal1 = bitVal, bitVal2=bitVal2,  trigEvent = ctrl.id)
+#    def tellFpga(self, chanName, newWireIn):
+#        ctrl = self.ch_all[chanName] # Handle of the Tester channel
+#        ctrl.currValue = newWireIn
+#        if (ctrl.type == 'int32'):
+#            bitVal = convertType(floor(newWireIn),  fromType = 'i',  toType = 'I')
+#        elif (ctrl.type == 'float32'):
+#            bitVal = convertType(newWireIn, fromType = 'f', toType = 'I')
+#        bitVal2 = convertType(1000.0, fromType = 'f', toType = 'I')
+#        print "bitval2, ",  bitVal2
+#        self.nerfModel.SendMultiPara(bitVal1 = bitVal, bitVal2=bitVal2,  trigEvent = ctrl.id)
 
             
    
