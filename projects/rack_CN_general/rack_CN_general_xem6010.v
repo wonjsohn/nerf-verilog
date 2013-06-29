@@ -58,7 +58,7 @@
         wire         ti_clk;
         wire [30:0]  ok1;
         wire [16:0]  ok2;   
-        wire reset_global;
+        wire reset_global, reset_sim;
         wire is_from_trigger;
 
         // *** Target interface bus:
@@ -139,61 +139,106 @@
 
 /////////////////////// BEGIN INSTANCE DEFINITIONS ////////////////////////
 
-        // Synapse synapse0 Instance Definition (Ia rafferent elated)
-        synapse synapse0(
-            .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),                       // reset synaptic weights
-            .spike_in(spikein1),             // spike from presynaptic neuron
-            .postsynaptic_spike_in(each_spike_neuron0),   //spike from postsynaptic neuron
-            .I_out(I_synapse0),                           // sample of synaptic current out
-            .each_I(each_I_synapse0),                      // raw synaptic currents
-        
-            .ltp(triggered_input0),                        // long term potentiation weight
-            .ltd(triggered_input1),                        // long term depression weight
-            .p_delta(triggered_input2)                 // chance for decay 
-        );
 
-	wire [31:0] i_EPSC_synapse0;
- 	unsigned_mult32 synapse0_gain(.out(i_EPSC_synapse0), .a(each_I_synapse0), .b(triggered_input3));
-    
-    
-       // Synapse synapse0 Instance Definition (II rafferent elated)
-        synapse synapse0_II(
-            .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),                       // reset synaptic weights
-            .spike_in(spikein2),             // spike from presynaptic neuron
-            .postsynaptic_spike_in(each_spike_neuron0_II),   //spike from postsynaptic neuron
-            .I_out(I_synapse0_II),                           // sample of synaptic current out
-            .each_I(each_I_synapse0_II),                      // raw synaptic currents
-        
-            .ltp(triggered_input0),                        // long term potentiation weight
-            .ltd(triggered_input1),                        // long term depression weight
-            .p_delta(triggered_input2)                 // chance for decay 
+        wire [31:0] f_I_synapse_Ia;
+        synapse_simple synapse_simple_from_Ia(
+            .clk(sim_clk),
+            .reset(reset_sim),
+            .spike_in(spikein1),
+            .f_I_out(f_I_synapse_Ia)
         );
-
-	wire [31:0] i_EPSC_synapse0_II; 
- 	unsigned_mult32 synapse0_gain_II(.out(i_EPSC_synapse0_II), .a(each_I_synapse0_II), .b(triggered_input3));
+        
+      
+         wire [31:0] f_I_synapse_II;
+        synapse_simple synapse_simple_from_II(
+            .clk(sim_clk),
+            .reset(reset_sim),
+            .spike_in(spikein5),
+            .f_I_out(f_I_synapse_II)
+        );
+//
+//        // Synapse synapse0 Instance Definition (Ia rafferent elated)
+//        synapse synapse0(
+//            .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
+//            .reset(reset_global),                       // reset synaptic weights
+//            .spike_in(spikein1),             // spike from presynaptic neuron
+//            .postsynaptic_spike_in(each_spike_neuron0),   //spike from postsynaptic neuron
+//            .I_out(I_synapse0),                           // sample of synaptic current out
+//            .each_I(each_I_synapse0),                      // raw synaptic currents
+//        
+//            .ltp(triggered_input0),                        // long term potentiation weight
+//            .ltd(triggered_input1),                        // long term depression weight
+//            .p_delta(triggered_input2)                 // chance for decay 
+//        );
+//
+//	wire [31:0] i_EPSC_synapse0;
+// 	unsigned_mult32 synapse0_gain(.out(i_EPSC_synapse0), .a(each_I_synapse0), .b(triggered_input3));
+//    
+//    
+//       // Synapse synapse0 Instance Definition (II rafferent elated)
+//        synapse synapse0_II(
+//            .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
+//            .reset(reset_global),                       // reset synaptic weights
+//            .spike_in(spikein2),             // spike from presynaptic neuron
+//            .postsynaptic_spike_in(each_spike_neuron0_II),   //spike from postsynaptic neuron
+//            .I_out(I_synapse0_II),                           // sample of synaptic current out
+//            .each_I(each_I_synapse0_II),                      // raw synaptic currents
+//        
+//            .ltp(triggered_input0),                        // long term potentiation weight
+//            .ltd(triggered_input1),                        // long term depression weight
+//            .p_delta(triggered_input2)                 // chance for decay 
+//        );
+//
+//	   wire [31:0] i_EPSC_synapse0_II; 
+// 	  unsigned_mult32 synapse0_gain_II(.out(i_EPSC_synapse0_II), .a(each_I_synapse0_II), .b(triggered_input3));
+//   
    
-        // Synapse synapse0 Instance Definition
-        synapse synapse_extraInput(
-            .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),                       // reset synaptic weights
-            .spike_in(spikein3),             // spike from presynaptic neuron
-            .postsynaptic_spike_in(each_spike_neuron1),   //spike from postsynaptic neuron
-            .I_out(I_synapse1),                           // sample of synaptic current out
-            .each_I(each_I_synapse1),                      // raw synaptic currents
-        
-            .ltp(triggered_input0),                        // long term potentiation weight
-            .ltd(triggered_input1),                        // long term depression weight
-            .p_delta(triggered_input2)                 // chance for decay 
+        wire [31:0] f_I_synapse_M1extra;
+        synapse_simple synapse_simple_extraInput(
+            .clk(sim_clk),
+            .reset(reset_sim),
+            .spike_in(spikein9),
+            .f_I_out(f_I_synapse_M1extra)
         );
-
-	wire [31:0] i_EPSC_synapse1;
- 	unsigned_mult32 synapse1_gain(.out(i_EPSC_synapse1), .a(each_I_synapse1), .b(triggered_input3));
+        
+        
+        
+//        // Synapse synapse0 Instance Definition
+//        synapse synapse_extraInput(
+//            .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
+//            .reset(reset_global),                       // reset synaptic weights
+//            .spike_in(spikein3),             // spike from presynaptic neuron
+//            .postsynaptic_spike_in(each_spike_neuron1),   //spike from postsynaptic neuron
+//            .I_out(I_synapse1),                           // sample of synaptic current out
+//            .each_I(each_I_synapse1),                      // raw synaptic currents
+//        
+//            .ltp(triggered_input0),                        // long term potentiation weight
+//            .ltd(triggered_input1),                        // long term depression weight
+//            .p_delta(triggered_input2)                 // chance for decay 
+//        );
+//
+//	wire [31:0] i_EPSC_synapse1;
+// 	unsigned_mult32 synapse1_gain(.out(i_EPSC_synapse1), .a(each_I_synapse1), .b(triggered_input3));
    
 
         
-
+        //*********** add currents from two synapse (Ia, II)  *********
+        wire [31:0] f_I_synapse_both;
+        add addCurrentsFrom_Ia_and_II(.x(f_I_synapse_Ia), .y(f_I_synapse_II), .out(f_I_synapse_both));
+        
+        //*********** add currents from SN and extra cortical input (M1)  *********
+        wire [31:0] f_drive_to_CN;
+        add addCurrentsFrom_Ia_II_and_extra(.x(f_I_synapse_both), .y(f_I_synapse_M1extra), .out(f_drive_to_CN));
+        
+        wire [31:0]  i_drive_to_CN;
+        floor   synapse_float_to_int(
+            .in(f_drive_to_CN),
+            .out(i_drive_to_CN)
+        );
+        
+        wire [31:0] fixed_drive_to_CN_F0;
+        assign fixed_drive_to_CN_F0 = i_drive_to_CN <<< 10;
+        
         // Triggered Input triggered_input0 Instance Definition (ltp)
         always @ (posedge ep50trig[12] or posedge reset_global)
         if (reset_global)
@@ -245,26 +290,35 @@
                 i_CN_extra_drive <= {ep02wire, ep01wire};       
             end
         end   
+        
+        
+        
+     wire [31:0]  spike_count_neuron_sync_CN1;
+      spike_counter  sync_counter_CN1
+      (                 .clk(neuron_clk),
+                        .reset(reset_sim),
+                        .spike_in(spike_neuron_CN1),
+                        .spike_count(spike_count_neuron_sync_CN1) );       
 
         
-
-        // Spike Counter spike_counter0 Instance Definition
-	wire    dummy_slow;
-        spikecnt_async	spike_counter0
-        (      .spike(each_spike_neuron0),
-                .int_cnt_out(spike_count_neuron0),
-                .slow_clk(sim_clk),
-                .fast_clk(clk1),
-                .reset(reset_global),
-                .clear_out(dummy_slow));
+//
+//        // Spike Counter spike_counter0 Instance Definition
+//	wire    dummy_slow;
+//        spikecnt_async	spike_counter0
+//        (      .spike(each_spike_neuron0),
+//                .int_cnt_out(spike_count_neuron0),
+//                .slow_clk(sim_clk),
+//                .fast_clk(clk1),
+//                .reset(reset_global),
+//                .clear_out(dummy_slow));
         
         
     //FPGA-FPGA Outputs
-    assign spikeout1 = each_spike_neuron0;
-    assign spikeout2 = each_spike_neuron0;
+    assign spikeout1 = each_spike_neuron_CN1;
+    assign spikeout2 = 1'b0;
     assign spikeout3 = 1'b0;
     assign spikeout4 = 1'b0;
-    assign spikeout5 = 1'b0;
+    assign spikeout5 = spike_neuron_CN1;
     assign spikeout6 = 1'b0;
     assign spikeout7 = 1'b0;
     assign spikeout8 = 1'b0;
@@ -288,6 +342,7 @@
         
         
         assign reset_global = ep00wire[0] | reset_external_clean;
+        assign reset_sim = ep00wire[2] ;
         assign is_from_trigger = ~ep00wire[1];
         okWireOR # (.N(8)) wireOR (ok2, ok2x);
         okHost okHI(
@@ -304,14 +359,14 @@
         okWireOut wo20 (    .ep_datain(v_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h20)    );
         okWireOut wo21 (    .ep_datain(v_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h21)   );    
         
-        okWireOut wo22 (    .ep_datain(population_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h22)    );
-        okWireOut wo23 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h23)   );    
+        okWireOut wo22 (    .ep_datain(population_neuron_CN1[15:0]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h22)    );
+        okWireOut wo23 (    .ep_datain(population_neuron_CN1[31:16]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h23)   );    
         
-        okWireOut wo24 (    .ep_datain(spike_count_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
-        okWireOut wo25 (    .ep_datain(spike_count_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
+        okWireOut wo24 (    .ep_datain(spike_count_neuron_sync_CN1[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
+        okWireOut wo25 (    .ep_datain(spike_count_neuron_sync_CN1[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
         
-        okWireOut wo26 (    .ep_datain(I_synapse0[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
-        okWireOut wo27 (    .ep_datain(I_synapse0[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
+        okWireOut wo26 (    .ep_datain(fixed_drive_to_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
+        okWireOut wo27 (    .ep_datain(fixed_drive_to_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
         
 
         // Clock Generator clk_gen0 Instance Definition
@@ -324,43 +379,62 @@
             .int_neuron_cnt_out()
         );
            //***   Addition of two currents ******//
-        wire [31:0] i_drive_to_CN_F0;
-        assign i_drive_to_CN_F0 = i_EPSC_synapse0 + i_EPSC_synapse0_II + i_EPSC_synapse1 + i_CN_extra_drive;   
+       //ire [31:0] i_drive_to_CN_F0;
+       // assign i_drive_to_CN_F0 = i_EPSC_synapse0 + i_EPSC_synapse0_II + i_EPSC_synapse1 + i_CN_extra_drive;   
 
         // latching 
-        reg [31:0] i_drive_to_CN;
+        reg [31:0] fixed_drive_to_CN;
 
         always @(posedge neuron_clk or posedge reset_global)
          begin
            if (reset_global)
             begin
-              i_drive_to_CN <= 32'h0;
+              fixed_drive_to_CN <= 32'h0;
             end else begin
-              i_drive_to_CN <= i_drive_to_CN_F0; 
+              fixed_drive_to_CN <= fixed_drive_to_CN_F0; 
             end
           end
         
-
-        // Neuron neuron0 Instance Definition
-        izneuron neuron0(
+        
+        wire [31:0] v_neuron_CN1;   // membrane potential
+        wire spike_neuron_CN1;      // spike sample for visualization only
+        wire each_spike_neuron_CN1; // raw spike signals
+        wire [127:0] population_neuron_CN1; // spike raster for entire population        
+        
+     // CN1 Instance Definition
+     wire [31:0] threshold30mv;
+     assign threshold30mv = 32'd30;
+        izneuron_th_control CN1(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
-            .I_in(  i_drive_to_CN ),          // input current from synapse
-            .v_out(v_neuron0),               // membrane potential
-            .spike(spike_neuron0),           // spike sample
-            .each_spike(each_spike_neuron0), // raw spikes
-            .population(population_neuron0)  // spikes of population per 1ms simulation time
-        );
+            .reset(reset_sim),           // reset to initial conditions
+            .I_in(  (fixed_drive_to_CN)),          // input current from synapse
+            .th_scaled( threshold30mv <<< 10),                 // threshold
+            .v_out(v_neuron_CN1),               // membrane potential
+            .spike(spike_neuron_CN1),           // spike sample
+            .each_spike(each_spike_neuron_CN1), // raw spikes
+            .population(population_neuron_CN1)  // spikes of population per 1ms simulation time
+        );        
+              
+//        // Neuron neuron0 Instance Definition
+//        izneuron neuron0(
+//            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+//            .reset(reset_global),           // reset to initial conditions
+//            .I_in(  i_drive_to_CN ),          // input current from synapse
+//            .v_out(v_neuron0),               // membrane potential
+//            .spike(spike_neuron0),           // spike sample
+//            .each_spike(each_spike_neuron0), // raw spikes
+//            .population(population_neuron0)  // spikes of population per 1ms simulation time
+//        );
         
 /////////////////////// END INSTANCE DEFINITIONS //////////////////////////
 
 	// ** LEDs
     assign led[0] = ~reset_global;
     assign led[1] = ~spikein1;
-    assign led[2] = ~spikeout1;
-    assign led[3] = ~0;
-    assign led[4] = ~0;
-    assign led[5] = ~clk1;
+    assign led[2] = ~spikein5;
+    assign led[3] = ~spikein9;
+    assign led[4] = ~spikeout1;
+    assign led[5] = ~0;
     assign led[6] = ~neuron_clk; // 
     assign led[7] = ~sim_clk; // clock
     
