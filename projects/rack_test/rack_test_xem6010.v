@@ -370,8 +370,8 @@
         okWireOut wo28 (    .ep_datain(spike_count_length2spk[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
         okWireOut wo29 (    .ep_datain(spike_count_length2spk[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   );    
         
-        okWireOut wo2A (    .ep_datain(i_rand_current_out[15:0]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2A)    );
-        okWireOut wo2B (    .ep_datain(i_rand_current_out[31:16]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2B)   );    
+        okWireOut wo2A (    .ep_datain(i_rng_current_to_SN_Ia[15:0]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2A)    );
+        okWireOut wo2B (    .ep_datain(i_rng_current_to_SN_Ia[31:16]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2B)   );    
         
         okWireOut wo2C (    .ep_datain(spike_count_Ia_normal[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
         okWireOut wo2D (    .ep_datain(spike_count_Ia_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
