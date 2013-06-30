@@ -27,14 +27,24 @@ if __name__ == "__main__":
 
     ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
     
+    TWO_BOARDS_IN_TEST=0
+    TWO_BOARDS_IN_REAL=0
+    THREE_BOARDS_IN_TEST=1
+    THREE_BOARDS_IN_REAL=0
+    assert (TWO_BOARDS_IN_TEST+TWO_BOARDS_IN_REAL+THREE_BOARDS_IN_TEST+THREE_BOARDS_IN_REAL == 1), "BOARD SETTING WRONG!"
+    
 #    PROJECT_NAME1 = "one_joint_parameterSearch"
 #    PROJECT_NAME2 = "size_principle"
 #    PROJECT_NAME3 = "one_joint_robot_all_in1"
 #    PROJECT_LIST = ["rack_test", "rack_CN_general", "rack_mn_muscle"]   
-    PROJECT_LIST = ["rack_test", "rack_CN_general", "rack_emg"]   
-#    PROJECT_LIST = ["rack_test", "rack_emg"]   
-    PROJECT_PATH = [(ROOT_PATH + p) for p in PROJECT_LIST]
+    if (TWO_BOARDS_IN_TEST == 1) or (TWO_BOARDS_IN_REAL == 1):
+        PROJECT_LIST = ["rack_test", "rack_emg"] 
+    
 
+    if (THREE_BOARDS_IN_TEST ==1) or (THREE_BOARDS_IN_REAL ==1) :
+        PROJECT_LIST = ["rack_test", "rack_CN_general", "rack_emg"]   
+    
+    PROJECT_PATH = [(ROOT_PATH + p) for p in PROJECT_LIST]
     DEVICE_MODEL = "xem6010"
     
     #BITFILE_NAME = PROJECT_PATH1 + "/" + PROJECT_NAME + "_" + DEVICE_MODEL + ".bit"
@@ -45,11 +55,13 @@ if __name__ == "__main__":
     from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT_B1, FPGA_OUTPUT_B2, FPGA_OUTPUT_B3,   USER_INPUT_B1,  USER_INPUT_B2,  USER_INPUT_B3
     FPGA_OUTPUT_B = []
     FPGA_OUTPUT_B.append(FPGA_OUTPUT_B1)
-    FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
+    if (THREE_BOARDS_IN_TEST ==1) or (THREE_BOARDS_IN_REAL ==1) :
+        FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
     FPGA_OUTPUT_B.append(FPGA_OUTPUT_B3)
     USER_INPUT_B = []
     USER_INPUT_B.append(USER_INPUT_B1)
-    USER_INPUT_B.append(USER_INPUT_B2)
+    if (THREE_BOARDS_IN_TEST ==1) or (THREE_BOARDS_IN_REAL ==1) :
+        USER_INPUT_B.append(USER_INPUT_B2)
     USER_INPUT_B.append(USER_INPUT_B3)
         
 
@@ -66,8 +78,8 @@ if __name__ == "__main__":
     print "Found ",  numFpga, " OpalKelly devices:"                        
 #    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
 #    xemSerialList = ['1137000222', '11160001CJ', '12430003T2']
-#    xemSerialList = ['124300046A', '12320003RM', '1201000216']
-    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
+    xemSerialList = ['124300046A', '12320003RM', '1201000216']
+#    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
     #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
 #    xemSerialList = ['12320003RN', '12430003T2']
 #    xemSerialList = ['124300046A', '1201000216']
