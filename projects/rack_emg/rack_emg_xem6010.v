@@ -188,19 +188,19 @@
 
 
         // Triggered Input triggered_input0 Instance Definition (lce & vel _ from PXI)
-        reg [31:0] f_len_pxi_F0, f_velocity_F0, i_M1_CN_drive, i_M1_CN2_drive;
+        reg [31:0] f_len_pxi_F0, f_velocity_F0, i_extraMN_drive, i_extraMN2_drive;
         always @ (posedge ep50trig[9] or posedge reset_global)
         if (reset_global) begin
             f_len_pxi_F0 <= 32'h3f8ccccd;         //reset to 1.1     
             f_velocity_F0 <= 32'h0;         //reset to 0   
-            i_M1_CN_drive <= 32'd0;             
-            i_M1_CN2_drive <= 32'd0;            
+            i_extraMN_drive <= 32'h0;             
+            i_extraMN2_drive <= 32'h0;            
         end
         else  begin
             f_len_pxi_F0 <= {ep02wire, ep01wire};  
             f_velocity_F0 <= {ep04wire, ep03wire};         
-            i_M1_CN_drive <= {ep06wire, ep05wire};             
-            i_M1_CN2_drive <= {ep08wire, ep07wire};             
+            i_extraMN_drive <= {ep06wire, ep05wire};             
+            i_extraMN2_drive <= {ep08wire, ep07wire};             
         end
 
         // Triggered Input triggered_input1 Instance Definition (tau)
@@ -363,6 +363,48 @@
          end
       end
             
+         
+
+
+
+        wire [31:0] v_neuron_CN1;   // membrane potential
+        wire spike_neuron_CN1;      // spike sample for visualization only
+        wire each_spike_neuron_CN1; // raw spike signals
+        wire [127:0] population_neuron_CN1; // spike raster for entire population      
+        
+            
+        // Extra CN2 input - spikified sine wave (Goes to CN) 
+           izneuron_th_control CN1(
+            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+            .reset(reset_sim),           // reset to initial conditions
+            .I_in( i_extraMN_drive ),          // input current from synapse
+            .th_scaled( triggered_input4_a <<< 10),                 // threshold
+            .v_out(v_neuron_CN1),               // membrane potential
+            .spike(spike_neuron_CN1),           // spike sample
+            .each_spike(each_spike_neuron_CN1), // raw spikes
+            .population(population_neuron_CN1)  // spikes of population per 1ms simulation time
+        );    
+
+
+
+         
+         wire [31:0] v_neuron_CN2;   // membrane potential
+        wire spike_neuron_CN2;      // spike sample for visualization only
+        wire each_spike_neuron_CN2; // raw spike signals
+        wire [127:0] population_neuron_CN2; // spike raster for entire population      
+        
+            
+        // Extra CN2 input - spikified sine wave (Goes to CN) 
+           izneuron_th_control CN2(
+            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+            .reset(reset_sim),           // reset to initial conditions
+            .I_in( i_extraMN2_drive ),          // input current from synapse
+            .th_scaled( triggered_input4_a <<< 10),                 // threshold
+            .v_out(v_neuron_CN2),               // membrane potential
+            .spike(spike_neuron_CN2),           // spike sample
+            .each_spike(each_spike_neuron_CN2), // raw spikes
+            .population(population_neuron_CN2)  // spikes of population per 1ms simulation time
+        );    
             
             
             
@@ -414,7 +456,7 @@
         
         
         
-        //******************* synapse Ia output ****************************
+        //******************* synapse II output ****************************
         //Remove the offset in synapse output 
         wire [31:0] f_temp_I_synapse_II_removed_offset;
         sub sub_spindle0_II(.x(f_I_synapse_II), .y(triggered_input2), .out(f_temp_I_synapse_II_removed_offset));   //  Ia, II have same offset (change later if needed)
@@ -435,7 +477,9 @@
         );
         
         
-        assign i_I_drive_to_MN_F0 = int_I_synapse + i_M1_CN_drive; 
+        //wire [31:0] fixed_I_synapse;
+        //assign fixed_I_synapse= int_I_synapse << 
+        assign i_I_drive_to_MN_F0 = int_I_synapse; // + i_extraMN_drive; 
 //        wire [31:0] int_I_synapse;
 //        unsigned_mult32 synapse_simple1_gain(.out(int_I_synapse), .a(i_spike_count_neuron_sync_inputPin), .b(triggered_input5));    // I to each_I   
         
@@ -678,11 +722,11 @@
     assign spikeout3 = 1'b0;
     assign spikeout4 = 1'b0;
     assign spikeout5 = 1'b0;
-    assign spikeout6 = 1'b0;
+    assign spikeout6 = 1'b0; 
     assign spikeout7 = 1'b0;
-    assign spikeout8 = sim_clk;
-    assign spikeout9 = 1'b0;
-    assign spikeout10 = 1'b0;
+    assign spikeout8 = 1'b0;   
+    assign spikeout9 = spike_neuron_CN1;// constant level cortical input
+    assign spikeout10 = spike_neuron_CN2; // cortical sine wave input
     assign spikeout11 = 1'b0;
     assign spikeout12 = 1'b0;
     assign spikeout13 = 1'b0;

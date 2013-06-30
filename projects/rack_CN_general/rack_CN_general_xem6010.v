@@ -114,7 +114,7 @@
 
         // Output and OpalKelly Interface Wire Definitions
         
-        wire [8*17-1:0] ok2x;
+        wire [12*17-1:0] ok2x;
         wire [15:0] ep00wire, ep01wire, ep02wire;
         wire [15:0] ep50trig;
         
@@ -193,16 +193,26 @@
 // 	  unsigned_mult32 synapse0_gain_II(.out(i_EPSC_synapse0_II), .a(each_I_synapse0_II), .b(triggered_input3));
 //   
    
-        wire [31:0] f_I_synapse_M1extra;
-        synapse_simple synapse_simple_extraInput(
+   
+            
+        wire [31:0] f_I_synapse_M1extra1;
+        synapse_simple synapse_simple_extraInput_1(
             .clk(sim_clk),
             .reset(reset_sim),
             .spike_in(spikein9),
-            .f_I_out(f_I_synapse_M1extra)
+            .f_I_out(f_I_synapse_M1extra1)
         );
         
         
+        wire [31:0] f_I_synapse_M1extra2;
+        synapse_simple synapse_simple_extraInput_2(
+            .clk(sim_clk),
+            .reset(reset_sim),
+            .spike_in(spikein10),
+            .f_I_out(f_I_synapse_M1extra2)
+        );
         
+  
 //        // Synapse synapse0 Instance Definition
 //        synapse synapse_extraInput(
 //            .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
@@ -226,9 +236,14 @@
         wire [31:0] f_I_synapse_both;
         add addCurrentsFrom_Ia_and_II(.x(f_I_synapse_Ia), .y(f_I_synapse_II), .out(f_I_synapse_both));
         
-        //*********** add currents from SN and extra cortical input (M1)  *********
+        //*********** add currents from extra cortical input 1(M1)  *********
+        wire [31:0] f_SN_M1extra1;
+        add addCurrentsFrom_extra1(.x(f_I_synapse_both), .y(f_I_synapse_M1extra1), .out(f_SN_M1extra1));
+        
+         //*********** add currents from extra cortical input 2(M1)  *********
         wire [31:0] f_drive_to_CN;
-        add addCurrentsFrom_Ia_II_and_extra(.x(f_I_synapse_both), .y(f_I_synapse_M1extra), .out(f_drive_to_CN));
+        add addCurrentsFrom_extra2(.x(f_SN_M1extra1), .y(f_I_synapse_M1extra2), .out(f_drive_to_CN));
+        
         
         wire [31:0]  i_drive_to_CN;
         floor   synapse_float_to_int(
@@ -344,7 +359,7 @@
         assign reset_global = ep00wire[0] | reset_external_clean;
         assign reset_sim = ep00wire[2] ;
         assign is_from_trigger = ~ep00wire[1];
-        okWireOR # (.N(8)) wireOR (ok2, ok2x);
+        okWireOR # (.N(12)) wireOR (ok2, ok2x);
         okHost okHI(
             .hi_in(hi_in),  .hi_out(hi_out),    .hi_inout(hi_inout),    .hi_aa(hi_aa),
             .ti_clk(ti_clk),    .ok1(ok1),  .ok2(ok2)   );
@@ -367,6 +382,12 @@
         
         okWireOut wo26 (    .ep_datain(fixed_drive_to_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
         okWireOut wo27 (    .ep_datain(fixed_drive_to_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
+        
+        okWireOut wo28 (    .ep_datain(f_I_synapse_M1extra1[15:0]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h28)    );
+        okWireOut wo29 (    .ep_datain(f_I_synapse_M1extra1[31:16]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h29)   );  
+
+        okWireOut wo2A (    .ep_datain(f_I_synapse_M1extra2[15:0]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h2A)    );
+        okWireOut wo2B (    .ep_datain(f_I_synapse_M1extra2[31:16]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2B)   );            
         
 
         // Clock Generator clk_gen0 Instance Definition

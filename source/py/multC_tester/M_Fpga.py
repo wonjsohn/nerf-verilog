@@ -178,6 +178,32 @@ class SomeFpga:
         
         self.xem.UpdateWireIns()            
         self.xem.ActivateTriggerIn(0x50, trigEvent)   
+        
+        
+    """ minimize the frequency of  update wireout to get higher sampling rate """       
+    def SendMultiPara_TEMP(self, bitVal1, bitVal2, bitVal3,  trigEvent):
+#        float1 = convertType(bitVal1, 'I', 'f')
+#        float2 = convertType(bitVal2, 'I', 'f')
+#        float3 = convertType(bitVal3, 'I', 'f')
+        print "sinewave: ",   bitVal3,   trigEvent
+        #1
+        bitValLo1 = bitVal1 & 0xffff
+        bitValHi1 = (bitVal1 >> 16) & 0xffff
+        self.xem.SetWireInValue(0x01, bitValLo1, 0xffff)
+        self.xem.SetWireInValue(0x02, bitValHi1, 0xffff)
+        #2
+        bitValLo2 = bitVal2 & 0xffff
+        bitValHi2 = (bitVal2 >> 16) & 0xffff
+        self.xem.SetWireInValue(0x05, bitValLo2, 0xffff)
+        self.xem.SetWireInValue(0x06, bitValHi2, 0xffff)
+        
+        #2
+        bitValLo3 = bitVal3 & 0xffff
+        bitValHi3 = (bitVal3 >> 16) & 0xffff
+        self.xem.SetWireInValue(0x07, bitValLo3, 0xffff)
+        self.xem.SetWireInValue(0x08, bitValHi3, 0xffff)
+        self.xem.UpdateWireIns()            
+        self.xem.ActivateTriggerIn(0x50, trigEvent) 
 
     def ReadPipe(self, addr, len = 1000):
         buf = "\x00" * len
