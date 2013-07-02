@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/V_Display.ui'
 #
-# Created: Wed Jun 26 16:05:45 2013
+# Created: Mon Jul  1 12:45:20 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -38,6 +38,10 @@ class Ui_Dialog(object):
         self.checkBox_2 = QtGui.QCheckBox(Dialog)
         self.checkBox_2.setGeometry(QtCore.QRect(280, 20, 151, 22))
         self.checkBox_2.setObjectName(_fromUtf8("checkBox_2"))
+        self.pushButton_extraCN = QtGui.QPushButton(Dialog)
+        self.pushButton_extraCN.setGeometry(QtCore.QRect(440, 20, 71, 30))
+        self.pushButton_extraCN.setCheckable(True)
+        self.pushButton_extraCN.setObjectName(_fromUtf8("pushButton_extraCN"))
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -50,6 +54,7 @@ class Ui_Dialog(object):
         self.checkBox.setText(QtGui.QApplication.translate("Dialog", "auto scale", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Dialog", ".bit files", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox_2.setText(QtGui.QApplication.translate("Dialog", "input from wave", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_extraCN.setText(QtGui.QApplication.translate("Dialog", "ExtraCN", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":
