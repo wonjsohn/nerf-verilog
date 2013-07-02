@@ -27,8 +27,8 @@ if __name__ == "__main__":
 
     
     TWO_BOARDS_IN_TEST=0
-    TWO_BOARDS_IN_REAL=1
-    THREE_BOARDS_IN_TEST=0
+    TWO_BOARDS_IN_REAL=0
+    THREE_BOARDS_IN_TEST=1
     THREE_BOARDS_IN_REAL=0
     assert (TWO_BOARDS_IN_TEST+TWO_BOARDS_IN_REAL+THREE_BOARDS_IN_TEST+THREE_BOARDS_IN_REAL == 1), "BOARD SETTING WRONG!"
     
@@ -84,13 +84,13 @@ if __name__ == "__main__":
     print "Found ",  numFpga, " OpalKelly devices:"                        
 #    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
 #    xemSerialList = ['1137000222', '11160001CJ', '12430003T2']
- #   xemSerialList = ['124300046A', '12320003RM', '1201000216']
+    xemSerialList = ['124300046A', '12320003RM', '1201000216']
 #    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
     #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
 #    xemSerialList = ['12320003RN', '12430003T2']
 #    xemSerialList = ['124300046A', '1201000216']
 #    xemSerialList = ['11160001CG', '1137000222']    #PXI first couple 
-    xemSerialList = ['113700021E', '0000000542']   # PXI sercond couple
+#    xemSerialList = ['113700021E', '0000000542']   # PXI sercond couple
 #    xemSerialList = ['12320003RN']
     print xemSerialList
     
