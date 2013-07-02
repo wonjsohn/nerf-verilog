@@ -908,7 +908,7 @@
     wire [31:0] f_emg;
     emg_parameter emg_parater_foo
     (   .f_total_emg_out(f_emg), 
-        .i_spike_cnt(total_spike_count_sync), 
+        .i_spike_cnt(total_spike_count_sync >> 3), 
         .b1_F0(triggered_input7),
         .b2_F0(triggered_input8),
         .a1_F0(triggered_input9),
