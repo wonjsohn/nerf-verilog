@@ -15,8 +15,8 @@ FPGA_OUTPUT_B2 =   (0x20,      'v_neuron0',      1.0,         'float32',      Qt
                 (0x22,      'population_neuron0',      1.0,         'spike32',      Qt.red),  \
                 (0x24,      'spike_count_neuron0',      1.0,         'int32',      Qt.green),  \
                 (0x26,      'fixed_drive_to_CN',      1.0,         'int32',      Qt.black),  \
-                (0x28,      'f_I_synapse_M1extra1',      1.0,         'float32',      Qt.magenta),  \
-                (0x2A,      'f_I_synapse_M1extra2',      1.0,         'float32',      Qt.darkRed),  \
+                (0x28,      'i_CN1_extra_drive',      1.0,         'int32',      Qt.magenta),  \
+                (0x2A,      'i_CN2_extra_drive',      1.0,         'float32',      Qt.darkRed),  \
                 (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
                 
 ##            address         name   visual_gain         type            color
@@ -34,8 +34,8 @@ FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.bl
                 (0x24,      'spike_count_neuron_MN2',      1.0,         'int32',      Qt.green),  \
                 (0x26,      'spike_count_neuron_MN3',      1.0,         'int32',      Qt.black),  \
                 (0x28,      'spike_count_neuron_MN4',      1.0,         'int32',      Qt.magenta),  \
-                (0x2A,      'spike_count_neuron_MN5',      1.0,         'int32',      Qt.darkRed),  \
-                (0x2C,      'spike_count_neuron_MN6',      1.0,         'int32',      Qt.darkGray),  \
+                (0x2A,      'f_I_synapse_M1extra1',      1.0,         'float32',      Qt.darkRed),  \
+                (0x2C,      'f_I_synapse_M1extra2',      1.0,         'float32',      Qt.darkGray),  \
                 (0x2E,      'raster0_31_MN2',      1.0,         'spike32',      Qt.blue),  \
                 (0x30,      'total_spike_count_sync',      1.0,         'int32',      Qt.red),  \
                 (0x32,      'total_force',      1.0,         'float32',      Qt.green),  \
@@ -68,7 +68,7 @@ USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      1.5), \
                     (4, 'gamma_dyn',    'float32',      80.0), \
                     (5, 'gamma_sta',    'float32',      80.0), \
                     (6, 'spindl_II_offset',      'float32',        10.12),  \
-                    (7, 'xxx',      'int32',        0),  \
+                    (7, 'half_cnt',      'int32',        0),  \
                     (8, 'xxx',      'int32',        0),  \
                     (9, 'Lce',      'float32',        1.1),  \
                     (10, 'spindle_II_gain',      'float32',        1.5),  \
@@ -85,9 +85,9 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
                     (4, 'xxx',    'float32',      80.0), \
                     (5, 'xxx',    'float32',      80.0), \
                     (6, 'xxx',      'int32',        0),  \
-                    (7, 'xxx',      'int32',        0),  \
-                    (8, 'cortial_input',      'int32',        0),  \
-                    (9, 'xxx',      'int32',        1),  \
+                    (7, 'half_cnt',      'int32',        0),  \
+                    (8, 'i_CN1_extra_drive',      'int32',        0),  \
+                    (9, 'mixed_input0(sine)',      'float32',        0.0),  \
                     (10, 'p_delta',      'float32',        0.0),  \
                     (11, 'ltd',      'int32',        0),  \
                     (12, 'ltp',      'int32',        0)
@@ -113,16 +113,17 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
 #            trig_id    name          type          default_value                
 USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001208), \
                     (2, 'tau',  'float32',      0.03), \
-                    (3, 'synapse1_gain',   'float32',       100.0), \
+                    (3, 'syn_Ia_gain',   'float32',       100.0), \
                     (4, 'b2',    'float32',      -0.001273), \
                     (5, 'a1',    'float32',      -2.238), \
                     (6, 'a2',      'float32',        1.67),  \
-                    (7, 'xxx',      'int32',        0),  \
+                    (7, 'half_cnt',      'int32',        0),  \
                     (8, 'a3',      'float32',        -0.4152),  \
                     (9, 'Lce_vel',      'float32',        1.0),  \
-                    (10, 'threshold',      'int32',        30),  \
-                    (11, 'synapse2_gain',      'float32',        100.0),  \
-                    (12, 'synapse_1n2_offset',      'float32',        0)
+                    (10, 'syn_CN_gain',      'float32',        50.0),  \
+                    (11, 'syn_II_gain',      'float32',        100.0),  \
+                    (12, 'synapse_1n2_offset',      'float32',        0),  \
+                    (13,  'syn_extraCNs_gain',      'float32',        50.0)
                
 
 #            trig_id    name          type          default_value                

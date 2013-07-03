@@ -25,31 +25,34 @@ if __name__ == "__main__":
     
 #    ROOT_PATH = QFileDialog.getExistingDirectory(None, "Path for the Verilog .bit file", os.getcwd() + "../../")
 
+    LINUX = 1
+    WINDOWS = 0
+    assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
-    TWO_BOARDS_IN_TEST=0
-    TWO_BOARDS_IN_REAL=0
-    THREE_BOARDS_IN_TEST=1
-    THREE_BOARDS_IN_REAL=0
-    assert (TWO_BOARDS_IN_TEST+TWO_BOARDS_IN_REAL+THREE_BOARDS_IN_TEST+THREE_BOARDS_IN_REAL == 1), "BOARD SETTING WRONG!"
+    TWO_BOARDS=0
+    THREE_BOARDS=0
+    CORTICAL_BOARDS=1
+    assert (TWO_BOARDS+THREE_BOARDS+CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING WRONG!"
     
-    if (TWO_BOARDS_IN_REAL == 1) or (THREE_BOARDS_IN_REAL ==1) :
+    if (WINDOWS==1) :
         ROOT_PATH = "C:\\nerf_sangerlab\\projects\\"  # windows setting
-    if  (TWO_BOARDS_IN_TEST == 1) or (THREE_BOARDS_IN_TEST ==1):
+    if (LINUX==1):
         ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
-    
-    
-    
+
+
 #    PROJECT_NAME1 = "one_joint_parameterSearch"
 #    PROJECT_NAME2 = "size_principle"
 #    PROJECT_NAME3 = "one_joint_robot_all_in1"
 #    PROJECT_LIST = ["rack_test", "rack_CN_general", "rack_mn_muscle"]   
-    if (TWO_BOARDS_IN_TEST == 1) or (TWO_BOARDS_IN_REAL == 1):
+    if (TWO_BOARDS == 1):
         PROJECT_LIST = ["rack_test", "rack_emg"] 
-    
 
-    if (THREE_BOARDS_IN_TEST ==1) or (THREE_BOARDS_IN_REAL ==1) :
+    if (THREE_BOARDS ==1) :
         PROJECT_LIST = ["rack_test", "rack_CN_general", "rack_emg"]   
     
+    if (CORTICAL_BOARDS ==1) :
+        PROJECT_LIST = ["rack_CN_general", "rack_CN_general"]   
+        
     PROJECT_PATH = [(ROOT_PATH + p) for p in PROJECT_LIST]
     DEVICE_MODEL = "xem6010"
     
@@ -60,16 +63,27 @@ if __name__ == "__main__":
     #sys.path.append(PROJECT_PATH)
     from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT_B1, FPGA_OUTPUT_B2, FPGA_OUTPUT_B3,   USER_INPUT_B1,  USER_INPUT_B2,  USER_INPUT_B3
     FPGA_OUTPUT_B = []
-    FPGA_OUTPUT_B.append(FPGA_OUTPUT_B1)
-    if (THREE_BOARDS_IN_TEST ==1) or (THREE_BOARDS_IN_REAL ==1) :
-        FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
-    FPGA_OUTPUT_B.append(FPGA_OUTPUT_B3)
     USER_INPUT_B = []
-    USER_INPUT_B.append(USER_INPUT_B1)
-    if (THREE_BOARDS_IN_TEST ==1) or (THREE_BOARDS_IN_REAL ==1) :
+    
+    if (THREE_BOARDS ==1) :
+        FPGA_OUTPUT_B.append(FPGA_OUTPUT_B1)
+        FPGA_OUTPUT_B.append(FPGA_OUTPUT_B3)
+        USER_INPUT_B.append(USER_INPUT_B1)
+        USER_INPUT_B.append(USER_INPUT_B3)
+    
+    if (THREE_BOARDS ==1) :
+        FPGA_OUTPUT_B.append(FPGA_OUTPUT_B1)
+        FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
+        FPGA_OUTPUT_B.append(FPGA_OUTPUT_B3)
+        USER_INPUT_B.append(USER_INPUT_B1)
         USER_INPUT_B.append(USER_INPUT_B2)
-    USER_INPUT_B.append(USER_INPUT_B3)
-        
+        USER_INPUT_B.append(USER_INPUT_B3)
+    
+    if (CORTICAL_BOARDS==1):
+        FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
+        FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
+        USER_INPUT_B.append(USER_INPUT_B2)
+        USER_INPUT_B.append(USER_INPUT_B2)
 
     # Connect to an OpalKelly device on USB
     # Bind the .bit file with the device
@@ -84,7 +98,7 @@ if __name__ == "__main__":
     print "Found ",  numFpga, " OpalKelly devices:"                        
 #    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
 #    xemSerialList = ['1137000222', '11160001CJ', '12430003T2']
-    xemSerialList = ['124300046A', '12320003RM', '1201000216']
+#    xemSerialList = ['124300046A', '12320003RM', '1201000216']
 #    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
     #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
 #    xemSerialList = ['12320003RN', '12430003T2']
@@ -92,6 +106,7 @@ if __name__ == "__main__":
 #    xemSerialList = ['11160001CG', '1137000222']    #PXI first couple 
 #    xemSerialList = ['113700021E', '0000000542']   # PXI sercond couple
 #    xemSerialList = ['12320003RN']
+    xemSerialList = ['12320003RM', '11160001CJ']  # CORTICAL BOARDS
     print xemSerialList
     
     for idx,  name in enumerate(xemSerialList):
@@ -113,7 +128,7 @@ if __name__ == "__main__":
     
     vList = []
 
-    
+ 
     for i in xrange(len(xemList)):
         dispWin = View(count = i,  projectName = PROJECT_LIST[i] ,  projectPath = PROJECT_PATH[i],  nerfModel = xemList[i],  fpgaOutput = FPGA_OUTPUT_B[i],  userInput = USER_INPUT_B[i])
         vList.append(dispWin)

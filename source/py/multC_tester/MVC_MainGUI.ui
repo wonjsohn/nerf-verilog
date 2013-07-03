@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>873</width>
-    <height>39</height>
+    <width>989</width>
+    <height>32</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -612,6 +612,19 @@
    </property>
    <property name="checkable">
     <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox">
+   <property name="geometry">
+    <rect>
+     <x>880</x>
+     <y>10</y>
+     <width>97</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>send sine</string>
    </property>
   </widget>
  </widget>
