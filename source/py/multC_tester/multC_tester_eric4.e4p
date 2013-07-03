@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project multC_tester_eric4 -->
-<!-- Saved: 2013-03-20, 17:45:12 -->
+<!-- Saved: 2013-07-03, 01:55:39 -->
 <!-- Copyright (C) 2013 C. Minos Niu,  -->
 <Project version="4.6">
   <Language>en</Language>
@@ -21,6 +21,7 @@
     <Source>MVC_MainGUI.py</Source>
     <Source>Ui_V_Display.py</Source>
     <Source>Ui_MVC_MainGUI.py</Source>
+    <Source>Ui_extraCNDrive.py</Source>
   </Sources>
   <Forms>
     <Form>V_Display.ui</Form>

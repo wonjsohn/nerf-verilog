@@ -111,12 +111,12 @@ class View(QMainWindow, Ui_Dialog):
 #        QMainWindow.__init__(self, parent, Qt.FramelessWindowHint)
         QMainWindow.__init__(self, parent)
         self.setStyleSheet("background-color:  rgb(240, 235, 235); margin: 2px;")
-        self.setWindowOpacity(0.85)
+        self.setWindowOpacity(0.75)
 
 #                                    "QLineEdit { border-width: 20px;border-style: solid; border-color: darkblue; };")
         self.setupUi(self)
         self.projectName = projectName
-        self.move(10+count*950,  100)
+        self.move(10+count*450,  100)
 
         self.x = 200
         self.pen = QPen()
@@ -326,6 +326,7 @@ class View(QMainWindow, Ui_Dialog):
 #        bitVal2 = convertType(0.0, fromType = 'f', toType = 'I')
 #        print "bitval2, ",  bitVal2
         self.nerfModel.SendMultiPara(bitVal1 = bitVal, bitVal2=0,  trigEvent = ctrl.id)
+        
        
 
     def tellWhichFpga(self, xemNum, chanName, newWireIn):
@@ -352,13 +353,18 @@ class View(QMainWindow, Ui_Dialog):
 
             print "waveform 1 fed"
 #            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 
+            
+            
         elif choice == "waveform 2":
+            print "waveform  fed"
 #            pipeInData = spike_train(firing_rate = 10)      
-#            pipeInData = gen_sin(F = 4.0, AMP = 0.3)
-            pipeInData = gen_tri(T = 2.0) 
+            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
+#            pipeInData = gen_tri(T = 2.0) 
 
-
-
+                
+            
+          
+ 
         elif choice == "waveform 3":
 #            pipeInData = gen_tri() 
 
@@ -420,17 +426,17 @@ class View(QMainWindow, Ui_Dialog):
         self.nerfModel.SendButton(newInput, BUTTON_INPUT_FROM_TRIGGER)
     
   
-       
-    
-    @pyqtSignature("bool")
-    def on_pushButton_extraCN_clicked(self, checked):
-        """
-        Slot documentation goes here.
-        """
-         # dystonia
-        bitVal = convertType(0.0, fromType = 'f', toType = 'I')
-        if (checked): 
-            self.nerfModel.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2=20000, bitVal3=10000, trigEvent = 9)
-        else:
-            self.nerfModel.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2=0, bitVal3=0, trigEvent = 9)
-        
+#       
+#    
+#    @pyqtSignature("bool")
+#    def on_pushButton_extraCN_clicked(self, checked):
+#        """
+#        Slot documentation goes here.
+#        """
+#         # dystonia
+#        bitVal = convertType(0.0, fromType = 'f', toType = 'I')
+#        if (checked): 
+#            self.nerfModel.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2=20000, bitVal3=10000, trigEvent = 9)
+#        else:
+#            self.nerfModel.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2=0, bitVal3=0, trigEvent = 9)
+#        

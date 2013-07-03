@@ -147,3 +147,38 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         newResetSim = checked
         for eachXem in self.xemList:
             eachXem.SendButton(newResetSim, BUTTON_RESET_SIM)
+    
+   
+    @pyqtSignature("bool")
+    def on_checkBox_clicked(self, checked):
+        """
+        Slot documentation goes here.
+        """
+  
+        if (checked):
+            print "waveform sine_bic fed"
+    #            pipeInData = spike_train(firing_rate = 10)      
+            #pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
+    #            pipeInData = gen_tri(T = 2.0) 
+
+            pipeInData_bic = gen_sin(F = 0.5, AMP = 10000.0,  BIAS = 0.0,  T = 2.0)
+
+            pipeInDataBic=[]
+            for i in xrange(0,  2048):
+                pipeInDataBic.append(max(0.0,  pipeInData_bic[i]))
+
+
+    #        elif choice == "middleBoard_sine_Tri":
+            print "waveform sine_tri fed"
+
+            pipeIndata_tri = -gen_sin(F = 0.5,  AMP = 10000.0,  BIAS = 0.0,  T = 2.0)
+
+            pipeInDataTri=[]
+            for i in xrange(0,  2048):
+                pipeInDataTri.append(max(0.0,  pipeIndata_tri[i]))
+   
+
+            self.xemList[0].SendPipe(pipeInDataBic)
+            self.xemList[1].SendPipe(pipeInDataTri)
+#            print pipeInDataBic
+    

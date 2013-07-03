@@ -65,6 +65,10 @@
         assign i2c_sda = 1'bz;
         assign i2c_scl = 1'bz;
         assign hi_muxsel = 1'b0;
+        
+        
+        wire [31:0] threshold30mv;  // iz neuron threshold 
+        assign threshold30mv = 32'd30;
     
 
       
@@ -114,7 +118,7 @@
 
         // Output and OpalKelly Interface Wire Definitions
         
-        wire [12*17-1:0] ok2x;
+        wire [14*17-1:0] ok2x;
         wire [15:0] ep00wire, ep01wire, ep02wire;
         wire [15:0] ep50trig;
         
@@ -194,24 +198,24 @@
 //   
    
    
-            
-        wire [31:0] f_I_synapse_M1extra1;
-        synapse_simple synapse_simple_extraInput_1(
-            .clk(sim_clk),
-            .reset(reset_sim),
-            .spike_in(spikein9),
-            .f_I_out(f_I_synapse_M1extra1)
-        );
-        
-        
-        wire [31:0] f_I_synapse_M1extra2;
-        synapse_simple synapse_simple_extraInput_2(
-            .clk(sim_clk),
-            .reset(reset_sim),
-            .spike_in(spikein10),
-            .f_I_out(f_I_synapse_M1extra2)
-        );
-        
+//            
+//        wire [31:0] f_I_synapse_M1extra1;
+//        synapse_simple synapse_simple_extraInput_1(
+//            .clk(sim_clk),
+//            .reset(reset_sim),
+//            .spike_in(spikein9),
+//            .f_I_out(f_I_synapse_M1extra1)
+//        );
+//        
+//        
+//        wire [31:0] f_I_synapse_M1extra2;
+//        synapse_simple synapse_simple_extraInput_2(
+//            .clk(sim_clk),
+//            .reset(reset_sim),
+//            .spike_in(spikein10),
+//            .f_I_out(f_I_synapse_M1extra2)
+//        );
+//        
   
 //        // Synapse synapse0 Instance Definition
 //        synapse synapse_extraInput(
@@ -236,18 +240,19 @@
         wire [31:0] f_I_synapse_both;
         add addCurrentsFrom_Ia_and_II(.x(f_I_synapse_Ia), .y(f_I_synapse_II), .out(f_I_synapse_both));
         
-        //*********** add currents from extra cortical input 1(M1)  *********
-        wire [31:0] f_SN_M1extra1;
-        add addCurrentsFrom_extra1(.x(f_I_synapse_both), .y(f_I_synapse_M1extra1), .out(f_SN_M1extra1));
-        
-         //*********** add currents from extra cortical input 2(M1)  *********
-        wire [31:0] f_drive_to_CN;
-        add addCurrentsFrom_extra2(.x(f_SN_M1extra1), .y(f_I_synapse_M1extra2), .out(f_drive_to_CN));
-        
-        
+//        //*********** add currents from extra cortical input 1(M1)  *********
+//        wire [31:0] f_SN_M1extra1;
+//        add addCurrentsFrom_extra1(.x(f_I_synapse_both), .y(f_I_synapse_M1extra1), .out(f_SN_M1extra1));
+//        
+//         //*********** add currents from extra cortical input 2(M1)  *********
+//        wire [31:0] f_drive_to_CN;
+//        add addCurrentsFrom_extra2(.x(f_SN_M1extra1), .y(f_I_synapse_M1extra2), .out(f_drive_to_CN));
+//        
+//        
         wire [31:0]  i_drive_to_CN;
         floor   synapse_float_to_int(
-            .in(f_drive_to_CN),
+//            .in(f_drive_to_CN),
+            .in(f_I_synapse_both),
             .out(i_drive_to_CN)
         );
         
@@ -294,17 +299,38 @@
             triggered_input4 <= {ep02wire, ep01wire};      
             
         // extra cortical drive, controlled in python frontend    
-        reg [31:0] i_CN_extra_drive;
+//        reg [31:0] i_CN_extra_drive;
+//        
+//        always @(posedge ep50trig[8] or posedge reset_global)
+//        begin
+//            if (reset_global) begin    
+//                i_CN_extra_drive <= 32'd0;             
+//            end
+//            else begin           
+//                i_CN_extra_drive <= {ep02wire, ep01wire};       
+//            end
+//        end   
+//        
         
-        always @(posedge ep50trig[8] or posedge reset_global)
-        begin
-            if (reset_global) begin    
-                i_CN_extra_drive <= 32'd0;             
-            end
-            else begin           
-                i_CN_extra_drive <= {ep02wire, ep01wire};       
-            end
-        end   
+     
+        // Triggered Input triggered_input4 Instance Definition (extra cortical input 1)
+         reg [31:0] i_CN1_extra_drive;
+        
+        always @ (posedge ep50trig[8] or posedge reset_global)
+        if (reset_global)
+            i_CN1_extra_drive <= 32'd0;         //rhard coded half count for 0.5x real speed, 381 for real time speed  
+        else
+            i_CN1_extra_drive <= {ep02wire, ep01wire};      
+            
+            
+        // Triggered Input triggered_input0 Instance Definition (extra cortical input 2 (wave))
+        reg [31:0] f_CN2_extra_drive;
+        
+        always @ (posedge ep50trig[9] or posedge reset_global)
+        if (reset_global)
+            f_CN2_extra_drive <= 32'h0;         //reset to 0      
+        else
+            f_CN2_extra_drive <= {ep02wire, ep01wire};    
         
         
         
@@ -326,18 +352,44 @@
 //                .fast_clk(clk1),
 //                .reset(reset_global),
 //                .clear_out(dummy_slow));
+
+
+    
+        // Waveform Generator mixed_input0 Wire Definitions
+        wire [31:0] mixed_input0;   // Wave out signal
+ 
+
+        // Waveform Generator mixed_input0 Instance Definition        
+        waveform_from_pipe_bram_2s gen_mixed_input_CN1(
+            .reset(reset_sim),               // reset the waveform
+            .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
+            .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
+            .data_from_trig(f_CN2_extra_drive),	// data from one of ep50 channel
+            .is_from_trigger(is_from_trigger),
+            .pipe_in_data(pipe_in_data),        // waveform data from opalkelly pipe in (e.g.sine wave)
+            .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
+            .wave(mixed_input0)                   // wave out signal
+        );
+
+        wire [31:0]  i_CN2_extra_drive;
+        floor   synapse_float_to_int2(
+//            .in(f_drive_to_CN),
+            .in(mixed_input0),
+            .out(i_CN2_extra_drive)
+        );
+  
         
         
     //FPGA-FPGA Outputs
-    assign spikeout1 = each_spike_neuron_CN1;
-    assign spikeout2 = 1'b0;
+    assign spikeout1 = spike_neuron_CN1;
+    assign spikeout2 = each_spike_neuron_CN1;
     assign spikeout3 = 1'b0;
     assign spikeout4 = 1'b0;
-    assign spikeout5 = spike_neuron_CN1;
+    assign spikeout5 = spike_neuron_extra_CN1;
     assign spikeout6 = 1'b0;
     assign spikeout7 = 1'b0;
     assign spikeout8 = 1'b0;
-    assign spikeout9 = 1'b0;
+    assign spikeout9 = spike_neuron_extra_CN2;
     assign spikeout10 = 1'b0;
     assign spikeout11 = 1'b0;
     assign spikeout12 = 1'b0;
@@ -359,7 +411,7 @@
         assign reset_global = ep00wire[0] | reset_external_clean;
         assign reset_sim = ep00wire[2] ;
         assign is_from_trigger = ~ep00wire[1];
-        okWireOR # (.N(12)) wireOR (ok2, ok2x);
+        okWireOR # (.N(14)) wireOR (ok2, ok2x);
         okHost okHI(
             .hi_in(hi_in),  .hi_out(hi_out),    .hi_inout(hi_inout),    .hi_aa(hi_aa),
             .ti_clk(ti_clk),    .ok1(ok1),  .ok2(ok2)   );
@@ -370,7 +422,7 @@
         okWireIn    wi00    (.ok1(ok1), .ep_addr(8'h00),    .ep_dataout(ep00wire)   );
         okWireIn    wi01    (.ok1(ok1), .ep_addr(8'h01),    .ep_dataout(ep01wire)   );
         okWireIn    wi02    (.ok1(ok1), .ep_addr(8'h02),    .ep_dataout(ep02wire)   );
-        
+
         okWireOut wo20 (    .ep_datain(v_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h20)    );
         okWireOut wo21 (    .ep_datain(v_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h21)   );    
         
@@ -383,11 +435,17 @@
         okWireOut wo26 (    .ep_datain(fixed_drive_to_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
         okWireOut wo27 (    .ep_datain(fixed_drive_to_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
         
-        okWireOut wo28 (    .ep_datain(f_I_synapse_M1extra1[15:0]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h28)    );
-        okWireOut wo29 (    .ep_datain(f_I_synapse_M1extra1[31:16]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h29)   );  
+        okWireOut wo28 (    .ep_datain(i_CN1_extra_drive[15:0]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h28)    );
+        okWireOut wo29 (    .ep_datain(i_CN1_extra_drive[31:16]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h29)   );  
 
-        okWireOut wo2A (    .ep_datain(f_I_synapse_M1extra2[15:0]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h2A)    );
-        okWireOut wo2B (    .ep_datain(f_I_synapse_M1extra2[31:16]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2B)   );            
+        okWireOut wo2A (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h2A)    );
+        okWireOut wo2B (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2B)   );  
+
+        
+        okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
+                            .ep_blockstrobe(), .ep_dataout(pipe_in_data), .ep_ready(1'b1));
+        
+                
         
 
         // Clock Generator clk_gen0 Instance Definition
@@ -406,7 +464,7 @@
         // latching 
         reg [31:0] fixed_drive_to_CN;
 
-        always @(posedge neuron_clk or posedge reset_global)
+        always @(posedge sim_clk or posedge reset_global)
          begin
            if (reset_global)
             begin
@@ -423,8 +481,7 @@
         wire [127:0] population_neuron_CN1; // spike raster for entire population        
         
      // CN1 Instance Definition
-     wire [31:0] threshold30mv;
-     assign threshold30mv = 32'd30;
+
         izneuron_th_control CN1(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
@@ -434,7 +491,44 @@
             .spike(spike_neuron_CN1),           // spike sample
             .each_spike(each_spike_neuron_CN1), // raw spikes
             .population(population_neuron_CN1)  // spikes of population per 1ms simulation time
-        );        
+        ); 
+
+
+
+        
+        wire [31:0] v_neuron_extra_CN1;   // membrane potential
+        wire spike_neuron_extra_CN1;      // spike sample for visualization only
+        wire each_spike_neuron_extra_CN1; // raw spike signals
+        wire [127:0] population_neuron_extra_CN1; // spike raster for entire population        
+        
+        // extra CN1 Instance Definition
+        izneuron_th_control extraCN1(
+            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+            .reset(reset_sim),           // reset to initial conditions
+            .I_in( i_CN1_extra_drive),          // input current from synapse
+            .th_scaled( threshold30mv <<< 10),                 // threshold
+            .v_out(v_neuron_extra_CN1),               // membrane potential
+            .spike(spike_neuron_extra_CN1),           // spike sample
+            .each_spike(each_spike_neuron_extra_CN1), // raw spikes
+            .population(population_neuron_extra_CN1)  // spikes of population per 1ms simulation time
+        );     
+        
+        wire [31:0] v_neuron_extra_CN2;   // membrane potential
+        wire spike_neuron_extra_CN2;      // spike sample for visualization only
+        wire each_spike_neuron_extra_CN2; // raw spike signals
+        wire [127:0] population_neuron_extra_CN2; // spike raster for entire population        
+        
+        // extra CN2 Instance Definition
+        izneuron_th_control extraCN2(
+            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+            .reset(reset_sim),           // reset to initial conditions
+            .I_in( i_CN2_extra_drive),          // input current from synapse
+            .th_scaled( threshold30mv <<< 10),                 // threshold
+            .v_out(v_neuron_extra_CN2),               // membrane potential
+            .spike(spike_neuron_extra_CN2),           // spike sample
+            .each_spike(each_spike_neuron_extra_CN2), // raw spikes
+            .population(population_neuron_extra_CN2)  // spikes of population per 1ms simulation time
+        );     
               
 //        // Neuron neuron0 Instance Definition
 //        izneuron neuron0(
