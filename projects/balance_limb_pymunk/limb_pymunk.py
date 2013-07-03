@@ -20,6 +20,12 @@ def angle2length(angle):
     length = 0.3*angle+1     # angle in rad 
     return length
 
+#def angular2LinearV(angularV):
+#    linearV = angularV * 0.1
+#    return linearV
+    
+    
+    
 def sineGen(xem):
     pipeInData = gen_sin(F = 0.5, AMP = 0.25,  BIAS = 1.15,  T = 2.0) 
     #pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.16, 0.17, 2.0], L = [1.0, 1.0, 1.4, 1.4, 1.0, 1.0], FILT = False)
@@ -108,9 +114,11 @@ def main():
     j = pymunk.RotaryLimitJoint(forearm_body, elbot_joint_body, JOINT_MIN, JOINT_MAX)
     
     JOINT_DAMPING_SCHEIDT2007 = 2.1
-    JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.11 #was 0.1
+    JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.2 #was 0.1
     s = pymunk.DampedRotarySpring(forearm_body, elbot_joint_body, -0.0, 0.0, JOINT_DAMPING)
     space.add(j, s)
+    
+    
 
     forearm_shape.group = 1
     forearm_shape.elasticity = 0.4
@@ -122,14 +130,14 @@ def main():
     #sineGen(xem_spindle_bic)
     #sineGen(xem_spindle_tri)
     i = 0
-    print sineBic
-    print sineTri
+#    print sineBic
+#    print sineTri
     
     
     while running:
-        i = i + 1
-        j = i % 1024
-        print j
+#        i = i + 1
+#        j = i % 1024
+#        print j
         # Get forces
         force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
         force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
@@ -141,6 +149,8 @@ def main():
                              
         angle = ((forearm_body.angle + M_PI) % (2*M_PI)) - M_PI - rest_joint_angle
         
+        
+        
 #        lce_bic = angle / (2*M_PI) * 1.5 + rest_len
 #        lce_tri = 2 * rest_len - lce_bic 
         
@@ -150,10 +160,17 @@ def main():
         # Send lce of biceps 
         bitVal = convertType(lce_bic, fromType = 'f', toType = 'I')
 #        bitVal2 = convertType(0.0,  fromType = 'f', toType = 'I')
-        bitVal3 = convertType(sineBic[j],  fromType = 'I', toType = 'I')
+#        bitVal3 = convertType(sineBic[j],  fromType = 'I', toType = 'I')
         #try M1_extra - 200000
-        xem_muscle_bic.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2 = 200000,  bitVal3 = bitVal3, trigEvent = 9) # bitVal2: extraCN1, bitVal: extraCN2 is int type
+#        xem_muscle_bic.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2 = 200000,  bitVal3 = bitVal3, trigEvent = 9) # bitVal2: extraCN1, bitVal: extraCN2 is int type
 #        xem_muscle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
+        angularV = forearm_body.angular_velocity
+#        linearV = angular2LinearV(angularV)
+#        print linearV
+        
+        bitVal2_i = convertType(angularV*-100.0, fromType = 'f', toType = 'I')
+        
+        xem_muscle_bic.SendMultiPara(bitVal1 = bitVal, bitVal2 = bitVal2_i,  trigEvent = 9)
         xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
         
         # Alpha-gamma coactivation
@@ -167,9 +184,10 @@ def main():
         bitVal = convertType(lce_tri, fromType = 'f', toType = 'I')
 #        bitVal2 = convertType(1.0,  fromType = 'f', toType = 'I')
     
-        bitVal3 = convertType(sineTri[j],  fromType = 'I', toType = 'I')
-        xem_muscle_tri.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2 = 200000,  bitVal3=bitVal3,  trigEvent = 9)  # bitVal2: extraCN1, bitVal: extraCN2 is int type
+#        bitVal3 = convertType(sineTri[j],  fromType = 'I', toType = 'I')
+#        xem_muscle_tri.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2 = 200000,  bitVal3=bitVal3,  trigEvent = 9)  # bitVal2: extraCN1, bitVal: extraCN2 is int type
 #        xem_muscle_tri.SendPara(bitVal = bitVal, trigEvent = 9)
+        xem_muscle_tri.SendMultiPara(bitVal1 = bitVal, bitVal2= bitVal2_i,   trigEvent = 9)
         xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 9)
         
         # Alpha-gamma coactivation
@@ -179,7 +197,7 @@ def main():
 #        xem_spindle_tri.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
         
         print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_bic, lce_tri, forearm_body.torque),                           
-        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f" % (force_bic, force_tri,  angle,  gd_bic)                            
+        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f" % (force_bic, force_tri,  angle,  gd_bic )                          
 
         
         #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
@@ -235,10 +253,10 @@ if __name__ == '__main__':
     xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '1201000216')
     xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12430003T2')
     
-   
-    sineBic=sineGen_bic()
-    sineTri=sineGen_tri()
-#    
+#   
+#    sineBic=sineGen_bic()
+#    sineTri=sineGen_tri()
+##    
     
     
 #    print "sineBic:",  sineBic[0],  sineBic[1],  sineBic[2],  sineBic[3]    

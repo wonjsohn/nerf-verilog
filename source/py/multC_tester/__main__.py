@@ -29,9 +29,9 @@ if __name__ == "__main__":
     WINDOWS = 0
     assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
-    TWO_BOARDS=0
+    TWO_BOARDS=1
     THREE_BOARDS=0
-    CORTICAL_BOARDS=1
+    CORTICAL_BOARDS=0
     assert (TWO_BOARDS+THREE_BOARDS+CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING WRONG!"
     
     if (WINDOWS==1) :
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     FPGA_OUTPUT_B = []
     USER_INPUT_B = []
     
-    if (THREE_BOARDS ==1) :
+    if (TWO_BOARDS ==1) :
         FPGA_OUTPUT_B.append(FPGA_OUTPUT_B1)
         FPGA_OUTPUT_B.append(FPGA_OUTPUT_B3)
         USER_INPUT_B.append(USER_INPUT_B1)
@@ -101,12 +101,12 @@ if __name__ == "__main__":
 #    xemSerialList = ['124300046A', '12320003RM', '1201000216']
 #    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
     #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
-#    xemSerialList = ['12320003RN', '12430003T2']
+    xemSerialList = ['12320003RN', '12430003T2']
 #    xemSerialList = ['124300046A', '1201000216']
 #    xemSerialList = ['11160001CG', '1137000222']    #PXI first couple 
 #    xemSerialList = ['113700021E', '0000000542']   # PXI sercond couple
 #    xemSerialList = ['12320003RN']
-    xemSerialList = ['12320003RM', '11160001CJ']  # CORTICAL BOARDS
+#    xemSerialList = ['12320003RM', '11160001CJ']  # CORTICAL BOARDS
     print xemSerialList
     
     for idx,  name in enumerate(xemSerialList):
