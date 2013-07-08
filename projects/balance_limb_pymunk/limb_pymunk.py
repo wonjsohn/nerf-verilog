@@ -142,7 +142,6 @@ def main():
     
     
     while running:
-
         """   Get forces   """
         force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
         emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG         
