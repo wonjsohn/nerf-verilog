@@ -164,7 +164,7 @@ class SomeFpga:
 
     """ minimize the frequency of  update wireout to get higher sampling rate """       
     def SendMultiPara(self, bitVal1, bitVal2,  trigEvent):
-        print bitVal1,  bitVal2,  trigEvent
+       # print bitVal1,  bitVal2,  trigEvent
         #1
         bitValLo1 = bitVal1 & 0xffff
         bitValHi1 = (bitVal1 >> 16) & 0xffff
