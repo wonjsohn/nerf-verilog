@@ -57,7 +57,7 @@ class armSetup:
         self.screen = pygame.display.set_mode((600, 600))
         self.gClock = pygame.time.Clock()
         self.running = True
-
+    
         ### Physics stuff
         self.gSpace = pymunk.Space(50)
         self.gSpace.gravity = (0.0, -9.8 * 0.0)
@@ -65,7 +65,9 @@ class armSetup:
         ### walls
         static_body = pymunk.Body()
 
-        fp = [(20,-20), (-120, 0), (20,20)]
+#        fp = [(20,-20), (-120, 0), (20,20)]
+        fp = [(40, -5), (30, -15),  (20,-20),   (-150, -10), (-150,  10), (20,20),  (30,  15),  (40,  5)]
+ 
         mass = 1.52
         moment = pymunk.moment_for_poly(mass, fp)
 
@@ -74,18 +76,28 @@ class armSetup:
         self.gForearm_body = pymunk.Body(mass, 0.0372)
         self.gForearm_body.position = 300, 300
         self.gForearm_shape = pymunk.Poly(self.gForearm_body, [(-x,y) for x,y in fp])
+#        self.gForearm_shape.friction = 10.0
         self.gSpace.add(self.gForearm_body, self.gForearm_shape)
 
         self.gElbow_joint_body = pymunk.Body()
         self.gElbow_joint_body.position = self.gForearm_body.position
+        j1 = pymunk.PinJoint(self.gForearm_body,  self.gElbow_joint_body, (0,0), (0,0))
+        self.gElbow_joint_body.shape = pymunk.Circle(self.gElbow_joint_body, 250)
+        
     #    j = pymunk.PinJoint(forearm_body, gElbow_joint_body, (0,0), (0,0))
         j = pymunk.RotaryLimitJoint(self.gForearm_body, self.gElbow_joint_body, JOINT_MIN, JOINT_MAX)
         
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.60 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.20 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
-        self.gSpace.add(j, s)
-
+        self.gSpace.add(j,  j1,  s) # 
+        
+        """ create arrow """
+        arrow_body,arrow_shape = self.create_arrow()
+        self.gSpace.add(arrow_shape)
+        
+        
+        """    """
         self.gForearm_shape.group = 1
         self.gForearm_shape.elasticity = 0.4
 
@@ -100,7 +112,11 @@ class armSetup:
         self.lce_tri = 0.0
         self.angle = 0.0
         self.linearV = 0.0
+        self.record = False
+        
+
         self.main()
+        
 
 
     def to_pygame(self,  p):
@@ -126,7 +142,19 @@ class armSetup:
         timeTag = time.strftime("%Y%m%d_%H%M%S")
         
         savemat(timeTag+".mat", mdict={'data_bic': data_bic,  'data_tri': data_tri})
-        
+    
+    
+    def create_arrow(self):
+        vs = [(-30,0), (0,3), (10,0), (0,-3)]
+        mass = 1
+        moment = pymunk.moment_for_poly(mass, vs)
+        arrow_body = pymunk.Body(mass, moment)
+      
+        arrow_shape = pymunk.Poly(arrow_body, vs)
+        arrow_shape.friction = .5
+        arrow_shape.collision_type = 1
+        return arrow_body, arrow_shape
+  
 
     def controlLoopBiceps(self):
         
@@ -270,53 +298,23 @@ class armSetup:
             tempData = elapsedTime, self.lce_tri, self.linearV, spikecnt_tri,   self.force_tri,  emg_tri  
             self.data_tri.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
-    #        
-#            """ key control """
-#            for event in self.pygame.event.get():
-#                if event.type == QUIT:
-#                    running = False
-#                elif event.type == KEYDOWN and event.key == K_ESCAPE:
-#                    self.plotData(self.data)
-#                    self.running = False
-#                elif event.type == KEYDOWN and event.key == K_j:
-#                    self.gForearm_body.torque -= 15.0
-#                    pass
-#                elif event.type == KEYDOWN and event.key == K_f:
-#                    #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
-#                    self.gForearm_body.torque += 15.0
-#                elif event.type == KEYDOWN and event.key == K_z:
-#                    self.gRest_joint_angle = angle 
-#            """  Clear screen  """
-#            self.screen.fill(THECOLORS["white"])  # ~1ms
-#
-#            """ Draw stuff """
-#            for f in [self.gForearm_shape,]:
-#                ps = f.get_points()
-#                ps.append(ps[0])
-#                ps = map(self.to_pygame, ps)
-#
-#                color = THECOLORS["red"]
-#                self.pygame.draw.lines(self.screen, color, False, ps)
-#            #if abs(flipper_body.angle) < 0.001: flipper_body.angle = 0
-#
-#            """ Update physics  """
-#            dt = 1.0/60.0/5.
-#            for x in range(5):
-#                self.gSpace.step(dt)
-#
-#            """ Flip screen (big delay from here!) """ 
-#            self.pygame.display.flip()  # ~1ms
-#    #        self.gClock.tick(50)   # delay
-#    #        self.gClock.tick(1000)
-#            pygame.display.set_caption("fps: " + str(clock.get_fps()))   
+  
             
- # triceps thread
     def keyControl(self):
         while (self.running):
+            
+            mouse_position = from_pygame( Vec2d(self.pygame.mouse.get_pos()), self.screen )
+            forced_angle = (mouse_position-self.gForearm_body.position).angle
+
+            # move the unfired arrow together with the cannon
+#            arrow_body.position = cannon_body.position + Vec2d(cannon_shape.radius + 40, 0).rotated(cannon_body.angle)
+#            arrow_body.angle = cannon_body.angle
+            
+        
             """ key control """
             for event in self.pygame.event.get():
                 if event.type == QUIT:
-                    running = False
+                    self.running = False
                 elif event.type == KEYDOWN and event.key == K_ESCAPE:
                     self.plotData(self.data_bic, self.data_tri)
                     self.running = False
@@ -327,7 +325,23 @@ class armSetup:
                     #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
                     self.gForearm_body.torque += 30.0
                 elif event.type == KEYDOWN and event.key == K_z:
-                    self.gRest_joint_angle = self.angle 
+                    self.gRest_joint_angle = self.angle
+                elif event.type == KEYDOWN and event.key == K_r:
+                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (5,  0))
+                elif event.type == KEYDOWN and event.key == K_u:
+                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (-5,  0))
+                elif event.type == KEYDOWN and event.key == K_l:  # forced movement, follow the mouse
+                    if (self.record == True):
+                        self.record = False
+                    if (self.record == False):
+                        self.record = True
+                        
+                    
+            if (self.record == True):
+                self.gForearm_body.angle =forced_angle
+                
+
+                    
             """  Clear screen  """
             self.screen.fill(THECOLORS["white"])  # ~1ms
 
@@ -345,12 +359,21 @@ class armSetup:
             dt = 1.0/60.0/5.
             for x in range(5):
                 self.gSpace.step(dt)
-
+            
+            """ text message"""    
+            myfont = self.pygame.font.SysFont("monospace", 15)
+            label1 = myfont.render("j:torque down, f: torque up" , 1,  THECOLORS["black"])
+            label2 = myfont.render("l: mouse-controlled movement, esc:out" , 1,  THECOLORS["black"])
+            self.screen.blit(label1, (10, 10))
+            self.screen.blit(label2, (10, 40))
+        
+            
             """ Flip screen (big delay from here!) """ 
             self.pygame.display.flip()  # ~1ms
-            self.gClock.tick(80)   
-    #        self.gClock.tick(1000)
-            self.pygame.display.set_caption("fps: " + str(self.gClock.get_fps()))   
+            self.gClock.tick(30)  # target fps
+    #        self.gClock.tick(80)  # oscillate
+            self.pygame.display.set_caption("fps: " + str(self.gClock.get_fps())) 
+            
             
  
 
@@ -359,6 +382,8 @@ class armSetup:
         threading.Thread(target=self.keyControl).start()
         threading.Thread(target=self.controlLoopBiceps).start()
         threading.Thread(target=self.controlLoopTriceps).start()
+        
+        
         
         
 
@@ -380,7 +405,12 @@ if __name__ == '__main__':
     import numpy as np
     import time 
     import threading
-    from multiprocessing import Process
+#    from multiprocessing import Process
+    from pygame.locals import *
+    from pymunk.vec2d import Vec2d
+    from pymunk.pygame_util import draw_space, from_pygame
+    from pygame.color import *
+  
 
     
   
