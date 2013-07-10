@@ -161,7 +161,7 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
             #pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
     #            pipeInData = gen_tri(T = 2.0) 
 
-            pipeInData_bic = gen_sin(F = 1.0, AMP = 40000.0,  BIAS = 0.0,  T = 2.0)
+            pipeInData_bic = gen_sin(F = 1.0, AMP = 80000.0,  BIAS = 0.0,  T = 2.0)
 
             pipeInDataBic=[]
             for i in xrange(0,  2048):
@@ -171,7 +171,7 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
     #        elif choice == "middleBoard_sine_Tri":
             print "waveform sine_tri fed"
 
-            pipeIndata_tri = -gen_sin(F = 1.0,  AMP = 40000.0,  BIAS = 0.0,  T = 2.0)
+            pipeIndata_tri = -gen_sin(F = 1.0,  AMP = 80000.0,  BIAS = 0.0,  T = 2.0)
 
             pipeInDataTri=[]
             for i in xrange(0,  2048):

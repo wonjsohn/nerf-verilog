@@ -29,9 +29,9 @@ if __name__ == "__main__":
     WINDOWS = 0
     assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
-    TWO_BOARDS=1
+    TWO_BOARDS=0
     THREE_BOARDS=0
-    CORTICAL_BOARDS=0
+    CORTICAL_BOARDS=1
     assert (TWO_BOARDS+THREE_BOARDS+CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING WRONG!"
     
     if (WINDOWS==1) :
@@ -102,11 +102,11 @@ if __name__ == "__main__":
 #    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
     #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
 #    xemSerialList = ['12320003RN', '12430003T2']
-    xemSerialList = ['124300046A', '1201000216']
+#    xemSerialList = ['124300046A', '1201000216']
 #    xemSerialList = ['11160001CG', '1137000222']    #PXI first couple 
 #    xemSerialList = ['113700021E', '0000000542']   # PXI sercond couple
 #    xemSerialList = ['12320003RN']
-#    xemSerialList = ['12320003RM', '11160001CJ']  # CORTICAL BOARDS
+    xemSerialList = ['12320003RM', '11160001CJ']  # CORTICAL BOARDS
     print xemSerialList
     
     for idx,  name in enumerate(xemSerialList):

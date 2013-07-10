@@ -122,7 +122,7 @@ def main():
     j = pymunk.RotaryLimitJoint(forearm_body, elbot_joint_body, JOINT_MIN, JOINT_MAX)
     
     JOINT_DAMPING_SCHEIDT2007 = 2.1
-    JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.18 #was 0.1
+    JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.20 #was 0.1
     s = pymunk.DampedRotarySpring(forearm_body, elbot_joint_body, -0.0, 0.0, JOINT_DAMPING)
     space.add(j, s)
 
