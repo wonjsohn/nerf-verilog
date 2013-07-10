@@ -495,6 +495,19 @@
 
 
 
+
+
+      wire [31:0] CN1_rand_out;
+      rng rng_CN1(               
+        .clk1(neuron_clk),
+        .clk2(neuron_clk),
+        .reset(reset_sim),
+        .out(CN1_rand_out)
+        ); 
+        
+       wire [31:0] i_rng_current_to_MN1;
+       wire [31:0] i_rng_CN1_extra_drive;
+       assign i_rng_CN1_extra_drive= {i_CN1_extra_drive[31:8] , CN1_rand_out[7:0]};
         
         wire [31:0] v_neuron_extra_CN1;   // membrane potential
         wire spike_neuron_extra_CN1;      // spike sample for visualization only
@@ -505,13 +518,15 @@
         izneuron_th_control extraCN1(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( i_CN1_extra_drive),          // input current from synapse
+            .I_in( i_rng_CN1_extra_drive),          // input current from synapse
             .th_scaled( threshold30mv <<< 10),                 // threshold
             .v_out(v_neuron_extra_CN1),               // membrane potential
             .spike(spike_neuron_extra_CN1),           // spike sample
             .each_spike(each_spike_neuron_extra_CN1), // raw spikes
             .population(population_neuron_extra_CN1)  // spikes of population per 1ms simulation time
         );     
+        
+        
         
         wire [31:0] v_neuron_extra_CN2;   // membrane potential
         wire spike_neuron_extra_CN2;      // spike sample for visualization only

@@ -46,9 +46,9 @@ class CtrlChannel:
         SPINBOX_HOFFSET = 180
         self.doubleSpinBox.setGeometry(QtCore.QRect(SPINBOX_HOFFSET + 620, SPINBOX_VOFFSET+ id * 30, 205, 30))
         self.doubleSpinBox.setSingleStep(0.000001)
-        self.doubleSpinBox.setDecimals(6)
-        self.doubleSpinBox.setMaximum(100000.0)
-        self.doubleSpinBox.setMinimum(-100000.0)
+        self.doubleSpinBox.setDecimals(7)
+        self.doubleSpinBox.setMaximum(1000000.0)
+        self.doubleSpinBox.setMinimum(-1000000.0)
         self.doubleSpinBox.setProperty("value", value)
         self.doubleSpinBox.setObjectName("param_"+name)
 

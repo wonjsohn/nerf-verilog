@@ -82,7 +82,7 @@ class armSetup:
         j = pymunk.RotaryLimitJoint(self.gForearm_body, self.gElbow_joint_body, JOINT_MIN, JOINT_MAX)
         
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.2 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.60 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j, s)
 
@@ -134,6 +134,7 @@ class armSetup:
 
             """   Get forces   """
             force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
+            spikecnt_bic = xem_muscle_bic.ReadFPGA(0x30, "int32")  
             emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG         
 #            force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
 #            emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
@@ -141,9 +142,7 @@ class armSetup:
             force_bic = force_bic_pre #+ pipeInData_bic[j]
 #            force_tri = force_tri_pre #+ pipeInData_bic[j] 
             self.gForearm_body.torque = (force_bic - self.force_tri) * 0.06
-            
-            #lce = 1.0
-                                 
+                                            
             self.angle = ((self.gForearm_body.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
             
             
@@ -160,6 +159,7 @@ class armSetup:
             angularV = self.gForearm_body.angular_velocity
 
             self.linearV = self.angular2LinearV(angularV)
+#            self.linearV = 0.0
     #        print linearV
             scale = 1.0
             bitVal_bic_i = convertType(-self.linearV*scale, fromType = 'f', toType = 'I')
@@ -194,7 +194,7 @@ class armSetup:
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, force_tri,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime,  lce_bic, force_bic, emg_bic 
+            tempData = elapsedTime,  lce_bic, self.linearV, spikecnt_bic,  force_bic, emg_bic
             self.data_bic.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
     #      
@@ -207,6 +207,7 @@ class armSetup:
             """   Get forces   """
 #            force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
 #            emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG         
+            spikecnt_tri = xem_muscle_tri.ReadFPGA(0x30, "int32")  
             force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
             emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
             
@@ -266,7 +267,7 @@ class armSetup:
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, force_tri,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime, self.lce_tri, self.force_tri,  emg_tri  
+            tempData = elapsedTime, self.lce_tri, self.linearV, spikecnt_tri,   self.force_tri,  emg_tri  
             self.data_tri.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
     #        
@@ -320,11 +321,11 @@ class armSetup:
                     self.plotData(self.data_bic, self.data_tri)
                     self.running = False
                 elif event.type == KEYDOWN and event.key == K_j:
-                    self.gForearm_body.torque -= 20.0
+                    self.gForearm_body.torque -= 30.0
                     pass
                 elif event.type == KEYDOWN and event.key == K_f:
                     #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
-                    self.gForearm_body.torque += 20.0
+                    self.gForearm_body.torque += 30.0
                 elif event.type == KEYDOWN and event.key == K_z:
                     self.gRest_joint_angle = self.angle 
             """  Clear screen  """
