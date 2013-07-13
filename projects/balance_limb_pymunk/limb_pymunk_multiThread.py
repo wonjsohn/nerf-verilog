@@ -7,8 +7,8 @@ import math, sys, random
 from pylab import *
 
 M_PI = 3.1415926
-JOINT_MIN = -1
-JOINT_MAX = 1
+JOINT_MIN = -1.2
+JOINT_MAX = 1.2
 JOINT_RANGE = JOINT_MAX - JOINT_MIN
 
 
@@ -88,7 +88,7 @@ class armSetup:
         j = pymunk.RotaryLimitJoint(self.gForearm_body, self.gElbow_joint_body, JOINT_MIN, JOINT_MAX)
         
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.20 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.15 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -302,7 +302,7 @@ class armSetup:
             
     def keyControl(self):
         while (self.running):
-            
+            """ angle calculated from mouse cursor position"""
             mouse_position = from_pygame( Vec2d(self.pygame.mouse.get_pos()), self.screen )
             forced_angle = (mouse_position-self.gForearm_body.position).angle
 
@@ -310,7 +310,7 @@ class armSetup:
 #            arrow_body.position = cannon_body.position + Vec2d(cannon_shape.radius + 40, 0).rotated(cannon_body.angle)
 #            arrow_body.angle = cannon_body.angle
             
-        
+#            self.gForearm_body.torque = -0.1 
             """ key control """
             for event in self.pygame.event.get():
                 if event.type == QUIT:
@@ -325,7 +325,8 @@ class armSetup:
                     #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
                     self.gForearm_body.torque += 30.0
                 elif event.type == KEYDOWN and event.key == K_z:
-                    self.gRest_joint_angle = self.angle
+#                    self.gRest_joint_angle = self.angle
+                    self.gForearm_body.angle = 0.0
                 elif event.type == KEYDOWN and event.key == K_r:
                     self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (5,  0))
                 elif event.type == KEYDOWN and event.key == K_u:
@@ -336,7 +337,7 @@ class armSetup:
                     if (self.record == False):
                         self.record = True
                         
-                    
+            """ mouse cursor controlled forced (passive) movement"""
             if (self.record == True):
                 self.gForearm_body.angle =forced_angle
                 
@@ -356,8 +357,10 @@ class armSetup:
             #if abs(flipper_body.angle) < 0.001: flipper_body.angle = 0
 
             """ Update physics  """
-            dt = 1.0/60.0/5.
-            for x in range(5):
+            fps = 50.0
+            step = 1
+            dt = 1.0/fps/step
+            for x in range(step):
                 self.gSpace.step(dt)
             
             """ text message"""    
@@ -370,7 +373,7 @@ class armSetup:
             
             """ Flip screen (big delay from here!) """ 
             self.pygame.display.flip()  # ~1ms
-            self.gClock.tick(30)  # target fps
+            self.gClock.tick(fps)  # target fps
     #        self.gClock.tick(80)  # oscillate
             self.pygame.display.set_caption("fps: " + str(self.gClock.get_fps())) 
             

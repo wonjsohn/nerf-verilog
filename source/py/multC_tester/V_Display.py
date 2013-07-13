@@ -111,12 +111,12 @@ class View(QMainWindow, Ui_Dialog):
 #        QMainWindow.__init__(self, parent, Qt.FramelessWindowHint)
         QMainWindow.__init__(self, parent)
         self.setStyleSheet("background-color:  rgb(240, 235, 235); margin: 2px;")
-        self.setWindowOpacity(0.75)
+        self.setWindowOpacity(0.85)
 
 #                                    "QLineEdit { border-width: 20px;border-style: solid; border-color: darkblue; };")
         self.setupUi(self)
         self.projectName = projectName
-        self.move(10+count*450,  100)
+        self.move(10+count*950,  100)
 
         self.x = 200
         self.pen = QPen()
@@ -348,8 +348,8 @@ class View(QMainWindow, Ui_Dialog):
         choice = p0
         if choice == "waveform 1":
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
-            #pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.16, 0.17, 2.0], L = [1.0, 1.0, 1.4, 1.4, 1.0, 1.0], FILT = False)
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.25, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
 
             print "waveform 1 fed"
 #            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 

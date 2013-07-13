@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/V_Display.ui'
 #
-# Created: Wed Jul  3 01:31:42 2013
+# Created: Thu Jul 11 11:58:06 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -45,7 +45,7 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
         self.comboBox.setItemText(0, QtGui.QApplication.translate("Dialog", "waveform 1", None, QtGui.QApplication.UnicodeUTF8))
-        self.comboBox.setItemText(1, QtGui.QApplication.translate("Dialog", "middleBoards_at_once", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboBox.setItemText(1, QtGui.QApplication.translate("Dialog", "waveform 2", None, QtGui.QApplication.UnicodeUTF8))
         self.comboBox.setItemText(2, QtGui.QApplication.translate("Dialog", "waveform 3", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox.setText(QtGui.QApplication.translate("Dialog", "auto scale", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Dialog", ".bit files", None, QtGui.QApplication.UnicodeUTF8))
