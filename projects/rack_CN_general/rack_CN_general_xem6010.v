@@ -338,7 +338,7 @@
       spike_counter  sync_counter_CN1
       (                 .clk(neuron_clk),
                         .reset(reset_sim),
-                        .spike_in(spike_neuron_CN1),
+                        .spike_in(each_spike_neuron_CN1),
                         .spike_count(spike_count_neuron_sync_CN1) );       
 
         
@@ -386,11 +386,11 @@
     assign spikeout3 = 1'b0;
     assign spikeout4 = 1'b0;
     assign spikeout5 = spike_neuron_extra_CN1;
-    assign spikeout6 = 1'b0;
+    assign spikeout6 = each_spike_neuron_extra_CN1;
     assign spikeout7 = 1'b0;
     assign spikeout8 = 1'b0;
     assign spikeout9 = spike_neuron_extra_CN2;
-    assign spikeout10 = 1'b0;
+    assign spikeout10 = each_spike_neuron_extra_CN2;
     assign spikeout11 = 1'b0;
     assign spikeout12 = 1'b0;
     assign spikeout13 = 1'b0;

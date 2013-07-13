@@ -29,9 +29,9 @@ if __name__ == "__main__":
     WINDOWS = 0
     assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
-    TWO_BOARDS=0
-    THREE_BOARDS=0
-    CORTICAL_BOARDS=1
+    TWO_BOARDS= 0
+    THREE_BOARDS=1
+    CORTICAL_BOARDS= 0
     assert (TWO_BOARDS+THREE_BOARDS+CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING WRONG!"
     
     if (WINDOWS==1) :
@@ -95,18 +95,28 @@ if __name__ == "__main__":
     testrun = ok.FrontPanel()
     numFpga = testrun.GetDeviceCount()
     assert numFpga > 0, "No OpalKelly boards found, is one connected?"
-    print "Found ",  numFpga, " OpalKelly devices:"                        
+    print "Found ",  numFpga, " OpalKelly devices:"           
 #    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
+    if (CORTICAL_BOARDS ==1) :   
+        print "cortical boards setup"
+        xemSerialList = ['12320003RM', '11160001CJ']  # CORTICAL BOARDS
+    elif (TWO_BOARDS ==1 and LINUX == 1):
+        print "2 boards in linux setup"
+        xemSerialList = ['124300046A', '1201000216']
+#        xemSerialList = ['12320003RN', '12430003T2'] 
+    elif (THREE_BOARDS ==1 and LINUX == 1):
+        print "3 boards in linux setup"
+#        xemSerialList = ['124300046A', '12320003RM', '1201000216']
+        xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
+    elif (WINDOWS == 1):
+        print "windows setup"
+        xemSerialList = ['11160001CG', '1137000222']    #PXI first couple 
+#      xemSerialList = ['113700021E', '0000000542']   # PXI sercond couple
+
 #    xemSerialList = ['1137000222', '11160001CJ', '12430003T2']
-#    xemSerialList = ['124300046A', '12320003RM', '1201000216']
-#    xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
     #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
-#    xemSerialList = ['12320003RN', '12430003T2']
-#    xemSerialList = ['124300046A', '1201000216']
-#    xemSerialList = ['11160001CG', '1137000222']    #PXI first couple 
-#    xemSerialList = ['113700021E', '0000000542']   # PXI sercond couple
 #    xemSerialList = ['12320003RN']
-    xemSerialList = ['12320003RM', '11160001CJ']  # CORTICAL BOARDS
+
     print xemSerialList
     
     for idx,  name in enumerate(xemSerialList):

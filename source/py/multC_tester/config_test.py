@@ -1,11 +1,11 @@
 from PyQt4.QtCore import Qt
 
 #            address         name   visual_gain         type            color
-FPGA_OUTPUT_B1 =    (0x20,      'Ia_raster_ch20',      1.0,         'spike32',      Qt.blue),  \
+FPGA_OUTPUT_B1 =    (0x20,      'raster',      1.0,         'spike32',      Qt.blue),  \
                 (0x22,      'Ia_spindle0',      1.0,         'float32',      Qt.red),  \
                 (0x24,      'II_spindle0',      1.0,         'float32',      Qt.green),  \
                 (0x26,      'mixed_input',      1.0,         'float32',      Qt.black),  \
-                (0x28,      'spike_count_length2spk',      1.0,         'int32',      Qt.magenta),  \
+                (0x28,      'blank',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'i_rand_current_out',      1.0,         'int32',      Qt.darkRed),  \
                 (0x2C,      'spike_count_Ia_normal',      1.0,         'int32',      Qt.darkGray),  \
                 (0x2E,      'spike_count_II_normal',      1.0,         'int32',      Qt.blue)
@@ -13,7 +13,7 @@ FPGA_OUTPUT_B1 =    (0x20,      'Ia_raster_ch20',      1.0,         'spike32',  
 #            address         name   visual_gain         type            color
 FPGA_OUTPUT_B2 =   (0x20,      'v_neuron0',      1.0,         'float32',      Qt.blue),  \
                 (0x22,      'population_neuron0',      1.0,         'spike32',      Qt.red),  \
-                (0x24,      'spike_count_neuron0',      1.0,         'int32',      Qt.green),  \
+                (0x24,      'spike_count_CN_neuron0',      1.0,         'int32',      Qt.green),  \
                 (0x26,      'fixed_drive_to_CN',      1.0,         'int32',      Qt.black),  \
                 (0x28,      'i_CN1_extra_drive',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'i_CN2_extra_drive',      1.0,         'float32',      Qt.darkRed),  \
@@ -34,7 +34,7 @@ FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.bl
                 (0x24,      'spike_count_neuron_MN2',      1.0,         'int32',      Qt.green),  \
                 (0x26,      'spike_count_neuron_MN3',      1.0,         'int32',      Qt.black),  \
                 (0x28,      'spike_count_neuron_MN4',      1.0,         'int32',      Qt.magenta),  \
-                (0x2A,      'f_I_synapse_M1extra1',      1.0,         'float32',      Qt.darkRed),  \
+                (0x2A,      'spike_count_neuron_MN5',      1.0,         'int32',      Qt.darkRed),  \
                 (0x2C,      'f_I_synapse_M1extra2',      1.0,         'float32',      Qt.darkGray),  \
                 (0x2E,      'raster0_31_MN2',      1.0,         'spike32',      Qt.blue),  \
                 (0x30,      'total_spike_count_sync',      1.0,         'int32',      Qt.red),  \

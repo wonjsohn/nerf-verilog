@@ -864,11 +864,11 @@
         okWireOut wo28 (    .ep_datain(spike_count_neuron_sync_MN4[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
         okWireOut wo29 (    .ep_datain(spike_count_neuron_sync_MN4[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   ); 
 
-        okWireOut wo2A (    .ep_datain(f_I_synapse_M1extra1[15:0]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2A)    );
-        okWireOut wo2B (    .ep_datain(f_I_synapse_M1extra1[31:16]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2B)   ); 
+        okWireOut wo2A (    .ep_datain(spike_count_neuron_sync_MN5[15:0]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2A)    );
+        okWireOut wo2B (    .ep_datain(spike_count_neuron_sync_MN5[31:16]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2B)   ); 
 
-        okWireOut wo2C (    .ep_datain(f_I_synapse_M1extra2[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
-        okWireOut wo2D (    .ep_datain(f_I_synapse_M1extra2[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
+        okWireOut wo2C (    .ep_datain(spike_count_neuron_sync_MN6[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
+        okWireOut wo2D (    .ep_datain(spike_count_neuron_sync_MN6[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
         
         okWireOut wo2E (    .ep_datain(population_neuron_MN2[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
         okWireOut wo2F (    .ep_datain(population_neuron_MN2[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
@@ -903,42 +903,42 @@
       spike_counter  sync_counter_MN1
       (                 .clk(neuron_clk),
                         .reset(reset_sim),
-                        .spike_in(spike_neuron_MN1),
+                        .spike_in(each_spike_neuron_MN1),
                         .spike_count(spike_count_neuron_sync_MN1) );
 
      wire [31:0]  spike_count_neuron_sync_MN2;
       spike_counter  sync_counter_MN2
       (                 .clk(neuron_clk),
                         .reset(reset_sim),
-                        .spike_in(spike_neuron_MN2),
+                        .spike_in(each_spike_neuron_MN2),
                         .spike_count(spike_count_neuron_sync_MN2) );
                         
      wire [31:0]  spike_count_neuron_sync_MN3;
       spike_counter  sync_counter_MN3
       (                 .clk(neuron_clk),
                         .reset(reset_sim),
-                        .spike_in(spike_neuron_MN3),
+                        .spike_in(each_spike_neuron_MN3),
                         .spike_count(spike_count_neuron_sync_MN3) );
 
      wire [31:0]  spike_count_neuron_sync_MN4;
       spike_counter  sync_counter_MN4
       (                 .clk(neuron_clk),
                         .reset(reset_sim),
-                        .spike_in(spike_neuron_MN4),
+                        .spike_in(each_spike_neuron_MN4),
                         .spike_count(spike_count_neuron_sync_MN4) );  
                         
      wire [31:0]  spike_count_neuron_sync_MN5;
       spike_counter  sync_counter_MN5
       (                 .clk(neuron_clk),
                         .reset(reset_sim),
-                        .spike_in(spike_neuron_MN5),
+                        .spike_in(each_spike_neuron_MN5),
                         .spike_count(spike_count_neuron_sync_MN5) );   
                         
      wire [31:0]  spike_count_neuron_sync_MN6;
       spike_counter  sync_counter_MN6
       (                 .clk(neuron_clk),
                         .reset(reset_sim),
-                        .spike_in(spike_neuron_MN6),
+                        .spike_in(each_spike_neuron_MN6),
                         .spike_count(spike_count_neuron_sync_MN6) );       
 //
 //     wire [31:0]  spike_count_neuron_sync_MN7;
