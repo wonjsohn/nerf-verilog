@@ -71,7 +71,7 @@ USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      1.5), \
                     (7, 'half_cnt',      'int32',        0),  \
                     (8, 'xxx',      'int32',        0),  \
                     (9, 'Lce',      'float32',        1.1),  \
-                    (10, 'spindle_II_gain',      'float32',        1.5),  \
+                    (10, 'spindle_II_gain',      'float32',        0.5),  \
                     (11, 'xxx',      'int32',        0),  \
                     (12, 'xxx',      'int32',        0),  \
                     (13, 'BDAMP1',      'float32',        0.2356),  \
@@ -122,7 +122,7 @@ USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001208), \
                     (9, 'Lce_vel',      'float32',        1.0),  \
                     (10, 'syn_CN_gain',      'float32',        50.0),  \
                     (11, 'syn_II_gain',      'float32',        100.0),  \
-                    (12, 'synapse_1n2_offset',      'float32',        0),  \
+                    (12, 'synapse_1n2_offset',      'float32',        0.0),  \
                     (13,  'syn_extraCNs_gain',      'float32',        50.0)
                
 
