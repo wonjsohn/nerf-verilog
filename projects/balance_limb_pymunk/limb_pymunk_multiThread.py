@@ -88,7 +88,7 @@ class armSetup:
         j = pymunk.RotaryLimitJoint(self.gForearm_body, self.gElbow_joint_body, JOINT_MIN, JOINT_MAX)
         
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.15 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.2 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -113,6 +113,7 @@ class armSetup:
         self.angle = 0.0
         self.linearV = 0.0
         self.record = False
+        self.scale = 1.0
         
 
         self.main()
@@ -169,6 +170,12 @@ class armSetup:
             
             force_bic = force_bic_pre #+ pipeInData_bic[j]
 #            force_tri = force_tri_pre #+ pipeInData_bic[j] 
+            """ overflow to opposite muscle test (helps to stabilize - eric)"""
+            temp_force_tri = self.force_tri
+            self.force_tri = self.force_tri + force_bic*0.3  # overflow
+            force_bic = force_bic + temp_force_tri*0.3       # overflow 
+            
+            
             self.gForearm_body.torque = (force_bic - self.force_tri) * 0.06
                                             
             self.angle = ((self.gForearm_body.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
@@ -189,8 +196,8 @@ class armSetup:
             self.linearV = self.angular2LinearV(angularV)
 #            self.linearV = 0.0
     #        print linearV
-            scale = 1.0
-            bitVal_bic_i = convertType(-self.linearV*scale, fromType = 'f', toType = 'I')
+            self.scale = 150.0
+            bitVal_bic_i = convertType(-self.linearV*self.scale, fromType = 'f', toType = 'I')
 #            bitVal_tri_i = convertType(self.linearV*scale, fromType = 'f', toType = 'I')
             
             xem_muscle_bic.SendMultiPara(bitVal1 = bitVal, bitVal2 = bitVal_bic_i,  trigEvent = 9)
@@ -262,9 +269,9 @@ class armSetup:
 
 #            self.linearV = self.angular2LinearV(angularV)
     #        print linearV
-            scale = 1.0
+#            self.scale = 500.0
 #            bitVal_bic_i = convertType(-linearV*scale, fromType = 'f', toType = 'I')
-            bitVal_tri_i = convertType(self.linearV*scale, fromType = 'f', toType = 'I')
+            bitVal_tri_i = convertType(self.linearV*self.scale, fromType = 'f', toType = 'I')
             
 #            xem_muscle_bic.SendMultiPara(bitVal1 = bitVal, bitVal2 = bitVal_bic_i,  trigEvent = 9)
 #            xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
