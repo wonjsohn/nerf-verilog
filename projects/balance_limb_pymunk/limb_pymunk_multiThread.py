@@ -88,7 +88,7 @@ class armSetup:
         j = pymunk.RotaryLimitJoint(self.gForearm_body, self.gElbow_joint_body, JOINT_MIN, JOINT_MAX)
         
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.2 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.3 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -114,7 +114,7 @@ class armSetup:
         self.linearV = 0.0
         self.record = False
         self.scale = 1.0
-        
+        self.fmax = 0.0
 
         self.main()
         
@@ -171,11 +171,23 @@ class armSetup:
             force_bic = force_bic_pre #+ pipeInData_bic[j]
 #            force_tri = force_tri_pre #+ pipeInData_bic[j] 
             """ overflow to opposite muscle test (helps to stabilize - eric)"""
-            temp_force_tri = self.force_tri
-            self.force_tri = self.force_tri + force_bic*0.3  # overflow
-            force_bic = force_bic + temp_force_tri*0.3       # overflow 
+#            temp_force_tri = self.force_tri
+#            self.force_tri = self.force_tri + force_bic*0.3  # overflow to the opposite muscle
+#            force_bic = force_bic + temp_force_tri*0.3       # overflow to the opposite muscle
             
-            
+          
+            """ reciprocal inhibition  """
+#            if (self.linearV > 0): # biceps force contraction phase
+#                self.force_tri = self.force_tri*0.5 
+#            else:   # triceps contraction phase
+#                force_bic = force_bic*0.5 
+                
+
+            """  force curve (f-input spikes) saturation effect"""
+#            self.fmax =90.0
+#            force_bic = force_bic * (1-exp(-force_bic/self.fmax)) 
+
+    
             self.gForearm_body.torque = (force_bic - self.force_tri) * 0.06
                                             
             self.angle = ((self.gForearm_body.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
@@ -194,6 +206,10 @@ class armSetup:
             angularV = self.gForearm_body.angular_velocity
 
             self.linearV = self.angular2LinearV(angularV)
+              
+    
+            
+            
 #            self.linearV = 0.0
     #        print linearV
             self.scale = 150.0
@@ -248,6 +264,11 @@ class armSetup:
             
 #            force_bic = force_bic_pre #+ pipeInData_bic[j]
             self.force_tri = force_tri_pre #+ pipeInData_bic[j] 
+            """  force curve (f-input spikes) saturation effect"""
+#            self.force_tri = self.force_tri * (1-exp(-self.force_tri/self.fmax)) 
+            
+            
+            
 #            self.gForearm_body.torque = (self.force_bic - self.force_tri) * 0.06
             
             #lce = 1.0
