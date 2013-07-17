@@ -358,8 +358,10 @@ class View(QMainWindow, Ui_Dialog):
         elif choice == "waveform 2":
             print "waveform  fed"
 #            pipeInData = spike_train(firing_rate = 10)      
-            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
+#            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
 #            pipeInData = gen_tri(T = 2.0) 
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.9, 1.4, 1.9, 2.0], L = [0.5, 0.5, 1.5, 1.5, 0.5,  0.5], FILT = False)
+
 
                 
             

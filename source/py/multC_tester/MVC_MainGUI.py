@@ -171,7 +171,7 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
     #        elif choice == "middleBoard_sine_Tri":
             print "waveform sine_tri fed"
 
-            pipeIndata_tri = -gen_sin(F = 1.0,  AMP = 80000.0,  BIAS = 0.0,  T = 2.0)
+            pipeIndata_tri = -gen_sin(F = 1.0,  AMP = 80000.0,  BIAS = 0.0,  T = 2.0,  PHASE=2.0)
 
             pipeInDataTri=[]
             for i in xrange(0,  2048):
@@ -180,5 +180,3 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
 
             self.xemList[0].SendPipe(pipeInDataBic)
             self.xemList[1].SendPipe(pipeInDataTri)
-#            print pipeInDataBic
-    
