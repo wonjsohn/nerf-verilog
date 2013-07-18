@@ -132,7 +132,7 @@
 
         // Output and OpalKelly Interface Wire Definitions
         
-        wire [20*17-1:0] ok2x;
+        wire [28*17-1:0] ok2x;
         wire [15:0] ep00wire, ep01wire, ep02wire;
         wire [15:0] ep50trig;
         
@@ -395,7 +395,7 @@
         
         assign reset_global = ep00wire[0] | reset_external_clean;
         assign is_from_trigger = ~ep00wire[1];
-        okWireOR # (.N(20)) wireOR (ok2, ok2x);
+        okWireOR # (.N(28)) wireOR (ok2, ok2x);
         okHost okHI(
             .hi_in(hi_in),  .hi_out(hi_out),    .hi_inout(hi_inout),    .hi_aa(hi_aa),
             .ti_clk(ti_clk),    .ok1(ok1),  .ok2(ok2)   );
@@ -436,6 +436,15 @@
         okWireOut wo2e (    .ep_datain(u_neuron1[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2e)    );
         okWireOut wo2f (    .ep_datain(u_neuron1[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2f)   ); 
         
+        okWireOut wo30 (    .ep_datain(population_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h30)    );
+        okWireOut wo31 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[19*17 +: 17]), .ep_addr(8'h31)   );  
+        okWireOut wo32 (    .ep_datain(population_neuron0[47:32]),  .ok1(ok1),  .ok2(ok2x[20*17 +: 17]), .ep_addr(8'h32)    );
+        okWireOut wo33 (    .ep_datain(population_neuron0[63:48]),  .ok1(ok1),  .ok2(ok2x[21*17 +: 17]), .ep_addr(8'h33)   ); 
+        okWireOut wo34 (    .ep_datain(population_neuron0[79:64]),  .ok1(ok1),  .ok2(ok2x[22*17 +: 17]), .ep_addr(8'h34)    );
+        okWireOut wo35 (    .ep_datain(population_neuron0[95:80]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h35)   ); 
+        okWireOut wo36 (    .ep_datain(population_neuron0[111:96]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h36)    );
+        okWireOut wo37 (    .ep_datain(population_neuron0[127:112]),  .ok1(ok1),  .ok2(ok2x[25*17 +: 17]), .ep_addr(8'h37)   );
+        
         // Clock Generator clk_gen0 Instance Definition
         gen_clk clocks(
             .rawclk(clk1),
@@ -453,11 +462,27 @@
     assign c = -32'd65560; // c = -65   (scaling factor 1024)
     assign d = 32'd2048; // d = 2       (scaling factor 1024)
 
+wire [31:0] rng_out;
+rng noisy_I(
+            .clk1(neuron_clk),
+            .clk2(neuron_clk),
+            .reset(reset_global),
+            .out(rng_out),
+            
+            .lfsr(),
+            .casr()
+    );
+    
+wire [31:0] noisy_Ia;
+
+assign noisy_Ia = fixed_Ia_spindle0 + {20'd0, rng_out[11:0]};
+
         // Neuron neuron0 Instance Definition
         izneuron_abcd_hard_limit_u neuron0(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_global),           // reset to initial conditions
-            .I_in(  fixed_Ia_spindle0 ),          // input current from synapse
+            //.I_in(  fixed_Ia_spindle0 ),          // input current from synapse
+            .I_in(  noisy_Ia ),          // input current from synapse            
             
             .a(triggered_input3),
             .b(b),

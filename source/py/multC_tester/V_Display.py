@@ -27,6 +27,20 @@ BUTTON_INPUT_FROM_TRIGGER = 1
 from Ui_V_Display import Ui_Dialog
 import time
 
+import socket
+UDP_IP = "quadriceps.usc.edu"
+UDP_PORT = 3333
+
+def int_2_bin(x):
+    output = ""
+    bit_mask = 0x0000001
+    for i in xrange(32):
+        if (bit_mask & x) :
+            output += "1"
+        else:
+            output += "0"
+        bit_mask = bit_mask << 1
+    return output;
 
 class CtrlChannel:
     def __init__(self, hostDialog, id, name, type, value = 0.0):
@@ -108,7 +122,7 @@ class View(QMainWindow, Ui_Dialog):
         Constructor
         """
         self.nerfModel = nerfModel
-#        QMainWindow.__init__(self, parent, Qt.FramelessWindowHint)
+#        QMainWindow.__init__(self, parent, Qt.FramelessWindoTimerwHint)
         QMainWindow.__init__(self, parent)
         self.setStyleSheet("background-color:  rgb(240, 235, 235); margin: 2px;")
         self.setWindowOpacity(0.95)
@@ -161,7 +175,7 @@ class View(QMainWindow, Ui_Dialog):
             fn = partial(onVisualSlider, self, eachName) # Customizing onNewWireIn() into channel-specific 
             eachChan.slider.valueChanged.connect(fn)    
             
-                
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)     
 
     def plotData(self, data):
         from pylab import plot, show, subplot, title
@@ -187,7 +201,7 @@ class View(QMainWindow, Ui_Dialog):
     def reportData(self):
         newData = []
         for name, chan in self.allFpgaOutput.iteritems(): # Sweep thru channels coming out of Fpga
-            newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(chan.addr, chan.type))))
+            newData.append(self.nerfModel.ReadFPGA(chan.addr, chan.type))
 #            newData.append(self.nerfModel.ReadFPGA(chan.addr, chan.type))
         return newData
 
@@ -222,11 +236,27 @@ class View(QMainWindow, Ui_Dialog):
         #p = QPainter(self.graphicsView)                         ## our painter
         canvas = QPainter(self)                         ## our painter
         
+        spike_train = ""
+        
         for name, ch in self.allFpgaOutput.iteritems():
             if ch.type == "spike32":
                 self.drawRaster(canvas, ch)
             else:
                 self.drawPoints(canvas, ch)          ## paint clipped graphics
+                
+            if name == "Ia_raster_ch30":
+                spike_train += int_2_bin(ch.data[0])
+            elif name == "Ia_raster_ch32":
+                spike_train += int_2_bin(ch.data[0])
+            elif name == "Ia_raster_ch34":
+                spike_train += int_2_bin(ch.data[0])
+            elif name == "Ia_raster_ch36":
+                spike_train += int_2_bin(ch.data[0])
+                 
+        self.sock.sendto(spike_train, (UDP_IP, UDP_PORT))
+
+
+
 
     def drawRaster(self, gp, ch):           
         size = self.size()
@@ -247,6 +277,8 @@ class View(QMainWindow, Ui_Dialog):
                 gp.drawLine(self.x-10,(winScale) - 22 + i ,\
                                  self.x+10, (winScale) -  22 + i)
             bit_mask = bit_mask << 1
+
+
 
     def drawRaster_old(self, gp):
         for spkid, i_mu in zip(self.spike_all,  xrange(len(self.spike_all))):
