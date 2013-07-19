@@ -29,9 +29,9 @@ if __name__ == "__main__":
     WINDOWS = 0
     assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
-    TWO_BOARDS= 0
+    TWO_BOARDS= 1
     THREE_BOARDS=0
-    CORTICAL_BOARDS= 1
+    CORTICAL_BOARDS= 0
     assert (TWO_BOARDS+THREE_BOARDS+CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING WRONG!"
     
     if (WINDOWS==1) :
@@ -106,8 +106,8 @@ if __name__ == "__main__":
         xemSerialList = ['12320003RN', '12430003T2'] 
     elif (THREE_BOARDS ==1 and LINUX == 1):
         print "3 boards in linux setup"
-#        xemSerialList = ['124300046A', '12320003RM', '1201000216']
-        xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
+        xemSerialList = ['124300046A', '12320003RM', '1201000216']
+#        xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
     elif (WINDOWS == 1):
         print "windows setup"
         xemSerialList = ['11160001CG', '1137000222']    #PXI first couple 
