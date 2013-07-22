@@ -90,7 +90,8 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
                     (9, 'mixed_input0(sine)',      'float32',        0.0),  \
                     (10, 'p_delta',      'float32',        0.0),  \
                     (11, 'ltd',      'int32',        0),  \
-                    (12, 'ltp',      'int32',        0)
+                    (12, 'ltp',      'int32',        0),  \
+                    (13, 'f_extraCN_syn_gain',      'float32',        1.0)
 
 
 #Transfer function:  (close to simulink)
@@ -122,8 +123,7 @@ USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001208), \
                     (9, 'Lce_vel',      'float32',        1.0),  \
                     (10, 'syn_CN_gain',      'float32',        50.0),  \
                     (11, 'syn_II_gain',      'float32',        100.0),  \
-                    (12, 'synapse_1n2_offset',      'float32',        0.0),  \
-                    (13,  'syn_extraCNs_gain',      'float32',        50.0)
+                    (12, 'synapse_1n2_offset',      'float32',        0.0)
                
 
 #            trig_id    name          type          default_value                

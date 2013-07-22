@@ -160,6 +160,24 @@
             .spike_in(spikein5),
             .f_I_out(f_I_synapse_II)
         );
+        
+        
+        
+        wire [31:0] f_I_synapse_M1extra1;
+        synapse_simple synapse_simple_from_M1extra1(
+            .clk(sim_clk),
+            .reset(reset_sim),
+            .spike_in(spikein9),
+            .f_I_out(f_I_synapse_M1extra1)
+        );
+        
+        wire [31:0] f_I_synapse_M1extra2;
+        synapse_simple synapse_simple_from_M1extra2(
+            .clk(sim_clk),
+            .reset(reset_sim),
+            .spike_in(spikein10),
+            .f_I_out(f_I_synapse_M1extra2)
+        );
 //
 //        // Synapse synapse0 Instance Definition (Ia rafferent elated)
 //        synapse synapse0(
@@ -198,24 +216,6 @@
 //   
    
    
-//            
-//        wire [31:0] f_I_synapse_M1extra1;
-//        synapse_simple synapse_simple_extraInput_1(
-//            .clk(sim_clk),
-//            .reset(reset_sim),
-//            .spike_in(spikein9),
-//            .f_I_out(f_I_synapse_M1extra1)
-//        );
-//        
-//        
-//        wire [31:0] f_I_synapse_M1extra2;
-//        synapse_simple synapse_simple_extraInput_2(
-//            .clk(sim_clk),
-//            .reset(reset_sim),
-//            .spike_in(spikein10),
-//            .f_I_out(f_I_synapse_M1extra2)
-//        );
-//        
   
 //        // Synapse synapse0 Instance Definition
 //        synapse synapse_extraInput(
@@ -240,6 +240,33 @@
         wire [31:0] f_I_synapse_both;
         add addCurrentsFrom_Ia_and_II(.x(f_I_synapse_Ia), .y(f_I_synapse_II), .out(f_I_synapse_both));
         
+         
+        //*********** add currents from extra cortical input 1(M1)  *********
+        //gain control for extraCN synapse output
+        wire [31:0] f_gain_controlled_I_synapse_extraCN1;
+        mult mult_synapse_simple0_extraCN1(.x(f_I_synapse_M1extra1), .y(f_extraCN_syn_gain), .out(f_gain_controlled_I_synapse_extraCN1));
+
+
+//        wire [31:0] f_SNsCN_M1extra1;
+//        add addCurrentsFrom_extra1(.x(f_I_synapse_both), .y(f_gain_controlled_I_synapse_extraCN1), .out(f_SNsCN_M1extra1));
+//        
+          //*********** add currents from extra cortical input 2(M1)  *********
+          
+           //gain control for CN synapse output
+        wire [31:0] f_gain_controlled_I_synapse_extraCN2;
+        mult mult_synapse_simple0_extraCN2(.x(f_I_synapse_M1extra2), .y(f_extraCN_syn_gain), .out(f_gain_controlled_I_synapse_extraCN2));
+
+        
+        wire [31:0] f_extraInputs;
+        add addCurrentsFrom_extra2(.x(f_gain_controlled_I_synapse_extraCN1), .y(f_gain_controlled_I_synapse_extraCN2), .out( f_extraInputs));
+        
+     
+//        //*********** add currents from four synapses *********
+//        wire [31:0] f_I_synapse_cortical;
+//        add addCurrentsFrom_IaII_and_extras(.x(f_I_synapse_both), .y(f_SNsCN_M1extra1_2), .out(f_I_synapse_cortical));
+        
+        
+        
 //        //*********** add currents from extra cortical input 1(M1)  *********
 //        wire [31:0] f_SN_M1extra1;
 //        add addCurrentsFrom_extra1(.x(f_I_synapse_both), .y(f_I_synapse_M1extra1), .out(f_SN_M1extra1));
@@ -249,15 +276,24 @@
 //        add addCurrentsFrom_extra2(.x(f_SN_M1extra1), .y(f_I_synapse_M1extra2), .out(f_drive_to_CN));
 //        
 //        
-        wire [31:0]  i_drive_to_CN;
-        floor   synapse_float_to_int(
-//            .in(f_drive_to_CN),
+        wire [31:0]  i_I_from_spindle;
+        floor   float_to_int_fromSynapse(
             .in(f_I_synapse_both),
-            .out(i_drive_to_CN)
+            .out(i_I_from_spindle)
+        );
+        
+        
+        wire [31:0]  i_I_from_extras;
+        floor   float_to_int_extras(
+            .in(f_extraInputs),
+            .out(i_I_from_extras)
         );
         
         wire [31:0] fixed_drive_to_CN_F0;
-        assign fixed_drive_to_CN_F0 = i_drive_to_CN <<< 10;
+        assign fixed_drive_to_CN_F0 = i_I_from_spindle <<< 10 + i_I_from_extras;
+        
+        
+        
         
         // Triggered Input triggered_input0 Instance Definition (ltp)
         always @ (posedge ep50trig[12] or posedge reset_global)
@@ -332,6 +368,14 @@
         else
             f_CN2_extra_drive <= {ep02wire, ep01wire};    
         
+        
+       // Triggered Input extra CNs Gain Instance Definition 
+        reg [31:0] f_extraCN_syn_gain;
+        always @ (posedge ep50trig[13] or posedge reset_global)
+        if (reset_global)
+            f_extraCN_syn_gain <= 32'h3F800000;         //reset to 1.0  
+        else
+            f_extraCN_syn_gain <= {ep02wire, ep01wire};    
         
         
      wire [31:0]  spike_count_neuron_sync_CN1;
