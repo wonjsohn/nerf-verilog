@@ -248,13 +248,13 @@
             f_CN_syn_gain <= {ep02wire, ep01wire};    
 
 
-        // Triggered Input extra CNs Gain Instance Definition 
-        reg [31:0] f_extraCN_syn_gain;
-        always @ (posedge ep50trig[13] or posedge reset_global)
-        if (reset_global)
-            f_extraCN_syn_gain <= 32'h42480000;         //reset to 50.0  
-        else
-            f_extraCN_syn_gain <= {ep02wire, ep01wire};    
+//        // Triggered Input extra CNs Gain Instance Definition 
+//        reg [31:0] f_extraCN_syn_gain;
+//        always @ (posedge ep50trig[13] or posedge reset_global)
+//        if (reset_global)
+//            f_extraCN_syn_gain <= 32'h42480000;         //reset to 50.0  
+//        else
+//            f_extraCN_syn_gain <= {ep02wire, ep01wire};    
 
         
 //        reg [31:0] triggered_input4_a;    //
@@ -458,21 +458,7 @@
             .f_I_out(f_I_synapse_II)
         );
         
-        wire [31:0] f_I_synapse_M1extra1;
-        synapse_simple synapse_simple_from_M1extra1(
-            .clk(sim_clk),
-            .reset(reset_sim),
-            .spike_in(spikein5),
-            .f_I_out(f_I_synapse_M1extra1)
-        );
-        
-        wire [31:0] f_I_synapse_M1extra2;
-        synapse_simple synapse_simple_from_M1extra2(
-            .clk(sim_clk),
-            .reset(reset_sim),
-            .spike_in(spikein6),
-            .f_I_out(f_I_synapse_M1extra2)
-        );
+    
         
         wire [31:0] f_I_synapse_CN;
         synapse_simple synapse_simple_from_CN(
@@ -489,7 +475,7 @@
         wire [31:0] f_temp_I_synapse_Ia_removed_offset;
         sub sub_spindle0_Ia(.x(f_I_synapse_Ia), .y(triggered_input2), .out(f_temp_I_synapse_Ia_removed_offset));
 	
-        //gain control for synapse output
+        //gain control for f_I_synapse_M1extra1synapse output
         wire [31:0] f_gain_controlled_I_synapse_Ia;
         mult mult_synapse_simple0_Ia(.x(f_temp_I_synapse_Ia_removed_offset), .y(triggered_input5), .out(f_gain_controlled_I_synapse_Ia));
 
@@ -526,36 +512,17 @@
         add addCurrentsFrom_CN(.x(f_gain_controlled_I_synapse_CN), .y(f_I_synapse_both), .out(f_I_SNsCN));
 //        
         
-        
-        //*********** add currents from extra cortical input 1(M1)  *********
-        //gain control for extraCN synapse output
-        wire [31:0] f_gain_controlled_I_synapse_extraCN1;
-        mult mult_synapse_simple0_extraCN1(.x(f_I_synapse_M1extra1), .y(f_extraCN_syn_gain), .out(f_gain_controlled_I_synapse_extraCN1));
-
-        
-        
-        wire [31:0] f_SNsCN_M1extra1;
-        add addCurrentsFrom_extra1(.x(f_I_SNsCN), .y(f_gain_controlled_I_synapse_extraCN1), .out(f_SNsCN_M1extra1));
-        
-          //*********** add currents from extra cortical input 2(M1)  *********
-          
-           //gain control for CN synapse output
-        wire [31:0] f_gain_controlled_I_synapse_extraCN2;
-        mult mult_synapse_simple0_extraCN2(.x(f_I_synapse_M1extra2), .y(f_extraCN_syn_gain), .out(f_gain_controlled_I_synapse_extraCN2));
-
-        
-        wire [31:0] f_SNsCN_M1extra1_2;
-        add addCurrentsFrom_extra2(.x(f_SNsCN_M1extra1), .y(f_gain_controlled_I_synapse_extraCN2), .out( f_SNsCN_M1extra1_2));
+       
         
 
 //        
         wire [31:0]  i_drive_to_CN;
         floor   synapse_float_to_int(
 //            .in(f_drive_to_CN),
-            .in(f_SNsCN_M1extra1_2),
+            .in(f_I_SNsCN),
             .out(i_drive_to_CN)
         );
-  
+
         
         //wire [31:0] fixed_I_synapse;
         //assign fixed_I_synapse= int_I_synapse << 
