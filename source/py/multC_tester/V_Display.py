@@ -31,6 +31,8 @@ import socket
 UDP_IP = "quadriceps.usc.edu"
 UDP_PORT = 3333
 
+UDP_PORT_2 = 3334
+
 def int_2_bin(x):
     output = ""
     bit_mask = 0x0000001
@@ -175,7 +177,8 @@ class View(QMainWindow, Ui_Dialog):
             fn = partial(onVisualSlider, self, eachName) # Customizing onNewWireIn() into channel-specific 
             eachChan.slider.valueChanged.connect(fn)    
             
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)     
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  
+        
 
     def plotData(self, data):
         from pylab import plot, show, subplot, title
@@ -237,23 +240,35 @@ class View(QMainWindow, Ui_Dialog):
         canvas = QPainter(self)                         ## our painter
         
         spike_train = ""
+        spike_train_2 = ""
         
         for name, ch in self.allFpgaOutput.iteritems():
             if ch.type == "spike32":
-                self.drawRaster(canvas, ch)
+                if "ch3" not in name:
+                    self.drawRaster(canvas, ch)
             else:
                 self.drawPoints(canvas, ch)          ## paint clipped graphics
-                
-            if name == "Ia_raster_ch30":
-                spike_train += int_2_bin(ch.data[0])
-            elif name == "Ia_raster_ch32":
-                spike_train += int_2_bin(ch.data[0])
-            elif name == "Ia_raster_ch34":
-                spike_train += int_2_bin(ch.data[0])
-            elif name == "Ia_raster_ch36":
-                spike_train += int_2_bin(ch.data[0])
+              
+            if "ch3" in name: 
+                if name == "Ia_raster_ch30":
+                    spike_train += int_2_bin(ch.data[0])
+                elif name == "Ia_raster_ch32":
+                    spike_train += int_2_bin(ch.data[0])
+                elif name == "Ia_raster_ch34":
+                    spike_train += int_2_bin(ch.data[0])
+                elif name == "Ia_raster_ch36":
+                    spike_train += int_2_bin(ch.data[0])           
+                elif name == "II_raster_ch38":
+                    spike_train_2 += int_2_bin(ch.data[0])
+                elif name == "II_raster_ch3a":
+                    spike_train_2 += int_2_bin(ch.data[0])
+                elif name == "II_raster_ch3c":
+                    spike_train_2 += int_2_bin(ch.data[0])
+                elif name == "II_raster_ch3e":
+                    spike_train_2 += int_2_bin(ch.data[0])
                  
         self.sock.sendto(spike_train, (UDP_IP, UDP_PORT))
+        self.sock.sendto(spike_train_2, (UDP_IP, UDP_PORT_2))
 
 
 
