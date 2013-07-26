@@ -118,7 +118,7 @@
 
         // Output and OpalKelly Interface Wire Definitions
         
-        wire [14*17-1:0] ok2x;
+        wire [16*17-1:0] ok2x;
         wire [15:0] ep00wire, ep01wire, ep02wire;
         wire [15:0] ep50trig;
         
@@ -245,7 +245,12 @@
         //gain control for extraCN synapse output
         wire [31:0] f_gain_controlled_I_synapse_extraCN1;
         mult mult_synapse_simple0_extraCN1(.x(f_I_synapse_M1extra1), .y(f_extraCN_syn_gain), .out(f_gain_controlled_I_synapse_extraCN1));
-
+        
+        wire [31:0]  i_I_from_CN1extra;
+        floor   float_to_int_CN1extra(
+            .in(f_gain_controlled_I_synapse_extraCN1),
+            .out(i_I_from_CN1extra)
+        );
 
 //        wire [31:0] f_SNsCN_M1extra1;
 //        add addCurrentsFrom_extra1(.x(f_I_synapse_both), .y(f_gain_controlled_I_synapse_extraCN1), .out(f_SNsCN_M1extra1));
@@ -256,6 +261,17 @@
         wire [31:0] f_gain_controlled_I_synapse_extraCN2;
         mult mult_synapse_simple0_extraCN2(.x(f_I_synapse_M1extra2), .y(f_extraCN_syn_gain), .out(f_gain_controlled_I_synapse_extraCN2));
 
+        wire [31:0]  i_I_from_CN2extra;
+        floor   float_to_int_CN2extra(
+            .in(f_gain_controlled_I_synapse_extraCN2),
+            .out(i_I_from_CN2extra)
+        );
+        
+        wire [31:0] i_I_from_CN2extra_buttonScaled;
+        assign i_I_from_CN2extra_buttonScaled = i_I_from_CN2extra * i_scaler;
+        
+        
+        
         
         wire [31:0] f_extraInputs;
         add addCurrentsFrom_extra2(.x(f_gain_controlled_I_synapse_extraCN1), .y(f_gain_controlled_I_synapse_extraCN2), .out( f_extraInputs));
@@ -283,14 +299,11 @@
         );
         
         
-        wire [31:0]  i_I_from_extras;
-        floor   float_to_int_extras(
-            .in(f_extraInputs),
-            .out(i_I_from_extras)
-        );
+
         
         wire [31:0] fixed_drive_to_CN_F0;
-        assign fixed_drive_to_CN_F0 = i_I_from_spindle <<< 10 + i_I_from_extras;
+        //assign fixed_drive_to_CN_F0 = i_I_from_spindle + i_I_from_extras;
+        assign fixed_drive_to_CN_F0 = i_I_from_spindle << 9 + i_I_from_CN1extra+ i_I_from_CN2extra_buttonScaled;
         
         
         
@@ -440,6 +453,45 @@
     assign spikeout13 = 1'b0;
     assign spikeout14 = 1'b0;
 
+
+
+
+
+    //***** button gain controller test *******
+    
+    //-------
+   // DFFs
+   //-------
+   
+    reg [3:0] i_scaler;
+    always @(posedge sim_clk  or posedge reset_global) begin
+        if(reset_global) begin
+            i_scaler <= 4'd1;
+        end
+        else if (temp_input_1d ^ temp_input) begin // detect level change
+            if (i_scaler == 8) begin // avoid scale=0
+                i_scaler <= 1;
+            end else begin 
+                i_scaler <= i_scaler + 1;
+            end
+        end
+        else begin
+            i_scaler <= i_scaler;
+        end
+    end
+    
+    wire [31:0] i_stuffed_scaler;
+    assign i_stuffed_scaler = {28'd0, i_scaler[3:0]};
+      
+    
+    reg temp_input, temp_input_1d;
+    always @(posedge sim_clk) begin
+        temp_input <= spikein6;
+        temp_input_1d <= temp_input;
+    end
+
+
+
         // Output and OpalKelly Interface Instance Definitions
         //assign led = 0;
         //wire reset_external;
@@ -455,7 +507,7 @@
         assign reset_global = ep00wire[0] | reset_external_clean;
         assign reset_sim = ep00wire[2] ;
         assign is_from_trigger = ~ep00wire[1];
-        okWireOR # (.N(14)) wireOR (ok2, ok2x);
+        okWireOR # (.N(16)) wireOR (ok2, ok2x);
         okHost okHI(
             .hi_in(hi_in),  .hi_out(hi_out),    .hi_inout(hi_inout),    .hi_aa(hi_aa),
             .ti_clk(ti_clk),    .ok1(ok1),  .ok2(ok2)   );
@@ -483,10 +535,13 @@
         okWireOut wo29 (    .ep_datain(i_CN1_extra_drive[31:16]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h29)   );  
 
         okWireOut wo2A (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h2A)    );
-        okWireOut wo2B (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2B)   );  
+        okWireOut wo2B (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2B)   ); 
+        
+        okWireOut wo2C (    .ep_datain(i_stuffed_scaler[15:0]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2C)    );
+        okWireOut wo2D (    .ep_datain(i_stuffed_scaler[31:16]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2D)   ); 
 
         
-        okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
+        okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
                             .ep_blockstrobe(), .ep_dataout(pipe_in_data), .ep_ready(1'b1));
         
                 
@@ -609,7 +664,7 @@
     assign led[3] = ~spikein9;
     assign led[4] = ~spikeout1;
     assign led[5] = ~0;
-    assign led[6] = ~neuron_clk; // 
+    assign led[6] = ~(temp_input_1d ^ temp_input); // 
     assign led[7] = ~sim_clk; // clock
     
 endmodule

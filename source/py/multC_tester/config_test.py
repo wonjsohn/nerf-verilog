@@ -17,7 +17,7 @@ FPGA_OUTPUT_B2 =   (0x20,      'v_neuron0',      1.0,         'float32',      Qt
                 (0x26,      'fixed_drive_to_CN',      1.0,         'int32',      Qt.black),  \
                 (0x28,      'i_CN1_extra_drive',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'i_CN2_extra_drive',      1.0,         'float32',      Qt.darkRed),  \
-                (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
+                (0x2C,      'i_scaler',      1.0,         'int32',      Qt.darkGray)
                 
 ##            address         name   visual_gain         type            color
 #FPGA_OUTPUT_B3 =    (0x20,      'mixed_input0',      1.0,         'float32',      Qt.blue),  \
