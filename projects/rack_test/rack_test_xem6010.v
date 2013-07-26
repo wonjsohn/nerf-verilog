@@ -278,7 +278,7 @@
         // Triggered Input triggered_input6 Instance Definition (spindle_Ia_gain)
         always @ (posedge ep50trig[1] or posedge reset_global)
         if (reset_global)
-            triggered_input6 <= 32'h3F800000;         //reset to 1.0      
+            triggered_input6 <= 32'h3FC00000;         //reset to 1.5      
         else
             triggered_input6 <= {ep02wire, ep01wire};      
         
