@@ -268,7 +268,9 @@
         );
         
         wire [31:0] i_I_from_CN2extra_buttonScaled;
-        assign i_I_from_CN2extra_buttonScaled = i_I_from_CN2extra * i_scaler;
+        unsigned_mult32  scale_CN2extra(i_I_from_CN2extra_buttonScaled, i_I_from_CN2extra, i_stuffed_scaler);
+       
+//       assign i_I_from_CN2extra_buttonScaled = i_I_from_CN2extra * i_scaler;
         
         
         
@@ -463,26 +465,31 @@
    // DFFs
    //-------
    
-    reg [3:0] i_scaler;
+    reg [3:0] i_pre_scaler;
     always @(posedge sim_clk  or posedge reset_global) begin
         if(reset_global) begin
-            i_scaler <= 4'd1;
+            i_pre_scaler <= 4'b0010;   // '001'0  => '1' 
         end
-        else if (temp_input_1d ^ temp_input) begin // detect level change
-            if (i_scaler == 8) begin // avoid scale=0
-                i_scaler <= 1;
+        else if (temp_input_1d ^ temp_input) begin // detect level change  
+            if (i_pre_scaler == 4'b1010) begin // '101'0 -> '5'
+                i_pre_scaler <= 4'b0010;
             end else begin 
-                i_scaler <= i_scaler + 1;
+                i_pre_scaler <= i_pre_scaler + 1;
             end
         end
         else begin
-            i_scaler <= i_scaler;
+            i_pre_scaler <= i_pre_scaler;
         end
     end
     
+    wire [3:0] i_scaler;
+    assign i_scaler = i_pre_scaler >> 1;
+    
+
     wire [31:0] i_stuffed_scaler;
     assign i_stuffed_scaler = {28'd0, i_scaler[3:0]};
       
+    
     
     reg temp_input, temp_input_1d;
     always @(posedge sim_clk) begin
