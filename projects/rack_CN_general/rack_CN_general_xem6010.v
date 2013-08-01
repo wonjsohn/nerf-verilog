@@ -669,9 +669,9 @@
     assign led[1] = ~spikein1;
     assign led[2] = ~spikein5;
     assign led[3] = ~spikein9;
-    assign led[4] = ~spikeout1;
-    assign led[5] = ~0;
-    assign led[6] = ~(temp_input_1d ^ temp_input); // 
+    assign led[4] = ~i_stuffed_scaler[0];
+    assign led[5] = ~i_stuffed_scaler[1];
+    assign led[6] = ~i_stuffed_scaler[2]; // 
     assign led[7] = ~sim_clk; // clock
     
 endmodule
