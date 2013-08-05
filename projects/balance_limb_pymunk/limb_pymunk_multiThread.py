@@ -99,7 +99,7 @@ class armSetup:
         
         """    """
         self.gForearm_shape.group = 1
-        self.gForearm_shape.elasticity = 0.4
+        self.gForearm_shape.elasticity = 1.0
 
         self.gRest_joint_angle = 0.0
         
@@ -188,7 +188,7 @@ class armSetup:
 #            force_bic = force_bic * (1-exp(-force_bic/self.fmax)) 
 
     
-            self.gForearm_body.torque = (force_bic - self.force_tri) * 0.06
+            self.gForearm_body.torque = (force_bic - self.force_tri) * 0.03 # was 0.06
                                             
             self.angle = ((self.gForearm_body.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
             

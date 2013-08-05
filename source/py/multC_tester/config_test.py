@@ -12,12 +12,12 @@ FPGA_OUTPUT_B1 =    (0x20,      'raster',      1.0,         'spike32',      Qt.b
                 
 #            address         name   visual_gain         type            color
 FPGA_OUTPUT_B2 =   (0x20,      'v_neuron0',      1.0,         'float32',      Qt.blue),  \
-                (0x22,      'population_neuron0',      1.0,         'spike32',      Qt.red),  \
+                (0x22,      'population_neuron_CN1',      1.0,         'spike32',      Qt.red),  \
                 (0x24,      'spike_count_CN_neuron0',      1.0,         'int32',      Qt.green),  \
                 (0x26,      'fixed_drive_to_CN',      1.0,         'int32',      Qt.black),  \
                 (0x28,      'i_CN1_extra_drive',      1.0,         'int32',      Qt.magenta),  \
-                (0x2A,      'i_CN2_extra_drive',      1.0,         'float32',      Qt.darkRed),  \
-                (0x2C,      'i_scaler',      1.0,         'int32',      Qt.darkGray)
+                (0x2A,      'mixed_input0',      1.0,         'float32',      Qt.darkRed),  \
+                (0x2C,      'i_stuffed_scaler',      1.0,         'int32',      Qt.darkGray)
                 
 ##            address         name   visual_gain         type            color
 #FPGA_OUTPUT_B3 =    (0x20,      'mixed_input0',      1.0,         'float32',      Qt.blue),  \
