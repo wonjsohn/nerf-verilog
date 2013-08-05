@@ -99,12 +99,12 @@ if __name__ == "__main__":
 #    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
     if (CORTICAL_BOARDS ==1) :   
         print "cortical boards setup"
-        xemSerialList = ['12320003RM', '11160001CJ']  # CORTICAL BOARDS
+        xemSerialList = [ '11160001CJ',  '12320003RM']  # CORTICAL BOARDS
 #        xemSerialList = ['0000000547', '000000054B']  # CORTICAL BOARDS
     elif (TWO_BOARDS ==1 and LINUX == 1):
         print "2 boards in linux setup"
-#        xemSerialList = ['124300046A', '1201000216']
-        xemSerialList = ['12320003RN', '12430003T2'] 
+        xemSerialList = ['124300046A', '1201000216']
+#        xemSerialList = ['12320003RN', '12430003T2'] 
 #        xemSerialList = ['113700021E', '0000000542'] 
 #        xemSerialList = ['11160001CG', '1137000222'] 
     elif (THREE_BOARDS ==1 and LINUX == 1):

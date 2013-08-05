@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project dut_tester_eric4 -->
-<!-- Saved: 2013-02-22, 17:21:27 -->
+<!-- Saved: 2013-08-04, 19:52:26 -->
 <!-- Copyright (C) 2013 C. Minos Niu,  -->
 <Project version="4.6">
   <Language>en</Language>
@@ -18,13 +18,15 @@
     <Source>Utilities.py</Source>
     <Source>GuiPanel.py</Source>
     <Source>par_search.py</Source>
-    <Source>config_test.py</Source>
     <Source>Ui_Controls.py</Source>
     <Source>Ui_Display.py</Source>
+    <Source>config_test_local.py</Source>
+    <Source>Ui_V_Display.py</Source>
+    <Source>Ui_MVC_MainGUI.py</Source>
   </Sources>
   <Forms>
-    <Form>Controls.ui</Form>
-    <Form>Display.ui</Form>
+    <Form>V_Display.ui</Form>
+    <Form>MVC_MainGUI.ui</Form>
   </Forms>
   <Translations>
   </Translations>
