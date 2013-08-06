@@ -359,6 +359,16 @@ class armSetup:
                     self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (5,  0))
                 elif event.type == KEYDOWN and event.key == K_u:
                     self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (-5,  0))
+#                    
+#                elif event.type == KEYDOWN and event.key == K_o:  # CN syn gain 50
+#                    bitVal50 = convertType(50.0, fromType = 'f', toType = 'I')
+#                    xem_muscle_bic.SendPara(bitVal = bitVal50, trigEvent = 10) 
+#                    xem_muscle_tri.SendPara(bitVal = bitVal50, trigEvent = 10)
+#                elif event.type == KEYDOWN and event.key == K_p:  # CN syn gain 100
+#                    bitVal100 = convertType(100.0, fromType = 'f', toType = 'I')
+#                    xem_muscle_bic.SendPara(bitVal = bitVal100, trigEvent = 10) 
+#                    xem_muscle_tri.SendPara(bitVal = bitVal100, trigEvent = 10)    
+#                    
                 elif event.type == KEYDOWN and event.key == K_l:  # forced movement, follow the mouse
                     if (self.record == True):
                         self.record = False
