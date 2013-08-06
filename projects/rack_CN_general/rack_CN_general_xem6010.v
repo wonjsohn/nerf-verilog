@@ -243,12 +243,12 @@
          
         //*********** add currents from extra cortical input 1(M1)  *********
         //gain control for extraCN synapse output
-        wire [31:0] f_gain_controlled_I_synapse_extraCN1;
-        mult mult_synapse_simple0_extraCN1(.x(f_I_synapse_M1extra1), .y(f_extraCN_syn_gain), .out(f_gain_controlled_I_synapse_extraCN1));
-        
+//        wire [31:0] f_gain_controlled_I_synapse_extraCN1;
+//        mult mult_synapse_simple0_extraCN1(.x(f_I_synapse_M1extra1), .y(f_extraCN_syn_gain), .out(f_gain_controlled_I_synapse_extraCN1));
+//        
         wire [31:0]  i_I_from_CN1extra;
         floor   float_to_int_CN1extra(
-            .in(f_gain_controlled_I_synapse_extraCN1),
+            .in(f_I_synapse_M1extra1),
             .out(i_I_from_CN1extra)
         );
 
@@ -258,26 +258,26 @@
           //*********** add currents from extra cortical input 2(M1)  *********
           
            //gain control for CN synapse output
-        wire [31:0] f_gain_controlled_I_synapse_extraCN2;
-        mult mult_synapse_simple0_extraCN2(.x(f_I_synapse_M1extra2), .y(f_extraCN_syn_gain), .out(f_gain_controlled_I_synapse_extraCN2));
+//        wire [31:0] f_gain_controlled_I_synapse_extraCN2;
+//        mult mult_synapse_simple0_extraCN2(.x(f_I_synapse_M1extra2), .y(f_extraCN_syn_gain), .out(f_gain_controlled_I_synapse_extraCN2));
 
         wire [31:0]  i_I_from_CN2extra;
         floor   float_to_int_CN2extra(
-            .in(f_gain_controlled_I_synapse_extraCN2),
+            .in(f_I_synapse_M1extra2),
             .out(i_I_from_CN2extra)
         );
         
         wire [31:0] i_I_from_CN2extra_buttonScaled;
-        unsigned_mult32  scale_CN2extra(i_I_from_CN2extra_buttonScaled, i_I_from_CN2extra, i_stuffed_scaler);
+        unsigned_mult32  scale_CN2extra(.out(i_I_from_CN2extra_buttonScaled), .a(i_I_from_CN2extra), .b(i_stuffed_scaler));
        
 //       assign i_I_from_CN2extra_buttonScaled = i_I_from_CN2extra * i_scaler;
         
         
         
-        
-        wire [31:0] f_extraInputs;
-        add addCurrentsFrom_extra2(.x(f_gain_controlled_I_synapse_extraCN1), .y(f_gain_controlled_I_synapse_extraCN2), .out( f_extraInputs));
-        
+//        
+//        wire [31:0] f_extraInputs;
+//        add addCurrentsFrom_extra2(.x(f_gain_controlled_I_synapse_extraCN1), .y(f_gain_controlled_I_synapse_extraCN2), .out( f_extraInputs));
+//        
      
 //        //*********** add currents from four synapses *********
 //        wire [31:0] f_I_synapse_cortical;
@@ -305,7 +305,9 @@
         
         wire [31:0] fixed_drive_to_CN_F0;
         //assign fixed_drive_to_CN_F0 = i_I_from_spindle + i_I_from_extras;
-        assign fixed_drive_to_CN_F0 = i_I_from_spindle << 9 + i_I_from_CN1extra+ i_I_from_CN2extra_buttonScaled;
+        assign fixed_drive_to_CN_F0 = i_I_from_spindle << 9 + i_I_from_CN1extra+ i_I_from_CN2extra_buttonScaled; 
+        // i_I_from_CN1extra:0~10 (15000 amp),  i_I_from_CN2extra_buttonScaled: 1~5  constantly. (4000 * 1~5)
+        //fixed_drive_to_CN :5000~ 500000!
         
         
         
@@ -471,7 +473,7 @@
             i_pre_scaler <= 4'b0010;   // '001'0  => '1' 
         end
         else if (temp_input_1d ^ temp_input) begin // detect level change  
-            if (i_pre_scaler == 4'b1010) begin // '101'0 -> '5'
+            if (i_pre_scaler == 4'b1110) begin // '111'0 -> '7'
                 i_pre_scaler <= 4'b0010;
             end else begin 
                 i_pre_scaler <= i_pre_scaler + 1;
@@ -526,20 +528,20 @@
         okWireIn    wi01    (.ok1(ok1), .ep_addr(8'h01),    .ep_dataout(ep01wire)   );
         okWireIn    wi02    (.ok1(ok1), .ep_addr(8'h02),    .ep_dataout(ep02wire)   );
 
-        okWireOut wo20 (    .ep_datain(v_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h20)    );
-        okWireOut wo21 (    .ep_datain(v_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h21)   );    
+        okWireOut wo20 (    .ep_datain(i_I_from_CN2extra_buttonScaled[15:0]),  .ok1(ok1),  .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h20)    );
+        okWireOut wo21 (    .ep_datain(i_I_from_CN2extra_buttonScaled[31:16]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h21)   );    
         
         okWireOut wo22 (    .ep_datain(population_neuron_CN1[15:0]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h22)    );
         okWireOut wo23 (    .ep_datain(population_neuron_CN1[31:16]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h23)   );    
         
-        okWireOut wo24 (    .ep_datain(spike_count_neuron_sync_CN1[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
-        okWireOut wo25 (    .ep_datain(spike_count_neuron_sync_CN1[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
+        okWireOut wo24 (    .ep_datain(i_I_from_spindle[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
+        okWireOut wo25 (    .ep_datain(i_I_from_spindle[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
         
         okWireOut wo26 (    .ep_datain(fixed_drive_to_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
         okWireOut wo27 (    .ep_datain(fixed_drive_to_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
         
-        okWireOut wo28 (    .ep_datain(i_CN1_extra_drive[15:0]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h28)    );
-        okWireOut wo29 (    .ep_datain(i_CN1_extra_drive[31:16]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h29)   );  
+        okWireOut wo28 (    .ep_datain(i_I_from_CN1extra[15:0]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h28)    );
+        okWireOut wo29 (    .ep_datain(i_I_from_CN1extra[31:16]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h29)   );  
 
         okWireOut wo2A (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h2A)    );
         okWireOut wo2B (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2B)   ); 
