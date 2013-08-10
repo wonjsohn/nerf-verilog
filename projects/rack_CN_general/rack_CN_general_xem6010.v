@@ -294,9 +294,13 @@
 //        add addCurrentsFrom_extra2(.x(f_SN_M1extra1), .y(f_I_synapse_M1extra2), .out(f_drive_to_CN));
 //        
 //        
+
+        wire [31:0] f_I_synapse_both_gainControlled;
+         mult mult_synapse(.x(f_I_synapse_both), .y(f_extraCN_syn_gain), .out(f_I_synapse_both_gainControlled));
+
         wire [31:0]  i_I_from_spindle;
         floor   float_to_int_fromSynapse(
-            .in(f_I_synapse_both),
+            .in(f_I_synapse_both_gainControlled),
             .out(i_I_from_spindle)
         );
         
