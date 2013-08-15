@@ -6,7 +6,7 @@
 %load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_175015.mat');
 cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk
 
-fname = sprintf('20130808_184819');
+fname = sprintf('20130814_181051');
 
 load([fname, '.mat']);
 
@@ -16,15 +16,17 @@ t_bic= data_bic(:,1);
 t_tri= data_tri(:,1);
 length_bic = data_bic(:,2);
 length_tri = data_tri(:,2);
+vel_bic = data_bic(:,3);
+vel_tri = data_tri(:,3);
 f_emg_bic = data_bic(:,6);
 f_emg_tri = data_tri(:,6);
 force_bic = data_bic(:,5);
 force_tri = data_tri(:,5);
 
-n = 3;
-start =700;
+n = 4;
+start =200;
 %start = 1250;
-last = min(length(t_bic), 2500); 
+last = min(length(t_bic), 22000); 
 % last = min(length(t_bic), 1000); %2050
 subplot(n, 1, 1);
 
@@ -118,10 +120,24 @@ hYLabel = ylabel('flexor force');
 %   'Color'           , [.1 .4 .4]  );
 % set(gca,'YLim',[0 10])
 
+%% velocity
+subplot (n,1, 4);
+hLine8 = line(t_bic(start:last), vel_bic(start:last));
+set(hLine8                        , ...
+  'LineStyle'       , '-'         , ...
+  'LineWidth'       , 2           , ...   
+  'Color'           , [0.5 0 0.5]  );
+% set(gca,'YLim',[0 200])
+% axis off;
+
+hXLabel = xlabel('time (s)');
+hYLabel = ylabel('vel');
+
+
 
 %%
 hfig2  = figure(2); 
-last = min(length(t_tri), 2500); 
+last = min(length(t_tri), 22000) 
 set(gcf, 'units', 'centimeters', 'pos', [0 0 figure_width figure_height])
     % set(gcf, 'Units', 'pixels', 'Position', [100 100 500 375]);
     set(gcf, 'PaperPositionMode', 'auto');
@@ -174,6 +190,8 @@ hYLabel = ylabel('Extensor force');
 % set(gca,'YLim',[0 10])
 % 
 % 
+
+
 
 
 % set(hdots_low                         , ...
