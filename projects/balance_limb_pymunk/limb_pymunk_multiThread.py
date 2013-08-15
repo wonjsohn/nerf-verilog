@@ -12,44 +12,6 @@ JOINT_MAX = 1.2
 JOINT_RANGE = JOINT_MAX - JOINT_MIN
 
 
-def sineGen(xem):
-    pipeInData = gen_sin(F = 0.5, AMP = 0.25,  BIAS = 1.15,  T = 2.0) 
-    #pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.16, 0.17, 2.0], L = [1.0, 1.0, 1.4, 1.4, 1.0, 1.0], FILT = False)
-    print "length :",  len(pipeInData)
-    print "pipeInDate is ",  pipeInData
-    return pipeInData
-#    xem.SendPipe(pipeInData)
-#    
-def sineGen_bic():
-    pipeInData_bic = gen_sin(F = 12.0, AMP = 10000.0,  BIAS = 0.0,  T = 1.0)
-    print "length :",  len(pipeInData_bic)
-    print pipeInData_bic
-
-    pipeInData_out=[]
-
-        
-    for i in xrange(0,  1024):
-        pipeInData_out.append(max(0.0,  pipeInData_bic[i]))
-        
-   
-    print "length of Bic pipeInData_out", len(pipeInData_out)
-   
-    return pipeInData_out
-    
-def sineGen_tri():
-#    pipeInZero512 = [0] * 512
-    pipeIndata_tri = -gen_sin(F = 12.0, AMP = 10000.0,  BIAS = 0.0,  T = 1.0)
-
-    pipeInData_out=[]
-    for i in xrange(0,  1024):
-        pipeInData_out.append(max(0.0,  pipeIndata_tri[i]))
-        
-   
-    print "length of Tri pipeInData_out", len(pipeInData_out)
-   
-    return pipeInData_out
-
-
 
 class armSetup:
     def __init__(self):
@@ -87,8 +49,10 @@ class armSetup:
     #    j = pymunk.PinJoint(forearm_body, gElbow_joint_body, (0,0), (0,0))
         j = pymunk.RotaryLimitJoint(self.gForearm_body, self.gElbow_joint_body, JOINT_MIN, JOINT_MAX)
         
+        
+        pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.3 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.13 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -127,7 +91,7 @@ class armSetup:
     def angle2length(self,  angle):
         max_length = 1.3
         length = max_length + ((2.0-max_length)-max_length) / (3.14)* (angle- JOINT_MIN)      # angle in rad 
-        length = 0.3*angle+1     # angle in rad 
+        length = 0.3*angle+1     # was: 0.3*angle+1 / angle in rad 
         return length
 
     def angular2LinearV(self, angularV):
@@ -178,9 +142,9 @@ class armSetup:
           
             """ reciprocal inhibition  """
 #            if (self.linearV > 0): # biceps force contraction phase
-#                self.force_tri = self.force_tri*0.5 
+#                self.force_tri = self.force_tri*0.5
 #            else:   # triceps contraction phase
-#                force_bic = force_bic*0.5 
+#                force_bic = force_bic*0.5
                 
 
             """  force curve (f-input spikes) saturation effect"""
@@ -212,7 +176,9 @@ class armSetup:
             
 #            self.linearV = 0.0
     #        print linearV
-            self.scale = 150.0
+            self.scale = 30.0 #150.0
+            #self.linearV = min(0, self.linearV ) # testing: only vel component in afferent active when lengthing 
+            
             bitVal_bic_i = convertType(-self.linearV*self.scale, fromType = 'f', toType = 'I')
 #            bitVal_tri_i = convertType(self.linearV*scale, fromType = 'f', toType = 'I')
             
@@ -241,7 +207,7 @@ class armSetup:
     #        bitval = convertType(gd_tri, fromType = 'f', toType = 'I')
     #        xem_spindle_tri.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
             
-    #        print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_bic, lce_tri, gForearm_body.torque),                           
+            #print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_bic, self.lce_tri, self.gForearm_body.torque),                           
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, force_tri,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
@@ -249,7 +215,8 @@ class armSetup:
             self.data_bic.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
     #      
-            
+            #time.sleep(0.001)
+  
             
     def controlLoopTriceps(self):
         
@@ -326,6 +293,7 @@ class armSetup:
             tempData = elapsedTime, self.lce_tri, self.linearV, spikecnt_tri,   self.force_tri,  emg_tri  
             self.data_tri.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
+            #time.sleep(0.001)
   
             
     def keyControl(self):
@@ -356,9 +324,9 @@ class armSetup:
 #                    self.gRest_joint_angle = self.angle
                     self.gForearm_body.angle = 0.0
                 elif event.type == KEYDOWN and event.key == K_r:
-                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (5,  0))
+                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (4,  0))
                 elif event.type == KEYDOWN and event.key == K_u:
-                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (-5,  0))
+                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (-4,  0))
 #                    
 #                elif event.type == KEYDOWN and event.key == K_o:  # CN syn gain 50
 #                    bitVal50 = convertType(50.0, fromType = 'f', toType = 'I')
@@ -395,7 +363,7 @@ class armSetup:
             #if abs(flipper_body.angle) < 0.001: flipper_body.angle = 0
 
             """ Update physics  """
-            fps = 50.0
+            fps = 30.0
             step = 1
             dt = 1.0/fps/step
             for x in range(step):
