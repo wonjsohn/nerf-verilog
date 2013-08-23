@@ -30,7 +30,7 @@ class armSetup:
 #        fp = [(20,-20), (-120, 0), (20,20)]
         fp = [(40, -5), (30, -15),  (20,-20),   (-150, -10), (-150,  10), (20,20),  (30,  15),  (40,  5)]
  
-        mass = 1.52
+        mass = 1.52 # was 1.52
         moment = pymunk.moment_for_poly(mass, fp)
 
         # left flipper
@@ -52,7 +52,7 @@ class armSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.13 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.10 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -176,7 +176,8 @@ class armSetup:
             
 #            self.linearV = 0.0
     #        print linearV
-            self.scale = 30.0 #150.0
+            self.scale = 30.0 #150.0   # unstable when extra cortical signal is given
+            
             #self.linearV = min(0, self.linearV ) # testing: only vel component in afferent active when lengthing 
             
             bitVal_bic_i = convertType(-self.linearV*self.scale, fromType = 'f', toType = 'I')

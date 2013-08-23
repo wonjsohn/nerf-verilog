@@ -349,6 +349,7 @@ class View(QMainWindow, Ui_Dialog):
         if choice == "waveform 1":
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.25, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
             pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.25, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
 
             print "waveform 1 fed"
@@ -360,7 +361,7 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = spike_train(firing_rate = 10)      
 #            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
 #            pipeInData = gen_tri(T = 2.0) 
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.9, 1.4, 1.9, 2.0], L = [0.5, 0.5, 1.5, 1.5, 0.5,  0.5], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 1.0, 1.4, 1.5, 2.0], L = [0.9, 0.9, 1.5, 1.5, 0.9,  0.9], FILT = False)
 
 
                 

@@ -1,4 +1,4 @@
-    clc; clear;close all;
+     clc; clear;%close all;
 %   load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174406.mat');  %
 % load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174627.mat');%
 %  load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174801.mat');%
@@ -6,7 +6,7 @@
 %load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_175015.mat');
 cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk
 
-fname = sprintf('20130814_181051');
+fname = sprintf('20130822_174750');
 
 load([fname, '.mat']);
 
@@ -23,7 +23,7 @@ f_emg_tri = data_tri(:,6);
 force_bic = data_bic(:,5);
 force_tri = data_tri(:,5);
 
-n = 4;
+n = 3;
 start =200;
 %start = 1250;
 last = min(length(t_bic), 22000); 
@@ -61,6 +61,7 @@ figure_height = 6*2;
 FontSize = 11*1.5;
 FontName = 'MyriadPro-Regular';
 
+hold on
 hfig  = figure(1); 
 
     set(gcf, 'units', 'centimeters', 'pos', [0 0 figure_width figure_height])
@@ -79,11 +80,11 @@ hLine1 = line(t_bic(start:last), length_bic(start:last));
 set(hLine1                        , ...
   'LineStyle'       , '-'        , ...
   'LineWidth'       , 2           , ... 
-  'Color'           , [0.75 0 0]  );
+  'Color'           , [0.75 0 1]  );
 set(gca,'YLim',[0.85 1.4])
 hYLabel = ylabel('flexor length');
 
-hTitle  = title ('extra cortical drive scale: 7 ');
+% hTitle  = title ('extra cortical drive scale: 7 ');
 % hTitle  = title ('flexor muscle length. High Trascortical reflex gain: 3 ');
 
 subplot (n,1, 2);
@@ -120,18 +121,18 @@ hYLabel = ylabel('flexor force');
 %   'Color'           , [.1 .4 .4]  );
 % set(gca,'YLim',[0 10])
 
-%% velocity
-subplot (n,1, 4);
-hLine8 = line(t_bic(start:last), vel_bic(start:last));
-set(hLine8                        , ...
-  'LineStyle'       , '-'         , ...
-  'LineWidth'       , 2           , ...   
-  'Color'           , [0.5 0 0.5]  );
-% set(gca,'YLim',[0 200])
+% % %% velocity
+% subplot (n,1, 4);
+% hLine8 = line(t_bic(start:last), vel_bic(start:last));
+% set(hLine8                        , ...
+%   'LineStyle'       , '-'         , ...
+%   'LineWidth'       , 2           , ...   
+%   'Color'           , [0.5 0 0.5]  );
+% % set(gca,'YLim',[0 200])
 % axis off;
-
-hXLabel = xlabel('time (s)');
-hYLabel = ylabel('vel');
+% 
+% hXLabel = xlabel('time (s)');
+% hYLabel = ylabel('vel');
 
 
 
@@ -170,7 +171,7 @@ set(hLine6                        , ...
   'LineWidth'       , 2           , ...   
   'Color'           , [0.5 0 0.5]  );
 % set(gca,'YLim',[0 200])
-% axis off;
+axis off;
 
 hXLabel = xlabel('time (s)');
 hYLabel = ylabel('Extensor force');
@@ -193,20 +194,19 @@ hYLabel = ylabel('Extensor force');
 
 
 
-
-% set(hdots_low                         , ...
-%   'LineStyle'       , 'none'      , ...
-%   'Marker'          , 'o'         , ...
-%   'MarkerSize'      , 4           , ...
-%   'MarkerEdgeColor' , [.5 .0 .5]  , ...
-%   'MarkerFaceColor' , [.7 .5 .7]  );
 % 
-% set(hdots_high                         , ...
-%   'LineStyle'       , 'none'      , ...
-%   'Marker'          , 'o'         , ...
-%   'MarkerSize'      , 4           , ...
-%   'MarkerEdgeColor' , [.5 .0 .5]  , ...
-%   'MarkerFaceColor' , [.7 .5 .7]  );
+% %% vel 
+% subplot (n,1, 4);
+% hLine9 = line(t_tri(start:last), vel_tri(start:last));
+% set(hLine9                        , ...
+%   'LineStyle'       , '-'         , ...
+%   'LineWidth'       , 2           , ...   
+%   'Color'           , [0.5 0 0.5]  );
+% % set(gca,'YLim',[0 200])
+% % axis off;
+% 
+% hXLabel = xlabel('time (s)');
+% hYLabel = ylabel('vel');
 
 
 % % 
