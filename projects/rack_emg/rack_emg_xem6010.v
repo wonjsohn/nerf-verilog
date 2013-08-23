@@ -819,26 +819,26 @@
         okWireOut wo20 (    .ep_datain(f_emg[15:0]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h20)    );
         okWireOut wo21 (    .ep_datain(f_emg[31:16]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h21)   );    
         
-        okWireOut wo22 (    .ep_datain(spike_count_neuron_sync_MN1[15:0]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h22)    );
-        okWireOut wo23 (    .ep_datain(spike_count_neuron_sync_MN1[31:16]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h23)   );    
+        okWireOut wo22 (    .ep_datain(population_neuron_MN1[15:0]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h22)    );
+        okWireOut wo23 (    .ep_datain(population_neuron_MN1[31:16]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h23)   );    
         
-        okWireOut wo24 (    .ep_datain(spike_count_neuron_sync_MN2[15:0]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h24)    );
-        okWireOut wo25 (    .ep_datain(spike_count_neuron_sync_MN2[31:16]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h25)   );    
+        okWireOut wo24 (    .ep_datain(population_neuron_MN2[15:0]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h24)    );
+        okWireOut wo25 (    .ep_datain(population_neuron_MN2[31:16]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h25)   );    
         
-        okWireOut wo26 (    .ep_datain(spike_count_neuron_sync_MN3[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
-        okWireOut wo27 (    .ep_datain(spike_count_neuron_sync_MN3[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   ); 
+        okWireOut wo26 (    .ep_datain(population_neuron_MN3[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
+        okWireOut wo27 (    .ep_datain(population_neuron_MN3[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   ); 
 
-        okWireOut wo28 (    .ep_datain(spike_count_neuron_sync_MN4[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
-        okWireOut wo29 (    .ep_datain(spike_count_neuron_sync_MN4[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   ); 
+        okWireOut wo28 (    .ep_datain(population_neuron_MN4[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
+        okWireOut wo29 (    .ep_datain(population_neuron_MN4[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   ); 
 
-        okWireOut wo2A (    .ep_datain(spike_count_neuron_sync_MN5[15:0]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2A)    );
-        okWireOut wo2B (    .ep_datain(spike_count_neuron_sync_MN5[31:16]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2B)   ); 
+        okWireOut wo2A (    .ep_datain(population_neuron_MN5[15:0]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2A)    );
+        okWireOut wo2B (    .ep_datain(population_neuron_MN5[31:16]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2B)   ); 
 
-        okWireOut wo2C (    .ep_datain(spike_count_neuron_sync_MN6[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
-        okWireOut wo2D (    .ep_datain(spike_count_neuron_sync_MN6[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
+        okWireOut wo2C (    .ep_datain(population_neuron_MN6[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
+        okWireOut wo2D (    .ep_datain(population_neuron_MN6[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
         
-        okWireOut wo2E (    .ep_datain(population_neuron_MN2[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
-        okWireOut wo2F (    .ep_datain(population_neuron_MN2[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
+      //  okWireOut wo2E (    .ep_datain(population_neuron_MN2[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
+      //  okWireOut wo2F (    .ep_datain(population_neuron_MN2[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
 
         okWireOut wo30 (    .ep_datain(total_spike_count_sync[15:0]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h30)    );
         okWireOut wo31 (    .ep_datain(total_spike_count_sync[31:16]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h31)   );         

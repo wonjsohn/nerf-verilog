@@ -10,33 +10,32 @@ FPGA_OUTPUT_B1 =    (0x20,      'raster',      1.0,         'spike32',      Qt.b
                 (0x2C,      'spike_count_Ia_normal',      1.0,         'int32',      Qt.darkGray),  \
                 (0x2E,      'spike_count_II_normal',      1.0,         'int32',      Qt.blue)
                 
+##            address         name   visual_gain         type            color
+#FPGA_OUTPUT_B2 =   (0x20,      'i_I_from_CN2extra_buttonScaled',      1.0,         'int32',      Qt.blue),  \
+#                (0x22,      'population_neuron_CN1',      1.0,         'spike32',      Qt.red),  \
+#                (0x24,      'i_I_from_spindle',      1.0,         'int32',      Qt.green),  \
+#                (0x26,      'fixed_drive_to_CN',      1.0,         'int32',      Qt.black),  \
+#                (0x28,      'i_I_from_CN1extra',      1.0,         'int32',      Qt.magenta),  \
+#                (0x2A,      'mixed_input0',      1.0,         'float32',      Qt.darkRed),  \
+#                (0x2C,      'i_stuffed_scaler',      1.0,         'int32',      Qt.darkGray)
+#                
 #            address         name   visual_gain         type            color
-FPGA_OUTPUT_B2 =   (0x20,      'i_I_from_CN2extra_buttonScaled',      1.0,         'int32',      Qt.blue),  \
+FPGA_OUTPUT_B2 =   (0x20,      'i_I_from_CN1extra_buttonScaled',      1.0,         'int32',      Qt.blue),  \
                 (0x22,      'population_neuron_CN1',      1.0,         'spike32',      Qt.red),  \
                 (0x24,      'i_I_from_spindle',      1.0,         'int32',      Qt.green),  \
                 (0x26,      'fixed_drive_to_CN',      1.0,         'int32',      Qt.black),  \
-                (0x28,      'i_I_from_CN1extra',      1.0,         'int32',      Qt.magenta),  \
+                (0x28,      'i_CN2_extra_drive',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'mixed_input0',      1.0,         'float32',      Qt.darkRed),  \
                 (0x2C,      'i_stuffed_scaler',      1.0,         'int32',      Qt.darkGray)
-                
-##            address         name   visual_gain         type            color
-#FPGA_OUTPUT_B3 =    (0x20,      'mixed_input0',      1.0,         'float32',      Qt.blue),  \
-#                (0x22,      'total_force_out_muscle0_sync',      1.0,         'float32',      Qt.red),  \
-#                (0x24,      'spike_count_neuron0_sync',      1.0,         'int32',      Qt.green),  \
-#                (0x26,      'spike_count_neuron0',      1.0,         'int32',      Qt.black),  \
-#                (0x28,      'i_emg',      1.0,         'int32',      Qt.magenta),  \
-#                (0x2A,      'blank',      1.0,         'float32',      Qt.darkRed),  \
-#                (0x2C,      'blank',      1.0,         'int32',      Qt.darkGray)
-                
+                 
                 #            address         name   visual_gain         type            color
 FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.blue),  \
-                (0x22,      'spike_count_neuron_MN1',      1.0,         'int32',      Qt.red),  \
-                (0x24,      'spike_count_neuron_MN2',      1.0,         'int32',      Qt.green),  \
-                (0x26,      'spike_count_neuron_MN3',      1.0,         'int32',      Qt.black),  \
-                (0x28,      'spike_count_neuron_MN4',      1.0,         'int32',      Qt.magenta),  \
-                (0x2A,      'spike_count_neuron_MN5',      1.0,         'int32',      Qt.darkRed),  \
-                (0x2C,      'f_I_synapse_M1extra2',      1.0,         'float32',      Qt.darkGray),  \
-                (0x2E,      'raster0_31_MN2',      1.0,         'spike32',      Qt.blue),  \
+                (0x22,      'raster0_31_MN1',      1.0,         'spike32',      Qt.red),  \
+                (0x24,      'raster0_31_MN2',      1.0,         'spike32',      Qt.green),  \
+                (0x26,      'raster0_31_MN3',      1.0,         'spike32',      Qt.black),  \
+                (0x28,      'raster0_31_MN4',      1.0,         'spike32',      Qt.magenta),  \
+                (0x2A,      'raster0_31_MN5',      1.0,         'spike32',      Qt.darkRed),  \
+                (0x2C,      'raster0_31_MN6',      1.0,         'spike32',      Qt.darkGray),  \
                 (0x30,      'total_spike_count_sync',      1.0,         'int32',      Qt.red),  \
                 (0x32,      'total_force',      1.0,         'float32',      Qt.green),  \
                 (0x34,      'spike_count_neuron_sync_inputPin',      1.0,         'int32',      Qt.magenta),  \

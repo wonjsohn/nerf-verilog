@@ -308,9 +308,13 @@
 
         
         wire [31:0] fixed_drive_to_CN_F0;
-        //assign fixed_drive_to_CN_F0 = i_I_from_spindle + i_I_from_extras;
-        assign fixed_drive_to_CN_F0 = i_I_from_spindle << 9 + i_I_from_CN1extra+ i_I_from_CN2extra_buttonScaled; 
-        // i_I_from_CN1extra:0~10 (15000 amp),  i_I_from_CN2extra_buttonScaled: 1~5  constantly. (4000 * 1~5)
+    
+        //assign fixed_drive_to_CN_F0 = i_I_from_spindle << 9+ i_I_from_CN1extra +i_I_from_CN2extra_buttonScaled ; // wrong but...
+        
+       //assign fixed_drive_to_CN_F0 = (i_I_from_spindle << 7 +i_I_from_CN2extra_buttonScaled ) + (i_I_from_CN1extra << 10); //button increase the sensory gain like crazy.  (Trial 4): sensory gain upup. 
+        assign fixed_drive_to_CN_F0 = (i_I_from_spindle << 9)  + (i_I_from_CN2extra_buttonScaled << 10) + (i_I_from_CN1extra << 10); // (Trial 5): DC up
+              
+       // i_I_from_CN1extra:0~10 (15000 amp),  i_I_from_CN2extra_buttonScaled: 1~5  constantly. (4000 * 1~5)
         //fixed_drive_to_CN :5000~ 500000!
         
         
@@ -474,11 +478,11 @@
     reg [3:0] i_pre_scaler;
     always @(posedge sim_clk  or posedge reset_global) begin
         if(reset_global) begin
-            i_pre_scaler <= 4'b0010;   // '001'0  => '1' 
+            i_pre_scaler <= 4'b0000;   // '000'0  => '0' 
         end
         else if (temp_input_1d ^ temp_input) begin // detect level change  
             if (i_pre_scaler == 4'b1110) begin // '111'0 -> '7'
-                i_pre_scaler <= 4'b0010;
+                i_pre_scaler <= 4'b0000;
             end else begin 
                 i_pre_scaler <= i_pre_scaler + 1;
             end
