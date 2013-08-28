@@ -52,7 +52,7 @@ class armSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.10 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.15 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -176,7 +176,7 @@ class armSetup:
             
 #            self.linearV = 0.0
     #        print linearV
-            self.scale = 30.0 #150.0   # unstable when extra cortical signal is given
+            self.scale = 100.0 #150.0   # unstable when extra cortical signal is given
             
             #self.linearV = min(0, self.linearV ) # testing: only vel component in afferent active when lengthing 
             
@@ -301,8 +301,9 @@ class armSetup:
         while (self.running):
             """ angle calculated from mouse cursor position"""
             mouse_position = from_pygame( Vec2d(self.pygame.mouse.get_pos()), self.screen )
-            forced_angle = (mouse_position-self.gForearm_body.position).angle
-
+            forced_angle = (mouse_position-self.gForearm_body.position).angle   # calculate angle with mouse cursor loc. 
+            
+            
             # move the unfired arrow together with the cannon
 #            arrow_body.position = cannon_body.position + Vec2d(cannon_shape.radius + 40, 0).rotated(cannon_body.angle)
 #            arrow_body.angle = cannon_body.angle
@@ -336,19 +337,26 @@ class armSetup:
 #                elif event.type == KEYDOWN and event.key == K_p:  # CN syn gain 100
 #                    bitVal100 = convertType(100.0, fromType = 'f', toType = 'I')
 #                    xem_muscle_bic.SendPara(bitVal = bitVal100, trigEvent = 10) 
-#                    xem_muscle_tri.SendPara(bitVal = bitVal100, trigEvent = 10)    
-#                    
+#                    xem_muscle_tri.SendPara(bitVal = bitVal100, trigEvent = 10)  
+                    
+
                 elif event.type == KEYDOWN and event.key == K_l:  # forced movement, follow the mouse
                     if (self.record == True):
                         self.record = False
                     if (self.record == False):
                         self.record = True
+                    k = 1
+                  
                         
             """ mouse cursor controlled forced (passive) movement"""
             if (self.record == True):
-                self.gForearm_body.angle =forced_angle
-                
-
+                #self.gForearm_body.angle =forced_angle
+                if k == len(self.j2List):
+                    self.gForearm_body.angle = 0.0
+                else:
+                    self.gForearm_body.angle = (self.j2List[k])*3.141592/180  # in radian   
+                    k = k + 1
+                    print self.j2List[k]  
                     
             """  Clear screen  """
             self.screen.fill(THECOLORS["white"])  # ~1ms
@@ -383,12 +391,24 @@ class armSetup:
             self.gClock.tick(fps)  # target fps
     #        self.gClock.tick(80)  # oscillate
             self.pygame.display.set_caption("fps: " + str(self.gClock.get_fps())) 
-            
-            
- 
 
+
+    def readData(self):
+        self.j1List=[]
+        self.j2List=[]
+        for line in open('doornik_curve.txt',  "r").readlines(): 
+            j1 ,  j2= line.split(',')
+            j1 = float(j1)
+            j2 = float(j2)
+
+#            indexList.append(index)
+            self.j1List.append(j1)   #joint1
+            self.j2List.append(j2)   #joint2
+
+    
     def main(self):
 #        Process(target=self.controlLoopBiceps)
+        self.readData() # read doornik data
         threading.Thread(target=self.keyControl).start()
         threading.Thread(target=self.controlLoopBiceps).start()
         threading.Thread(target=self.controlLoopTriceps).start()

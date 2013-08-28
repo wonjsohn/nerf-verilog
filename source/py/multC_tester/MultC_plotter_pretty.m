@@ -6,7 +6,7 @@
 %load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_175015.mat');
 cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk
 
-fname = sprintf('20130822_174750');
+fname = sprintf('20130827_175923');
 
 load([fname, '.mat']);
 
