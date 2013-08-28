@@ -311,8 +311,8 @@
     
         //assign fixed_drive_to_CN_F0 = i_I_from_spindle << 9+ i_I_from_CN1extra +i_I_from_CN2extra_buttonScaled ; // wrong but...
         
-       //assign fixed_drive_to_CN_F0 = (i_I_from_spindle << 7 +i_I_from_CN2extra_buttonScaled ) + (i_I_from_CN1extra << 10); //button increase the sensory gain like crazy.  (Trial 4): sensory gain upup. 
-        assign fixed_drive_to_CN_F0 = (i_I_from_spindle << 9)  + (i_I_from_CN2extra_buttonScaled << 10) + (i_I_from_CN1extra << 10); // (Trial 5): DC up
+       assign fixed_drive_to_CN_F0 = (i_I_from_spindle << (8 +i_I_from_CN2extra_buttonScaled )) + (i_I_from_CN1extra << 10); //button increase the sensory gain like crazy.  (Trial 4): sensory gain upup. 
+        //assign fixed_drive_to_CN_F0 = (i_I_from_spindle << 9)  + (i_I_from_CN2extra_buttonScaled << 10) + (i_I_from_CN1extra << 10); // (Trial 5): DC up
               
        // i_I_from_CN1extra:0~10 (15000 amp),  i_I_from_CN2extra_buttonScaled: 1~5  constantly. (4000 * 1~5)
         //fixed_drive_to_CN :5000~ 500000!
@@ -623,7 +623,7 @@
         
        wire [31:0] i_rng_current_to_MN1;
        wire [31:0] i_rng_CN1_extra_drive;
-       assign i_rng_CN1_extra_drive= {i_CN1_extra_drive[31:8] , CN1_rand_out[7:0]};
+       assign i_rng_CN1_extra_drive= {i_CN1_extra_drive[31:4] , CN1_rand_out[3:0]};
         
         wire [31:0] v_neuron_extra_CN1;   // membrane potential
         wire spike_neuron_extra_CN1;      // spike sample for visualization only
