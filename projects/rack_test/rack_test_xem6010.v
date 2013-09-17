@@ -278,7 +278,7 @@
         // Triggered Input triggered_input6 Instance Definition (spindle_Ia_gain)
         always @ (posedge ep50trig[1] or posedge reset_global)
         if (reset_global)
-            triggered_input6 <= 32'h3F800000;         //reset to 1.0      
+            triggered_input6 <= 32'h3FC00000;         //reset to 1.5      
         else
             triggered_input6 <= {ep02wire, ep01wire};      
         
@@ -310,6 +310,7 @@
             .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
             .wave(mixed_input0)                   // wave out signal
         );
+        
         
     //FPGA-FPGA Outputs
     assign spikeout1 = each_spike_neuron0;
@@ -530,6 +531,20 @@
                         .reset(reset_sim),
                         .spike_in(spike_neuron0_len2spk),
                         .spike_count(spike_count_length2spk) );
+
+
+//    wire [31:0] f_emg;
+//    emg_parameter emg_parater_foo_SN
+//    (   .f_total_emg_out(f_emg), 
+//        .i_spike_cnt(spike_count_Ia_normal << 3), 
+//        .b1_F0(32'h3A9E55C1),       //0.001208 (b1 default)
+//        .b2_F0(32'hBAA6DACB),       //-0.001273 (b2 default)
+//        .a1_F0(32'hC00F3B64),        //- 2.238 (a1 default)
+//        .a2_F0(32'h3FD5C28F),        //1.67 (a2 default)
+//        .a3_F0(32'hBED49518),       // - 0.4152(a3 default)
+//        .clk(sim_clk), 
+//        .reset(reset_sim) ); 
+//
 
 
 
