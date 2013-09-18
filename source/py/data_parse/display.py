@@ -52,8 +52,10 @@ class View(QMainWindow, Ui_Dialog):
         
         # Search all .bit files, make them selectable 
         sys.path.append(projectPath)
-        self.gloveDataPath = projectPath + "\\glove_data\\"
-        self.emgDataPath = projectPath + "\\emg_data\\"
+#        self.gloveDataPath = projectPath + "\\glove_data\\"
+#        self.emgDataPath = projectPath + "\\emg_data\\"
+        self.gloveDataPath = projectPath + "glove_data/"
+        self.emgDataPath = projectPath + "emg_data/"
         
         
         
@@ -61,16 +63,19 @@ class View(QMainWindow, Ui_Dialog):
         self.lineEdit.setText(str(projectPath))
         self.lineEdit.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")
         
-        for eachTxtFile in glob(projectPath+"/glove_data/*.txt"): 
+#        for eachTxtFile in glob(projectPath+"/glove_data/*.txt"): 
+        for eachTxtFile in glob(projectPath+"glove_data/*.txt"): 
             (filepath, filename) = os.path.split(eachTxtFile) 
             self.listWidget.addItem(filename)
         self.listWidget.setCurrentRow(0)
         self.listWidget.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")
         
         
-        for eachTxtFile in glob(projectPath+"/emg_data/*.txt"): 
+#        for eachTxtFile in glob(projectPath+"/emg_data/*.txt"):
+        for eachTxtFile in glob(projectPath+"emg_data/*.txt"):  
             (filepath, filename) = os.path.split(eachTxtFile) 
             self.listWidget_2.addItem(filename)
+            
         self.listWidget_2.setCurrentRow(0)
         self.listWidget_2.setStyleSheet("background-color:  rgb(220, 235, 235); margin: 2px;")
         

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-import pandas as pd
+#import pandas as pd
 import sys, random
 import matplotlib.pyplot as plt
 

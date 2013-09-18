@@ -6,7 +6,7 @@
 %load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_175015.mat');
 cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk
 
-fname = sprintf('20130827_175923');
+fname = sprintf('20130917_124620');
 
 load([fname, '.mat']);
 
@@ -39,10 +39,10 @@ length_bic_inverted = -length_bic;
 
 
 %% EMG processing
-Fe=150; %Samling frequency
-Fc_lpf=20.0; % Cut-off frequency
-Fc_hpf=1;
-N=2; % Filter Order
+Fe=33; %Samling frequency
+Fc_lpf=1.0; % Cut-off frequency
+Fc_hpf=0.5;
+N=3; % Filter Order
 [B, A] = butter(N,Fc_lpf*2/Fe,'low'); %filter's parameters
 [D, C] = butter(N,Fc_hpf*2/Fe,'high'); %filter's parameters
 

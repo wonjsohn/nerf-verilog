@@ -52,6 +52,8 @@ class View(QMainWindow, Ui_Dialog):
         
         # Search all .bit files, make them selectable 
         sys.path.append(projectPath)
+        
+        """ data path setting """
         self.gloveDataPath = projectPath + "\\glove_data\\"
         self.emgDataPath = projectPath + "\\emg_data\\"
         
