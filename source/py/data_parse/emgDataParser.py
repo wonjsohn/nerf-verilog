@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-import pandas as pd
+#import pandas as pd
 import sys, random
 import matplotlib.pyplot as plt
 
@@ -38,7 +38,7 @@ class ParseEmgData():
         
         for line in open(emgDataPath+txtfile,  "r").readlines()[10:]:  #15
 #            emg1,  emg2,  emg3,  emg4,  emg5,  emg6,  emg7,  emg8,  emg9 = line.split()
-            emg1,  emg2,  emg3,  emg4,  emg5  = line.split()
+            emg1,  emg2,  emg3,  emg4  = line.split()
             
             emg1List.append(emg1)   
             emg2List.append(emg2)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project ampAnalysis -->
-<!-- Saved: 2013-04-09, 17:02:22 -->
+<!-- Saved: 2013-09-13, 15:26:08 -->
 <!-- Copyright (C) 2013 ,  -->
 <Project version="4.6">
   <Language>en</Language>
@@ -15,11 +15,9 @@
     <Source>display.py</Source>
     <Source>gloveDataParser.py</Source>
     <Source>Ui_display.py</Source>
-    <Source>__main__.py</Source>
     <Source>ampDetection.py</Source>
   </Sources>
   <Forms>
-    <Form>display.ui</Form>
   </Forms>
   <Translations>
   </Translations>

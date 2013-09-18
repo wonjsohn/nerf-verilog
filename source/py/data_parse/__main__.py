@@ -12,8 +12,10 @@ from gloveDataParser import ParseGloveData
 if __name__ == "__main__":        
     app = PyQt4.QtGui.QApplication(sys.argv)
     
-    ROOT_PATH = "C:\\Code\\nerf_verilog\\source\\py\\"
-    PROJECT_NAME1 = "data_parse"
+#    ROOT_PATH = "C:\\Code\\nerf_verilog\\source\\py\\"
+    ROOT_PATH = "/home/eric/overflow_data/"
+#    PROJECT_NAME1 = "data_parse"
+    PROJECT_NAME1 = "AlanM_CONTROL/20130830/"
     
     PROJECT_PATH1 = ROOT_PATH + PROJECT_NAME1
 

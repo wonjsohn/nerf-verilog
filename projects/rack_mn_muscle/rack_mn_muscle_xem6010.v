@@ -146,23 +146,7 @@
 
 /////////////////////// BEGIN INSTANCE DEFINITIONS ////////////////////////
 
-        // Synapse synapse0 Instance Definition
-        synapse synapse0(
-            .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),                       // reset synaptic weights
-            .spike_in(spikein1),             // spike from presynaptic neuron
-            .postsynaptic_spike_in(each_spike_neuron0),   //spike from postsynaptic neuron
-            .I_out(I_synapse0),                           // sample of synaptic current out
-            .each_I(each_I_synapse0),                      // raw synaptic currents
-        
-            .ltp(triggered_input2),                        // long term potentiation weight
-            .ltd(triggered_input3),                        // long term depression weight
-            .p_delta(triggered_input4)                 // chance for decay 
-        );
-
-	wire [31:0] i_EPSC_synapse0;
- 	unsigned_mult32 synapse0_gain(.out(i_EPSC_synapse0), .a(each_I_synapse0), .b(triggered_input5));
-   
+     
 
         
 
@@ -223,22 +207,7 @@
         
 
         // Spike Counter spike_counter0 Instance Definition
-	wire    clear_signal_from_async_cnt;
-        spikecnt_async	spike_counter0
-        (      .spike(each_spike_neuron0),
-                .int_cnt_out(spike_count_neuron0),
-                .slow_clk(sim_clk),
-                .fast_clk(clk1),
-                .reset(reset_global),
-                .clear_out(clear_signal_from_async_cnt));
-                
-     wire [31:0]  spike_count_neuron0_sync;
-      spike_counter  sync_counter
-      (                 .clk(neuron_clk),
-                        .reset(reset_global),
-                        .spike_in(each_spike_neuron0),
-                        .spike_count(spike_count_neuron0_sync) );
-
+	
         
 
         // Waveform Generator mixed_input0 Instance Definition
@@ -254,7 +223,7 @@
         );
         
     //FPGA-FPGA Outputs
-    assign spikeout1 = clear_signal_from_async_cnt;
+    assign spikeout1 = 1'b0;
     assign spikeout2 = 1'b0;
     assign spikeout3 = 1'b0;
     assign spikeout4 = 1'b0;
@@ -296,27 +265,33 @@
         okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
                             .ep_blockstrobe(), .ep_dataout(pipe_in_data), .ep_ready(1'b1));
         
-        okWireOut wo20 (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h20)    );
-        okWireOut wo21 (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h21)   );    
+        okWireOut wo20 (    .ep_datain(i_mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h20)    );
+        okWireOut wo21 (    .ep_datain(i_mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h21)   );    
         
         okWireOut wo22 (    .ep_datain(total_force_out_muscle0_sync[15:0]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h22)    );
         okWireOut wo23 (    .ep_datain(total_force_out_muscle0_sync[31:16]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h23)   );    
         
-        okWireOut wo24 (    .ep_datain(spike_count_neuron0_sync[15:0]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h24)    );
-        okWireOut wo25 (    .ep_datain(spike_count_neuron0_sync[31:16]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h25)   );    
-        
-        okWireOut wo26 (    .ep_datain(spike_count_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
-        okWireOut wo27 (    .ep_datain(spike_count_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   );    
-        
-        okWireOut wo28 (    .ep_datain(i_emg[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
-        okWireOut wo29 (    .ep_datain(i_emg[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   );    
+//        okWireOut wo24 (    .ep_datain(spike_count_neuron0_sync[15:0]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h24)    );
+//        okWireOut wo25 (    .ep_datain(spike_count_neuron0_sync[31:16]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h25)   );    
+//        
+//        okWireOut wo26 (    .ep_datain(spike_count_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
+//        okWireOut wo27 (    .ep_datain(spike_count_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   );    
+//        
+//        okWireOut wo28 (    .ep_datain(i_emg[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
+//        okWireOut wo29 (    .ep_datain(i_emg[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   );    
          
+              // Ia Afferent datatype conversion (floating point -> integer -> fixed point)
+              wire [31:0] i_mixed_input0;
+        floor   float_to_int(
+            .in(mixed_input0),
+            .out(i_mixed_input0)
+        );
         
         wire [31:0] total_force_out_muscle0_sync;
         // Muscle muscle0 Wire Definitions
         shadmehr_muscle muscle0_sync(
-            .i_spike_cnt(spike_count_neuron0_sync),
-            .f_pos(mixed_input0),
+            .i_spike_cnt(i_mixed_input0),
+            .f_pos(32'h3f8ccccd),  //1.1
             .f_vel(32'd0),
             .clk(sim_clk),
             .reset(reset_global),
@@ -340,37 +315,16 @@
         
 
 
-        // Neuron neuron0 Instance Definition
-        izneuron neuron0(
-            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_global),           // reset to initial conditions
-            .I_in(  i_EPSC_synapse0 ),          // input current from synapse
-            .v_out(v_neuron0),               // membrane potential
-            .spike(spike_neuron0),           // spike sample
-            .each_spike(each_spike_neuron0), // raw spikes
-            .population(population_neuron0)  // spikes of population per 1ms simulation time
-        );
-            
-        // ** EMG 
-        wire [17:0] si_emg;
-        emg emg_foo
-        (   .emg_out(si_emg), 
-            .i_spk_cnt(spike_count_neuron0_sync[6:0]), 
-            .clk(sim_clk), 
-            .reset(reset_global) ); 
-        wire [31:0] i_emg;
-        assign i_emg = {{14{si_emg[17]}},si_emg[17:0]};
-        
 	 
         
 /////////////////////// END INSTANCE DEFINITIONS //////////////////////////
 
 	// ** LEDs
     assign led[0] = ~reset_global;
-    assign led[1] = ~spikein1;
-    assign led[2] = ~each_spike_neuron0;
+    assign led[1] = ~0;
+    assign led[2] = ~0;
     assign led[3] = ~0;
-    assign led[4] = ~clear_signal_from_async_cnt;
+    assign led[4] = ~0;
     assign led[5] = ~0;
     assign led[6] = ~neuron_clk; // 
     assign led[7] = ~sim_clk; // clock
