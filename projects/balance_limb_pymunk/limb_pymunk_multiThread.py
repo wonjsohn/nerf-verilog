@@ -52,7 +52,7 @@ class armSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.15 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.1 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -128,7 +128,18 @@ class armSetup:
             """   Get forces   """
             force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
             spikecnt_bic = xem_muscle_bic.ReadFPGA(0x30, "int32")  
-            emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG         
+            emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG 
+            
+            """ extra data for close loop data acquisition"""  
+#            Ia_afferent = xem_spindle_bic.ReadFPGA(0x22, "float32")  # EMG 
+#            II_afferent = xem_spindle_bic.ReadFPGA(0x24, "float32")  # EMG    
+#            MN1_spikes = xem_muscle_bic.ReadFPGA(0x22, "spike32")  #             
+#            MN2_spikes = xem_muscle_bic.ReadFPGA(0x24, "spike32")  #             
+#            MN3_spikes = xem_muscle_bic.ReadFPGA(0x26, "spike32")  #             
+#            MN4_spikes = xem_muscle_bic.ReadFPGA(0x28, "spike32")  #             
+#            MN5_spikes = xem_muscle_bic.ReadFPGA(0x2A, "spike32")  #             
+#            MN6_spikes = xem_muscle_bic.ReadFPGA(0x2C, "spike32")  # 
+            
 #            force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
 #            emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
             
@@ -185,6 +196,8 @@ class armSetup:
             
             xem_muscle_bic.SendMultiPara(bitVal1 = bitVal, bitVal2 = bitVal_bic_i,  trigEvent = 9)
             xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
+           
+            
             
             """ Alpha-gamma coactivation """
     #        ag_coact, ag_bias = 30.0, -70.0
@@ -212,11 +225,11 @@ class armSetup:
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, force_tri,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime,  lce_bic, self.linearV, spikecnt_bic,  force_bic, emg_bic
+            tempData = elapsedTime,  lce_bic, self.linearV, spikecnt_bic, force_bic, emg_bic#,  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
             self.data_bic.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
     #      
-            #time.sleep(0.001)
+#            time.sleep(0.07)
   
             
     def controlLoopTriceps(self):
@@ -234,8 +247,17 @@ class armSetup:
             self.force_tri = force_tri_pre #+ pipeInData_bic[j] 
             """  force curve (f-input spikes) saturation effect"""
 #            self.force_tri = self.force_tri * (1-exp(-self.force_tri/self.fmax)) 
-            
-            
+              
+            """ extra data for close loop data acquisition"""  
+#            Ia_afferent = xem_spindle_tri.ReadFPGA(0x22, "float32")  # EMG 
+#            II_afferent = xem_spindle_tri.ReadFPGA(0x24, "float32")  # EMG    
+#            MN1_spikes = xem_muscle_tri.ReadFPGA(0x22, "spike32")  #             
+#            MN2_spikes = xem_muscle_tri.ReadFPGA(0x24, "spike32")  #             
+#            MN3_spikes = xem_muscle_tri.ReadFPGA(0x26, "spike32")  #             
+#            MN4_spikes = xem_muscle_tri.ReadFPGA(0x28, "spike32")  #             
+#            MN5_spikes = xem_muscle_tri.ReadFPGA(0x2A, "spike32")  #             
+#            MN6_spikes = xem_muscle_tri.ReadFPGA(0x2C, "spike32")  # 
+##            
             
 #            self.gForearm_body.torque = (self.force_bic - self.force_tri) * 0.06
             
@@ -281,6 +303,8 @@ class armSetup:
     #        xem_muscle_tri.SendPara(bitVal = bitVal, trigEvent = 9)
             xem_muscle_tri.SendMultiPara(bitVal1 = bitVal, bitVal2= bitVal_tri_i,   trigEvent = 9)
             xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 9)
+          
+ 
             
             """ Alpha-gamma coactivation """
     #        gd_tri = force_tri * ag_coact + ag_bias
@@ -291,10 +315,10 @@ class armSetup:
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, force_tri,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime, self.lce_tri, self.linearV, spikecnt_tri,   self.force_tri,  emg_tri  
+            tempData = elapsedTime, self.lce_tri, self.linearV, spikecnt_tri,   self.force_tri,  emg_tri#,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
             self.data_tri.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
-            #time.sleep(0.001)
+#            time.sleep(0.07)
   
             
     def keyControl(self):
@@ -351,12 +375,12 @@ class armSetup:
             """ mouse cursor controlled forced (passive) movement"""
             if (self.record == True):
                 #self.gForearm_body.angle =forced_angle
-                if k == len(self.j2List):
+                if k == len(self.j2List)-1:
                     self.gForearm_body.angle = 0.0
                 else:
                     self.gForearm_body.angle = (self.j2List[k])*3.141592/180  # in radian   
                     k = k + 1
-                    print self.j2List[k]  
+                    #print self.j2List[k]  
                     
             """  Clear screen  """
             self.screen.fill(THECOLORS["white"])  # ~1ms
@@ -372,7 +396,7 @@ class armSetup:
             #if abs(flipper_body.angle) < 0.001: flipper_body.angle = 0
 
             """ Update physics  """
-            fps = 30.0
+            fps = 30.0 #was 30.0
             step = 1
             dt = 1.0/fps/step
             for x in range(step):
@@ -396,7 +420,7 @@ class armSetup:
     def readData(self):
         self.j1List=[]
         self.j2List=[]
-        for line in open('doornik_curve.txt',  "r").readlines(): 
+        for line in open('doornik_curve_resampled.txt',  "r").readlines(): 
             j1 ,  j2= line.split(',')
             j1 = float(j1)
             j2 = float(j2)

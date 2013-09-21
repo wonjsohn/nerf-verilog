@@ -1,4 +1,4 @@
-     clc; clear;%close all;
+    % clc; clear;%close all;
 %   load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174406.mat');  %
 % load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174627.mat');%
 %  load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174801.mat');%
@@ -6,7 +6,7 @@
 %load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_175015.mat');
 cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk
 
-fname = sprintf('20130917_124620');
+fname = sprintf('20130919_165937');  % good candidate: 20130919_151314
 
 load([fname, '.mat']);
 
@@ -16,15 +16,26 @@ t_bic= data_bic(:,1);
 t_tri= data_tri(:,1);
 length_bic = data_bic(:,2);
 length_tri = data_tri(:,2);
-vel_bic = data_bic(:,3);
-vel_tri = data_tri(:,3);
+Ia_afferent_bic = data_bic(:,3);
+II_afferent_bic = data_bic(:,4);
+Ia_afferent_tri = data_tri(:,3);
+II_afferent_tri = data_tri(:,4);
 f_emg_bic = data_bic(:,6);
 f_emg_tri = data_tri(:,6);
 force_bic = data_bic(:,5);
 force_tri = data_tri(:,5);
+% MN1_spikes_bic = data_bic(:,7);
+% MN2_spikes_bic = data_bic(:,8);
+% MN3_spikes_bic = data_bic(:,9);
+% MN4_spikes_bic = data_bic(:,10);
+% MN5_spikes_bic = data_bic(:,11);
+% MN6_spikes_bic = data_bic(:,12);
+
+
+
 
 n = 3;
-start =200;
+start =100;
 %start = 1250;
 last = min(length(t_bic), 22000); 
 % last = min(length(t_bic), 1000); %2050
@@ -79,9 +90,9 @@ hLine1 = line(t_bic(start:last), length_bic(start:last));
  
 set(hLine1                        , ...
   'LineStyle'       , '-'        , ...
-  'LineWidth'       , 2           , ... 
-  'Color'           , [0.75 0 1]  );
-set(gca,'YLim',[0.85 1.4])
+  'LineWidth'       , 3           , ... 
+  'Color'           , 'black'  );
+set(gca,'YLim',[0.85 1.5])
 hYLabel = ylabel('flexor length');
 
 % hTitle  = title ('extra cortical drive scale: 7 ');
@@ -91,8 +102,8 @@ subplot (n,1, 2);
 hLine2 = line(t_bic(start:last), f_emg_bic(start:last));
 set(hLine2                        , ...
   'LineStyle'       , '-'         , ...
-  'LineWidth'       , 0.2           , ...   
-  'Color'           , [0 0 0.75]  );
+  'LineWidth'       , 2           , ...   
+  'Color'           , 'black'  );
 axis off;
 
 
@@ -100,8 +111,8 @@ subplot (n,1, 3);
 hLine3 = line(t_bic(start:last), force_bic(start:last));
 set(hLine3                        , ...
   'LineStyle'       , '-'         , ...
-  'LineWidth'       , 2           , ...   
-  'Color'           , [0.5 0 0.5]  );
+  'LineWidth'       , 3           , ...   
+  'Color'           , 'black'  );
 % set(gca,'YLim',[0 200])
 % axis off;
 
@@ -150,8 +161,8 @@ subplot(n, 1, 1);
 hLine4 = line(t_tri(start:last), length_tri(start:last));
 set(hLine4                        , ...
   'LineStyle'       , '-'        , ...
-  'LineWidth'       , 2           , ... 
-  'Color'           , [0.75 0 0]  );
+  'LineWidth'       , 3           , ... 
+  'Color'           , 'black'  );
 % set(gca,'YLim',[0.55 1.1])
 set(gca,'YLim',[0.65 1.2])
 hYLabel = ylabel('Extensor length');
@@ -160,17 +171,16 @@ subplot (n,1, 2);
 hLine5 = line(t_tri(start:last), f_emg_tri(start:last));
 set(hLine5                        , ...
   'LineStyle'       , '-'         , ...
-  'LineWidth'       , 0.2           , ...   
-  'Color'           , [0 0 0.75]  );
+  'LineWidth'       , 2           , ...   
+  'Color'           , 'black'  );
 axis off;
 
 subplot (n,1, 3);
 hLine6 = line(t_tri(start:last), force_tri(start:last));
 set(hLine6                        , ...
   'LineStyle'       , '-'         , ...
-  'LineWidth'       , 2           , ...   
-  'Color'           , [0.5 0 0.5]  );
-% set(gca,'YLim',[0 200])
+  'LineWidth'       , 3           , ...   
+  'Color'           , 'black');
 axis off;
 
 hXLabel = xlabel('time (s)');
@@ -230,7 +240,59 @@ hYLabel = ylabel('Extensor force');
 print(hfig, '-dpng', [fname, '_perturb_bic']);
 print(hfig2, '-dpng', [fname, '_perturb_tri']);
 
-%-dpng 
+% -dpng 
+
+% %% Raster plot
+% MN1_spikeindex=[]; 
+% MN2_spikeindex=[];
+% MN3_spikeindex=[];
+% MN4_spikeindex=[];
+% MN5_spikeindex=[];
+% MN6_spikeindex=[];
+% 
+% binaryMN1 = dec2bin(MN1_spikes_bic);
+% binaryMN2 = dec2bin(MN2_spikes_bic);
+% binaryMN3 = dec2bin(MN3_spikes_bic);
+% binaryMN4 = dec2bin(MN4_spikes_bic);
+% binaryMN5 = dec2bin(MN5_spikes_bic);
+% binaryMN6 = dec2bin(MN6_spikes_bic);
+% [r,c] = size(binaryMN1);  % 761, 32
+% 
+% 
+% numofrow = 3;
+% for i=1:r*numofrow,  % get two rows for each MN
+%     if binaryMN1(i) =='1'
+%         MN1_spikeindex = [MN1_spikeindex i]; 
+%     end
+%     if binaryMN2(i) =='1'
+%         MN2_spikeindex = [MN2_spikeindex i]; 
+%     end
+%     if binaryMN3(i) =='1'
+%         MN3_spikeindex = [MN3_spikeindex i]; 
+%     end
+%     if binaryMN4(i) =='1'
+%         MN4_spikeindex = [MN4_spikeindex i]; 
+%     end
+%     if binaryMN5(i) =='1'
+%         MN5_spikeindex = [MN5_spikeindex i]; 
+%     end
+% %     if binaryMN6(i) =='1'
+% %         MN6_spikeindex = [MN6_spikeindex i]; 
+% %     end
+% %     
+% end
+% 
+% 
+% allMN_raster = [MN1_spikeindex (r*numofrow*1)+MN2_spikeindex (r*numofrow*2)+MN3_spikeindex (r*numofrow*3)+MN4_spikeindex (r*numofrow*4)+MN5_spikeindex (r*numofrow*5)+MN6_spikeindex];
+% 
+% 
+% rasterplot(allMN_raster, numofrow*6, r);axis off    
+
+
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
