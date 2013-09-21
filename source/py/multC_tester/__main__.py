@@ -29,8 +29,8 @@ if __name__ == "__main__":
     WINDOWS = 0
     assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
-    TWO_BOARDS= 1
-    THREE_BOARDS=0
+    TWO_BOARDS= 0
+    THREE_BOARDS=1
     CORTICAL_BOARDS= 0
     assert (TWO_BOARDS+THREE_BOARDS+CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING!"
     
