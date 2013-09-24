@@ -16,13 +16,15 @@ for k = 1:2
   %% process EMG
 
   if k==1
-      fname1 = sprintf('20130920_150701');  
+      fname1 = sprintf('20130824_174839');  
       load([fname1, '.mat']); 
   elseif (k==2)
-      fname2 = sprintf('20130920_175933'); 
+      fname2 = sprintf('20130824_174958'); 
       load([fname2, '.mat']);
   end
-
+ % figure 4a: 20130824_174839,    20130824_174958  (DC-UP),  
+  % figure 4b:  20130824_182344        20130824_182555 (HI_GAIN)
+  
   % scaler 20130829_114414  (bigger gain? , cut)  |    % scaler 20130829_105922   (smaller gain?, offset)
   %  20130920_150701 : trial5 (DC-UP) - no input, phase: 44  (BASE)   
   %  20130920_173643 : trial5 (DC-UP) i_extra_CN1: 2000,  scaler:1  phase : 42, offset: 30
@@ -40,6 +42,7 @@ n = 3;
 start =500;
 %start = 1250;
 last =12800;
+% last = 1800
 offset = -220; %150; %480;
 
 t_bic= data_bic(:,1);
