@@ -26,7 +26,8 @@ FPGA_OUTPUT_B2 =   (0x20,      'i_I_from_CN1extra_buttonScaled',      1.0,      
                 (0x26,      'fixed_drive_to_CN',      1.0,         'int32',      Qt.black),  \
                 (0x28,      'i_CN2_extra_drive',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'mixed_input0',      1.0,         'float32',      Qt.darkRed),  \
-                (0x2C,      'i_stuffed_scaler',      1.0,         'int32',      Qt.darkGray)
+                (0x2C,      'i_stuffed_scaler',      1.0,         'int32',      Qt.darkGray),  \
+                (0x2E,      'spikecnt_from_CN',      1.0,         'int32',      Qt.red)
                  
                 #            address         name   visual_gain         type            color
 FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.blue),  \
@@ -39,7 +40,7 @@ FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.bl
                 (0x30,      'total_spike_count_sync',      1.0,         'int32',      Qt.red),  \
                 (0x32,      'total_force',      1.0,         'float32',      Qt.green),  \
                 (0x34,      'spike_count_neuron_sync_inputPin',      1.0,         'int32',      Qt.magenta),  \
-                (0x36,      'int_I_synapse',      1.0,         'int32',      Qt.black)
+                (0x36,      'i_current_to_MN',      1.0,         'int32',      Qt.black)
  
 ### For video recording: only display force 
 ##            address         name   visual_gain         type            color

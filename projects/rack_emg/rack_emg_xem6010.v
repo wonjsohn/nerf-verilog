@@ -516,17 +516,17 @@
         
 
 //        
-        wire [31:0]  i_drive_to_CN;
+        wire [31:0]  i_drive_to_MN;
         floor   synapse_float_to_int(
-//            .in(f_drive_to_CN),
+//            .in(f_drive_to_MN),
             .in(f_I_SNsCN),
-            .out(i_drive_to_CN)
+            .out(i_drive_to_MN)
         );
 
         
         //wire [31:0] fixed_I_synapse;
         //assign fixed_I_synapse= int_I_synapse << 
-        assign i_I_drive_to_MN_F0 = i_drive_to_CN; // + i_extraMN_drive; 
+        assign i_I_drive_to_MN_F0 = i_drive_to_MN; // + i_extraMN_drive; 
 //        wire [31:0] int_I_synapse;
 //        unsigned_mult32 synapse_simple1_gain(.out(int_I_synapse), .a(i_spike_count_neuron_sync_inputPin), .b(triggered_input5));    // I to each_I   
         
@@ -845,7 +845,7 @@
 
         okWireOut wo32 (    .ep_datain(total_force_out_muscle0_sync[15:0]),  .ok1(ok1),  .ok2(ok2x[19*17 +: 17]), .ep_addr(8'h32)    );
         okWireOut wo33 (    .ep_datain(total_force_out_muscle0_sync[31:16]),  .ok1(ok1),  .ok2(ok2x[20*17 +: 17]), .ep_addr(8'h33)   );  
-//        
+//        s
 //        okWireOut wo34 (    .ep_datain(i_spike_count_neuron_sync_inputPin[15:0]),  .ok1(ok1),  .ok2(ok2x[21*17 +: 17]), .ep_addr(8'h34)    );
 //        okWireOut wo35 (    .ep_datain(i_spike_count_neuron_sync_inputPin[31:16]),  .ok1(ok1),  .ok2(ok2x[22*17 +: 17]), .ep_addr(8'h35)   );       
 
