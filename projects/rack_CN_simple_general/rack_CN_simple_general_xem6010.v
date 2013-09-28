@@ -199,8 +199,10 @@
 //        );
         
         wire [31:0] i_I_from_CN1extra_buttonScaled;
-        unsigned_mult32  scale_CN1extra(.out(i_I_from_CN1extra_buttonScaled), .a(i_rng_CN1_extra_drive), .b(i_stuffed_scaler));
-       
+        unsigned_mult32  scale_CN1extra(.out(i_I_from_CN1extra_buttonScaled), .a(i_CN1_extra_drive), .b(i_stuffed_scaler));
+        
+        
+         assign i_rng_CN1_extra_drive= {i_I_from_CN1extra_buttonScaled[31:4] , CN1_rand_out[3:0]};
 //       assign i_I_from_CN2extra_buttonScaled = i_I_from_CN2extra * i_scaler;
         
         
@@ -225,7 +227,6 @@
 //        add addCurrentsFrom_extra2(.x(f_SN_M1extra1), .y(f_I_synapse_M1extra2), .out(f_drive_to_CN));
 //        
 //        
-
         wire [31:0] f_I_synapse_both_gainControlled;
          mult mult_synapse(.x(f_I_synapse_both), .y(f_extraCN_syn_gain), .out(f_I_synapse_both_gainControlled));
 
@@ -235,6 +236,8 @@
             .out(i_I_from_spindle)
         );
         
+  
+
 
         wire [31:0] fixed_drive_to_CN_F0;
         //assign fixed_drive_to_CN_F0 = i_I_from_spindle + i_I_from_extras;
@@ -242,9 +245,28 @@
         //assign fixed_drive_to_CN_F0 = (i_I_from_spindle << 9) + i_I_from_CN1extra_buttonScaled + i_CN2_extra_drive;
         
         //
-        //assign fixed_drive_to_CN_F0 =  (i_I_from_spindle << (9 + i_stuffed_scaler)) +  (i_CN2_extra_drive) ; //button increase the sensory gain like crazy.  (Trial 4): sensory gain upup. 
+//        assign fixed_drive_to_CN_F0 =  (i_I_from_spindle << (9 + i_stuffed_scaler)) +  (i_CN2_extra_drive) ; //button increase the sensory gain like crazy.  (Trial 4): sensory gain upup. 
         
-        assign fixed_drive_to_CN_F0 = (i_I_from_spindle << 9)  + (i_I_from_CN1extra_buttonScaled << 4) + (i_CN2_extra_drive << 1); // (Trial 5): DC up
+        
+
+         wire [31:0] i_adjusted_I_from_spindle = i_I_from_spindle << 9;    // adjusting baseline sensory gain  //092513 fix (Trial 4): HI-GAIN
+        wire [31:0] i_gainScaled_I_from_spindle;    //092513 fix (Trial 4): HI-GAIN
+        unsigned_mult32  sensoryGain_scaleCN(.out(i_gainScaled_I_from_spindle), .a(i_adjusted_I_from_spindle), .b(i_stuffed_scaler)); //092513 fix (Trial 4): HI-GAIN
+        
+        assign fixed_drive_to_CN_F0 =  i_adjusted_I_from_spindle +  i_CN2_extra_drive + i_gainScaled_I_from_spindle; //092613  HI-GAIN
+
+
+//        //bad
+//        assign fixed_drive_to_CN_F0 =  (i_stuffed_scaler == 32'd0)? (i_adjusted_I_from_spindle  +  (i_CN2_extra_drive)): 
+//                                       (i_stuffed_scaler == 32'd1)? ((i_adjusted_I_from_spindle<<1)  +  (i_CN2_extra_drive)): //092513 fix (Trial 4): HI-GAIN
+//                                        (i_stuffed_scaler == 32'd2)? ((i_adjusted_I_from_spindle<<1)+i_adjusted_I_from_spindle +  (i_CN2_extra_drive)):
+//                                       (i_stuffed_scaler == 32'd3)? ((i_adjusted_I_from_spindle << 2)  +  (i_CN2_extra_drive)): 
+//                                       (i_stuffed_scaler == 32'd4)? ((i_adjusted_I_from_spindle << 2)+i_adjusted_I_from_spindle  +  (i_CN2_extra_drive)): 
+//                                       (i_stuffed_scaler == 32'd5)? ((i_adjusted_I_from_spindle << 2)+(i_adjusted_I_from_spindle << 1)  +  (i_CN2_extra_drive)):
+//                                        (i_stuffed_scaler == 32'd6)? ((i_adjusted_I_from_spindle << 2)+(i_adjusted_I_from_spindle << 1) +i_adjusted_I_from_spindle  +  (i_CN2_extra_drive)):
+//                                         (i_stuffed_scaler == 32'd7)? ((i_adjusted_I_from_spindle << 3) +  (i_CN2_extra_drive)): 32'd0;
+
+//        assign fixed_drive_to_CN_F0 = (i_I_from_spindle << 9)  + (i_rng_CN1_extra_drive << 4) + (i_CN2_extra_drive << 1); // (Trial 5): DC up
        
         // i_I_from_CN1extra:0~10 (15000 amp),  i_I_from_CN2extra_buttonScaled: 1~5  constantly. (4000 * 1~5)
         //fixed_drive_to_CN :5000~ 500000!
@@ -468,11 +490,11 @@
         okWireIn    wi01    (.ok1(ok1), .ep_addr(8'h01),    .ep_dataout(ep01wire)   );
         okWireIn    wi02    (.ok1(ok1), .ep_addr(8'h02),    .ep_dataout(ep02wire)   );
 
-        okWireOut wo20 (    .ep_datain(i_I_from_CN1extra_buttonScaled[15:0]),  .ok1(ok1),  .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h20)    );
-        okWireOut wo21 (    .ep_datain(i_I_from_CN1extra_buttonScaled[31:16]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h21)   );    
+        okWireOut wo20 (    .ep_datain(i_rng_CN1_extra_drive[15:0]),  .ok1(ok1),  .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h20)    );
+        okWireOut wo21 (    .ep_datain(i_rng_CN1_extra_drive[31:16]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h21)   );    
         
-        okWireOut wo22 (    .ep_datain(population_neuron_CN1[15:0]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h22)    );
-        okWireOut wo23 (    .ep_datain(population_neuron_CN1[31:16]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h23)   );    
+        okWireOut wo22 (    .ep_datain(i_gainScaled_I_from_spindle[15:0]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h22)    );
+        okWireOut wo23 (    .ep_datain(i_gainScaled_I_from_spindle[31:16]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h23)   );    
         
         okWireOut wo24 (    .ep_datain(i_I_from_spindle[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
         okWireOut wo25 (    .ep_datain(i_I_from_spindle[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
@@ -558,7 +580,7 @@
         
        wire [31:0] i_rng_current_to_MN1;
        wire [31:0] i_rng_CN1_extra_drive;
-       assign i_rng_CN1_extra_drive= {i_CN1_extra_drive[31:4] , CN1_rand_out[3:0]};
+//       assign i_rng_CN1_extra_drive= {i_CN1_extra_drive[31:4] , CN1_rand_out[3:0]};
         
         
         
