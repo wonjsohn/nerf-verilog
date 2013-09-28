@@ -20,8 +20,8 @@ FPGA_OUTPUT_B1 =    (0x20,      'raster',      1.0,         'spike32',      Qt.b
 #                (0x2C,      'i_stuffed_scaler',      1.0,         'int32',      Qt.darkGray)
 #                
 #            address         name   visual_gain         type            color
-FPGA_OUTPUT_B2 =   (0x20,      'i_I_from_CN1extra_buttonScaled',      1.0,         'int32',      Qt.blue),  \
-                (0x22,      'population_neuron_CN1',      1.0,         'spike32',      Qt.red),  \
+FPGA_OUTPUT_B2 =   (0x20,      'i_rng_CN1_extra_drive',      1.0,         'int32',      Qt.blue),  \
+                (0x22,      'i_gainScaled_I_from_spindle',      1.0,         'int32',      Qt.red),  \
                 (0x24,      'i_I_from_spindle',      1.0,         'int32',      Qt.green),  \
                 (0x26,      'fixed_drive_to_CN',      1.0,         'int32',      Qt.black),  \
                 (0x28,      'i_CN2_extra_drive',      1.0,         'int32',      Qt.magenta),  \

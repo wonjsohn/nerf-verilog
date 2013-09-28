@@ -1,4 +1,5 @@
-    % clc; clear;%close all;
+    % clc; clear;
+    close all;
 %   load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174406.mat');  %
 % load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174627.mat');%
 %  load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174801.mat');%
@@ -6,7 +7,7 @@
 %load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_175015.mat');
 cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk
 
-fname = sprintf('20130923_185407');  % good candidate: 20130919_151314
+fname = sprintf('20130927_190118');  % good candidate: 20130919_151314
 
 load([fname, '.mat']);
 
@@ -72,6 +73,9 @@ figure_height = 6*2;
 FontSize = 11*1.5;
 FontName = 'MyriadPro-Regular';
 
+[B, A] = butter(N,1.0*2/Fe,'low'); %filter's parameters
+length_bic_lpf=filtfilt(B, A, length_bic); %in the case of Off-line treatment
+
 hold on
 hfig  = figure(1); 
 
@@ -84,7 +88,7 @@ hfig  = figure(1);
 
 
 % axis off;  
-hLine1 = line(t_bic(start:last), length_bic(start:last));
+hLine1 = line(t_bic(start:last), length_bic_lpf(start:last));
 % hdots_high = line(t_bic(high_locs),length_bic(high_locs));
 % hdots_low = line(t_bic(low_locs),length_bic(low_locs));
  
@@ -92,7 +96,7 @@ set(hLine1                        , ...
   'LineStyle'       , '-'        , ...
   'LineWidth'       , 3           , ... 
   'Color'           , 'black'  );
-set(gca,'YLim',[0.85 1.5])
+set(gca,'YLim',[0.65 1.4])
 hYLabel = ylabel('flexor length');
 
 % hTitle  = title ('extra cortical drive scale: 7 ');
@@ -164,7 +168,7 @@ set(hLine4                        , ...
   'LineWidth'       , 3           , ... 
   'Color'           , 'black'  );
 % set(gca,'YLim',[0.55 1.1])
-set(gca,'YLim',[0.65 1.2])
+set(gca,'YLim',[0.65 1.6])
 hYLabel = ylabel('Extensor length');
 
 subplot (n,1, 2);

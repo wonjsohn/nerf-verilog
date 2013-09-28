@@ -13,6 +13,7 @@ JOINT_RANGE = JOINT_MAX - JOINT_MIN
 
 
 
+
 class armSetup:
     def __init__(self):
         pygame.init()
@@ -28,8 +29,8 @@ class armSetup:
         static_body = pymunk.Body()
 
 #        fp = [(20,-20), (-120, 0), (20,20)]
-#        fp = [(40, -5), (30, -15),  (20,-20),   (-150, -10), (-150,  10), (20,20),  (30,  15),  (40,  5)]
-        fp = [(-40, -5), (-30, -15),  (-20,-20),   (150, -10), (150,  10), (-20,20),  (-30,  15),  (-40,  5)]
+        fp = [(40, -5), (30, -15),  (20,-20),   (-150, -10), (-150,  10), (20,20),  (30,  15),  (40,  5)]
+#        fp = [(-40, -5), (-30, -15),  (-20,-20),   (150, -10), (150,  10), (-20,20),  (-30,  15),  (-40,  5)]
  
  
         mass = 1.52 # was 1.52
@@ -50,6 +51,18 @@ class armSetup:
         
     #    j = pymunk.PinJoint(forearm_body, gElbow_joint_body, (0,0), (0,0))
         j = pymunk.RotaryLimitJoint(self.gForearm_body, self.gElbow_joint_body, JOINT_MIN, JOINT_MAX)
+        
+        
+#        """ attempt to draw circle without affecting physics"""
+##        circlespace=pymunk.Space()
+##        circlebody = pymunk.Body(0, 0)  # mass, inertia
+#        circleshape = pymunk.Circle(self.gForearm_body, 40, Vec2d(0,0)) 
+#        
+#
+#        circleshape.color = THECOLORS["black"]
+#
+#        self.gSpace.add(circleshape)
+#        
         
         
         pymunk.collision_slop = 0
@@ -189,7 +202,7 @@ class armSetup:
             
 #            self.linearV = 0.0
     #        print linearV
-            self.scale = 100.0 #150.0   # unstable when extra cortical signal is given
+            self.scale = 100.0 #10.0   # unstable when extra cortical signal is given
             
             #self.linearV = min(0, self.linearV ) # testing: only vel component in afferent active when lengthing 
             
@@ -386,6 +399,7 @@ class armSetup:
                     
             """  Clear screen  """
             self.screen.fill(THECOLORS["white"])  # ~1ms
+            
 
             """ Draw stuff """
             for f in [self.gForearm_shape,]:
@@ -393,10 +407,19 @@ class armSetup:
                 ps.append(ps[0])
                 ps = map(self.to_pygame, ps)
 
-                color = THECOLORS["red"]
-                self.pygame.draw.lines(self.screen, color, False, ps)
+                color = THECOLORS["black"]
+                self.pygame.draw.lines(self.screen, color, False, ps,  2)
             #if abs(flipper_body.angle) < 0.001: flipper_body.angle = 0
 
+            """draw circle """
+
+#            pygame.draw.circle(self.screen, THECOLORS["black"], (300,  300), int(42), 0)
+#            pygame.draw.circle(self.screen, THECOLORS["white"], (300,  300), int(40), 0)
+#            pygame.draw.circle(self.screen, THECOLORS["black"], (300,  300), int(3), 0)
+#            pygame.draw.line(self.screen, THECOLORS["black"], [300,  300-42], [500,  300-42],  2)
+#            pygame.draw.line(self.screen, THECOLORS["black"], [300,  300+40], [500,  300+40],  2)
+    
+            
             """ Update physics  """
             fps = 30.0 #was 30.0
             step = 1
