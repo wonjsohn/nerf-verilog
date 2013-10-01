@@ -16,13 +16,16 @@ for k = 1:2
   %% process EMG
 
   if k==1
-      fname1 = sprintf('20130824_174839');  
+      fname1 = sprintf('20130920_150701');  
       load([fname1, '.mat']); 
   elseif (k==2)
-      fname2 = sprintf('20130824_174958'); 
+      fname2 = sprintf('20130930_192457'); 
       load([fname2, '.mat']);
   end
  % figure 4a: 20130824_174839,    20130824_174958  (DC-UP),  
+  % figure 4b:  20130824_182344        20130824_182555 (HI_GAIN)
+  
+  % figure 4a: 20130824_174839,    20130824_174958  (DC-UP),  
   % figure 4b:  20130824_182344        20130824_182555 (HI_GAIN)
   
   % scaler 20130829_114414  (bigger gain? , cut)  |    % scaler 20130829_105922   (smaller gain?, offset)
@@ -38,12 +41,46 @@ for k = 1:2
   %  20130920_180341 : trial4 (HI-GAIN) scaler:4  phase: 60   offset: -220
   %  20130920_180714 : trial4 (HI-GAIN) scaler:5  phase: 67    offset: -70
   
+  %  New BASE: 20130920_150701 (scaler:0) = 20130930_152814  (phase diff between angle and EMG : 44)
+  %  20130930_153601 (HI-GAIN)  extraCN gain=4, offset: -150  , phase: 44
+  %  20130930_154009 (HI-GAIN)  extraCN gain=10, offset: -160  , phase: 56 (velocity gain:0)
+  %  20130930_174800 (HI-GAIN)  extraCN gain=4*2=8, offset:-160  phase:60  (velocity gain:0)
+  %  20130930_175045 (HI-GAIN)  extraCN gain=4*3=12, offset:-160  , phase: 60 (velocity gain:0)
+  %  20130930_175333 (HI-GAIN)  extraCN gain=4*4=16, offset:  -210 , phase:58 (velocity gain:0)
+  %  20130930_175818 (HI-GAIN)  extraCN gain=4*5=20, offset: -250 , phase: 57
+  
+  
+ % 20130930_184619 (HI-GAIN)  extraCN gain=4*1=4, offset: -70, phase:48 (velocity gain:30) - good data
+ % 20130930_185035 (HI-GAIN)  extraCN gain=4*2=8, offset: -100, phase:54 (velocity gain:30) - good data
+ % 20130930_185425 (HI-GAIN)  extraCN gain=4*3=12, offset: -170, phase:58 (velocity gain:30) - good data
+ % 20130930_185747(HI-GAIN)  extraCN gain=4*4=16, offset: -70, phase:59 (velocity gain:30) - good data
+ % 20130930_190104(HI-GAIN)  extraCN gain=4*5=20, offset: -30, phase:54 (velocity gain:30) - good data
+ % 20130930_190346(HI-GAIN)  extraCN gain=4*6=24, offset: -210, phase:60 (velocity gain:30) - good data
+ % 20130930_190733(HI-GAIN)  extraCN gain=4*7=28, offset: -250, phase:62 (velocity gain:30) - good data
+ % 20130930_191115(HI-GAIN)  extraCN gain=4*8=32, offset: -200, phase:74 (velocity gain:30) - ok data
+ 
+ % 20130930_181214   (HI-GAIN)  extraCN gain=8*1=8 ,offset: -180 phase 57    (vel gain = 30.0)
+ %  20130930_180219 (HI-GAIN)  extraCN gain=4*8=32, offset: -250, phase:83
+ % 20130930_182233 (HI-GAIN)  extraCN gain=4*8=32, offset: -200, phase:80 (velocity gain:30)
+ % 20130930_182642(HI-GAIN)  extraCN gain=8*4=32, offset: -200, phase:78 (velocity gain:30)
+ % 20130930_182925 (HI-GAIN)  extraCN gain=8*5=40, offset: -200, phase:78 (velocity gain:30)
+ % 20130930_181623 (HI-GAIN)  extraCN gain=8*6=48, offset: -230, phase:56 (velocity gain:30)
+ % 20130930_183236 (HI-GAIN)  extraCN gain=8*6=48, offset: 20, phase:53 (velocity gain:30)
+ % 20130930_183749 (HI-GAIN)  extraCN gain=8*7=56, offset: -200, phase:18 (velocity gain:30)  (could be meaning less, not really phasic b/c EMG  too randomly noisy)
+ % 20130930_184141(HI-GAIN)  extraCN gain=8*8=64, offset: -200, phase:20 (velocity gain:30)
+
+ %% special tweaking 
+ %Ia gain in spindle = 2.5 (normally 1.5)
+ %20130930_192102  extraCN gain=4*1=4, offset: -200, phase:74! (velocity gain:30) - good data Ia gain in spindle = 2.5 (normally 1.5)
+% 20130930_192457 extraCN gain=4*1=4, offset: -200, phase:46! (velocity gain:30) - good data Ia gain in spindle = 1.0 (normally 1.5)
+ % try changing Ia, II gain 
+ 
 n = 3;
 start =500;
 %start = 1250;
-last =12800;
+last = 12800;
 % last = 1800
-offset = -220; %150; %480;
+offset =-200; %150; %480;
 
 t_bic= data_bic(:,1);
 t_tri= data_tri(:,1);
