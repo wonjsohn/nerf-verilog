@@ -67,7 +67,7 @@ class armSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.1 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.15 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -202,7 +202,7 @@ class armSetup:
             
 #            self.linearV = 0.0
     #        print linearV
-            self.scale = 100.0 #10.0   # unstable when extra cortical signal is given
+            self.scale = 30.0 #10.0   # unstable when extra cortical signal is given, 30 is for doornik data collection
             
             #self.linearV = min(0, self.linearV ) # testing: only vel component in afferent active when lengthing 
             
@@ -356,11 +356,11 @@ class armSetup:
                     self.plotData(self.data_bic, self.data_tri)
                     self.running = False
                 elif event.type == KEYDOWN and event.key == K_j:
-                    self.gForearm_body.torque -= 30.0
+                    self.gForearm_body.torque -= 14.0
                     pass
                 elif event.type == KEYDOWN and event.key == K_f:
                     #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
-                    self.gForearm_body.torque += 30.0
+                    self.gForearm_body.torque += 14.0
                 elif event.type == KEYDOWN and event.key == K_z:
 #                    self.gRest_joint_angle = self.angle
                     self.gForearm_body.angle = 0.0
