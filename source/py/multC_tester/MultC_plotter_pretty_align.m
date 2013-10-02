@@ -19,7 +19,7 @@ for k = 1:2
       fname1 = sprintf('20130920_150701');  
       load([fname1, '.mat']); 
   elseif (k==2)
-      fname2 = sprintf('20130930_192457'); 
+      fname2 = sprintf('20131001_192844'); 
       load([fname2, '.mat']);
   end
  % figure 4a: 20130824_174839,    20130824_174958  (DC-UP),  
@@ -50,14 +50,49 @@ for k = 1:2
   %  20130930_175818 (HI-GAIN)  extraCN gain=4*5=20, offset: -250 , phase: 57
   
   
- % 20130930_184619 (HI-GAIN)  extraCN gain=4*1=4, offset: -70, phase:48 (velocity gain:30) - good data
- % 20130930_185035 (HI-GAIN)  extraCN gain=4*2=8, offset: -100, phase:54 (velocity gain:30) - good data
+ % 20130930_184619 (HI-GAIN)  extraCN gain=4*1=4, offset: -70, phase:48? (velocity gain:30) - good data   base force level: ~ 5500
+ % 20131001_180836 HI-GAIN)  extraCN gain=4*1=4, offset: -330, phase:47 (velocity gain:30) - good data (re)
+ % 20131001_181851 HI-GAIN)  extraCN gain=4*1=4, offset: -270, phase:46 (velocity gain:30) - good data (re)
+ % 20131001_182225 (HI-GAIN)  extraCN gain=4*1=4, offset: -210, phase:46 (velocity gain:30) - good data (re)
+
+
+ % 20130930_185035 (HI-GAIN)  extraCN gain=4*2=8, offset: -100, phase:54? (velocity gain:30) - good data
+ % 20131001_173404  (HI-GAIN)  extraCN gain=4*2=8, offset: -220, phase:59 (velocity gain:30) - good data (re)
+ % 20131001_174120  (HI-GAIN)  extraCN gain=4*2=8, offset: -160, phase:55 (velocity gain:30) - good data (re)
+ % 20131001_175052  (HI-GAIN)  extraCN gain=4*2=8, offset: -250, phase:58 (velocity gain:30) - good data (re)
+ 
  % 20130930_185425 (HI-GAIN)  extraCN gain=4*3=12, offset: -170, phase:58 (velocity gain:30) - good data
- % 20130930_185747(HI-GAIN)  extraCN gain=4*4=16, offset: -70, phase:59 (velocity gain:30) - good data
+ % 20131001_171534 (HI-GAIN)  extraCN gain=4*3=12, offset: -140, phase:61 (velocity gain:30) - good data (re)
+ % 20131001_171827 (HI-GAIN)  extraCN gain=4*3=12, offset: -160, phase:58 (velocity gain:30) - good data (re)
+ % 20131001_173028 (HI-GAIN)  extraCN gain=4*3=12, offset: -170, phase:57 (velocity gain:30) - good data (re)
+ 
+ % 20130930_185747 (HI-GAIN)   extraCN gain=4*4=16, offset: -70, phase:59 (velocity gain:30) - good data
+ % 20131001_175348 (HI-GAIN)  extraCN gain=4*4=16, offset: -180, phase:58 (velocity gain:30) - good data (re)
+ % 20131001_175726 (HI-GAIN)  extraCN gain=4*4=16, offset: -180, phase:64 (velocity gain:30) - good data (re)
+ % 20131001_180234 (HI-GAIN)  extraCN gain=4*4=16, offset: -250, phase:62 (velocity gain:30) - good data (re)
+ % 
+ 
+ 
  % 20130930_190104(HI-GAIN)  extraCN gain=4*5=20, offset: -30, phase:54 (velocity gain:30) - good data
+ % 20131001_182653 (HI-GAIN)  extraCN gain=4*5=20, offset: -210, phase:57 (velocity gain:30) - good data
+ % 20131001_182917 (HI-GAIN)  extraCN gain=4*5=20, offset: -210, phase:54 (velocity gain:30) - good data
+ % 20131001_184446 HI-GAIN)  extraCN gain=4*5=20, offset: -160, phase:55 (velocity gain:30) - good data
+ 
  % 20130930_190346(HI-GAIN)  extraCN gain=4*6=24, offset: -210, phase:60 (velocity gain:30) - good data
+ % 20131001_184714 (HI-GAIN)  extraCN gain=4*6=24, offset: -200, phase:60 (velocity gain:30) - good data
+ % 20131001_185459 (HI-GAIN)  extraCN gain=4*6=24, offset: -300, phase:58 (velocity gain:30) - good data
+ % 20131001_185835 (HI-GAIN)  extraCN gain=4*6=24, offset: -250, phase:60 (velocity gain:30) - good data
+ 
  % 20130930_190733(HI-GAIN)  extraCN gain=4*7=28, offset: -250, phase:62 (velocity gain:30) - good data
+ % 20131001_190542 (HI-GAIN)  extraCN gain=4*7=28, offset: -250, phase:68 (velocity gain:30) - good data
+ % 20131001_191541 (HI-GAIN)  extraCN gain=4*7=28, offset: 150, phase:65 (velocity gain:30) - good data
+ % 20131001_191914 HI-GAIN)  extraCN gain=4*7=28, offset: -100, phase:67 (velocity gain:30) - good data
+ 
  % 20130930_191115(HI-GAIN)  extraCN gain=4*8=32, offset: -200, phase:74 (velocity gain:30) - ok data
+ % 20131001_192308 (HI-GAIN)  extraCN gain=4*8=32, offset: -200, phase:67 (velocity gain:30) - ok data
+ % 20131001_192615 (HI-GAIN)  extraCN gain=4*8=32, offset: -220, phase:72 (velocity gain:30) - ok data
+ % 20131001_192844  (HI-GAIN)  extraCN gain=4*8=32, offset: -220, phase:73 (velocity gain:30) - ok data
+ 
  
  % 20130930_181214   (HI-GAIN)  extraCN gain=8*1=8 ,offset: -180 phase 57    (vel gain = 30.0)
  %  20130930_180219 (HI-GAIN)  extraCN gain=4*8=32, offset: -250, phase:83
@@ -70,17 +105,45 @@ for k = 1:2
  % 20130930_184141(HI-GAIN)  extraCN gain=8*8=64, offset: -200, phase:20 (velocity gain:30)
 
  %% special tweaking 
- %Ia gain in spindle = 2.5 (normally 1.5)
- %20130930_192102  extraCN gain=4*1=4, offset: -200, phase:74! (velocity gain:30) - good data Ia gain in spindle = 2.5 (normally 1.5)
-% 20130930_192457 extraCN gain=4*1=4, offset: -200, phase:46! (velocity gain:30) - good data Ia gain in spindle = 1.0 (normally 1.5)
- % try changing Ia, II gain 
+ % length = 1.1
+ % change Ia gain
  
+% 20130930_192457 extraCN gain=4*1=4, offset: -200, phase:46! (velocity gain:30) - good data Ia gain in spindle = 1.0 (normally 1.5) base forcelevel ~1800
+ % 20131001_105703 extraCN gain=4*1=4, offset: -120, phase:47 (velocity gain:30) - good data Ia gain in spindle = 1.6 (normally 1.5) base forcelevel ~5600
+ %20131001_110206 extraCN gain=4*1=4, offset: -220, phase: 58! (velocity gain:30) - good data Ia gain in spindle = 1.8 (normally 1.5) - base force level ~6800
+ %20131001_133310 extraCN gain=4*1=4, offset: -150, phase: 60! (velocity gain:30) - good data Ia gain in spindle = 2.05 (normally 1.5) - base force level ~8400
+ %20131001_143740 extraCN gain=4*1=4, offset: -170, phase: 60! (velocity gain:30) - good data Ia gain in spindle = 2.05 (normally 1.5) - base force level ~8400
+ %20131001_144019 extraCN gain=4*1=4, offset: -220, phase: 57! (velocity gain:30) - good data Ia gain in spindle = 2.05 (normally 1.5) - base force level ~8400
+ %20131001_144334 extraCN gain=4*1=4, offset: -220, phase: 58! (velocity gain:30) - good data Ia gain in spindle = 2.05 (normally 1.5) - base force level ~8400
+ 
+ %20131001_110822 extraCN gain=4*1=4, offset: -220, phase: 60! (velocity gain:30) - good data Ia gain in spindle = 2.1 (normally 1.5) - base force level ~9700
+% 20131001_140112 extraCN gain=4*1=4, offset: -150, phase: 57! (velocity gain:30) - good data Ia gain in spindle = 2.1 (normally 1.5) - base force level ~9700
+%20131001_140446 extraCN gain=4*1=4, offset: -230, phase: 56! (velocity gain:30) - good data Ia gain in spindle = 2.1 (normally 1.5) - base force level ~9700
+%20131001_140817 extraCN gain=4*1=s4, offset: -230, phase: 55! (velocity gain:30) - good data Ia gain in spindle = 2.1 (normally 1.5) - base force level ~9700
+ % 20131001_111319 extraCN gain=4*1=4, offset: -220, phase: 70! (velocity gain:30) - good data Ia gain in spindle = 2.5 (normally 1.5) - base force level ~10200
+ %20131001_142047 extraCN gain=4*1=4, offset: -200, phase: 70! (velocity gain:30) - good data Ia gain in spindle = 2.5 (normally 1.5) - base force level ~10200
+ %20131001_142354 extraCN gain=4*1=4, offset: -230, phase: 71! (velocity gain:30) - good data Ia gain in spindle = 2.5 (normally 1.5) - base force level ~10200
+ % 20131001_142837 extraCN gain=4*1=4, offset: -190, phase: 76! (velocity gain:30) - good data Ia gain in spindle = 2.5 (normally 1.5) - base force level ~10200
+ %20131001_143208 extraCN gain=4*1=4, offset: -230, phase: 69! (velocity gain:30) - good data Ia gain in spindle = 2.5 (normally 1.5) - base force level ~10200
+ 
+ %20130930_192102  extraCN gain=4*1=4, offset: -200, phase:74! (velocity gain:30) - good data Ia gain in spindle = 2.5 (normally 1.5) base forcelevel ?
+ %20131001_111706 extraCN gain=4*1=4, offset: -220, phase: 73! (velocity gain:30) - good data Ia gain in spindle = 2.6 (normally 1.5) - base force level ~12400
+ 
+ % change II gain
+ % 20131001_112333 extraCN gain=4*1=4, offset: -250, phase:55 (velocity gain:30) -Ia:1.5, IIgain:0.6 (normally 0.5) base forcelevel: 6200 
+ % 20131001_112716 extraCN gain=4*1=4, offset: -210, phase:50 (velocity gain:30) -Ia:1.5, IIgain:0.9 (normally 0.5) base force level: 7000 
+ % 20131001_113101 extraCN gain=4*1=4, offset: -210, phase:53 (velocity gain:30) -Ia:1.5, IIgain:1.1 (normally 0.5) base force level: 7700 
+ % 20131001_113500 extraCN gain=4*1=4, offset: -200, phase:58 (velocity gain:30) -Ia:1.5, IIgain:1.3 (normally 0.5) base force level: 8300 
+ %20131001_113816 extraCN gain=4*1=4, offset: -210, phase:51 (velocity gain:30) -Ia:1.5, IIgain:1.5 (normally 0.5) base force level: 11000
+% 20131001_114215 extraCN gain=4*1=4, offset: -200, phase:55 (velocity gain:30) -Ia:1.5, IIgain:1.8 (normally 0.5) base force level: 12400
+
+
 n = 3;
 start =500;
 %start = 1250;
 last = 12800;
 % last = 1800
-offset =-200; %150; %480;
+offset =-220; %150; %480;
 
 t_bic= data_bic(:,1);
 t_tri= data_tri(:,1);
