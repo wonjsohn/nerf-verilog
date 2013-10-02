@@ -72,15 +72,15 @@ if __name__ == "__main__":
         xemSerialList = [ '11160001CJ',  '12320003RM']  # CORTICAL BOARDS
 #        xemSerialList = ['0000000547', '000000054B']  # CORTICAL BOARDS
     elif (TWO_BOARDS ==1 and LINUX == 1):
-        print "2 boards in linux setup"
-#        xemSerialList = ['124300046A', '1201000216']
+#        print "2 boards in linux setup"
+        xemSerialList = ['124300046A', '1201000216']
         xemSerialList = ['12320003RN', '12430003T2'] 
 #        xemSerialList = ['113700021E', '0000000542'] 
 #        xemSerialList = ['11160001CG', '1137000222'] 
     elif (THREE_BOARDS ==1 and LINUX == 1):
         print "3 boards in linux setup"
-        xemSerialList = ['124300046A', '12320003RM', '1201000216']
-#        xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
+#        xemSerialList = ['124300046A', '12320003RM', '1201000216']
+        xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
 #        xemSerialList = ['113700021E', '0000000547', '0000000542']
 #        xemSerialList = ['11160001CG', '000000054B', '1137000222']
     elif (WINDOWS == 1):
