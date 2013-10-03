@@ -178,7 +178,7 @@ class View(QMainWindow, Ui_Dialog):
             eachChan.slider.valueChanged.connect(fn)    
             
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  
-        
+        self.SendUDP = 0
 
     def plotData(self, data):
         from pylab import plot, show, subplot, title
@@ -267,8 +267,9 @@ class View(QMainWindow, Ui_Dialog):
                 elif name == "II_raster_ch3e":
                     spike_train_2 += int_2_bin(ch.data[0])
                  
-        self.sock.sendto(spike_train, (UDP_IP, UDP_PORT))
-        self.sock.sendto(spike_train_2, (UDP_IP, UDP_PORT_2))
+        if self.SendUDP == 1:        
+            self.sock.sendto(spike_train, (UDP_IP, UDP_PORT))
+            self.sock.sendto(spike_train_2, (UDP_IP, UDP_PORT_2))
 
 
 
@@ -375,14 +376,14 @@ class View(QMainWindow, Ui_Dialog):
         """
         choice = p0
         if choice == "waveform 1":
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.36, 1.36, 1.0, 1.0], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 1.0, 2.0], L = [1.0, 1.0, 1.36, 1.36, 1.0, 1.0], FILT = False)
             print "waveform 1 fed"
 #            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 
         elif choice == "waveform 2":
 #            pipeInData = spike_train(firing_rate = 10)      
 #            pipeInData = gen_sin(F = 4.0, AMP = 0.3)
-            pipeInData = gen_tri(T = 2.0) 
-            
+            #pipeInData = gen_tri(T = 2.0) 
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.12, 1.0, 2.0], L = [1.0, 1.0, 1.02, 1.0, 1.0, 1.0], FILT = False)
             
 
         elif choice == "waveform 3":
@@ -436,3 +437,11 @@ class View(QMainWindow, Ui_Dialog):
         print newInput
         self.nerfModel.SendButton(newInput, BUTTON_INPUT_FROM_TRIGGER)
     
+    @pyqtSignature("bool")
+    def on_checkBox_3_clicked(self, checked):
+        """
+        Slot documentation goes here.
+        """
+        # TODO: not implemented yet
+        #raise NotImplementedError
+        self.SendUDP = checked

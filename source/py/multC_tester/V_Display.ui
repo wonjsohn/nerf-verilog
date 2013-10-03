@@ -93,6 +93,19 @@
     <string>input from wave</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="checkBox_3">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>20</y>
+     <width>171</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>send spikes over UDP</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

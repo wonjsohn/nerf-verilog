@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/MVC_MainGUI.ui'
+# Form implementation generated from reading ui file '/home/sirish/Documents/nerf/source/py/multC_tester/MVC_MainGUI.ui'
 #
-# Created: Tue Mar 12 16:20:11 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Mon Jul 22 17:09:22 2013
+#      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
 

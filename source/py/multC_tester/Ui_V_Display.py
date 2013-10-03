@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/V_Display.ui'
+# Form implementation generated from reading ui file '/home/sirish/Documents/nerf/source/py/multC_tester/V_Display.ui'
 #
-# Created: Tue Mar 12 16:20:11 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Mon Jul 22 17:09:21 2013
+#      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -38,6 +38,9 @@ class Ui_Dialog(object):
         self.checkBox_2 = QtGui.QCheckBox(Dialog)
         self.checkBox_2.setGeometry(QtCore.QRect(280, 20, 151, 22))
         self.checkBox_2.setObjectName(_fromUtf8("checkBox_2"))
+        self.checkBox_3 = QtGui.QCheckBox(Dialog)
+        self.checkBox_3.setGeometry(QtCore.QRect(440, 20, 171, 21))
+        self.checkBox_3.setObjectName(_fromUtf8("checkBox_3"))
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -50,6 +53,7 @@ class Ui_Dialog(object):
         self.checkBox.setText(QtGui.QApplication.translate("Dialog", "auto scale", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Dialog", ".bit files", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox_2.setText(QtGui.QApplication.translate("Dialog", "input from wave", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox_3.setText(QtGui.QApplication.translate("Dialog", "send spikes over UDP", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":
