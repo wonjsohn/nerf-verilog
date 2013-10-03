@@ -19,7 +19,7 @@ def gen(T = [0.0, 0.1, 0.9, 1.0], L = [0.0, 0.0, 200.0, 200.0], SAMPLING_RATE = 
        x = x + ([l1 + i*(l2-l1)/n_seg for i in xrange(n_seg)])
 
    if (FILT):
-      b, a = butter(N=3, Wn=2*pi*10/SAMPLING_RATE , btype='low', analog=0, output='ba')
+      b, a = butter(N=3, Wn=2*pi*5/SAMPLING_RATE , btype='low', analog=0, output='ba')
       x = filtfilt(b=b, a=a, x=x)
 
    return x
