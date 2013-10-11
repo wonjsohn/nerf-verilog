@@ -5,9 +5,12 @@
 %  load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174801.mat');%
 % load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174912.mat');
 %load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_175015.mat');
-cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk
+cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk_minos
 
-fname = sprintf('20130919_153029');  % good candidate: 20130919_151314, 20130824_182344, 20130930_132439
+fname = sprintf('20131010_180915'); 
+% 20131009_152401: base line (control) : 63 seconds
+% 20131009_153808: HI-GAIN: 4*1=4
+% 20131009_153455: TONIC: 2000*1 = 2000: 63 seconds
 
 load([fname, '.mat']);
 
@@ -66,7 +69,7 @@ EMG_bic=filtfilt(B, A, f_rec_emg_bic); %in the case of Off-line treatment
 EMG_high_tri=filtfilt(D, C, f_emg_tri); %in the case of Off-line treatment
 f_rec_emg_tri = abs(EMG_high_tri);  % rectify
 EMG_tri=filtfilt(B, A, f_rec_emg_tri); %in the case of Off-line treatment
-
+ 
 %%
 figure_width  = 8*2;
 figure_height = 6*2;
@@ -96,8 +99,8 @@ set(hLine1                        , ...
   'LineStyle'       , '-'        , ...
   'LineWidth'       , 3           , ... 
   'Color'           , 'black'  );
-set(gca,'YLim',[0.65 1.4])
-hYLabel = ylabel('flexor length');
+% set(gca,'YLim',[0.65 1.4])
+hYLabel = ylabel('flexor angle');
 
 % hTitle  = title ('extra cortical drive scale: 7 ');
 % hTitle  = title ('flexor muscle length. High Trascortical reflex gain: 3 ');
@@ -106,9 +109,10 @@ subplot (n,1, 2);
 hLine2 = line(t_bic(start:last), f_emg_bic(start:last));
 set(hLine2                        , ...
   'LineStyle'       , '-'         , ...
-  'LineWidth'       , 2           , ...   
+  'LineWidth'       , 1           , ...   
   'Color'           , 'black'  );
-axis off;
+set(gca,'YLim',[-1.5 1.5])
+% axis off;
 
 
 subplot (n,1, 3);
@@ -161,23 +165,29 @@ set(gcf, 'units', 'centimeters', 'pos', [0 0 figure_width figure_height])
     set(gca, 'Color', [1 1 1]); % Sets axes background
     set(gcf, 'Renderer', 'painters'); 
 
+    
+[B, A] = butter(N,1.0*2/Fe,'low'); %filter's parameters
+length_tri_lpf=filtfilt(B, A, length_tri); %in the case of Off-line treatment
+
 subplot(n, 1, 1);
-hLine4 = line(t_tri(start:last), length_tri(start:last));
+hLine4 = line(t_tri(start:last), length_tri_lpf(start:last));
 set(hLine4                        , ...
   'LineStyle'       , '-'        , ...
   'LineWidth'       , 3           , ... 
   'Color'           , 'black'  );
 % set(gca,'YLim',[0.55 1.1])
-set(gca,'YLim',[0.65 1.6])
-hYLabel = ylabel('Extensor length');
+% set(gca,'YLim',[0.65 1.4])
+
+hYLabel = ylabel('Extensor angle');
 
 subplot (n,1, 2);
 hLine5 = line(t_tri(start:last), f_emg_tri(start:last));
 set(hLine5                        , ...
   'LineStyle'       , '-'         , ...
-  'LineWidth'       , 2           , ...   
+  'LineWidth'       , 1           , ...   
   'Color'           , 'black'  );
-axis off;
+% axis off;
+set(gca,'YLim',[-1.5 1.5])
 
 subplot (n,1, 3);
 hLine6 = line(t_tri(start:last), force_tri(start:last));
@@ -185,7 +195,7 @@ set(hLine6                        , ...
   'LineStyle'       , '-'         , ...
   'LineWidth'       , 3           , ...   
   'Color'           , 'black');
-axis off;
+% axis off;
 
 hXLabel = xlabel('time (s)');
 hYLabel = ylabel('Extensor force');
@@ -241,8 +251,8 @@ hYLabel = ylabel('Extensor force');
 %print(hfig, '-dpng', (['figure' num2str(date),  datestr(now, '  HH:MM:SS')]);
 % 
 % fname = sprintf('myfile%d.mat', i);
-print(hfig, '-dpng', [fname, '_perturb_bic']);
-print(hfig2, '-dpng', [fname, '_perturb_tri']);
+print(hfig, '-deps', [fname, '_perturb_bic']);
+print(hfig2, '-deps', [fname, '_perturb_tri']);
 
 % -dpng 
 

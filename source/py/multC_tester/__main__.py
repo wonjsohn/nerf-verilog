@@ -29,8 +29,8 @@ if __name__ == "__main__":
     WINDOWS = 0
     assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
-    TWO_BOARDS= 1
-    THREE_BOARDS=0
+    TWO_BOARDS= 0
+    THREE_BOARDS=1
     CORTICAL_BOARDS= 0
     assert (TWO_BOARDS+THREE_BOARDS+CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING!"
     
@@ -44,10 +44,10 @@ if __name__ == "__main__":
         PROJECT_LIST = ["rack_test", "rack_emg"] 
 
     if (THREE_BOARDS ==1) :
-        PROJECT_LIST = ["rack_test", "rack_CN_simple_general", "rack_emg"]   # rack_CN_simple_general
+        PROJECT_LIST = ["rack_test", "rack_CN_simple_S1M1", "rack_emg"]   # rack_CN_simple_general
     
     if (CORTICAL_BOARDS ==1) :
-        PROJECT_LIST = ["rack_CN_simple_general", "rack_CN_simple_general"]   # rack_CN_general
+        PROJECT_LIST = ["rack_CN_simple_S1M1", "rack_CN_simple_S1M1"]   # rack_CN_general
         
     PROJECT_PATH = [(ROOT_PATH + p) for p in PROJECT_LIST]
     DEVICE_MODEL = "xem6010"
@@ -72,15 +72,15 @@ if __name__ == "__main__":
         xemSerialList = [ '11160001CJ',  '12320003RM']  # CORTICAL BOARDS
 #        xemSerialList = ['0000000547', '000000054B']  # CORTICAL BOARDS
     elif (TWO_BOARDS ==1 and LINUX == 1):
-#        print "2 boards in linux setup"
-        xemSerialList = ['124300046A', '1201000216']
+##        print "2 boards in linux setup"
+#        xemSerialList = ['124300046A', '1201000216']
         xemSerialList = ['12320003RN', '12430003T2'] 
 #        xemSerialList = ['113700021E', '0000000542'] 
 #        xemSerialList = ['11160001CG', '1137000222'] 
     elif (THREE_BOARDS ==1 and LINUX == 1):
         print "3 boards in linux setup"
-#        xemSerialList = ['124300046A', '12320003RM', '1201000216']
-        xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
+        xemSerialList = ['124300046A', '12320003RM', '1201000216']
+#        xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
 #        xemSerialList = ['113700021E', '0000000547', '0000000542']
 #        xemSerialList = ['11160001CG', '000000054B', '1137000222']
     elif (WINDOWS == 1):
