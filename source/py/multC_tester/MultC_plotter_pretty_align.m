@@ -1,5 +1,5 @@
 
-close all;
+clear; clc; close all;
 %      clc; clear;close all;
 %   load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174406.mat');  %
 % load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174627.mat');%
@@ -19,7 +19,7 @@ for k = 1:2
       fname1 = sprintf('20130920_150701');  
       load([fname1, '.mat']); 
   elseif (k==2)
-      fname2 = sprintf('20131001_192844'); 
+      fname2 = sprintf('20131001_173404'); 
       load([fname2, '.mat']);
   end
  % figure 4a: 20130824_174839,    20130824_174958  (DC-UP),  
@@ -143,7 +143,7 @@ start =500;
 %start = 1250;
 last = 12800;
 % last = 1800
-offset =-220; %150; %480;
+offset =-250; %150; %480;
 
 t_bic= data_bic(:,1);
 t_tri= data_tri(:,1);
@@ -192,7 +192,7 @@ length_bic_inverted = -length_bic;
 %% EMG processing
 % Fe=33; %Samling frequency
 Fe = 145;
-Fc_lpf=2.5; % Cut-off frequency
+Fc_lpf=2.0; % Cut-off frequency
 Fc_hpf=1.0;
 N=3; % Filter Order
 [B, A] = butter(N,Fc_lpf*2/Fe,'low'); %filter's parameters
@@ -237,7 +237,7 @@ subplot(n, 1, 1);
 if (k == 2)
     plot(t_bic_cut, length_bic_offset,'--', 'LineWidth',2, 'color', 'black');
 else
-    plot(t_bic_cut, length_bic_cut, 'LineWidth',2, 'color', 'black');    
+%     plot(t_bic_cut, length_bic_cut, 'LineWidth',2, 'color', 'black');    
 %     [pks, locs] = findpeaks(length_bic_cut);
 %     hold on
     % showing the peaks (manually acquired)  
@@ -255,20 +255,20 @@ end
 ylim([0.7 1.4])
 % legend('biceps length');
 % grid on
-axis off
+% axis off
 hold on
 grid on
 % 
 subplot(n, 1, 2);
 if (k == 2)
-    plot(t_bic_cut, EMG_bic_offset, '-', 'LineWidth',3, 'color', 'black');
+    plot(t_bic_cut, EMG_bic_offset, '-', 'LineWidth',2, 'color', 'black');
 else     
-    plot(t_bic_cut, EMG_bic_cut, 'color', 'black');
+%     plot(t_bic_cut, EMG_bic_cut, '-', 'LineWidth',2,'color', 'black');
 end
 % legend('full wave rect biceps emg');
 % grid on
 % ylim([-0.5 3.5]);
-axis off
+% axis off
 hold on
 grid on
 
@@ -280,7 +280,7 @@ else
 end
  % legend('force bicpes');
 % grid on
-axis off
+% axis off
 hold on
 grid on
 
@@ -527,7 +527,7 @@ figure;
 %  c = c(length(c)/2:end);
  subplot(2,1,1);plot(lags, c);legend('cut');
 %  stem(lags, c);
-subplot(2,1,2);plot(lags_offset, c_offset,'k'); 
+subplot(2,1,2);plot(lags_offset, c_offset,'k');     
 
 %% piecewise cross correlation 
 

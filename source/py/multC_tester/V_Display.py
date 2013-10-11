@@ -350,8 +350,8 @@ class View(QMainWindow, Ui_Dialog):
         if choice == "waveform 1":
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
-#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.25, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.25, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2,1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False)
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
 
             print "waveform 1 fed"
 #            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 
