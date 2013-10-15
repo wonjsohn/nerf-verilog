@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/V_Display.ui'
 #
-# Created: Thu Jul 11 11:58:06 2013
+# Created: Sat Oct 12 22:18:11 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,7 +18,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.setWindowModality(QtCore.Qt.WindowModal)
-        Dialog.resize(895, 669)
+        Dialog.resize(1479, 669)
         self.comboBox = QtGui.QComboBox(Dialog)
         self.comboBox.setGeometry(QtCore.QRect(10, 20, 111, 31))
         self.comboBox.setStyleSheet(_fromUtf8("border-color: rgb(0, 98, 255);"))
@@ -30,10 +30,10 @@ class Ui_Dialog(object):
         self.checkBox.setGeometry(QtCore.QRect(150, 20, 97, 22))
         self.checkBox.setObjectName(_fromUtf8("checkBox"))
         self.listWidget = QtGui.QListWidget(Dialog)
-        self.listWidget.setGeometry(QtCore.QRect(680, 10, 201, 111))
+        self.listWidget.setGeometry(QtCore.QRect(1040, 0, 201, 111))
         self.listWidget.setObjectName(_fromUtf8("listWidget"))
         self.label = QtGui.QLabel(Dialog)
-        self.label.setGeometry(QtCore.QRect(750, 120, 66, 17))
+        self.label.setGeometry(QtCore.QRect(1040, 110, 66, 17))
         self.label.setObjectName(_fromUtf8("label"))
         self.checkBox_2 = QtGui.QCheckBox(Dialog)
         self.checkBox_2.setGeometry(QtCore.QRect(280, 20, 151, 22))

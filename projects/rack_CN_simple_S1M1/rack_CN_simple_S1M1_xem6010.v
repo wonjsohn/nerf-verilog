@@ -244,13 +244,13 @@
         wire [127:0] population_neuron_S1; // spike raster for entire population        
         
      // S1Neuron Instance Definition
-        wire [31:0] drive_to_S1;
-        assign drive_to_S1 = i_I_from_spindle << 9;  // scaled 
+        wire [31:0] i_I_from_spindle_neuronCompensated;
+        assign i_I_from_spindle_neuronCompensated = i_I_from_spindle << 9;  // always scale after neuron (neuronCompensation)
         
         izneuron_th_control S1Neuron(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in(  (drive_to_S1)),          // input current from synapse
+            .I_in(  (i_I_from_spindle_neuronCompensated)),          // input current from synapse
             .th_scaled( threshold30mv <<< 10),                 // threshold
             .v_out(v_neuron_S1),               // membrane potential
             .spike(spike_neuron_S1),           // spike sample
@@ -272,7 +272,8 @@
             .in(f_I_synapse_S1),
             .out(i_I_from_S1)
         );
-        
+        wire [31:0] i_I_from_S1_neuronCompensated;
+        assign i_I_from_S1_neuronCompensated = i_I_from_S1 << 9;
 
 
         wire [31:0] fixed_drive_to_CN_F0;
@@ -289,9 +290,9 @@
           
         
         wire [31:0] i_gainScaled_I_from_S1;    //092513 fix (Trial 4): HI-GAIN
-        unsigned_mult32  sensoryGain_scaleCN(.out(i_gainScaled_I_from_S1), .a(i_I_from_S1), .b(i_stuffed_scaler)); //092513 fix (Trial 4): HI-GAIN
+        unsigned_mult32  sensoryGain_scaleCN(.out(i_gainScaled_I_from_S1), .a(i_I_from_S1_neuronCompensated), .b(i_stuffed_scaler)); //092513 fix (Trial 4): HI-GAIN
         
-        assign fixed_drive_to_CN_F0 =  i_I_from_S1 +  i_CN2_extra_drive + i_gainScaled_I_from_S1; //092613  HI-GAIN
+        assign fixed_drive_to_CN_F0 =  i_I_from_S1_neuronCompensated +  i_CN2_extra_drive + i_gainScaled_I_from_S1; //092613  HI-GAIN
 
 
 //        //bad
@@ -304,7 +305,7 @@
 //                                        (i_stuffed_scaler == 32'd6)? ((i_adjusted_I_from_spindle << 2)+(i_adjusted_I_from_spindle << 1) +i_adjusted_I_from_spindle  +  (i_CN2_extra_drive)):
 //                                         (i_stuffed_scaler == 32'd7)? ((i_adjusted_I_from_spindle << 3) +  (i_CN2_extra_drive)): 32'd0;
 
-//        assign fixed_drive_to_CN_F0 = (i_I_from_spindle << 9)  + (i_rng_CN1_extra_drive << 4) + (i_CN2_extra_drive << 1); // (Trial 5): DC up
+//        assign fixed_drive_to_CN_F0 = i_I_from_S1_neuronCompensated  + (i_rng_CN1_extra_drive << 4) + i_CN2_extra_drive; // (Trial 5):TONIC
        
         // i_I_from_CN1extra:0~10 (15000 amp),  i_I_from_CN2extra_buttonScaled: 1~5  constantly. (4000 * 1~5)
         //fixed_drive_to_CN :5000~ 500000!
@@ -534,8 +535,8 @@
         okWireOut wo22 (    .ep_datain(i_gainScaled_I_from_S1[15:0]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h22)    );
         okWireOut wo23 (    .ep_datain(i_gainScaled_I_from_S1[31:16]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h23)   );    
         
-        okWireOut wo24 (    .ep_datain(i_I_from_S1[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
-        okWireOut wo25 (    .ep_datain(i_I_from_S1[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
+        okWireOut wo24 (    .ep_datain(i_I_from_S1_neuronCompensated[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
+        okWireOut wo25 (    .ep_datain(i_I_from_S1_neuronCompensated[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
         
         okWireOut wo26 (    .ep_datain(fixed_drive_to_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
         okWireOut wo27 (    .ep_datain(fixed_drive_to_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
@@ -543,8 +544,8 @@
         okWireOut wo28 (    .ep_datain(i_CN2_extra_drive[15:0]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h28)    );
         okWireOut wo29 (    .ep_datain(i_CN2_extra_drive[31:16]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h29)   );  
 
-        okWireOut wo2A (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h2A)    );
-        okWireOut wo2B (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2B)   ); 
+        okWireOut wo2A (    .ep_datain(i_I_from_spindle[15:0]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h2A)    );
+        okWireOut wo2B (    .ep_datain(i_I_from_spindle[31:16]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2B)   ); 
         
         okWireOut wo2C (    .ep_datain(i_stuffed_scaler[15:0]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2C)    );
         okWireOut wo2D (    .ep_datain(i_stuffed_scaler[31:16]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2D)   ); 

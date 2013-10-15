@@ -5,9 +5,11 @@
 %  load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174801.mat');%
 % load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_174912.mat');
 %load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_175015.mat');
-cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk_minos
+% cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk_minos
+cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk
 
-fname = sprintf('20131010_180915'); 
+
+fname = sprintf('20131014_154449'); 
 % 20131009_152401: base line (control) : 63 seconds
 % 20131009_153808: HI-GAIN: 4*1=4
 % 20131009_153455: TONIC: 2000*1 = 2000: 63 seconds
@@ -42,6 +44,7 @@ n = 3;
 start =100;
 %start = 1250;
 last = min(length(t_bic), 22000); 
+% last =635;
 % last = min(length(t_bic), 1000); %2050
 subplot(n, 1, 1);
 
@@ -106,12 +109,12 @@ hYLabel = ylabel('flexor angle');
 % hTitle  = title ('flexor muscle length. High Trascortical reflex gain: 3 ');
 
 subplot (n,1, 2);
-hLine2 = line(t_bic(start:last), f_emg_bic(start:last));
+hLine2 = line(t_bic(start:last), abs(f_emg_bic(start:last)));
 set(hLine2                        , ...
   'LineStyle'       , '-'         , ...
   'LineWidth'       , 1           , ...   
   'Color'           , 'black'  );
-set(gca,'YLim',[-1.5 1.5])
+set(gca,'YLim',[-1.5 4.5])
 % axis off;
 
 
@@ -158,6 +161,8 @@ hYLabel = ylabel('flexor force');
 %%
 hfig2  = figure(2); 
 last = min(length(t_tri), 22000) 
+% last = 635
+
 set(gcf, 'units', 'centimeters', 'pos', [0 0 figure_width figure_height])
     % set(gcf, 'Units', 'pixels', 'Position', [100 100 500 375]);
     set(gcf, 'PaperPositionMode', 'auto');
@@ -181,13 +186,13 @@ set(hLine4                        , ...
 hYLabel = ylabel('Extensor angle');
 
 subplot (n,1, 2);
-hLine5 = line(t_tri(start:last), f_emg_tri(start:last));
+hLine5 = line(t_tri(start:last), abs(f_emg_tri(start:last)));
 set(hLine5                        , ...
   'LineStyle'       , '-'         , ...
   'LineWidth'       , 1           , ...   
   'Color'           , 'black'  );
 % axis off;
-set(gca,'YLim',[-1.5 1.5])
+set(gca,'YLim',[-1.5 2.5])
 
 subplot (n,1, 3);
 hLine6 = line(t_tri(start:last), force_tri(start:last));
