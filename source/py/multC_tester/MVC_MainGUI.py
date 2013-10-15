@@ -65,7 +65,7 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         #self.clkRate = value
        
         
-        newHalfCnt = self.halfCountRealTime * 10 / value        
+        newHalfCnt = self.halfCountRealTime * 10 / value  * 10  # * 10 added later for slow emulation       
         print value,  newHalfCnt
         
         for eachXem in self.xemList:

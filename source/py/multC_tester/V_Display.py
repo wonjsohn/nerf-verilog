@@ -43,7 +43,7 @@ class CtrlChannel:
                                         #"border-left: 1px solid none;"
                       # "border-right: 1px solid none; border-bottom: 1px solid black; width: 0px; height: 0px;")
         SPINBOX_VOFFSET = 130
-        SPINBOX_HOFFSET = 180
+        SPINBOX_HOFFSET = 650  # was 180
         self.doubleSpinBox.setGeometry(QtCore.QRect(SPINBOX_HOFFSET + 620, SPINBOX_VOFFSET+ id * 30, 205, 30))
         self.doubleSpinBox.setSingleStep(0.000001)
         self.doubleSpinBox.setDecimals(7)
@@ -112,7 +112,7 @@ class View(QMainWindow, Ui_Dialog):
         QMainWindow.__init__(self, parent)
 #        self.setStyleSheet("background-color:  rgb(240, 235, 235); margin: 2px;")
         self.setStyleSheet("background-color:  white; margin: 2px;")
-        self.setWindowOpacity(0.85)
+        self.setWindowOpacity(0.75)
 
 #                                    "QLineEdit { border-width: 20px;border-style: solid; border-color: darkblue; };")
         self.setupUi(self)

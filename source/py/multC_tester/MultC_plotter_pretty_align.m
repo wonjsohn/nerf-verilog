@@ -518,7 +518,6 @@ EMG_interp_offset = EMG_interp_offset - mean(EMG_interp_offset(~isnan(EMG_interp
 
 [rho, pval] = corr(transpose(len_interp(~isnan(len_interp))), transpose(EMG_interp(~isnan(EMG_interp))))
  
-
 %  [c, lags] = xcorr(transpose(len_interp(~isnan(len_interp))), transpose(EMG_interp(~isnan(EMG_interp))));
 [c, lags] = xcorr(transpose(len_interp(~isnan(len_interp))), transpose(EMG_interp(~isnan(EMG_interp))));
 [c_offset, lags_offset] = xcorr(transpose(len_interp_offset(~isnan(len_interp_offset))), transpose(EMG_interp_offset(~isnan(EMG_interp_offset))));

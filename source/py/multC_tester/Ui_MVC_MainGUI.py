@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/MVC_MainGUI.ui'
 #
-# Created: Thu Jul 11 11:58:06 2013
+# Created: Sat Oct 12 22:18:12 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,7 +18,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.setWindowModality(QtCore.Qt.WindowModal)
-        Dialog.resize(989, 32)
+        Dialog.resize(989, 50)
         self.pushButton_2 = QtGui.QPushButton(Dialog)
         self.pushButton_2.setGeometry(QtCore.QRect(0, 0, 71, 31))
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
@@ -30,8 +30,8 @@ class Ui_Dialog(object):
         self.horizontalSlider.setGeometry(QtCore.QRect(311, 1, 181, 16))
         self.horizontalSlider.setMinimum(1)
         self.horizontalSlider.setMaximum(100)
-        self.horizontalSlider.setProperty("value", 10)
-        self.horizontalSlider.setSliderPosition(10)
+        self.horizontalSlider.setProperty("value", 100)
+        self.horizontalSlider.setSliderPosition(100)
         self.horizontalSlider.setTracking(True)
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider.setInvertedControls(True)
@@ -187,8 +187,8 @@ class Ui_Dialog(object):
         self.lcdNumber.setLineWidth(0)
         self.lcdNumber.setMidLineWidth(8)
         self.lcdNumber.setSegmentStyle(QtGui.QLCDNumber.Flat)
-        self.lcdNumber.setProperty("value", 10.0)
-        self.lcdNumber.setProperty("intValue", 10)
+        self.lcdNumber.setProperty("value", 100.0)
+        self.lcdNumber.setProperty("intValue", 100)
         self.lcdNumber.setObjectName(_fromUtf8("lcdNumber"))
         self.label_RT = QtGui.QLabel(Dialog)
         self.label_RT.setGeometry(QtCore.QRect(330, 20, 101, 16))
@@ -224,7 +224,7 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_2.setText(QtGui.QApplication.translate("Dialog", "Close", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_4.setText(QtGui.QApplication.translate("Dialog", "Wipe All", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_RT.setText(QtGui.QApplication.translate("Dialog", "x 0.1 Real-time", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_RT.setText(QtGui.QApplication.translate("Dialog", "x 0.01 Real-time", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButtonData.setText(QtGui.QApplication.translate("Dialog", "Log Data", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton.setText(QtGui.QApplication.translate("Dialog", "Start", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_burn.setText(QtGui.QApplication.translate("Dialog", "Burn", None, QtGui.QApplication.UnicodeUTF8))
