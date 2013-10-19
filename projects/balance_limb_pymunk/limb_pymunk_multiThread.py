@@ -67,7 +67,7 @@ class armSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.15 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.2 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -92,6 +92,7 @@ class armSetup:
         self.angle = 0.0
         self.linearV = 0.0
         self.record = False
+        self.mouseOn = False
         self.scale = 1.0
         self.fmax = 0.0
 
@@ -148,12 +149,12 @@ class armSetup:
             """ extra data for close loop data acquisition"""  
 #            Ia_afferent = xem_spindle_bic.ReadFPGA(0x22, "float32")  # EMG 
 #            II_afferent = xem_spindle_bic.ReadFPGA(0x24, "float32")  # EMG    
-#            MN1_spikes = xem_muscle_bic.ReadFPGA(0x22, "spike32")  #             
-#            MN2_spikes = xem_muscle_bic.ReadFPGA(0x24, "spike32")  #             
-#            MN3_spikes = xem_muscle_bic.ReadFPGA(0x26, "spike32")  #             
-#            MN4_spikes = xem_muscle_bic.ReadFPGA(0x28, "spike32")  #             
-#            MN5_spikes = xem_muscle_bic.ReadFPGA(0x2A, "spike32")  #             
-#            MN6_spikes = xem_muscle_bic.ReadFPGA(0x2C, "spike32")  # 
+            MN1_spikes = xem_muscle_bic.ReadFPGA(0x22, "spike32")  #             
+            MN2_spikes = xem_muscle_bic.ReadFPGA(0x24, "spike32")  #             
+            MN3_spikes = xem_muscle_bic.ReadFPGA(0x26, "spike32")  #             
+            MN4_spikes = xem_muscle_bic.ReadFPGA(0x28, "spike32")  #             
+            MN5_spikes = xem_muscle_bic.ReadFPGA(0x2A, "spike32")  #             
+            MN6_spikes = xem_muscle_bic.ReadFPGA(0x2C, "spike32")  # 
             
 #            force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
 #            emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
@@ -240,7 +241,7 @@ class armSetup:
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, force_tri,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime,  lce_bic, self.linearV, spikecnt_bic, force_bic, emg_bic#,  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
+            tempData = elapsedTime,  lce_bic, self.linearV, spikecnt_bic, force_bic, emg_bic,  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
             self.data_bic.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
     #      
@@ -266,12 +267,12 @@ class armSetup:
             """ extra data for close loop data acquisition"""  
 #            Ia_afferent = xem_spindle_tri.ReadFPGA(0x22, "float32")  # EMG 
 #            II_afferent = xem_spindle_tri.ReadFPGA(0x24, "float32")  # EMG    
-#            MN1_spikes = xem_muscle_tri.ReadFPGA(0x22, "spike32")  #             
-#            MN2_spikes = xem_muscle_tri.ReadFPGA(0x24, "spike32")  #             
-#            MN3_spikes = xem_muscle_tri.ReadFPGA(0x26, "spike32")  #             
-#            MN4_spikes = xem_muscle_tri.ReadFPGA(0x28, "spike32")  #             
-#            MN5_spikes = xem_muscle_tri.ReadFPGA(0x2A, "spike32")  #             
-#            MN6_spikes = xem_muscle_tri.ReadFPGA(0x2C, "spike32")  # 
+            MN1_spikes = xem_muscle_tri.ReadFPGA(0x22, "spike32")  #             
+            MN2_spikes = xem_muscle_tri.ReadFPGA(0x24, "spike32")  #             
+            MN3_spikes = xem_muscle_tri.ReadFPGA(0x26, "spike32")  #             
+            MN4_spikes = xem_muscle_tri.ReadFPGA(0x28, "spike32")  #             
+            MN5_spikes = xem_muscle_tri.ReadFPGA(0x2A, "spike32")  #             
+            MN6_spikes = xem_muscle_tri.ReadFPGA(0x2C, "spike32")  # 
 ##            
             
 #            self.gForearm_body.torque = (self.force_bic - self.force_tri) * 0.06
@@ -330,7 +331,7 @@ class armSetup:
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, force_tri,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime, self.lce_tri, self.linearV, spikecnt_tri,   self.force_tri,  emg_tri#,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
+            tempData = elapsedTime, self.lce_tri, self.linearV, spikecnt_tri,   self.force_tri,  emg_tri,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
             self.data_tri.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
 #            time.sleep(0.07)
@@ -377,9 +378,9 @@ class armSetup:
 #                    bitVal100 = convertType(100.0, fromType = 'f', toType = 'I')
 #                    xem_muscle_bic.SendPara(bitVal = bitVal100, trigEvent = 10) 
 #                    xem_muscle_tri.SendPara(bitVal = bitVal100, trigEvent = 10)  
-                    
-
-                elif event.type == KEYDOWN and event.key == K_l:  # forced movement, follow the mouse
+                elif event.type == KEYDOWN and event.key == K_m:  # forced movement, follow the mouse    
+                    self.mouseOn = True
+                elif event.type == KEYDOWN and event.key == K_l:  # doornik replay
                     if (self.record == True):
                         self.record = False
                     if (self.record == False):
@@ -388,6 +389,10 @@ class armSetup:
                   
                         
             """ mouse cursor controlled forced (passive) movement"""
+            if (self.mouseOn == True):
+                self.gForearm_body.angle =forced_angle
+            
+            """ doornik replay """
             if (self.record == True):
                 #self.gForearm_body.angle =forced_angle
                 if k == len(self.j2List)-1:
@@ -497,6 +502,9 @@ if __name__ == '__main__':
     xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '124300046A')
     xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '1201000216')
     xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12430003T2')
+    
+    
+    
 #    
 #    view_muscle_bic = View(count = 1,  projectName = "rack_emg" ,  projectPath = "/home/eric/nerf_verilog_eric/projects/rack_emg",  nerfModel = xem_muscle_bic,  fpgaOutput = FPGA_OUTPUT_B3,  userInput = USER_INPUT_B3)
 #    

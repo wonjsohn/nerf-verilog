@@ -189,13 +189,13 @@ always @ (negedge clk or negedge reset_bar) begin
     end else begin
         if (state) begin
             //each_spike <= fired;
-            each_spike <= spike_history_mem[14];
+            each_spike <= spike_history_mem[14];  // was 14 
             history[neuron_index] <= fired;
             if (neuron_index == 7'h7f) begin
                 first_pass <= 0;
                 v_out <= v_mem_in;
                 //spike <= fired;
-                spike <= spike_history_mem[14];
+                spike <= spike_history_mem[14];  // was 14 
                 //population <= {fired, history[126:0]};
                 population <= history;
             end

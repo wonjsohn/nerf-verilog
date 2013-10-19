@@ -226,7 +226,8 @@
 //        wire [31:0] f_drive_to_CN;
 //        add addCurrentsFrom_extra2(.x(f_SN_M1extra1), .y(f_I_synapse_M1extra2), .out(f_drive_to_CN));
 //        
-//        
+//       
+ 
         wire [31:0] f_I_synapse_both_gainControlled;
          mult mult_synapse(.x(f_I_synapse_both), .y(f_extraCN_syn_gain), .out(f_I_synapse_both_gainControlled));
 
@@ -235,77 +236,73 @@
             .in(f_I_synapse_both_gainControlled),
             .out(i_I_from_spindle)
         );
-        
-  
+//        
 
-        wire [31:0] v_neuron_S1;   // membrane potential
-        wire spike_neuron_S1;      // spike sample for visualization only
-        wire each_spike_neuron_S1; // raw spike signals
-        wire [127:0] population_neuron_S1; // spike raster for entire population        
-        
      // S1Neuron Instance Definition
         wire [31:0] i_I_from_spindle_neuronCompensated;
-        assign i_I_from_spindle_neuronCompensated = i_I_from_spindle << 9;  // always scale after neuron (neuronCompensation)
-        
-        izneuron_th_control S1Neuron(
-            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_sim),           // reset to initial conditions
-            .I_in(  (i_I_from_spindle_neuronCompensated)),          // input current from synapse
-            .th_scaled( threshold30mv <<< 10),                 // threshold
-            .v_out(v_neuron_S1),               // membrane potential
-            .spike(spike_neuron_S1),           // spike sample
-            .each_spike(each_spike_neuron_S1), // raw spikes
-            .population(population_neuron_S1)  // spikes of population per 1ms simulation time
-        ); 
+        assign i_I_from_spindle_neuronCompensated = i_I_from_spindle <<< 9;  // always scale after neuron (neuronCompensation)
 
 
-        wire [31:0] f_I_synapse_S1;
-        synapse_simple synapse_simple_from_S1Neuron(
-            .clk(sim_clk),
-            .reset(reset_sim),
-            .spike_in(each_spike_neuron_S1),
-            .f_I_out(f_I_synapse_S1)
-        );
+//
+//        wire [31:0] v_neuron_S1;   // membrane potential
+//        wire spike_neuron_S1;      // spike sample for visualization only
+//        wire each_spike_neuron_S1; // raw spike signals
+//        wire [127:0] population_neuron_S1; // spike raster for entire population        
         
-        wire [31:0]  i_I_from_S1;
-        floor   float_to_int_fromS1(
-            .in(f_I_synapse_S1),
-            .out(i_I_from_S1)
-        );
-        wire [31:0] i_I_from_S1_neuronCompensated;
-        assign i_I_from_S1_neuronCompensated = i_I_from_S1 << 9;
+//        iz_corticalneuron_th_control S1Neuron(
+//            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+//            .reset(reset_sim),           // reset to initial conditions
+//            .I_in(  (i_I_from_spindle_neuronCompensated)),          // input current from synapse
+//            .th_scaled( threshold30mv <<< 10),                 // threshold
+//            .v_out(v_neuron_S1),               // membrane potential
+//            .spike(spike_neuron_S1),           // spike sample
+//            .each_spike(each_spike_neuron_S1), // raw spikes
+//            .population(population_neuron_S1)  // spikes of population per 1ms simulation time
+//        ); 
+//
+//
+//        wire [31:0] f_I_synapse_S1;
+//        synapse_simple synapse_simple_from_S1Neuron(
+//            .clk(sim_clk),
+//            .reset(reset_sim),
+//            .spike_in(each_spike_neuron_S1),
+//            .f_I_out(f_I_synapse_S1)
+//        );
+        
+        
+//       wire [31:0] f_I_synapse_S1_gainControlled;
+//       mult mult_synapse(.x(f_I_synapse_S1), .y(f_extraCN_syn_gain), .out(f_I_synapse_S1_gainControlled));
+////        
+//        wire [31:0]  i_I_from_S1;
+//        floor   float_to_int_fromS1(
+//            .in(f_I_synapse_S1_gainControlled),
+//            .out(i_I_from_S1)
+//        );
+//        wire [31:0] i_I_from_S1_neuronCompensated_1st;
+//        assign i_I_from_S1_neuronCompensated_1st = i_I_from_S1 <<< 9;
 
 
         wire [31:0] fixed_drive_to_CN_F0;
         //assign fixed_drive_to_CN_F0 = i_I_from_spindle + i_I_from_extras;
-//        assign fixed_drive_to_CN_F0 = i_I_from_spindle << 9 + i_I_from_CN1extra+ i_I_from_CN2extra_buttonScaled; 
-        //assign fixed_drive_to_CN_F0 = (i_I_from_spindle << 9) + i_I_from_CN1extra_buttonScaled + i_CN2_extra_drive;
+//        assign fixed_drive_to_CN_F0 = i_I_from_spindle <<< 9 + i_I_from_CN1extra+ i_I_from_CN2extra_buttonScaled; 
+        //assign fixed_drive_to_CN_F0 = (i_I_from_spindle <<< 9) + i_I_from_CN1extra_buttonScaled + i_CN2_extra_drive;
         
         //
-//        assign fixed_drive_to_CN_F0 =  (i_I_from_spindle << (9 + i_stuffed_scaler)) +  (i_CN2_extra_drive) ; //button increase the sensory gain like crazy.  (Trial 4): sensory gain upup. 
+//        assign fixed_drive_to_CN_F0 =  (i_I_from_spindle <<< (9 + i_stuffed_scaler)) +  (i_CN2_extra_drive) ; //button increase the sensory gain like crazy.  (Trial 4): sensory gain upup. 
         
         
 
-//         wire [31:0] i_adjusted_I_from_spindle = i_I_from_spindle << 9;    // adjusting baseline sensory gain  //092513 fix (Trial 4): HI-GAIN
+//         wire [31:0] i_adjusted_I_from_spindle = i_I_from_spindle <<< 9;    // adjusting baseline sensory gain  //092513 fix (Trial 4): HI-GAIN
           
         
-        wire [31:0] i_gainScaled_I_from_S1;    //092513 fix (Trial 4): HI-GAIN
-        unsigned_mult32  sensoryGain_scaleCN(.out(i_gainScaled_I_from_S1), .a(i_I_from_S1_neuronCompensated), .b(i_stuffed_scaler)); //092513 fix (Trial 4): HI-GAIN
-        
-        assign fixed_drive_to_CN_F0 =  i_I_from_S1_neuronCompensated +  i_CN2_extra_drive + i_gainScaled_I_from_S1; //092613  HI-GAIN
+        wire [31:0] i_gainScaled_I_from_spindle;    //092513 fix (Trial 4): HI-GAIN
+
+        unsigned_mult32  sensoryGain_scaleCN(.out(i_gainScaled_I_from_spindle), .a(i_I_from_spindle_neuronCompensated), .b(i_stuffed_scaler)); //092513 fix (Trial 4): HI-GAIN
+       
+        assign fixed_drive_to_CN_F0 =  i_I_from_spindle_neuronCompensated + i_gainScaled_I_from_spindle + i_CN2_extra_drive; //092613  HI-GAIN
 
 
-//        //bad
-//        assign fixed_drive_to_CN_F0 =  (i_stuffed_scaler == 32'd0)? (i_adjusted_I_from_spindle  +  (i_CN2_extra_drive)): 
-//                                       (i_stuffed_scaler == 32'd1)? ((i_adjusted_I_from_spindle<<1)  +  (i_CN2_extra_drive)): //092513 fix (Trial 4): HI-GAIN
-//                                        (i_stuffed_scaler == 32'd2)? ((i_adjusted_I_from_spindle<<1)+i_adjusted_I_from_spindle +  (i_CN2_extra_drive)):
-//                                       (i_stuffed_scaler == 32'd3)? ((i_adjusted_I_from_spindle << 2)  +  (i_CN2_extra_drive)): 
-//                                       (i_stuffed_scaler == 32'd4)? ((i_adjusted_I_from_spindle << 2)+i_adjusted_I_from_spindle  +  (i_CN2_extra_drive)): 
-//                                       (i_stuffed_scaler == 32'd5)? ((i_adjusted_I_from_spindle << 2)+(i_adjusted_I_from_spindle << 1)  +  (i_CN2_extra_drive)):
-//                                        (i_stuffed_scaler == 32'd6)? ((i_adjusted_I_from_spindle << 2)+(i_adjusted_I_from_spindle << 1) +i_adjusted_I_from_spindle  +  (i_CN2_extra_drive)):
-//                                         (i_stuffed_scaler == 32'd7)? ((i_adjusted_I_from_spindle << 3) +  (i_CN2_extra_drive)): 32'd0;
-
-//        assign fixed_drive_to_CN_F0 = i_I_from_S1_neuronCompensated  + (i_rng_CN1_extra_drive << 4) + i_CN2_extra_drive; // (Trial 5):TONIC
+//        assign fixed_drive_to_CN_F0 = i_I_from_spindle_neuronCompensated  + (i_rng_CN1_extra_drive <<< 4) + i_CN2_extra_drive; // (Trial 5):TONIC
        
         // i_I_from_CN1extra:0~10 (15000 amp),  i_I_from_CN2extra_buttonScaled: 1~5  constantly. (4000 * 1~5)
         //fixed_drive_to_CN :5000~ 500000!
@@ -391,7 +388,7 @@
         reg [31:0] f_extraCN_syn_gain;
         always @ (posedge ep50trig[13] or posedge reset_global)
         if (reset_global)
-            f_extraCN_syn_gain <= 32'h3F800000;         //reset to 1.0  
+            f_extraCN_syn_gain <= 32'h40000000;         //reset to 2.0  
         else
             f_extraCN_syn_gain <= {ep02wire, ep01wire};    
         
@@ -532,11 +529,11 @@
         okWireOut wo20 (    .ep_datain(i_rng_CN1_extra_drive[15:0]),  .ok1(ok1),  .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h20)    );
         okWireOut wo21 (    .ep_datain(i_rng_CN1_extra_drive[31:16]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h21)   );    
         
-        okWireOut wo22 (    .ep_datain(i_gainScaled_I_from_S1[15:0]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h22)    );
-        okWireOut wo23 (    .ep_datain(i_gainScaled_I_from_S1[31:16]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h23)   );    
+        okWireOut wo22 (    .ep_datain(i_gainScaled_I_from_spindle[15:0]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h22)    );
+        okWireOut wo23 (    .ep_datain(i_gainScaled_I_from_spindle[31:16]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h23)   );    
         
-        okWireOut wo24 (    .ep_datain(i_I_from_S1_neuronCompensated[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
-        okWireOut wo25 (    .ep_datain(i_I_from_S1_neuronCompensated[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
+        okWireOut wo24 (    .ep_datain(i_I_from_spindle_neuronCompensated[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
+        okWireOut wo25 (    .ep_datain(i_I_from_spindle_neuronCompensated[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
         
         okWireOut wo26 (    .ep_datain(fixed_drive_to_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
         okWireOut wo27 (    .ep_datain(fixed_drive_to_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
@@ -594,7 +591,7 @@
         
      // CN1 Instance Definition
 
-        izneuron_th_control CN1(
+        iz_corticalneuron_th_control CN1(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
             .I_in(  (fixed_drive_to_CN)),          // input current from synapse
