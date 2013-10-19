@@ -9,7 +9,7 @@
 cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk
 
 
-fname = sprintf('20131014_154449'); 
+fname = sprintf('20131016_165836'); 
 % 20131009_152401: base line (control) : 63 seconds
 % 20131009_153808: HI-GAIN: 4*1=4
 % 20131009_153455: TONIC: 2000*1 = 2000: 63 seconds
@@ -30,12 +30,12 @@ f_emg_bic = data_bic(:,6);
 f_emg_tri = data_tri(:,6);
 force_bic = data_bic(:,5);
 force_tri = data_tri(:,5);
-% MN1_spikes_bic = data_bic(:,7);
-% MN2_spikes_bic = data_bic(:,8);
-% MN3_spikes_bic = data_bic(:,9);
-% MN4_spikes_bic = data_bic(:,10);
-% MN5_spikes_bic = data_bic(:,11);
-% MN6_spikes_bic = data_bic(:,12);
+MN1_spikes_bic = data_bic(:,7);
+MN2_spikes_bic = data_bic(:,8);
+MN3_spikes_bic = data_bic(:,9);
+MN4_spikes_bic = data_bic(:,10);
+MN5_spikes_bic = data_bic(:,11);
+MN6_spikes_bic = data_bic(:,12);
 
 
 
@@ -109,7 +109,7 @@ hYLabel = ylabel('flexor angle');
 % hTitle  = title ('flexor muscle length. High Trascortical reflex gain: 3 ');
 
 subplot (n,1, 2);
-hLine2 = line(t_bic(start:last), abs(f_emg_bic(start:last)));
+hLine2 = line(t_bic(start:last), f_emg_bic(start:last));
 set(hLine2                        , ...
   'LineStyle'       , '-'         , ...
   'LineWidth'       , 1           , ...   
@@ -261,51 +261,51 @@ print(hfig2, '-deps', [fname, '_perturb_tri']);
 
 % -dpng 
 
-% %% Raster plot
-% MN1_spikeindex=[]; 
-% MN2_spikeindex=[];
-% MN3_spikeindex=[];
-% MN4_spikeindex=[];
-% MN5_spikeindex=[];
-% MN6_spikeindex=[];
-% 
-% binaryMN1 = dec2bin(MN1_spikes_bic);
-% binaryMN2 = dec2bin(MN2_spikes_bic);
-% binaryMN3 = dec2bin(MN3_spikes_bic);
-% binaryMN4 = dec2bin(MN4_spikes_bic);
-% binaryMN5 = dec2bin(MN5_spikes_bic);
-% binaryMN6 = dec2bin(MN6_spikes_bic);
-% [r,c] = size(binaryMN1);  % 761, 32
-% 
-% 
-% numofrow = 3;
-% for i=1:r*numofrow,  % get two rows for each MN
-%     if binaryMN1(i) =='1'
-%         MN1_spikeindex = [MN1_spikeindex i]; 
+%% Raster plot
+MN1_spikeindex=[]; 
+MN2_spikeindex=[];
+MN3_spikeindex=[];
+MN4_spikeindex=[];
+MN5_spikeindex=[];
+MN6_spikeindex=[];
+
+binaryMN1 = dec2bin(MN1_spikes_bic);
+binaryMN2 = dec2bin(MN2_spikes_bic);
+binaryMN3 = dec2bin(MN3_spikes_bic);
+binaryMN4 = dec2bin(MN4_spikes_bic);
+binaryMN5 = dec2bin(MN5_spikes_bic);
+binaryMN6 = dec2bin(MN6_spikes_bic);
+[r,c] = size(binaryMN1);  % 761, 32
+
+
+numofrow = 32;
+for i=1:r*numofrow,  % get two rows for each MN
+    if binaryMN1(i) =='1'
+        MN1_spikeindex = [MN1_spikeindex i]; 
+    end
+    if binaryMN2(i) =='1'
+        MN2_spikeindex = [MN2_spikeindex i]; 
+    end
+    if binaryMN3(i) =='1'
+        MN3_spikeindex = [MN3_spikeindex i]; 
+    end
+    if binaryMN4(i) =='1'
+        MN4_spikeindex = [MN4_spikeindex i]; 
+    end
+    if binaryMN5(i) =='1'
+        MN5_spikeindex = [MN5_spikeindex i]; 
+    end
+%     if binaryMN6(i) =='1'
+%         MN6_spikeindex = [MN6_spikeindex i]; 
 %     end
-%     if binaryMN2(i) =='1'
-%         MN2_spikeindex = [MN2_spikeindex i]; 
-%     end
-%     if binaryMN3(i) =='1'
-%         MN3_spikeindex = [MN3_spikeindex i]; 
-%     end
-%     if binaryMN4(i) =='1'
-%         MN4_spikeindex = [MN4_spikeindex i]; 
-%     end
-%     if binaryMN5(i) =='1'
-%         MN5_spikeindex = [MN5_spikeindex i]; 
-%     end
-% %     if binaryMN6(i) =='1'
-% %         MN6_spikeindex = [MN6_spikeindex i]; 
-% %     end
-% %     
-% end
-% 
-% 
-% allMN_raster = [MN1_spikeindex (r*numofrow*1)+MN2_spikeindex (r*numofrow*2)+MN3_spikeindex (r*numofrow*3)+MN4_spikeindex (r*numofrow*4)+MN5_spikeindex (r*numofrow*5)+MN6_spikeindex];
-% 
-% 
-% rasterplot(allMN_raster, numofrow*6, r);axis off    
+    
+end
+
+
+allMN_raster = [MN1_spikeindex (r*numofrow*1)+MN2_spikeindex (r*numofrow*2)+MN3_spikeindex (r*numofrow*3)+MN4_spikeindex (r*numofrow*4)+MN5_spikeindex ];% (r*numofrow*5)+MN6_spikeindex];
+
+
+rasterplot(allMN_raster, numofrow*5, r);axis off    
 
 
 

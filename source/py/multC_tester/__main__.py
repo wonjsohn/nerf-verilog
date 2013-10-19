@@ -66,7 +66,8 @@ if __name__ == "__main__":
     numFpga = testrun.GetDeviceCount()
     assert numFpga > 0, "No OpalKelly boards found, is one connected?"
     print "Found ",  numFpga, " OpalKelly devices:"           
-#    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
+    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
+    print xemSerialList
     if (CORTICAL_BOARDS ==1) :   
         print "cortical boards setup"
         xemSerialList = [ '11160001CJ',  '12320003RM']  # CORTICAL BOARDS
@@ -81,8 +82,10 @@ if __name__ == "__main__":
         print "3 boards in linux setup"
         xemSerialList = ['124300046A', '12320003RM', '1201000216']
 #        xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
-#        xemSerialList = ['113700021E', '0000000547', '0000000542']
-#        xemSerialList = ['11160001CG', '000000054B', '1137000222']
+#        xemSerialList = ['000000054G', '000000054P',  '000000053U'] # copper top
+#        xemSerialList = ['000000054K', '000000053X',  '0000000550'] # copper top
+#        xemSerialList = ['113700021E', '0000000547', '0000000542']  # BBDL setting
+#        xemSerialList = ['11160001CG', '000000054B', '1137000222']  # BBDL setting
     elif (WINDOWS == 1):
         print "windows setup"
         xemSerialList = ['11160001CG', '1137000222']    #PXI first couple 

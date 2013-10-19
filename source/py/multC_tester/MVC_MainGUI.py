@@ -50,7 +50,7 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
        
        
         
-        self.onClkRate(5) 
+        self.onClkRate(100) 
 #        self.startSim()
         
 

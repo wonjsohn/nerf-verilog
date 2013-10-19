@@ -91,7 +91,7 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
                     (10, 'p_delta',      'float32',        0.0),  \
                     (11, 'ltd',      'int32',        0),  \
                     (12, 'ltp',      'int32',        0),  \
-                    (13, 'f_extraCN_syn_gain',      'float32',        1.0)
+                    (13, 'f_extraCN_syn_gain',      'float32',        2.0)
 
 
 #Transfer function:  (close to simulink)
