@@ -131,6 +131,9 @@
         wire pipe_in_write;
         wire [15:0] pipe_in_data;
         
+        wire pipe_in_write_timeref;
+        wire [15:0] pipe_in_data_timeref;
+        
 
         // Muscle muscle0 Wire Definitions
         wire [31:0] total_force_out_muscle0;
@@ -234,7 +237,7 @@
         reg [31:0] f_syn2_gain;
         always @ (posedge ep50trig[11] or posedge reset_global)
         if (reset_global)
-            f_syn2_gain <= 32'h42C80000;         //reset to 100     
+            f_syn2_gain <= 32'h41F00000;         //reset to 30.0     
         else
             f_syn2_gain <= {ep02wire, ep01wire};    
 
@@ -243,7 +246,7 @@
         reg [31:0] f_CN_syn_gain;
         always @ (posedge ep50trig[10] or posedge reset_global)
         if (reset_global)
-            f_CN_syn_gain <= 32'h42480000;         //reset to 50.0  
+            f_CN_syn_gain <= 32'h42700000;         //reset to 60.0  
         else
             f_CN_syn_gain <= {ep02wire, ep01wire};    
 
@@ -288,7 +291,7 @@
         // Triggered Input triggered_input5 Instance Definition (syn1_gain)
         always @ (posedge ep50trig[3] or posedge reset_global)
         if (reset_global)
-            triggered_input5 <= 32'h42C80000;         // gain 100    
+            triggered_input5 <= 32'h41F00000;         // gain 30.0    
         else
             triggered_input5 <= {ep02wire, ep01wire};      
         
@@ -309,7 +312,7 @@
         // b1
         always @ (posedge ep50trig[1] or posedge reset_global)
         if (reset_global)
-            triggered_input7 <= 32'h3A9E55C1;     //0.001208 (b1 default)
+            triggered_input7 <= 32'h3AA24463;     //0.001238 (b1 default) 
         else
             triggered_input7 <= {ep02wire, ep01wire};      
             //        .b1_F0(32'h3A9E55C1),      //0.001208 (b1 default)
@@ -763,6 +766,8 @@
             .wave(mixed_input0)                   // wave out signal
         );
         
+
+        
     //FPGA-FPGA Outputs
     assign spikeout1 = 1'b0;
     assign spikeout2 = 1'b0;
@@ -837,8 +842,8 @@
         okWireOut wo2C (    .ep_datain(population_neuron_MN6[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
         okWireOut wo2D (    .ep_datain(population_neuron_MN6[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
         
-      //  okWireOut wo2E (    .ep_datain(population_neuron_MN2[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
-      //  okWireOut wo2F (    .ep_datain(population_neuron_MN2[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
+//        okWireOut wo2E (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
+//        okWireOut wo2F (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
 
         okWireOut wo30 (    .ep_datain(total_spike_count_sync[15:0]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h30)    );
         okWireOut wo31 (    .ep_datain(total_spike_count_sync[31:16]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h31)   );         
@@ -852,7 +857,7 @@
         okWireOut wo36 (    .ep_datain(i_I_drive_to_MN[15:0]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h36)    );
         okWireOut wo37 (    .ep_datain(i_I_drive_to_MN[31:16]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h37)   );            
 
-      
+       
 
         // Clock Generator clk_gen0 Instance Definition
         gen_clk clocks(

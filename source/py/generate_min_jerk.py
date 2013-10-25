@@ -10,7 +10,7 @@ def gen(xi = 0.0, xf = 1.0, T = 1.0, SAMPLING_RATE = 1024):
    """    
    dt = 1.0 / SAMPLING_RATE # Sampling interval in seconds
    
-   tau = linspace(0, T, T * SAMPLING_RATE)
+   tau = linspace(0, 1.0, T * SAMPLING_RATE)
    
    x = xi + (xi - xf) * ((15.0 * pow(tau, 4.0)) - (6.0 * pow(tau, 5.0)) - (10.0 * pow(tau, 3.0)))
    dx = gradient(x) /dt

@@ -50,7 +50,7 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
        
        
         
-        self.onClkRate(100) 
+        self.onClkRate(10) 
 #        self.startSim()
         
 
@@ -121,6 +121,8 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
 
         for eachC in self.cList:
             eachC.startSim()
+            
+        
 #        for eachV in self.vList:
 #            print eachV
 #            eachV.readParameters()
