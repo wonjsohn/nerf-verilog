@@ -129,12 +129,15 @@
 
         // Output and OpalKelly Interface Wire Definitions
         
-        wire [20*17-1:0] ok2x;
+        wire [21*17-1:0] ok2x;
         wire [15:0] ep00wire, ep01wire, ep02wire;
         wire [15:0] ep50trig;
         
         wire pipe_in_write;
         wire [15:0] pipe_in_data;
+        
+        wire pipe_in_write_timeref;
+        wire [15:0] pipe_in_data_timeref;
         
 
         // Clock Generator clk_gen0 Wire Definitions
@@ -278,7 +281,7 @@
         // Triggered Input triggered_input6 Instance Definition (spindle_Ia_gain)
         always @ (posedge ep50trig[1] or posedge reset_global)
         if (reset_global)
-            triggered_input6 <= 32'h3FC00000;         //reset to 1.5      
+            triggered_input6 <= 32'h3F99999A;         //reset to 1.2      
         else
             triggered_input6 <= {ep02wire, ep01wire};      
         
@@ -293,7 +296,7 @@
        // Triggered Input triggered_input8 Instance Definition (spindle_II_gain)
         always @ (posedge ep50trig[10] or posedge reset_global)
         if (reset_global)
-            triggered_input8 <= 32'h3F000000;         //reset to 0.5    
+            triggered_input8 <= 32'h40000000;         //reset to 2.0    
         else
             triggered_input8 <= {ep02wire, ep01wire};                  
         
@@ -309,6 +312,20 @@
             .pipe_in_data(pipe_in_data),        // waveform data from opalkelly pipe in
             .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
             .wave(mixed_input0)                   // wave out signal
+        );
+        
+        // time reference for latency measure 
+         // Waveform Generator mixed_input0 Instance Definition
+         wire [31:0] timeref_wave;
+        waveform_from_pipe_bram_2s gen_additional_pipeinput(
+            .reset(reset_sim),               // reset the waveform
+            .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
+            .pipe_in_write(pipe_in_write_timeref),      // write enable signal from opalkelly pipe in
+            .data_from_trig(triggered_input0),	// data from one of ep50 channel
+            .is_from_trigger(1'd0),
+            .pipe_in_data(pipe_in_data_timeref),        // waveform data from opalkelly pipe in
+            .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
+            .wave(timeref_wave)                   // wave out signal
         );
         
         
@@ -341,7 +358,7 @@
         assign reset_global = ep00wire[0] | reset_external_clean;
         assign reset_sim = ep00wire[2] | reset_external_clean;
         assign is_from_trigger = ~ep00wire[1];
-        okWireOR # (.N(20)) wireOR (ok2, ok2x);
+        okWireOR # (.N(21)) wireOR (ok2, ok2x);
         okHost okHI(
             .hi_in(hi_in),  .hi_out(hi_out),    .hi_inout(hi_inout),    .hi_aa(hi_aa),
             .ti_clk(ti_clk),    .ok1(ok1),  .ok2(ok2)   );
@@ -368,8 +385,8 @@
         okWireOut wo26 (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
         okWireOut wo27 (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   );    
         
-//        okWireOut wo28 (    .ep_datain(spike_count_length2spk[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
-   //     okWireOut wo29 (    .ep_datain(spike_count_length2spk[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   );    
+        okWireOut wo28 (    .ep_datain(timeref_wave[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
+        okWireOut wo29 (    .ep_datain(timeref_wave[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   );    
         
         okWireOut wo2A (    .ep_datain(i_rng_current_to_SN_Ia[15:0]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2A)    );
         okWireOut wo2B (    .ep_datain(i_rng_current_to_SN_Ia[31:16]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2B)   );    
@@ -380,6 +397,11 @@
         okWireOut wo2E (    .ep_datain(spike_count_II_normal[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
         okWireOut wo2F (    .ep_datain(spike_count_II_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
         
+        okBTPipeIn ep82 (   .ok1(ok1), .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h82), .ep_write(pipe_in_write_timeref),
+                            .ep_blockstrobe(), .ep_dataout(pipe_in_data_timeref), .ep_ready(1'b1));
+        
+                
+
 
         // Clock Generator clk_gen0 Instance Definition
         gen_clk clocks(

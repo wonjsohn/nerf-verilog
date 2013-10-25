@@ -17,9 +17,12 @@ from generate_sin import gen as gen_sin
 from generate_tri import gen as gen_tri
 from generate_spikes import spike_train
 from generate_sequence import gen as gen_ramp
+from generate_min_jerk import gen as gen_jerk
 from functools import partial
 from math import floor
 from glob import glob
+import numpy as np
+
 
 PIXEL_OFFSET = 200 # pixels offsets
 BUTTON_INPUT_FROM_TRIGGER = 1
@@ -350,9 +353,16 @@ class View(QMainWindow, Ui_Dialog):
         if choice == "waveform 1":
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2,1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False)
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2,1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 100ms rise
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.12, 1.1, 1.11,1.12, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 100ms rise
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
-
+            up_pulse, dummy = gen_jerk(xi=1.0,  xf = 1.5,  T = 0.05)
+            down_pulse, dummy = gen_jerk(xi=1.5,  xf=1.0,  T=0.05)
+            flat_tail = np.array([1.0]*np.floor((1.0-0.1)*1024 + 1))
+            pipeInData = np.hstack((up_pulse, down_pulse, flat_tail, up_pulse, down_pulse, flat_tail))
+            print len(pipeInData)
+#            pipeInData = np.append(p1, flat_tail)
+            print pipeInData
             print "waveform 1 fed"
 #            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 
             

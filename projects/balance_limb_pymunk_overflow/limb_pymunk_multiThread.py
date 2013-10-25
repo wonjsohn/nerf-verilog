@@ -182,12 +182,12 @@ class armSetup:
             """ extra data for close loop data acquisition"""  
 #            Ia_afferent = xem_spindle.ReadFPGA(0x22, "float32")  # EMG 
 #            II_afferent = xem_spindle.ReadFPGA(0x24, "float32")  # EMG    
-            MN1_spikes = xem_muscle.ReadFPGA(0x22, "spike32")  #             
-            MN2_spikes = xem_muscle.ReadFPGA(0x24, "spike32")  #             
-            MN3_spikes = xem_muscle.ReadFPGA(0x26, "spike32")  #             
-            MN4_spikes = xem_muscle.ReadFPGA(0x28, "spike32")  #             
-            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
-            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
+#            MN1_spikes = xem_muscle.ReadFPGA(0x22, "spike32")  #             
+#            MN2_spikes = xem_muscle.ReadFPGA(0x24, "spike32")  #             
+#            MN3_spikes = xem_muscle.ReadFPGA(0x26, "spike32")  #             
+#            MN4_spikes = xem_muscle.ReadFPGA(0x28, "spike32")  #             
+#            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
+#            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
             
     
             force_flexor = force_flexor_pre #+ pipeInData_bic[j]
@@ -221,7 +221,7 @@ class armSetup:
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_extensor,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime,  lce_flexor, self.linearV, spikecnt_flexor, force_flexor, emg_flexor,  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
+            tempData = elapsedTime,  lce_flexor, self.linearV, spikecnt_flexor, force_flexor, emg_flexor#,  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
             self.data_bic.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
     #      
@@ -244,12 +244,12 @@ class armSetup:
             """ extra data for close loop data acquisition"""  
 #            Ia_afferent = xem_spindle.ReadFPGA(0x22, "float32")  # EMG 
 #            II_afferent = xem_spindle.ReadFPGA(0x24, "float32")  # EMG    
-            MN1_spikes = xem_muscle.ReadFPGA(0x22, "spike32")  #             
-            MN2_spikes = xem_muscle.ReadFPGA(0x24, "spike32")  #             
-            MN3_spikes = xem_muscle.ReadFPGA(0x26, "spike32")  #             
-            MN4_spikes = xem_muscle.ReadFPGA(0x28, "spike32")  #             
-            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
-            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
+#            MN1_spikes = xem_muscle.ReadFPGA(0x22, "spike32")  #             
+#            MN2_spikes = xem_muscle.ReadFPGA(0x24, "spike32")  #             
+#            MN3_spikes = xem_muscle.ReadFPGA(0x26, "spike32")  #             
+#            MN4_spikes = xem_muscle.ReadFPGA(0x28, "spike32")  #             
+#            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
+#            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
 ##            
             
 #            self.gForearm_body.torque = (self.force_bic - self.force_extensor) * 0.06
@@ -288,7 +288,7 @@ class armSetup:
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_extensor,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime, self.lce_extensor, self.linearV, spikecnt_extensor,   self.force_extensor,  emg_extensor,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
+            tempData = elapsedTime, self.lce_extensor, self.linearV, spikecnt_extensor,   self.force_extensor,  emg_extensor#,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
             self.data_tri.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
 #            time.sleep(0.07)
@@ -307,12 +307,12 @@ class armSetup:
             """ extra data for close loop data acquisition"""  
 #            Ia_afferent = xem_spindle.ReadFPGA(0x22, "float32")  # EMG 
 #            II_afferent = xem_spindle.ReadFPGA(0x24, "float32")  # EMG    
-            MN1_spikes = xem_muscle.ReadFPGA(0x22, "spike32")  #             
-            MN2_spikes = xem_muscle.ReadFPGA(0x24, "spike32")  #             
-            MN3_spikes = xem_muscle.ReadFPGA(0x26, "spike32")  #             
-            MN4_spikes = xem_muscle.ReadFPGA(0x28, "spike32")  #             
-            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
-            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
+#            MN1_spikes = xem_muscle.ReadFPGA(0x22, "spike32")  #             
+#            MN2_spikes = xem_muscle.ReadFPGA(0x24, "spike32")  #             
+#            MN3_spikes = xem_muscle.ReadFPGA(0x26, "spike32")  #             
+#            MN4_spikes = xem_muscle.ReadFPGA(0x28, "spike32")  #             
+#            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
+#            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
             
     
             force_flexor = force_flexor_pre #+ pipeInData_bic[j]
@@ -346,7 +346,7 @@ class armSetup:
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_extensor,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime,  lce_flexor, self.middle_linearV, spikecnt_flexor, force_flexor, emg_flexor,  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
+            tempData = elapsedTime,  lce_flexor, self.middle_linearV, spikecnt_flexor, force_flexor, emg_flexor#,  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
             self.data_bic.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
     #      
@@ -369,12 +369,12 @@ class armSetup:
             """ extra data for close loop data acquisition"""  
 #            Ia_afferent = xem_spindle.ReadFPGA(0x22, "float32")  # EMG 
 #            II_afferent = xem_spindle.ReadFPGA(0x24, "float32")  # EMG    
-            MN1_spikes = xem_muscle.ReadFPGA(0x22, "spike32")  #             
-            MN2_spikes = xem_muscle.ReadFPGA(0x24, "spike32")  #             
-            MN3_spikes = xem_muscle.ReadFPGA(0x26, "spike32")  #             
-            MN4_spikes = xem_muscle.ReadFPGA(0x28, "spike32")  #             
-            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
-            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
+#            MN1_spikes = xem_muscle.ReadFPGA(0x22, "spike32")  #             
+#            MN2_spikes = xem_muscle.ReadFPGA(0x24, "spike32")  #             
+#            MN3_spikes = xem_muscle.ReadFPGA(0x26, "spike32")  #             
+#            MN4_spikes = xem_muscle.ReadFPGA(0x28, "spike32")  #             
+#            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
+#            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
 ##            
             
 #            self.gForearm_body.torque = (self.force_bic - self.force_extensor) * 0.06
@@ -414,7 +414,7 @@ class armSetup:
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_extensor,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime, self.lce_middle_extensor, self.middle_linearV, spikecnt_extensor,   self.force_extensor,  emg_extensor,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
+            tempData = elapsedTime, self.lce_middle_extensor, self.middle_linearV, spikecnt_extensor,   self.force_extensor,  emg_extensor#,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
             self.data_tri.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
 #            time.sleep(0.07)

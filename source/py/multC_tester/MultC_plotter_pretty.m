@@ -9,7 +9,7 @@
 cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk
 
 
-fname = sprintf('20131016_165836'); 
+fname = sprintf('20131024_135608_normal'); 
 % 20131009_152401: base line (control) : 63 seconds
 % 20131009_153808: HI-GAIN: 4*1=4
 % 20131009_153455: TONIC: 2000*1 = 2000: 63 seconds
@@ -17,30 +17,39 @@ fname = sprintf('20131016_165836');
 load([fname, '.mat']);
 
 
+
+
 %% process EMG
 t_bic= data_bic(:,1);
 t_tri= data_tri(:,1);
 length_bic = data_bic(:,2);
 length_tri = data_tri(:,2);
-Ia_afferent_bic = data_bic(:,3);
-II_afferent_bic = data_bic(:,4);
-Ia_afferent_tri = data_tri(:,3);
-II_afferent_tri = data_tri(:,4);
-f_emg_bic = data_bic(:,6);
-f_emg_tri = data_tri(:,6);
+linearV_bic = data_bic(:,3);
+linearV_tri = data_tri(:,3);
+spikecnt_bic = data_bic(:,4);
+spikecnt_tri = data_tri(:,4);
 force_bic = data_bic(:,5);
 force_tri = data_tri(:,5);
-MN1_spikes_bic = data_bic(:,7);
-MN2_spikes_bic = data_bic(:,8);
-MN3_spikes_bic = data_bic(:,9);
-MN4_spikes_bic = data_bic(:,10);
-MN5_spikes_bic = data_bic(:,11);
-MN6_spikes_bic = data_bic(:,12);
+f_emg_bic = data_bic(:,6);
+f_emg_tri = data_tri(:,6);
+timeindex_bic = data_bic(:,7);
+timeindex_tri = data_tri(:,7);
+timewave_bic = data_bic(:,8);
+timewave_tri = data_tri(:,8);
+timewaveFromFpga_bic = data_bic(:,9);
+timewaveFromFpga_tri = data_tri(:,9);
+
+% MN1_spikes_bic = data_bic(:,7);
+% MN2_spikes_bic = data_bic(:,8);
+% MN3_spikes_bic = data_bic(:,9);
+% MN4_spikes_bic = data_bic(:,10);
+% MN5_spikes_bic = data_bic(:,11);
+% MN6_spikes_bic = data_bic(:,12);
 
 
 
 
-n = 3;
+n = 4;
 start =100;
 %start = 1250;
 last = min(length(t_bic), 22000); 
@@ -57,8 +66,8 @@ length_bic_inverted = -length_bic;
 
 
 %% EMG processing
-Fe=33; %Samling frequency
-Fc_lpf=1.0; % Cut-off frequency
+Fe=1024; %Samling frequency
+Fc_lpf=450.0; % Cut-off frequency
 Fc_hpf=0.5;
 N=3; % Filter Order
 [B, A] = butter(N,Fc_lpf*2/Fe,'low'); %filter's parameters
@@ -79,6 +88,10 @@ figure_height = 6*2;
 FontSize = 11*1.5;
 FontName = 'MyriadPro-Regular';
 
+Fe=33; %Samling frequency
+Fc_lpf=1.0; % Cut-off frequency
+Fc_hpf=0.5;
+N=3; % Filter Ord
 [B, A] = butter(N,1.0*2/Fe,'low'); %filter's parameters
 length_bic_lpf=filtfilt(B, A, length_bic); %in the case of Off-line treatment
 
@@ -114,7 +127,7 @@ set(hLine2                        , ...
   'LineStyle'       , '-'         , ...
   'LineWidth'       , 1           , ...   
   'Color'           , 'black'  );
-set(gca,'YLim',[-1.5 4.5])
+set(gca,'YLim',[-6.5 6.5])
 % axis off;
 
 
@@ -129,6 +142,83 @@ set(hLine3                        , ...
 
 hXLabel = xlabel('time (s)');
 hYLabel = ylabel('flexor force');
+
+% subplot (n,1, 4);
+% hLine4 = line(t_bic(start:last), timeindex_bic(start:last));
+% set(hLine4                        , ...
+%   'LineStyle'       , '-'         , ...
+%   'LineWidth'       , 3           , ...   
+%   'Color'           , 'black'  );
+% % set(gca,'YLim',[0 200])
+% % axis off;
+% 
+% hXLabel = xlabel('time (s)');
+% hYLabel = ylabel('time index ');
+% 
+% subplot (n,1, 5);
+% hLine4 = line(t_bic(start:last), timewave_bic(start:last));
+% set(hLine4                        , ...
+%   'LineStyle'       , '-'         , ...
+%   'LineWidth'       , 3           , ...   
+%   'Color'           , 'black'  );
+% % set(gca,'YLim',[0 200])
+% % axis off;
+% 
+% hXLabel = xlabel('time (s)');
+% hYLabel = ylabel('timewavex ');
+
+subplot (n,1, 4);
+hLine4 = line(t_bic(start:last), timewaveFromFpga_bic(start:last));
+set(hLine4                        , ...
+  'LineStyle'       , '-'         , ...
+  'LineWidth'       , 3           , ...   
+  'Color'           , 'black'  );
+% set(gca,'YLim',[0 200])
+% axis off;
+
+hXLabel = xlabel('time (s)');
+hYLabel = ylabel('timewaveFromFpga ');
+
+%% graphical user input
+[x_onset, y_onset]=ginput(1);
+
+onset_ind = find(t_bic >= x_onset, 1, 'first');
+start  = onset_ind - 800;
+last = start + 3200;
+
+t_cut= t_bic(start:last);
+length_cut = length_bic(start:last);
+EMG_cut = EMG_bic(start:last);
+timewaveFromFpga_cut = timewaveFromFpga_bic(start:last);
+% total_spike_count_sync_cut = total_spike_count_sync(start:last);
+
+
+hfig2 = figure(2);
+n=3;
+subplot(n, 1, 1);
+
+plot(t_cut, length_cut, 'LineWidth',2, 'color', 'black');    
+%     [pks, locs] = findpeaks(length_bic_cut);
+
+axis off
+
+subplot(n, 1, 2); 
+plot(t_cut, EMG_cut, 'LineWidth',2, 'color', 'black');
+axis off
+
+subplot(n, 1, 3); 
+plot(t_cut, timewaveFromFpga_cut, 'LineWidth',2, 'color', 'black');
+axis off
+
+cd /home/eric/wonjoon_codes/matlab_wjsohn/latencyAnalysis
+% [pathstr,fname,ext] = fileparts(fname) 
+% [pathstr,second_recent_name,ext] = fileparts(second_recent_file) 
+
+save(['CUT_', fname], 't_cut', 'length_cut', 'EMG_cut', 'timewaveFromFpga_cut');
+
+
+
+
 
 % subplot (n,1, 4);
 % 
@@ -206,6 +296,11 @@ hXLabel = xlabel('time (s)');
 hYLabel = ylabel('Extensor force');
 
 
+%% graphical user input
+
+
+
+
 % subplot (n,1, 4);
 % 
 % extraCN = transpose(ones(1, length(t_tri)));
@@ -261,51 +356,51 @@ print(hfig2, '-deps', [fname, '_perturb_tri']);
 
 % -dpng 
 
-%% Raster plot
-MN1_spikeindex=[]; 
-MN2_spikeindex=[];
-MN3_spikeindex=[];
-MN4_spikeindex=[];
-MN5_spikeindex=[];
-MN6_spikeindex=[];
-
-binaryMN1 = dec2bin(MN1_spikes_bic);
-binaryMN2 = dec2bin(MN2_spikes_bic);
-binaryMN3 = dec2bin(MN3_spikes_bic);
-binaryMN4 = dec2bin(MN4_spikes_bic);
-binaryMN5 = dec2bin(MN5_spikes_bic);
-binaryMN6 = dec2bin(MN6_spikes_bic);
-[r,c] = size(binaryMN1);  % 761, 32
-
-
-numofrow = 32;
-for i=1:r*numofrow,  % get two rows for each MN
-    if binaryMN1(i) =='1'
-        MN1_spikeindex = [MN1_spikeindex i]; 
-    end
-    if binaryMN2(i) =='1'
-        MN2_spikeindex = [MN2_spikeindex i]; 
-    end
-    if binaryMN3(i) =='1'
-        MN3_spikeindex = [MN3_spikeindex i]; 
-    end
-    if binaryMN4(i) =='1'
-        MN4_spikeindex = [MN4_spikeindex i]; 
-    end
-    if binaryMN5(i) =='1'
-        MN5_spikeindex = [MN5_spikeindex i]; 
-    end
-%     if binaryMN6(i) =='1'
-%         MN6_spikeindex = [MN6_spikeindex i]; 
+% %% Raster plot
+% MN1_spikeindex=[]; 
+% MN2_spikeindex=[];
+% MN3_spikeindex=[];
+% MN4_spikeindex=[];
+% MN5_spikeindex=[];
+% MN6_spikeindex=[];
+% 
+% binaryMN1 = dec2bin(MN1_spikes_bic);
+% binaryMN2 = dec2bin(MN2_spikes_bic);
+% binaryMN3 = dec2bin(MN3_spikes_bic);
+% binaryMN4 = dec2bin(MN4_spikes_bic);
+% binaryMN5 = dec2bin(MN5_spikes_bic);
+% binaryMN6 = dec2bin(MN6_spikes_bic);
+% [r,c] = size(binaryMN1);  % 761, 32
+% 
+% 
+% numofrow = 32;
+% for i=1:r*numofrow,  % get two rows for each MN
+%     if binaryMN1(i) =='1'
+%         MN1_spikeindex = [MN1_spikeindex i]; 
 %     end
-    
-end
-
-
-allMN_raster = [MN1_spikeindex (r*numofrow*1)+MN2_spikeindex (r*numofrow*2)+MN3_spikeindex (r*numofrow*3)+MN4_spikeindex (r*numofrow*4)+MN5_spikeindex ];% (r*numofrow*5)+MN6_spikeindex];
-
-
-rasterplot(allMN_raster, numofrow*5, r);axis off    
+%     if binaryMN2(i) =='1'
+%         MN2_spikeindex = [MN2_spikeindex i]; 
+%     end
+%     if binaryMN3(i) =='1'
+%         MN3_spikeindex = [MN3_spikeindex i]; 
+%     end
+%     if binaryMN4(i) =='1'
+%         MN4_spikeindex = [MN4_spikeindex i]; 
+%     end
+%     if binaryMN5(i) =='1'
+%         MN5_spikeindex = [MN5_spikeindex i]; 
+%     end
+% %     if binaryMN6(i) =='1'
+% %         MN6_spikeindex = [MN6_spikeindex i]; 
+% %     end
+%     
+% end
+% 
+% 
+% allMN_raster = [MN1_spikeindex (r*numofrow*1)+MN2_spikeindex (r*numofrow*2)+MN3_spikeindex (r*numofrow*3)+MN4_spikeindex (r*numofrow*4)+MN5_spikeindex ];% (r*numofrow*5)+MN6_spikeindex];
+% 
+% 
+% rasterplot(allMN_raster, numofrow*5, r);axis off    
 
 
 

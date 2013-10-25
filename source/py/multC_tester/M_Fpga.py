@@ -136,6 +136,23 @@ class SomeFpga:
             print "%d bytes sent via PipeIn!" % byteSent 
         else:
             print "Send pipe filed! %d bytes sent" % byteSent
+    
+    def SendPipe2(self, pipeInData):
+        """ Send byte stream to OpalKelly board
+        """
+        # print pipeInData
+
+        buf = "" 
+        for x in pipeInData:
+            ##print x
+            buf += pack('<f', x) # convert float_x to a byte string, '<' = little endian
+
+        byteSent = self.xem.WriteToBlockPipeIn(0x82, 4, buf)
+
+        if byteSent == len(buf):
+            print "%d bytes sent via PipeIn!" % byteSent 
+        else:
+            print "Send pipe filed! %d bytes sent" % byteSent
             
     def SendPipeInt(self, pipeInData):
         """ Send byte stream to OpalKelly board
