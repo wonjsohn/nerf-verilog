@@ -103,7 +103,7 @@
         // Triggered Input triggered_input3 Wire Definitions
         reg [31:0] triggered_input3;    // Triggered input sent from USB (syn_gain)       
         
-
+        reg [31:0] f_overflow_proportion;
         // Triggered Input triggered_input4 Wire Definitions
         reg [31:0] triggered_input4;    // Triggered input sent from USB (clk_divider)       
         
@@ -299,10 +299,10 @@
 
         unsigned_mult32  sensoryGain_scaleCN(.out(i_gainScaled_I_from_spindle), .a(i_I_from_spindle_neuronCompensated), .b(i_stuffed_scaler)); //092513 fix (Trial 4): HI-GAIN
        
-        assign fixed_drive_to_CN_F0 =  i_I_from_spindle_neuronCompensated + i_gainScaled_I_from_spindle + i_CN2_extra_drive; //092613  HI-GAIN
+//        assign fixed_drive_to_CN_F0 =  i_I_from_spindle_neuronCompensated + i_gainScaled_I_from_spindle + i_CN2_extra_drive; //092613  HI-GAIN
 
 
-//        assign fixed_drive_to_CN_F0 = i_I_from_spindle_neuronCompensated  + (i_rng_CN1_extra_drive <<< 4) + i_CN2_extra_drive; // (Trial 5):TONIC
+        assign fixed_drive_to_CN_F0 = i_I_from_spindle_neuronCompensated  + (i_rng_CN1_extra_drive <<< 4) + i_CN2_extra_drive; // (Trial 5):TONIC
        
         // i_I_from_CN1extra:0~10 (15000 amp),  i_I_from_CN2extra_buttonScaled: 1~5  constantly. (4000 * 1~5)
         //fixed_drive_to_CN :5000~ 500000!
@@ -340,6 +340,13 @@
             triggered_input3 <= 32'd1;         //reset to 1.0      
         else
             triggered_input3 <= {ep02wire, ep01wire};      
+            
+         // Triggered Input overflow Instance Definition (overflow proportion) :0.0 ~ 1.0
+        always @ (posedge ep50trig[4] or posedge reset_global)
+        if (reset_global)
+            f_overflow_proportion <= 32'h3F800000;         //reset to 1.0     range :0.0 ~ 1.0
+        else
+            f_overflow_proportion <= {ep02wire, ep01wire};      
         
 
         // Triggered Input triggered_input4 Instance Definition (clk_divider)
@@ -445,7 +452,7 @@
     assign spikeout3 = 1'b0;
     assign spikeout4 = 1'b0;
     assign spikeout5 = 1'b0;
-    assign spikeout6 = 1'b0;
+    assign spikeout6 = each_spike_neuron_CN1_OF;
     assign spikeout7 = 1'b0;
     assign spikeout8 = 1'b0;
     assign spikeout9 = 1'b0;
@@ -547,8 +554,8 @@
         okWireOut wo2C (    .ep_datain(i_stuffed_scaler[15:0]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2C)    );
         okWireOut wo2D (    .ep_datain(i_stuffed_scaler[31:16]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2D)   ); 
 
-        okWireOut wo2E (    .ep_datain(spike_count_neuron_sync_CN1[15:0]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2E)    );
-        okWireOut wo2F (    .ep_datain(spike_count_neuron_sync_CN1[31:16]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2F)   ); 
+        okWireOut wo2E (    .ep_datain(i_scaled_drive_to_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2E)    );
+        okWireOut wo2F (    .ep_datain(i_scaled_drive_to_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2F)   ); 
         
         
         okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
@@ -601,6 +608,37 @@
             .each_spike(each_spike_neuron_CN1), // raw spikes
             .population(population_neuron_CN1)  // spikes of population per 1ms simulation time
         ); 
+        
+        
+        wire [31:0] f_drive_to_CN;
+        int_to_float fixed_drive_of(.in(fixed_drive_to_CN), .out(f_drive_to_CN)); // int to float
+        
+        wire [31:0] f_scaled_drive_to_CN;
+        mult mult_synapse_of(.x(f_drive_to_CN), .y(f_overflow_proportion), .out(f_scaled_drive_to_CN));
+         
+       wire [31:0] i_scaled_drive_to_CN;
+       floor   synapse_float_to_int_of(
+            .in(f_scaled_drive_to_CN),
+            .out(i_scaled_drive_to_CN)
+        );
+
+             
+        wire [31:0] v_neuron_CN1_OF;   // membrane potential
+        wire spike_neuron_CN1_OF;      // spike sample for visualization only
+        wire each_spike_neuron_CN1_OF; // raw spike signals
+        wire [127:0] population_neuron_CN1_OF; // spike raster for entire population        
+        
+        iz_corticalneuron_th_control CN1_overflow(
+            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+            .reset(reset_sim),           // reset to initial conditions
+            .I_in(  (i_scaled_drive_to_CN)),          // input current from synapse
+            .th_scaled( threshold30mv <<< 10),                 // threshold
+            .v_out(v_neuron_CN1_OF),               // membrane potential
+            .spike(spike_neuron_CN1_OF),           // spike sample
+            .each_spike(each_spike_neuron_CN1_OF), // raw spikes
+            .population(population_neuron_CN1_OF)  // spikes of population per 1ms simulation time
+        ); 
+
 
 
 

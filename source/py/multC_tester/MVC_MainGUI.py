@@ -24,7 +24,6 @@ from Utilities import convertType
 from Ui_MVC_MainGUI import Ui_Dialog
 
 
-
 class MultiXemScheduler(QDialog, Ui_Dialog):
     """
     GUI class for feeding waveforms or user inputs to OpalKelly boards
@@ -182,3 +181,28 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
 
             self.xemList[0].SendPipe(pipeInDataBic)
             self.xemList[1].SendPipe(pipeInDataTri)
+    
+ 
+   
+#
+    
+    @pyqtSignature("int")
+    def on_horizontalSlider_2_valueChanged(self, value):
+        """
+        Slot documentation goes here.
+        """
+        inputvalue = value*0.01
+        for eachV in self.vList:
+            eachV.tellFpga('overflow', inputvalue)
+    
+    
+    @pyqtSignature("int")
+    def on_horizontalSlider_2_sliderMoved(self, position):
+        """
+        Slot documentation goes here.
+        """
+        inputvalue = position*0.01
+        print inputvalue
+        for eachV in self.vList:
+            eachV.tellFpga('overflow', inputvalue)
+#
