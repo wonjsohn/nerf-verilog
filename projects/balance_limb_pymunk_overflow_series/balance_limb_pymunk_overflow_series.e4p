@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
-<!-- eric4 project file for project multC_tester_eric4 -->
-<!-- Saved: 2013-10-28, 18:00:24 -->
+<!-- eric4 project file for project balance_limb_pymunk -->
+<!-- Saved: 2013-07-09, 11:40:48 -->
 <!-- Copyright (C) 2013 C. Minos Niu,  -->
 <Project version="4.6">
   <Language>en</Language>
@@ -12,21 +12,12 @@
   <Author>C. Minos Niu</Author>
   <Email></Email>
   <Sources>
-    <Source>__main__.py</Source>
-    <Source>Utilities.py</Source>
-    <Source>config_test.py</Source>
-    <Source>V_Display.py</Source>
-    <Source>M_Fpga.py</Source>
-    <Source>C_XemScheduler.py</Source>
-    <Source>MVC_MainGUI.py</Source>
-    <Source>Ui_V_Display.py</Source>
-    <Source>Ui_MVC_MainGUI.py</Source>
-    <Source>Ui_extraCNDrive.py</Source>
-    <Source>Ui_cortex.py</Source>
+    <Source>limb_pymunk.py</Source>
+    <Source>limb_pymunk_multiThread.py</Source>
   </Sources>
   <Forms>
-    <Form>V_Display.ui</Form>
-    <Form>MVC_MainGUI.ui</Form>
+    <Form>Controls.ui</Form>
+    <Form>Display.ui</Form>
   </Forms>
   <Translations>
   </Translations>

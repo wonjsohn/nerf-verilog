@@ -27,7 +27,7 @@ FPGA_OUTPUT_B2 =   (0x20,      'i_rng_CN1_extra_drive',      1.0,         'int32
                 (0x28,      'i_CN2_extra_drive',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'i_I_from_spindle',      1.0,         'int32',      Qt.darkRed),  \
                 (0x2C,      'i_stuffed_scaler',      1.0,         'int32',      Qt.darkGray),  \
-                (0x2E,      'spikecnt_from_CN',      1.0,         'int32',      Qt.red)
+                (0x2E,      'i_scaled_drive_to_CN',      1.0,         'int32',      Qt.red)
                  
                 #            address         name   visual_gain         type            color
 FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.blue),  \
@@ -82,7 +82,7 @@ USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      1.2), \
 USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
                     (2, 'xxx',  'float32',      0.03), \
                     (3, 'synapse_gain',   'int32',       1), \
-                    (4, 'xxx',    'float32',      80.0), \
+                    (4, 'overflow',    'float32',      1.0), \
                     (5, 'xxx',    'float32',      80.0), \
                     (6, 'xxx',      'int32',        0),  \
                     (7, 'half_cnt',      'int32',        0),  \

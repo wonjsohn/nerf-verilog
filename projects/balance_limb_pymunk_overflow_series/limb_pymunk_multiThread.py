@@ -12,13 +12,13 @@ JOINT_MAX = 1.2
 JOINT_RANGE = JOINT_MAX - JOINT_MIN 
 
 JOINT_DAMPING_SCHEIDT2007 = 2.1
-JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.15 #was 0.1
+JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.2 #was 0.1
 
 
 class armSetup:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((600, 600))
+        self.screen = pygame.display.set_mode((700, 700))
         self.gClock = pygame.time.Clock()
         self.running = True
     
@@ -45,12 +45,13 @@ class armSetup:
         self.gForearm_body = pymunk.Body(mass, 0.0372)
         self.gForearm_body.position = 300, 300
         self.gForearm_shape = pymunk.Poly(self.gForearm_body, [(-x,y) for x,y in fp_index])
+        
 #        self.gForearm_shape.friction = 10.0
         self.gSpace.add(self.gForearm_body, self.gForearm_shape)
 
         self.gElbow_joint_body = pymunk.Body()
         self.gElbow_joint_body.position = self.gForearm_body.position
-        j1 = pymunk.PinJoint(self.gForearm_body,  self.gElbow_joint_body, (0,0), (0,0))
+        j1 = pymunk.PivotJoint(self.gForearm_body,  self.gElbow_joint_body, (0,0), (0,0))
 #        self.gElbow_joint_body.shape = pymunk.Circle(self.gElbow_joint_body, 250)
         
     #    j = pymunk.PinJoint(forearm_body, gElbow_joint_body, (0,0), (0,0))
@@ -77,7 +78,7 @@ class armSetup:
         self.gSpace.add(self.gForearm_body_middle,   self.gForearm_shape_middle)
 
         self.gElbow_joint_body_middle = pymunk.Body()
-        self.gElbow_joint_body_middle.position = self.gForearm_body_middle.position
+        self.gElbow_joint_body_middle.position =  self.gForearm_body_middle.position
         j1_m = pymunk.PinJoint(self.gForearm_body_middle,  self.gElbow_joint_body_middle, (0,0), (0,0))
 #        self.gElbow_joint_body_middle.shape = pymunk.Circle(self.gElbow_joint_body_middle, 250)
         
@@ -87,8 +88,33 @@ class armSetup:
         s_m = pymunk.DampedRotarySpring(a=self.gForearm_body_middle, b=self.gElbow_joint_body_middle, rest_angle=-0.0, stiffness=0.0, damping=JOINT_DAMPING)
         self.gSpace.add(j_m,  j1_m,  s_m) # 
         
-        """"""
 
+        """ wrist (passive spring)"""
+#        
+
+        fp_wrist = [(ceil(x/2),  ceil(y/2)) for x, y in fp_index]
+
+        mass = 0.5 # was 1.52
+        moment = pymunk.moment_for_poly(mass, fp_wrist)
+#
+        # left flipper
+        #gForearm_body = pymunk.Body(mass, moment_of_inertia)
+        self.gForearm_body_wrist = pymunk.Body(mass, 0.0372)
+        self.gForearm_body_wrist.position = 280, 250
+        self.gForearm_shape_wrist = pymunk.Poly(self.gForearm_body_wrist, [(-x,y) for x,y in fp_wrist])
+#        self.gForearm_shape.friction = 10.0
+        self.gSpace.add(self.gForearm_body_wrist,   self.gForearm_shape_wrist)
+
+        self.gElbow_joint_body_wrist = pymunk.Body()
+        self.gElbow_joint_body_wrist.position =  self.gForearm_body_wrist.position
+        j1_w = pymunk.PinJoint(self.gForearm_body_wrist,  self.gElbow_joint_body_wrist, (0,0), (0,0))
+#        self.gElbow_joint_body_middle.shape = pymunk.Circle(self.gElbow_joint_body_middle, 250)
+        
+#    #    j = pymunk.PinJoint(forearm_body, gElbow_joint_body, (0,0), (0,0))
+        j_w = pymunk.RotaryLimitJoint(self.gForearm_body_wrist, self.gElbow_joint_body_wrist, JOINT_MIN, JOINT_MAX)
+#        
+        s_w = pymunk.DampedRotarySpring(a=self.gForearm_body_wrist, b=self.gElbow_joint_body_wrist, rest_angle=-0.0, stiffness=0.05, damping=JOINT_DAMPING)
+        self.gSpace.add(j_w,  j1_w,  s_w) # 
         
         """ create arrow """
         arrow_body,arrow_shape = self.create_arrow()
@@ -100,11 +126,8 @@ class armSetup:
 
         self.gRest_joint_angle = 0.0
         
-        self.data_index_flexor = []
-        self.data_index_extensor = []
-        self.data_middle_flexor = []
-        self.data_middle_extensor = []
-        
+        self.data_bic = []
+        self.data_tri = []
         self.start_time = time.time()
         self.pygame = pygame
         
@@ -113,35 +136,28 @@ class armSetup:
         self.gForearm_shape.elasticity = 1.0
         self.force_extensor = 0.0
 #        self.lce_bic = 0.0
-        self.spikecnt_index_flexor = 0.0
-        self.emg_index_flexor = 0.0
-        self.force_index_flexor = 0.0
-        self.lce_index_flexor = 0.0
+        self.lce_extensor = 0.0
+        self.angle = 0.0
+        self.linearV = 0.0
         
-        self.spikecnt_index_extensor = 0.0
-        self.emg_index_extensor = 0.0
-        self.force_index_extensor = 0.0
-        self.lce_index_extensor = 0.0
-        
-        self.index_angle = 0.0
-        self.index_linearV = 0.0
         """ middle finger """
         self.gForearm_shape_middle.group = 1
         self.gForearm_shape_middle.elasticity = 1.0
         
-        self.spikecnt_middle_flexor = 0.0
-        self.emg_middle_flexor = 0.0
-        self.force_middle_flexor = 0.0
-        self.lce_middle_flexor = 0.0
-        
-        self.spikecnt_middle_extensor = 0.0
-        self.emg_middle_extensor = 0.0
         self.force_middle_extensor = 0.0
         self.lce_middle_extensor = 0.0
-        
         self.middle_angle = 0.0
         self.middle_linearV = 0.0
         
+        """ wrist  """
+        self.gForearm_shape_wrist.group = 1
+        self.gForearm_shape_wrist.elasticity = 1.0
+        
+        self.force_wrist_extensor = 0.0
+        self.lce_wrist_extensor = 0.0
+        self.wrist_angle = 0.0
+        self.wrist_linearV = 0.0
+
         """ """
         self.record = False
         self.mouseOn = False
@@ -166,7 +182,7 @@ class armSetup:
         linearV = angularV * 0.3
         return linearV
     
-    def plotData(self,  data_index_flexor,  data_index_extensor, data_middle_flexor,  data_middle_extensor):
+    def plotData(self,  data_bic,  data_tri):
         from pylab import plot, show, subplot, title
         from scipy.io import savemat, loadmat
         import numpy as np
@@ -174,7 +190,7 @@ class armSetup:
 
         timeTag = time.strftime("%Y%m%d_%H%M%S")
         
-        savemat(timeTag+".mat", mdict={'data_index_flexor': data_index_flexor,  'data_index_extensor': data_index_extensor, 'data_middle_flexor': data_middle_flexor,  'data_middle_extensor': data_middle_extensor})
+        savemat(timeTag+".mat", mdict={'data_bic': data_bic,  'data_tri': data_tri})
     
     
     def create_arrow(self):
@@ -195,8 +211,8 @@ class armSetup:
 
             """   Get forces   """
             force_flexor_pre = max(0.0, xem_muscle.ReadFPGA(0x32, "float32")) / 128 #- 0.2
-            self.spikecnt_index_flexor = xem_muscle.ReadFPGA(0x30, "int32")  
-            self.emg_index_flexor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG 
+            spikecnt_flexor = xem_muscle.ReadFPGA(0x30, "int32")  
+            emg_flexor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG 
             
             """ extra data for close loop data acquisition"""  
 #            Ia_afferent = xem_spindle.ReadFPGA(0x22, "float32")  # EMG 
@@ -209,39 +225,39 @@ class armSetup:
 #            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
             
     
-            self.force_index_flexor = force_flexor_pre #+ pipeInData_bic[j]
-            self.gForearm_body.torque = (self.force_index_flexor - self.force_index_extensor) * 0.03 # was 0.06
+            force_flexor = force_flexor_pre #+ pipeInData_bic[j]
+            self.gForearm_body.torque = (force_flexor - self.force_extensor) * 0.03 # was 0.06
                                             
-            self.index_angle = ((self.gForearm_body.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
+            self.angle = ((self.gForearm_body.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
                
 #            lce_extensor = self.angle2length(angle)+ 0.02
-#            self.lce_index_flexor = 2.04 - self.lce_index_extensor 
+            lce_flexor = 2.04 - self.lce_extensor 
             
             # Send lce of biceps 
-            bitVal = convertType(self.lce_index_flexor, fromType = 'f', toType = 'I')
+            bitVal = convertType(lce_flexor, fromType = 'f', toType = 'I')
     #        bitVal2 = convertType(0.0,  fromType = 'f', toType = 'I')
     #        bitVal3 = convertType(sineBic[j],  fromType = 'I', toType = 'I')
             angularV = self.gForearm_body.angular_velocity
 
-            self.index_linearV = self.angular2LinearV(angularV)
+            self.linearV = self.angular2LinearV(angularV)
                    
-#            self.index_linearV = 0.0
+#            self.linearV = 0.0
             self.scale = 30.0 #10.0   # unstable when extra cortical signal is given, 30 is for doornik data collection
-            #self.index_linearV = min(0, self.index_linearV ) # testing: only vel component in afferent active when lengthing 
+            #self.linearV = min(0, self.linearV ) # testing: only vel component in afferent active when lengthing 
             
-            bitVal_bic_i = convertType(-self.index_linearV*self.scale, fromType = 'f', toType = 'I')
-#            bitVal_tri_i = convertType(self.index_linearV*scale, fromType = 'f', toType = 'I')
+            bitVal_bic_i = convertType(-self.linearV*self.scale, fromType = 'f', toType = 'I')
+#            bitVal_tri_i = convertType(self.linearV*scale, fromType = 'f', toType = 'I')
             
             xem_muscle.SendMultiPara(bitVal1 = bitVal, bitVal2 = bitVal_bic_i,  trigEvent = 9)
             xem_spindle.SendPara(bitVal = bitVal, trigEvent = 9)
                   
        
-            #print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (self.lce_index_flexor, self.lce_extensor, self.gForearm_body.torque),                           
-    #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_index_extensor,  angle,  gd_bic,  angularV )                          
+            #print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_flexor, self.lce_extensor, self.gForearm_body.torque),                           
+    #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_extensor,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime,  self.lce_index_flexor, self.index_linearV, self.spikecnt_index_flexor, self.force_index_flexor, self.emg_index_flexor#,  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
-            self.data_index_flexor.append(tempData)
+            tempData = elapsedTime,  lce_flexor, self.linearV, spikecnt_flexor, force_flexor, emg_flexor#  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
+            self.data_bic.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
     #      
 #            time.sleep(0.07)
@@ -252,12 +268,12 @@ class armSetup:
             """   Get forces   """
 #            force_bic_pre = max(0.0, xem_muscle.ReadFPGA(0x32, "float32")) / 128 #- 0.2
 #            emg_flexor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG         
-            self.spikecnt_index_extensor = xem_muscle.ReadFPGA(0x30, "int32")  
+            spikecnt_extensor = xem_muscle.ReadFPGA(0x30, "int32")  
             force_extensor_pre = max(0.0, xem_muscle.ReadFPGA(0x32, "float32")) / 128 #- 2.64
-            self.emg_index_extensor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG
+            emg_extensor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG
             
 #            force_bic = force_bic_pre #+ pipeInData_bic[j]
-            self.force_index_extensor = force_extensor_pre #+ pipeInData_bic[j] 
+            self.force_extensor = force_extensor_pre #+ pipeInData_bic[j] 
            
               
             """ extra data for close loop data acquisition"""  
@@ -269,28 +285,28 @@ class armSetup:
 #            MN4_spikes = xem_muscle.ReadFPGA(0x28, "spike32")  #             
 #            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
 #            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
-##            
+###            
             
-#            self.gForearm_body.torque = (self.force_bic - self.force_index_extensor) * 0.06
+#            self.gForearm_body.torque = (self.force_bic - self.force_extensor) * 0.06
             #angle = ((self.gForearm_body.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
          
-            self.lce_index_extensor  = self.angle2length(self.index_angle)+ 0.02
-            self.lce_index_flexor = 2.04 - self.lce_index_extensor  
+            self.lce_extensor = self.angle2length(self.angle)+ 0.02
+            lce_flexor = 2.04 - self.lce_extensor 
             
             # Send lce of biceps 
-            #bitVal = convertType(self.lce_index_extensor, fromType = 'f', toType = 'I')
+            bitVal = convertType(lce_flexor, fromType = 'f', toType = 'I')
     #        bitVal2 = convertType(0.0,  fromType = 'f', toType = 'I')
     #        bitVal3 = convertType(sineBic[j],  fromType = 'I', toType = 'I')
      #        xem_muscle.SendPara(bitVal = bitVal, trigEvent = 9)
 #            self.angularV = self.gForearm_body.angular_velocity
 
-#            self.index_linearV = self.angular2LinearV(angularV)
+#            self.linearV = self.angular2LinearV(angularV)
 #            self.scale = 500.0
 #            bitVal_bic_i = convertType(-linearV*scale, fromType = 'f', toType = 'I')
-            bitVal_tri_i = convertType(self.index_linearV*self.scale, fromType = 'f', toType = 'I')
+            bitVal_tri_i = convertType(self.linearV*self.scale, fromType = 'f', toType = 'I')
             
             """ Send lce of triceps """
-            bitVal = convertType(self.lce_index_extensor , fromType = 'f', toType = 'I')
+            bitVal = convertType(self.lce_extensor, fromType = 'f', toType = 'I')
     #        bitVal2 = convertType(1.0,  fromType = 'f', toType = 'I')
         
     #        bitVal3 = convertType(sineTri[j],  fromType = 'I', toType = 'I')
@@ -304,11 +320,11 @@ class armSetup:
     #        xem_spindle.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
             
     #        print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_flexor, lce_extensor, gForearm_body.torque),                           
-    #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_index_extensor,  angle,  gd_bic,  angularV )                          
+    #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_extensor,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime, self.lce_index_extensor , self.index_linearV, self.spikecnt_index_extensor,   self.force_index_extensor,  self.emg_index_extensor#,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
-            self.data_index_extensor.append(tempData)
+            tempData = elapsedTime, self.lce_extensor, self.linearV, spikecnt_extensor,   self.force_extensor,  emg_extensor#,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
+            self.data_tri.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
 #            time.sleep(0.07)
   
@@ -320,8 +336,8 @@ class armSetup:
 
             """   Get forces   """
             force_flexor_pre = max(0.0, xem_muscle.ReadFPGA(0x32, "float32")) / 128 #- 0.2
-            self.spikecnt_middle_flexor = xem_muscle.ReadFPGA(0x30, "int32")  
-            self.emg_middle_flexor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG 
+            spikecnt_flexor = xem_muscle.ReadFPGA(0x30, "int32")  
+            emg_flexor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG 
             
             """ extra data for close loop data acquisition"""  
 #            Ia_afferent = xem_spindle.ReadFPGA(0x22, "float32")  # EMG 
@@ -334,16 +350,16 @@ class armSetup:
 #            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
             
     
-            self.force_middle_flexor = force_flexor_pre #+ pipeInData_bic[j]
-            self.gForearm_body_middle.torque = (self.force_middle_flexor - self.force_middle_extensor) * 0.03 # was 0.06
+            force_flexor = force_flexor_pre #+ pipeInData_bic[j]
+            self.gForearm_body_middle.torque = (force_flexor - self.force_middle_extensor) * 0.03 # was 0.06
                                             
             self.middle_angle = ((self.gForearm_body_middle.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
                
 #            lce_extensor = self.angle2length(angle)+ 0.02
-            self.lce_middle_flexor = 2.04 - self.lce_middle_extensor 
+            lce_flexor = 2.04 - self.lce_middle_extensor 
             
             # Send lce of biceps 
-            bitVal = convertType(self.lce_middle_flexor, fromType = 'f', toType = 'I')
+            bitVal = convertType(lce_flexor, fromType = 'f', toType = 'I')
     #        bitVal2 = convertType(0.0,  fromType = 'f', toType = 'I')
     #        bitVal3 = convertType(sineBic[j],  fromType = 'I', toType = 'I')
             angularV = self.gForearm_body_middle.angular_velocity
@@ -362,11 +378,11 @@ class armSetup:
                   
        
             #print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_flexor, self.lce_extensor, self.gForearm_body_middle.torque),                           
-    #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_index_extensor,  angle,  gd_bic,  angularV )                          
+    #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_extensor,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime,  self.lce_middle_flexor, self.middle_linearV, self.spikecnt_middle_flexor, self.force_middle_flexor, self.emg_middle_flexor#,  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
-            self.data_middle_flexor.append(tempData)
+            tempData = elapsedTime,  lce_flexor, self.middle_linearV, spikecnt_flexor, force_flexor, emg_flexor#,  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
+            self.data_bic.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
     #      
 #            time.sleep(0.07)
@@ -377,9 +393,9 @@ class armSetup:
             """   Get forces   """
 #            force_bic_pre = max(0.0, xem_muscle.ReadFPGA(0x32, "float32")) / 128 #- 0.2
 #            emg_flexor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG         
-            self.spikecnt_middle_extensor = xem_muscle.ReadFPGA(0x30, "int32")  
+            spikecnt_extensor = xem_muscle.ReadFPGA(0x30, "int32")  
             force_extensor_pre = max(0.0, xem_muscle.ReadFPGA(0x32, "float32")) / 128 #- 2.64
-            self.emg_middle_extensor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG
+            emg_extensor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG
             
 #            force_bic = force_bic_pre #+ pipeInData_bic[j]
             self.force_middle_extensor = force_extensor_pre #+ pipeInData_bic[j] 
@@ -401,10 +417,10 @@ class armSetup:
          
          
             self.lce_middle_extensor = self.angle2length(self.middle_angle)+ 0.02
-#            lce_flexor = 2.04 - self.lce_middle_extensor 
+            lce_flexor = 2.04 - self.lce_middle_extensor 
             
             # Send lce of biceps 
-#            bitVal = convertType(self.lce_middle_flexor, fromType = 'f', toType = 'I')
+            bitVal = convertType(lce_flexor, fromType = 'f', toType = 'I')
     #        bitVal2 = convertType(0.0,  fromType = 'f', toType = 'I')
     #        bitVal3 = convertType(sineBic[j],  fromType = 'I', toType = 'I')
      #        xem_muscle.SendPara(bitVal = bitVal, trigEvent = 9)
@@ -433,17 +449,141 @@ class armSetup:
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_extensor,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
             elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime, self.lce_middle_extensor, self.middle_linearV, self.spikecnt_middle_extensor,   self.force_middle_extensor,  self.emg_middle_extensor#,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
-            self.data_middle_extensor.append(tempData)
+            tempData = elapsedTime, self.lce_middle_extensor, self.middle_linearV, spikecnt_extensor,   self.force_extensor,  emg_extensor#,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
+            self.data_tri.append(tempData)
             #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
 #            time.sleep(0.07)
+    
+    def controlLoopWristFlexor(self,  xem_muscle,  xem_spindle):
+        
+        while self.running:
+
+            """   Get forces   """
+            force_flexor_pre = max(0.0, xem_muscle.ReadFPGA(0x32, "float32")) / 128 #- 0.2
+            spikecnt_flexor = xem_muscle.ReadFPGA(0x30, "int32")  
+            emg_flexor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG 
             
+            """ extra data for close loop data acquisition"""  
+#            Ia_afferent = xem_spindle.ReadFPGA(0x22, "float32")  # EMG 
+#            II_afferent = xem_spindle.ReadFPGA(0x24, "float32")  # EMG    
+#            MN1_spikes = xem_muscle.ReadFPGA(0x22, "spike32")  #             
+#            MN2_spikes = xem_muscle.ReadFPGA(0x24, "spike32")  #             
+#            MN3_spikes = xem_muscle.ReadFPGA(0x26, "spike32")  #             
+#            MN4_spikes = xem_muscle.ReadFPGA(0x28, "spike32")  #             
+#            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
+#            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
+            
+    
+            force_flexor = force_flexor_pre * 3 #+ pipeInData_bic[j]
+            self.gForearm_body_wrist.torque = (force_flexor - self.force_wrist_extensor) * 0.03 # was 0.06
+                                            
+            self.wrist_angle = ((self.gForearm_body_wrist.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
+               
+#            lce_extensor = self.angle2length(angle)+ 0.02
+            lce_flexor = 2.04 - self.lce_wrist_extensor 
+            
+            # Send lce of biceps 
+            bitVal = convertType(lce_flexor, fromType = 'f', toType = 'I')
+    #        bitVal2 = convertType(0.0,  fromType = 'f', toType = 'I')
+    #        bitVal3 = convertType(sineBic[j],  fromType = 'I', toType = 'I')
+            angularV = self.gForearm_body_wrist.angular_velocity
+
+            self.wrist_linearV = self.angular2LinearV(angularV)
+                   
+#            self.linearV = 0.0
+            self.scale = 30.0 #10.0   # unstable when extra cortical signal is given, 30 is for doornik data collection
+            #self.linearV = min(0, self.linearV ) # testing: only vel component in afferent active when lengthing 
+            
+            bitVal_bic_i = convertType(-self.wrist_linearV*self.scale, fromType = 'f', toType = 'I')
+#            bitVal_tri_i = convertType(self.linearV*scale, fromType = 'f', toType = 'I')
+            
+#            xem_muscle.SendMultiPara(bitVal1 = bitVal, bitVal2 = bitVal_bic_i,  trigEvent = 9)
+#            xem_spindle.SendPara(bitVal = bitVal, trigEvent = 9)
+                  
+       
+            #print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_flexor, self.lce_extensor, self.gForearm_body_middle.torque),                           
+    #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_extensor,  angle,  gd_bic,  angularV )                          
+            currentTime = time.time()
+            elapsedTime = currentTime- self.start_time
+            tempData = elapsedTime,  lce_flexor, self.wrist_linearV, spikecnt_flexor, force_flexor, emg_flexor#,  MN1_spikes,  MN2_spikes, MN3_spikes,  MN4_spikes,  MN5_spikes, MN6_spikes  
+            self.data_bic.append(tempData)
+            #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
+    #      
+#            time.sleep(0.07)
+
+    def controlLoopWristExtensor(self,  xem_muscle,  xem_spindle):     
+        while self.running:
+            """   Get forces   """
+#            force_bic_pre = max(0.0, xem_muscle.ReadFPGA(0x32, "float32")) / 128 #- 0.2
+#            emg_flexor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG         
+            spikecnt_extensor = xem_muscle.ReadFPGA(0x30, "int32")  
+            force_extensor_pre = max(0.0, xem_muscle.ReadFPGA(0x32, "float32")) / 128 #- 2.64
+            emg_extensor = xem_muscle.ReadFPGA(0x20, "float32")  # EMG
+            
+#            force_bic = force_bic_pre #+ pipeInData_bic[j]
+            self.force_wrist_extensor = force_extensor_pre * 3#+ pipeInData_bic[j] 
+           
+              
+            """ extra data for close loop data acquisition"""  
+#            Ia_afferent = xem_spindle.ReadFPGA(0x22, "float32")  # EMG 
+#            II_afferent = xem_spindle.ReadFPGA(0x24, "float32")  # EMG    
+#            MN1_spikes = xem_muscle.ReadFPGA(0x22, "spike32")  #             
+#            MN2_spikes = xem_muscle.ReadFPGA(0x24, "spike32")  #             
+#            MN3_spikes = xem_muscle.ReadFPGA(0x26, "spike32")  #             
+#            MN4_spikes = xem_muscle.ReadFPGA(0x28, "spike32")  #             
+#            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
+#            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
+##            
+            
+#            self.gForearm_body.torque = (self.force_bic - self.force_extensor) * 0.06
+            #angle = ((self.gForearm_body.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
+         
+         
+            self.lce_wrist_extensor = self.angle2length(self.wrist_angle)+ 0.02
+            lce_flexor = 2.04 - self.lce_wrist_extensor 
+            
+            # Send lce of biceps 
+            bitVal = convertType(lce_flexor, fromType = 'f', toType = 'I')
+    #        bitVal2 = convertType(0.0,  fromType = 'f', toType = 'I')
+    #        bitVal3 = convertType(sineBic[j],  fromType = 'I', toType = 'I')
+     #        xem_muscle.SendPara(bitVal = bitVal, trigEvent = 9)
+#            self.angularV = self.gForearm_body.angular_velocity
+
+#            self.linearV = self.angular2LinearV(angularV)
+#            self.scale = 500.0
+#            bitVal_bic_i = convertType(-linearV*scale, fromType = 'f', toType = 'I')
+            bitVal_tri_i = convertType(self.wrist_linearV*self.scale, fromType = 'f', toType = 'I')
+            
+            """ Send lce of triceps """
+            bitVal = convertType(self.lce_wrist_extensor, fromType = 'f', toType = 'I')
+    #        bitVal2 = convertType(1.0,  fromType = 'f', toType = 'I')
+        
+    #        bitVal3 = convertType(sineTri[j],  fromType = 'I', toType = 'I')
+#            xem_muscle.SendMultiPara(bitVal1 = bitVal, bitVal2= bitVal_tri_i,   trigEvent = 9)
+#            xem_spindle.SendPara(bitVal = bitVal, trigEvent = 9)
+          
+            
+            """ Alpha-gamma coactivation """
+    #        gd_tri = force_tri * ag_coact + ag_bias
+    #        bitval = convertType(gd_tri, fromType = 'f', toType = 'I')
+    #        xem_spindle.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
+            
+    #        print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_flexor, lce_extensor, gForearm_body.torque),                           
+    #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_extensor,  angle,  gd_bic,  angularV )                          
+            currentTime = time.time()
+            elapsedTime = currentTime- self.start_time
+            tempData = elapsedTime, self.lce_wrist_extensor, self.wrist_linearV, spikecnt_extensor,   self.force_extensor#,  emg_extensor,  MN1_spikes, MN2_spikes,  MN3_spikes,  MN4_spikes,  MN5_spikes,  MN6_spikes   
+            self.data_tri.append(tempData)
+            #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
+#            time.sleep(0.07)
+    
     def keyControl(self):
         while (self.running):
             """ angle calculated from mouse cursor position"""
             mouse_position = from_pygame( Vec2d(self.pygame.mouse.get_pos()), self.screen )
             forced_angle = (mouse_position-self.gForearm_body.position).angle   # calculate angle with mouse cursor loc. 
         
+           
             
             # move the unfired arrow together with the cannon
 #            arrow_body.position = cannon_body.position + Vec2d(cannon_shape.radius + 40, 0).rotated(cannon_body.angle)
@@ -455,7 +595,7 @@ class armSetup:
                 if event.type == QUIT:
                     self.running = False
                 elif event.type == KEYDOWN and event.key == K_ESCAPE:
-                    self.plotData(self.data_index_flexor, self.data_index_extensor,  self.data_middle_flexor,  self.data_middle_extensor)
+                    self.plotData(self.data_bic, self.data_tri)
                     self.running = False
                 elif event.type == KEYDOWN and event.key == K_j:
                     self.gForearm_body.torque -= 14.0
@@ -512,11 +652,19 @@ class armSetup:
                 ps = f.get_points()
                 ps.append(ps[0])
                 ps = map(self.to_pygame, ps)
+                
 
                 color = THECOLORS["black"]
                 self.pygame.draw.lines(self.screen, color, False, ps,  2)
             #if abs(flipper_body.angle) < 0.001: flipper_body.angle = 0
             
+            """ update second joint location """
+            print ps
+            self.gForearm_body_middle.position = (ps[3][0]+ps[4][0])/2, 300+ (300-(ps[3][1]+ps[4][1])/2) 
+            print (ps[3][0]+ ps[4][0])/2, (ps[3][1]+ps[4][1])/2
+#            print ps[3][0],  ps[4][0],  ps[3][1], ps[4][1]
+        
+
             for f in [self.gForearm_shape_middle,]:
                 ps = f.get_points()
                 ps.append(ps[0])
@@ -524,7 +672,21 @@ class armSetup:
 
                 color = THECOLORS["black"]
                 self.pygame.draw.lines(self.screen, color, False, ps,  2)
+            
+            """ update wrist joint"""
+            self.gForearm_body_wrist.position = (ps[3][0]+ps[4][0])/2, 300+ (300-(ps[3][1]+ps[4][1])/2) 
+            
+            for f in [self.gForearm_shape_wrist,]:
+                ps = f.get_points()
+                ps.append(ps[0])
+                ps = map(self.to_pygame, ps)
 
+                color = THECOLORS["black"]
+                self.pygame.draw.lines(self.screen, color, False, ps,  2)
+                
+
+
+         
             """draw circle """
 
 #            pygame.draw.circle(self.screen, THECOLORS["black"], (300,  300), int(42), 0)
@@ -547,6 +709,8 @@ class armSetup:
             label2 = myfont.render("l: mouse-controlled movement, esc:out" , 1,  THECOLORS["black"])
             self.screen.blit(label1, (10, 10))
             self.screen.blit(label2, (10, 40))
+            
+            
         
             
             """ Flip screen (big delay from here!) """ 
@@ -554,8 +718,6 @@ class armSetup:
             self.gClock.tick(fps)  # target fps
     #        self.gClock.tick(80)  # oscillate
             self.pygame.display.set_caption("fps: " + str(self.gClock.get_fps())) 
-
-
 
 
     def readData(self):
@@ -582,7 +744,9 @@ class armSetup:
         threading.Thread(target=self.controlLoopMiddleFlexor, args=(xem_muscle_middleFlexor,xem_spindle_middleFlexor, )).start()    
         threading.Thread(target=self.controlLoopMiddleExtensor, args=(xem_muscle_middleExtensor,xem_spindle_middleExtensor, )).start()
 #        
-        
+        threading.Thread(target=self.controlLoopWristFlexor, args=(xem_muscle_middleFlexor,xem_spindle_middleFlexor, )).start() 
+        threading.Thread(target=self.controlLoopWristExtensor, args=(xem_muscle_middleExtensor,xem_spindle_middleExtensor, )).start()
+#         
 #        threading.Thread(target=self.controlLoop_IndexFlexor).start()
 #        threading.Thread(target=self.controlLoop_IndexExtensor).start()
 #        

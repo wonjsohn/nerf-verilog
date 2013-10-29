@@ -9,6 +9,7 @@ from MVC_MainGUI import MultiXemScheduler
 from C_XemScheduler import SingleXemTester # Controller in MVC
 from M_Fpga import SomeFpga # Model in MVC
 from V_Display import View, ViewChannel,  CtrlChannel # Viewer in MVC
+from cortex import cortexView
 import os
 
 sys.path.append('../')
@@ -30,8 +31,8 @@ if __name__ == "__main__":
     assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
     TWO_BOARDS= 0
-    THREE_BOARDS=1
-    CORTICAL_BOARDS= 0
+    THREE_BOARDS=0
+    CORTICAL_BOARDS= 1
     assert (TWO_BOARDS+THREE_BOARDS+CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING!"
     
     if (WINDOWS==1) :
@@ -75,9 +76,9 @@ if __name__ == "__main__":
 #        xemSerialList = ['0000000547', '000000054B']  # CORTICAL BOARDS  BBDL setting
     elif (TWO_BOARDS ==1 and LINUX == 1):
 ##        print "2 boards in linux setup"
-        xemSerialList = ['124300046A', '1201000216']
+#        xemSerialList = ['124300046A', '1201000216']
 #        xemSerialList = ['12320003RN', '12430003T2'] 
-#        xemSerialList = ['000000054G', '000000053U'] # copper top
+        xemSerialList = ['000000054G', '000000053U'] # copper top
 #        xemSerialList = ['000000054K', '0000000550'] # copper top
 #        xemSerialList = ['113700021E', '0000000542'] 
 #        xemSerialList = ['11160001CG', '1137000222'] 
@@ -167,7 +168,10 @@ if __name__ == "__main__":
     threeBoard = MultiXemScheduler(xemList = xemList, cList = cList,  vList = vList, halfCountRealTime = xem.HalfCountRealTime() )
     threeBoard.show()
    
-   
+#    # cortical overflow 
+#    cortexControl = cortexView(xemList = xemList)
+#    cortexControl.show()
+#    
     sys.exit(app.exec_())
 
 
