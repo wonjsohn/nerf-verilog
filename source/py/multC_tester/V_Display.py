@@ -454,3 +454,51 @@ class View(QMainWindow, Ui_Dialog):
 #        else:
 #            self.nerfModel.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2=0, bitVal3=0, trigEvent = 9)
 #        
+    
+#    @pyqtSignature("bool")
+#    def on_checkBox_3_clicked(self, checked):
+#        """
+#        healthy person setting. 
+#        """
+#        # TODO: not implemented yet
+#        
+#        if checked:
+#            self.tellFpga('syn_Ia_gain',  10.0);
+#            self.tellFpga('syn_CN_gain',  20.0);
+#            self.tellFpga('syn_II_gain',  10.0);
+#        else: 
+#            self.tellFpga('syn_Ia_gain',  30.0);
+#            self.tellFpga('syn_CN_gain',  60.0);
+#            self.tellFpga('syn_II_gain',  30.0);
+    
+
+    
+    @pyqtSignature("int")
+    def on_checkBox_3_stateChanged(self, p0):
+        """
+        quick setting for healthy person. 
+        """
+        # TODO: not implemented yet
+        if p0:
+            self.tellFpga('syn_Ia_gain',  10.0);
+            self.tellFpga('syn_CN_gain',  20.0);
+            self.tellFpga('syn_II_gain',  10.0);
+        else:
+            self.tellFpga('syn_Ia_gain',  30.0);
+            self.tellFpga('syn_CN_gain',  60.0);
+            self.tellFpga('syn_II_gain',  30.0);
+    
+    @pyqtSignature("int")
+    def on_checkBox_4_stateChanged(self, p0):
+        """
+        for long latency recording only.
+        """
+              # TODO: not implemented yet
+        if p0:
+            self.tellFpga('syn_Ia_gain',  30.0);
+            self.tellFpga('syn_CN_gain',  80.0);
+            self.tellFpga('syn_II_gain',  30.0);
+        else:
+            self.tellFpga('syn_Ia_gain',  30.0);
+            self.tellFpga('syn_CN_gain',  60.0);
+            self.tellFpga('syn_II_gain',  30.0);

@@ -350,12 +350,12 @@
             triggered_input11 <= {ep02wire, ep01wire};   
             
 
-     wire [31:0]  i_spike_count_neuron_sync_inputPin;
-      spike_counter  sync_counter_input
-      (                 .clk(neuron_clk),
-                        .reset(reset_sim),
-                        .spike_in(spikein1),
-                        .spike_count(i_spike_count_neuron_sync_inputPin) );   
+//     wire [31:0]  i_spike_count_neuron_sync_inputPin;
+//      spike_counter  sync_counter_input
+//      (                 .clk(neuron_clk),
+//                        .reset(reset_sim),
+//                        .spike_in(spikein1),
+//                        .spike_count(i_spike_count_neuron_sync_inputPin) );   
             
        //** latch the inputs
 
@@ -467,7 +467,7 @@
         synapse_simple synapse_simple_from_CN(
             .clk(sim_clk),
             .reset(reset_sim),
-            .spike_in(spikein9),
+            .spike_in(spikein9|spikein10),
             .f_I_out(f_I_synapse_CN)
         );
         
