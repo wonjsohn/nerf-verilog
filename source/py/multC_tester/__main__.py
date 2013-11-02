@@ -31,8 +31,8 @@ if __name__ == "__main__":
     assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
     TWO_BOARDS= 0
-    THREE_BOARDS=0
-    CORTICAL_BOARDS= 1
+    THREE_BOARDS=1
+    CORTICAL_BOARDS= 0
     assert (TWO_BOARDS+THREE_BOARDS+CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING!"
     
     if (WINDOWS==1) :
@@ -72,22 +72,22 @@ if __name__ == "__main__":
     if (CORTICAL_BOARDS ==1) :   
         print "cortical boards setup"
         xemSerialList = [ '11160001CJ',  '12320003RM']  # CORTICAL BOARDS
-#        xemSerialList = [ '000000054P',  '000000053X']  # CORTICAL BOARDS  copper top
+#        xemSerialList = [ '000000054P',  '000000053X']  # CORTICAL BOARDS 6 copper top
 #        xemSerialList = ['0000000547', '000000054B']  # CORTICAL BOARDS  BBDL setting
     elif (TWO_BOARDS ==1 and LINUX == 1):
 ##        print "2 boards in linux setup"
-#        xemSerialList = ['124300046A', '1201000216']
+        xemSerialList = ['124300046A', '1201000216']
 #        xemSerialList = ['12320003RN', '12430003T2'] 
-        xemSerialList = ['000000054G', '000000053U'] # copper top
+#        xemSerialList = ['000000054G', '000000053U'] # copper top
 #        xemSerialList = ['000000054K', '0000000550'] # copper top
 #        xemSerialList = ['113700021E', '0000000542'] 
 #        xemSerialList = ['11160001CG', '1137000222'] 
     elif (THREE_BOARDS ==1 and LINUX == 1):
         print "3 boards in linux setup"
-#        xemSerialList = ['124300046A', '12320003RM', '1201000216']
+        xemSerialList = ['124300046A', '12320003RM', '1201000216']
 #        xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
 #        xemSerialList = ['000000054G', '000000054P',  '000000053U'] # copper top
-        xemSerialList = ['000000054K', '000000053X',  '0000000550'] # copper top
+#        xemSerialList = ['000000054K', '000000053X',  '0000000550'] # copper top
 #        xemSerialList = ['113700021E', '0000000547', '0000000542']  # BBDL setting
 #        xemSerialList = ['11160001CG', '000000054B', '1137000222']  # BBDL setting
     elif (WINDOWS == 1):

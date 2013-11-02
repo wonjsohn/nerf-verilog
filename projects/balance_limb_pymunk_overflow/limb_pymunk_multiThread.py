@@ -226,7 +226,7 @@ class armSetup:
             self.index_linearV = self.angular2LinearV(angularV)
                    
 #            self.index_linearV = 0.0
-            self.scale = 30.0 #10.0   # unstable when extra cortical signal is given, 30 is for doornik data collection
+            self.scale = 10.0 #10.0   # unstable when extra cortical signal is given, 30 is for doornik data collection
             #self.index_linearV = min(0, self.index_linearV ) # testing: only vel component in afferent active when lengthing 
             
             bitVal_bic_i = convertType(-self.index_linearV*self.scale, fromType = 'f', toType = 'I')

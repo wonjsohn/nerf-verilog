@@ -467,7 +467,7 @@ class armSetup:
             dt = 1.0/fps/step
             
             for x in range(step):
-                self.gSpace.step(0.001*7) # matters, matched with control loop update speed..
+                self.gSpace.step(0.001*6) # matters, matched with control loop update speed..
                 
                 self.ind += 1
                  

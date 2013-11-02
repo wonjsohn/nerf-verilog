@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/V_Display.ui'
 #
-# Created: Mon Oct 28 17:55:04 2013
+# Created: Fri Nov  1 18:48:59 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -36,8 +36,14 @@ class Ui_Dialog(object):
         self.label.setGeometry(QtCore.QRect(1040, 110, 66, 17))
         self.label.setObjectName(_fromUtf8("label"))
         self.checkBox_2 = QtGui.QCheckBox(Dialog)
-        self.checkBox_2.setGeometry(QtCore.QRect(280, 20, 151, 22))
+        self.checkBox_2.setGeometry(QtCore.QRect(260, 20, 151, 22))
         self.checkBox_2.setObjectName(_fromUtf8("checkBox_2"))
+        self.checkBox_3 = QtGui.QCheckBox(Dialog)
+        self.checkBox_3.setGeometry(QtCore.QRect(840, 90, 151, 22))
+        self.checkBox_3.setObjectName(_fromUtf8("checkBox_3"))
+        self.checkBox_4 = QtGui.QCheckBox(Dialog)
+        self.checkBox_4.setGeometry(QtCore.QRect(840, 51, 161, 21))
+        self.checkBox_4.setObjectName(_fromUtf8("checkBox_4"))
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -49,7 +55,9 @@ class Ui_Dialog(object):
         self.comboBox.setItemText(2, QtGui.QApplication.translate("Dialog", "waveform 3", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox.setText(QtGui.QApplication.translate("Dialog", "auto scale", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Dialog", ".bit files", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBox_2.setText(QtGui.QApplication.translate("Dialog", "input from wave", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox_2.setText(QtGui.QApplication.translate("Dialog", "from trigger", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox_3.setText(QtGui.QApplication.translate("Dialog", "healthy person", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox_4.setText(QtGui.QApplication.translate("Dialog", "record long latency", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":
