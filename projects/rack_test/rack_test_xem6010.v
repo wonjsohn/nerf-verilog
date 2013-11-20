@@ -424,7 +424,8 @@
         );     
         
        wire [31:0] i_rng_current_to_SN_Ia;
-       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:1] , SN_Ia_rand_out[0:0]};
+//       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:1] , SN_Ia_rand_out[0:0]};
+       assign i_rng_current_to_SN_Ia= fixed_Ia_spindle0;  // no randomness
        
        
        wire [31:0] SN_II_rand_out;
@@ -436,7 +437,8 @@
         );     
         
        wire [31:0] i_rng_current_to_SN_II;
-       assign i_rng_current_to_SN_II= {fixed_II_spindle0[31:1] , SN_II_rand_out[0:0]};
+//       assign i_rng_current_to_SN_II= {fixed_II_spindle0[31:1] , SN_II_rand_out[0:0]};
+       assign i_rng_current_to_SN_II= fixed_II_spindle0;  // no randomness
         
         // Neuron neuron0 Instance Definition (connected by Ia afferent)
         izneuron_th_control neuron0(

@@ -202,7 +202,9 @@
         unsigned_mult32  scale_CN1extra(.out(i_I_from_CN1extra_buttonScaled), .a(i_CN1_extra_drive), .b(i_stuffed_scaler));
         
         
-         assign i_rng_CN1_extra_drive= {i_I_from_CN1extra_buttonScaled[31:4] , CN1_rand_out[3:0]};
+//         assign i_rng_CN1_extra_drive= {i_I_from_CN1extra_buttonScaled[31:4] , CN1_rand_out[3:0]};  // with randomness
+         assign i_rng_CN1_extra_drive= i_I_from_CN1extra_buttonScaled;    // no randomness
+//       
 //       assign i_I_from_CN2extra_buttonScaled = i_I_from_CN2extra * i_scaler;
         
         
@@ -347,6 +349,14 @@
             f_overflow_proportion <= 32'h3F800000;         //reset to 1.0     range :0.0 ~ 1.0
         else
             f_overflow_proportion <= {ep02wire, ep01wire};      
+            
+        reg [31:0] CN_offset;
+        // Triggered Input Instance Definition (offset to subtract )
+        always @ (posedge ep50trig[6] or posedge reset_global)
+        if (reset_global)
+            CN_offset <= 32'd0;         //reset to 0.0      
+        else
+            CN_offset <= {ep02wire, ep01wire};          
         
 
         // Triggered Input triggered_input4 Instance Definition (clk_divider)
@@ -591,6 +601,10 @@
           end
         
         
+        wire [31:0] fixed_drive_to_CN_offset_subtracted;
+        assign fixed_drive_to_CN_offset_subtracted = fixed_drive_to_CN - CN_offset;
+        
+        
         wire [31:0] v_neuron_CN1;   // membrane potential
         wire spike_neuron_CN1;      // spike sample for visualization only
         wire each_spike_neuron_CN1; // raw spike signals
@@ -601,7 +615,7 @@
         iz_corticalneuron_th_control CN1(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in(  (fixed_drive_to_CN)),          // input current from synapse
+            .I_in(  (fixed_drive_to_CN_offset_subtracted)),          // input current from synapse
             .th_scaled( threshold30mv <<< 10),                 // threshold
             .v_out(v_neuron_CN1),               // membrane potential
             .spike(spike_neuron_CN1),           // spike sample
@@ -611,7 +625,7 @@
         
         
         wire [31:0] f_drive_to_CN;
-        int_to_float fixed_drive_of(.in(fixed_drive_to_CN), .out(f_drive_to_CN)); // int to float
+        int_to_float fixed_drive_of(.in(fixed_drive_to_CN_offset_subtracted), .out(f_drive_to_CN)); // int to float
         
         wire [31:0] f_scaled_drive_to_CN;
         mult mult_synapse_of(.x(f_drive_to_CN), .y(f_overflow_proportion), .out(f_scaled_drive_to_CN));

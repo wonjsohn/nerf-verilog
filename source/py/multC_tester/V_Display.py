@@ -115,7 +115,7 @@ class View(QMainWindow, Ui_Dialog):
         QMainWindow.__init__(self, parent)
 #        self.setStyleSheet("background-color:  rgb(240, 235, 235); margin: 2px;")
         self.setStyleSheet("background-color:  white; margin: 2px;")
-        self.setWindowOpacity(0.75)
+        self.setWindowOpacity(1.00)
 
 #                                    "QLineEdit { border-width: 20px;border-style: solid; border-color: darkblue; };")
         self.setupUi(self)
@@ -249,7 +249,7 @@ class View(QMainWindow, Ui_Dialog):
         size = self.size()
         winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 4;
         self.pen.setStyle(Qt.SolidLine)
-        self.pen.setWidth(2)
+        self.pen.setWidth(1)
         self.pen.setBrush(ch.color)
         self.pen.setCapStyle(Qt.RoundCap)
         self.pen.setJoinStyle(Qt.RoundJoin)
@@ -384,7 +384,7 @@ class View(QMainWindow, Ui_Dialog):
 
 #            pipeInData = spike_train(firing_rate = 1) 
             print "waveform 3 fed"
-            pipeInData = gen_sin(F = 0.5, AMP = 0.2,  BIAS = 1.0,  T = 2.0) 
+            pipeInData = gen_sin(F = 0.5, AMP = 0.4,  BIAS = 1.0,  T = 2.0) 
             #pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.3, 1.3, 1.0, 1.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.4, 1.5, 1.55,  1.6,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)
 #                pipeInData = gen_ramp(T = [0.0, 0.2, 0.25, 1.75,  1.8,  2.0], L = [1.0,  1.0,  5000.0, 5000.0, 1.0, 1.0], FILT = False)  # abrupt rise / fall
@@ -480,9 +480,21 @@ class View(QMainWindow, Ui_Dialog):
         """
         # TODO: not implemented yet
         if p0:
-            self.tellFpga('syn_Ia_gain',  10.0);
-            self.tellFpga('syn_CN_gain',  20.0);
-            self.tellFpga('syn_II_gain',  10.0);
+            whichCh = 'syn_Ia_gain'
+            value = 10.0
+            self.tellFpga(whichCh,  value);
+            print "board",  whichCh, " is now ", value
+
+            whichCh = 'syn_CN_gain'
+            value = 50.0
+            self.tellFpga(whichCh,  value);
+            print "board",  whichCh, " is now ", value
+
+            whichCh = 'syn_II_gain'
+            value = 10.0
+            self.tellFpga(whichCh,  value);
+            print "board",  whichCh, " is now ", value
+
         else:
             self.tellFpga('syn_Ia_gain',  30.0);
             self.tellFpga('syn_CN_gain',  60.0);
