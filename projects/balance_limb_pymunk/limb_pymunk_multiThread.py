@@ -170,6 +170,7 @@ class armSetup:
 
             """   Get forces   """
             force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
+            force_bic_pre = force_bic_pre * 2 # force adjustment for quick reflex return
             self.spikecnt_bic = xem_muscle_bic.ReadFPGA(0x30, "int32")  
             self.emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG 
             self.timeref_bic = xem_spindle_bic.ReadFPGA(0x28, "float32")  # 
@@ -284,6 +285,7 @@ class armSetup:
 #            emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG         
             self.spikecnt_tri = xem_muscle_tri.ReadFPGA(0x30, "int32")  
             force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
+            force_tri_pre = force_tri_pre * 2 # force adjustment for quick reflex return
             self.emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
             self.timeref_tri = xem_spindle_tri.ReadFPGA(0x28, "float32")  # 
             

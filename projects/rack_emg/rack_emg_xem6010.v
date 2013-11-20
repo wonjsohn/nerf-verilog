@@ -105,9 +105,9 @@
         reg [31:0] triggered_input6;    // Triggered input sent from USB (clk_divider)  
         reg [31:0] triggered_input7; 
         reg [31:0] triggered_input8; 
-        reg [31:0] triggered_input9; 
-        reg [31:0] triggered_input10; 
-        reg [31:0] triggered_input11; 
+//        reg [31:0] triggered_input9; 
+//        reg [31:0] triggered_input10; 
+//        reg [31:0] triggered_input11; 
         
 
         // Spike Counter spike_counter0 Wire Definitions
@@ -330,25 +330,44 @@
             triggered_input8 <= {ep02wire, ep01wire};  
 
         // a1
-        always @ (posedge ep50trig[5] or posedge reset_global)
-        if (reset_global)
-            triggered_input9 <= 32'hC00F3B64;     //- 2.238 (a1 default)
-        else
-            triggered_input9 <= {ep02wire, ep01wire};   
+//        always @ (posedge ep50trig[5] or posedge reset_global)
+//        if (reset_global)
+//            triggered_input9 <= 32'hC00F3B64;     //- 2.238 (a1 default)
+//        else
+//            triggered_input9 <= {ep02wire, ep01wire};   
 
-        // a2
-        always @ (posedge ep50trig[6] or posedge reset_global)
-        if (reset_global)
-            triggered_input10 <= 32'h3FD5C28F;     //1.67 (a2 default)
-        else
-            triggered_input10 <= {ep02wire, ep01wire};   
-        // a3
-        always @ (posedge ep50trig[8] or posedge reset_global)
-        if (reset_global)
-            triggered_input11 <= 32'hBED49518;     // - 0.4152(a3 default)
-        else
-            triggered_input11 <= {ep02wire, ep01wire};   
-            
+//        // a2
+//        always @ (posedge ep50trig[6] or posedge reset_global)
+//        if (reset_global)
+//            triggered_input10 <= 32'h3FD5C28F;     //1.67 (a2 default)
+//        else
+//            triggered_input10 <= {ep02wire, ep01wire};   
+//        // a3
+//        always @ (posedge ep50trig[8] or posedge reset_global)
+//        if (reset_global)
+//            triggered_input11 <= 32'hBED49518;     // - 0.4152(a3 default)
+//        else
+//            triggered_input11 <= {ep02wire, ep01wire};   
+        
+        //a1
+        wire [31:0] triggered_input9; 
+        wire [31:0] triggered_input10; 
+        wire [31:0] triggered_input11; 
+        assign triggered_input9 = 32'hC00F3B64;     //- 2.238 (a1 default)
+        //a2
+        assign triggered_input10 = 32'h3FD5C28F;     //1.67 (a2 default)
+        //a3 
+        assign triggered_input11 = 32'hBED49518; // - 0.4152(a3 default)
+        
+        
+//        wire [31:0] randomness; 
+//        always @ (posedge ep50trig[8] or posedge reset_global)
+//        if (reset_global)
+//            randomness <= 32'd5;     
+//        else
+//            randomness <= {ep02wire, ep01wire}; 
+
+
 
 //     wire [31:0]  i_spike_count_neuron_sync_inputPin;
 //      spike_counter  sync_counter_input
@@ -578,7 +597,8 @@
       //1*9/16 = 0.5625 (MU17)  
       //1*8/16 = 0.5  (MU20)    *
    
-   
+     parameter randomness = 0;
+     
      wire [31:0] MN1_rand_out;
      rng rng_MN1(               
         .clk1(neuron_clk),
@@ -588,8 +608,8 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN1;
-       assign i_rng_current_to_MN1= {i_I_drive_to_MN[31:6] , MN1_rand_out[5:0]};
-        
+//       assign i_rng_current_to_MN1= {i_I_drive_to_MN[31:randomness+1] , MN1_rand_out[randomness:0]};
+        assign i_rng_current_to_MN1 = i_I_drive_to_MN;
         
       wire [31:0] MN2_rand_out;
      rng rng_MN2(               
@@ -600,8 +620,8 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN2;
-       assign i_rng_current_to_MN2= {i_I_drive_to_MN[31:6] , MN2_rand_out[5:0]};
-       
+//       assign i_rng_current_to_MN2= {i_I_drive_to_MN[31:randomness+1] , MN2_rand_out[randomness:0]};
+       assign i_rng_current_to_MN2 = i_I_drive_to_MN;
        
            wire [31:0] MN3_rand_out;
      rng rng_MN3(               
@@ -612,7 +632,8 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN3;
-       assign i_rng_current_to_MN3= {i_I_drive_to_MN[31:6] , MN3_rand_out[5:0]};
+//       assign i_rng_current_to_MN3= {i_I_drive_to_MN[31:randomness+1] , MN3_rand_out[randomness:0]};
+       assign i_rng_current_to_MN3 = i_I_drive_to_MN;
 
       wire [31:0] MN4_rand_out;
      rng rng_MN4(               
@@ -623,7 +644,8 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN4;
-       assign i_rng_current_to_MN4= {i_I_drive_to_MN[31:6] , MN4_rand_out[5:0]};
+//       assign i_rng_current_to_MN4= {i_I_drive_to_MN[31:randomness+1] , MN4_rand_out[randomness:0]};
+       assign i_rng_current_to_MN4 = i_I_drive_to_MN;
 
       wire [31:0] MN5_rand_out;
      rng rng_MN5(               
@@ -634,7 +656,8 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN5;
-       assign i_rng_current_to_MN5= {i_I_drive_to_MN[31:6] , MN5_rand_out[5:0]};
+//       assign i_rng_current_to_MN5= {i_I_drive_to_MN[31:randomness+1] , MN5_rand_out[randomness:0]};
+    assign i_rng_current_to_MN5 = i_I_drive_to_MN;
 
       wire [31:0] MN6_rand_out;
      rng rng_MN6(               
@@ -645,7 +668,8 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN6;
-       assign i_rng_current_to_MN6= {i_I_drive_to_MN[31:6] , MN6_rand_out[5:0]};
+//       assign i_rng_current_to_MN6= {i_I_drive_to_MN[31:randomness+1] , MN6_rand_out[randomness:0]};
+       assign i_rng_current_to_MN6 = i_I_drive_to_MN;
 //
 //      wire [31:0] MN7_rand_out;
 //     rng rng_MN7(               

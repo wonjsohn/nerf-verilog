@@ -146,6 +146,7 @@ class armSetup:
         self.record = False
         self.mouseOn = False
         self.scale = 1.0
+        self.mechanicalCoupling_scale = 0.6
         self.fmax = 0.0
 
         self.main()
@@ -333,12 +334,17 @@ class armSetup:
 #            MN5_spikes = xem_muscle.ReadFPGA(0x2A, "spike32")  #             
 #            MN6_spikes = xem_muscle.ReadFPGA(0x2C, "spike32")  # 
             
-    
+            """ 1. normal case"""
             self.force_middle_flexor = force_flexor_pre #+ pipeInData_bic[j]
             self.gForearm_body_middle.torque = (self.force_middle_flexor - self.force_middle_extensor) * 0.03 # was 0.06
                                             
             self.middle_angle = ((self.gForearm_body_middle.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
-               
+            
+            """ 2. mechanical coupling """
+#            self.gForearm_body_middle.torque = self.gForearm_body.torque * 0.8 #self.mechanicalCoupling_scale
+#            self.middle_angle= self.index_angle 
+            """ """
+         
 #            lce_extensor = self.angle2length(angle)+ 0.02
             self.lce_middle_flexor = 2.04 - self.lce_middle_extensor 
             
@@ -354,13 +360,15 @@ class armSetup:
             self.scale = 30.0 #10.0   # unstable when extra cortical signal is given, 30 is for doornik data collection
             #self.linearV = min(0, self.linearV ) # testing: only vel component in afferent active when lengthing 
             
+            
+ 
             bitVal_bic_i = convertType(-self.middle_linearV*self.scale, fromType = 'f', toType = 'I')
 #            bitVal_tri_i = convertType(self.linearV*scale, fromType = 'f', toType = 'I')
             
             xem_muscle.SendMultiPara(bitVal1 = bitVal, bitVal2 = bitVal_bic_i,  trigEvent = 9)
             xem_spindle.SendPara(bitVal = bitVal, trigEvent = 9)
-                  
-       
+ 
+            
             #print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_flexor, self.lce_extensor, self.gForearm_body_middle.torque),                           
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, self.force_index_extensor,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
@@ -495,13 +503,13 @@ class armSetup:
                         
             """ mouse cursor controlled forced (passive) movement"""
             if (self.record == True):
-                #self.gForearm_body.angle =forced_angle
-                if k == len(self.j2List)-1:
-                    self.gForearm_body.angle = 0.0
-                else:
-                    self.gForearm_body.angle = (self.j2List[k])*3.141592/180  # in radian   
-                    k = k + 1
-                    #print self.j2List[k]  
+                self.gForearm_body.angle =forced_angle
+#                if k == len(self.j2List)-1:
+#                    self.gForearm_body.angle = 0.0
+#                else:
+#                    self.gForearm_body.angle = (self.j2List[k])*3.141592/180  # in radian   
+#                    k = k + 1
+#                    #print self.j2List[k]  
                     
             """  Clear screen  """
             self.screen.fill(THECOLORS["white"])  # ~1ms
@@ -539,7 +547,7 @@ class armSetup:
             step = 1
             dt = 1.0/fps/step
             for x in range(step):
-                self.gSpace.step(dt)
+                self.gSpace.step(dt) # dt
             
             """ text message"""    
             myfont = self.pygame.font.SysFont("monospace", 15)
