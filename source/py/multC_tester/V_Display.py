@@ -158,7 +158,7 @@ class View(QMainWindow, Ui_Dialog):
         # Prepare the widgets for each Display channel 
         self.allFpgaOutput = {}
         for i, (addr, name, visual_gain, type, color) in enumerate(fpgaOutput):
-            if name != 'blank':
+            if name != 'xxx':
                 self.allFpgaOutput[name] = ViewChannel(hostDialog=self, name=name, id=i, color = color, addr = addr, type = type)
 
         for eachName, eachChan in self.allFpgaOutput.iteritems():
@@ -174,9 +174,11 @@ class View(QMainWindow, Ui_Dialog):
 
     def readParameters(self):        
         for eachName, eachChan in self.allUserInput.iteritems():
-            val = eachChan.doubleSpinBox.value()   
-            print eachName, val
-            self.individualWireIn(eachName, val)
+
+            if eachName != 'half_cnt':  # don't mess with simulation speed
+                val = eachChan.doubleSpinBox.value()   
+                self.individualWireIn(eachName, val)
+                print eachName, val
 
 
     def plotData(self, data):
@@ -372,7 +374,8 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = spike_train(firing_rate = 10)      
 #            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
 #            pipeInData = gen_tri(T = 2.0) 
-            pipeInData = gen_ramp(T = [0.0, 0.1, 1.0, 1.4, 1.5, 2.0], L = [0.9, 0.9, 1.5, 1.5, 0.9,  0.9], FILT = False)
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 1.0, 1.4, 1.5, 2.0], L = [0.9, 0.9, 1.5, 1.5, 0.9,  0.9], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.21, 0.22, 1.0, 1.1, 1.11,  1.21, 1.22, 2.0], L = [1.2, 1.2, 1.5, 1.5, 1.2, 1.2, 1.2, 1.5, 1.5, 1.2, 1.2], FILT = False)
 
 
                 
@@ -473,44 +476,39 @@ class View(QMainWindow, Ui_Dialog):
     
 
     
-    @pyqtSignature("int")
-    def on_checkBox_3_stateChanged(self, p0):
+    @pyqtSignature("bool")
+    def on_checkBox_3_clicked(self, checked):
         """
-        quick setting for healthy person. 
+        Slot documentation goes here.
         """
-        # TODO: not implemented yet
-        if p0:
-            whichCh = 'syn_Ia_gain'
-            value = 10.0
-            self.tellFpga(whichCh,  value);
-            print "board",  whichCh, " is now ", value
-
-            whichCh = 'syn_CN_gain'
-            value = 50.0
-            self.tellFpga(whichCh,  value);
-            print "board",  whichCh, " is now ", value
-
-            whichCh = 'syn_II_gain'
-            value = 10.0
-            self.tellFpga(whichCh,  value);
-            print "board",  whichCh, " is now ", value
+        if checked:
+#            whichCh = 'syn_Ia_gain'
+#            value = 10.0
+#            self.tellFpga(whichCh,  value);
+#            print "board",  whichCh, " is now ", value
+#
+#            whichCh = 'syn_CN_gain'
+#            value = 50.0
+#            self.tellFpga(whichCh,  value);
+#            print "board",  whichCh, " is now ", value
+#
+#            whichCh = 'syn_II_gain'
+#            value = 10.0
+#            self.tellFpga(whichCh,  value);
+#            print "board",  whichCh, " is now ", value
+            tempList = ['syn_Ia_gain','syn_CN_gain','syn_II_gain']
+            tempVal = [60.0,0.0,60.0]
+            for eachPort,  eachVal in zip(tempList,  tempVal):
+                self.tellFpga(eachPort, eachVal)
+                print "board",  eachPort, " is now ", eachVal
 
         else:
-            self.tellFpga('syn_Ia_gain',  30.0);
-            self.tellFpga('syn_CN_gain',  60.0);
-            self.tellFpga('syn_II_gain',  30.0);
-    
-    @pyqtSignature("int")
-    def on_checkBox_4_stateChanged(self, p0):
-        """
-        for long latency recording only.
-        """
-              # TODO: not implemented yet
-        if p0:
-            self.tellFpga('syn_Ia_gain',  30.0);
-            self.tellFpga('syn_CN_gain',  80.0);
-            self.tellFpga('syn_II_gain',  30.0);
-        else:
-            self.tellFpga('syn_Ia_gain',  30.0);
-            self.tellFpga('syn_CN_gain',  60.0);
-            self.tellFpga('syn_II_gain',  30.0);
+#            self.tellFpga('syn_Ia_gain',  60.0);
+#            self.tellFpga('syn_CN_gain',  200.0);
+#            self.tellFpga('syn_II_gain',  60.0);
+#            
+            tempList = ['syn_Ia_gain','syn_CN_gain','syn_II_gain']
+            tempVal = [60.0,200.0,60.0]
+            for eachPort,  eachVal in zip(tempList,  tempVal):
+                self.tellFpga(eachPort, eachVal)
+                print "board",  eachPort, " is now ", eachVal

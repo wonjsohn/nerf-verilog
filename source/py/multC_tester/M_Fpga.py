@@ -18,6 +18,8 @@ elif arch == "64bit":
 import numpy as np
 from Utilities import *
 
+
+BUTTON_INPUT_FROM_TRIGGER = 1
 class SomeFpga:
     """ The FPGA class
     """

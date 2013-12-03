@@ -199,7 +199,7 @@
 //        );
         
         wire [31:0] i_I_from_CN1extra_buttonScaled;
-        unsigned_mult32  scale_CN1extra(.out(i_I_from_CN1extra_buttonScaled), .a(i_CN1_extra_drive), .b(i_stuffed_scaler));
+        unsigned_mult32  scale_CN1extra(.out(i_I_from_CN1extra_buttonScaled), .a(i_CN1_extra_drive), .b(32'd1)); //i_stuffed_scaler
         
         
 //         assign i_rng_CN1_extra_drive= {i_I_from_CN1extra_buttonScaled[31:4] , CN1_rand_out[3:0]};  // with randomness

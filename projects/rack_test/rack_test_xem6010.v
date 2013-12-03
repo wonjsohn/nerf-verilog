@@ -216,7 +216,7 @@
         // Triggered Input triggered_input0 Instance Definition (lce)
         always @ (posedge ep50trig[9] or posedge reset_global)
         if (reset_global)
-            triggered_input0 <= 32'h3f8ccccd;         //reset to 1.1      
+            triggered_input0 <= 32'h3F800000;         //reset to 1.0    
         else
             triggered_input0 <= {ep02wire, ep01wire};      
         
@@ -249,7 +249,7 @@
         reg [31:0] f_spindle_offset;
         always @ (posedge ep50trig[3] or posedge reset_global)
         if (reset_global)
-            f_spindle_offset <= 32'h4121EB85;         //reset to 10.12    
+            f_spindle_offset <= 32'h428C0000;         //reset to 70.0  
         else
             f_spindle_offset <= {ep02wire, ep01wire};
 
@@ -257,7 +257,7 @@
         reg [31:0] f_spindle_offset_II;
         always @ (posedge ep50trig[6] or posedge reset_global)
         if (reset_global)
-            f_spindle_offset_II <= 32'h4121EB85;         //reset to 10.12      
+            f_spindle_offset_II <= 32'h42480000;         //reset to 50.0    
         else
             f_spindle_offset_II <= {ep02wire, ep01wire};              
         
@@ -424,8 +424,8 @@
         );     
         
        wire [31:0] i_rng_current_to_SN_Ia;
-//       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:1] , SN_Ia_rand_out[0:0]};
-       assign i_rng_current_to_SN_Ia= fixed_Ia_spindle0;  // no randomness
+       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:6] , SN_Ia_rand_out[5:0]}; // randomness
+//       assign i_rng_current_to_SN_Ia= fixed_Ia_spindle0;  // no randomness
        
        
        wire [31:0] SN_II_rand_out;
