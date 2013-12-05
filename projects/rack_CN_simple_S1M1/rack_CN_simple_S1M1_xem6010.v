@@ -552,8 +552,8 @@
         okWireOut wo24 (    .ep_datain(i_I_from_spindle_neuronCompensated[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
         okWireOut wo25 (    .ep_datain(i_I_from_spindle_neuronCompensated[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
         
-        okWireOut wo26 (    .ep_datain(fixed_drive_to_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
-        okWireOut wo27 (    .ep_datain(fixed_drive_to_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
+        okWireOut wo26 (    .ep_datain(f_drive_to_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
+        okWireOut wo27 (    .ep_datain(f_drive_to_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
         
         okWireOut wo28 (    .ep_datain(i_CN2_extra_drive[15:0]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h28)    );
         okWireOut wo29 (    .ep_datain(i_CN2_extra_drive[31:16]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h29)   );  
@@ -602,7 +602,7 @@
         
         
         wire [31:0] fixed_drive_to_CN_offset_subtracted;
-        assign fixed_drive_to_CN_offset_subtracted = fixed_drive_to_CN - CN_offset;
+        assign fixed_drive_to_CN_offset_subtracted = (fixed_drive_to_CN > CN_offset)? (fixed_drive_to_CN - CN_offset): 32'd0;
         
         
         wire [31:0] v_neuron_CN1;   // membrane potential

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/MVC_MainGUI.ui'
 #
-# Created: Fri Nov 22 12:12:28 2013
+# Created: Wed Dec  4 18:04:04 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,7 +18,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.setWindowModality(QtCore.Qt.WindowModal)
-        Dialog.resize(1207, 55)
+        Dialog.resize(1207, 76)
         self.pushButton_2 = QtGui.QPushButton(Dialog)
         self.pushButton_2.setGeometry(QtCore.QRect(0, 0, 71, 31))
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
@@ -30,8 +30,8 @@ class Ui_Dialog(object):
         self.horizontalSlider.setGeometry(QtCore.QRect(311, 1, 181, 16))
         self.horizontalSlider.setMinimum(1)
         self.horizontalSlider.setMaximum(100)
-        self.horizontalSlider.setProperty("value", 10)
-        self.horizontalSlider.setSliderPosition(10)
+        self.horizontalSlider.setProperty("value", 100)
+        self.horizontalSlider.setSliderPosition(100)
         self.horizontalSlider.setTracking(True)
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider.setInvertedControls(True)
@@ -187,8 +187,8 @@ class Ui_Dialog(object):
         self.lcdNumber.setLineWidth(0)
         self.lcdNumber.setMidLineWidth(8)
         self.lcdNumber.setSegmentStyle(QtGui.QLCDNumber.Flat)
-        self.lcdNumber.setProperty("value", 10.0)
-        self.lcdNumber.setProperty("intValue", 10)
+        self.lcdNumber.setProperty("value", 100.0)
+        self.lcdNumber.setProperty("intValue", 100)
         self.lcdNumber.setObjectName(_fromUtf8("lcdNumber"))
         self.label_RT = QtGui.QLabel(Dialog)
         self.label_RT.setGeometry(QtCore.QRect(330, 20, 101, 16))
@@ -379,6 +379,9 @@ class Ui_Dialog(object):
         self.horizontalSlider_2.setTickPosition(QtGui.QSlider.TicksBelow)
         self.horizontalSlider_2.setTickInterval(10)
         self.horizontalSlider_2.setObjectName(_fromUtf8("horizontalSlider_2"))
+        self.checkBox_2 = QtGui.QCheckBox(Dialog)
+        self.checkBox_2.setGeometry(QtCore.QRect(870, 40, 97, 22))
+        self.checkBox_2.setObjectName(_fromUtf8("checkBox_2"))
 
         self.retranslateUi(Dialog)
         QtCore.QObject.connect(self.horizontalSlider, QtCore.SIGNAL(_fromUtf8("valueChanged(int)")), self.lcdNumber.display)
@@ -397,6 +400,7 @@ class Ui_Dialog(object):
         self.pushButton_reset_sim.setText(QtGui.QApplication.translate("Dialog", "Reset Sim", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox.setText(QtGui.QApplication.translate("Dialog", "send sine", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Dialog", "overflow %", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox_2.setText(QtGui.QApplication.translate("Dialog", "send tonic", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":

@@ -23,7 +23,7 @@ FPGA_OUTPUT_B1 =    (0x20,      'population_neuron0',      1.0,         'spike32
 FPGA_OUTPUT_B2 =   (0x20,      'i_rng_CN1_extra_drive',      1.0,         'int32',      Qt.blue),  \
                 (0x22,      'i_gainScaled_I_from_spindle',      1.0,         'int32',      Qt.red),  \
                 (0x24,      'i_I_from_S1_neuronCompensated',      1.0,         'int32',      Qt.green),  \
-                (0x26,      'fixed_drive_to_CN',      1.0,         'int32',      Qt.black),  \
+                (0x26,      'f_drive_to_CN',      1.0,         'float32',      Qt.black),  \
                 (0x28,      'i_CN2_extra_drive',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'i_I_from_spindle',      1.0,         'int32',      Qt.darkRed),  \
                 (0x2C,      'i_stuffed_scaler',      1.0,         'int32',      Qt.darkGray),  \

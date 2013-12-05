@@ -69,7 +69,7 @@ class armSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.2 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.23 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -159,7 +159,7 @@ class armSetup:
 #            force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
 #            emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
 
-            force_bic_pre=force_bic_pre*4.0 # scale down force
+            force_bic_pre=force_bic_pre*1.0 # scale down force
             force_bic = force_bic_pre #+ pipeInData_bic[j]
 #            force_tri = force_tri_pre #+ pipeInData_bic[j] 
             """ overflow to opposite muscle test (helps to stabilize - eric)"""
@@ -261,7 +261,7 @@ class armSetup:
             emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
             
 #            force_bic = force_bic_pre #+ pipeInData_bic[j]
-            force_tri_pre = force_tri_pre * 4.0
+            force_tri_pre = force_tri_pre * 1.0
             self.force_tri = force_tri_pre #+ pipeInData_bic[j] 
             """  force curve (f-input spikes) saturation effect"""
 #            self.force_tri = self.force_tri * (1-exp(-self.force_tri/self.fmax)) 
@@ -340,16 +340,15 @@ class armSetup:
 #            time.sleep(0.07)
   
     def point2pointForce(self,  checked):
-        print 'enter'
         if (checked) :
             print 'checked'
-            pipeInData_bic = gen_ramp(T = [0.0, 0.1, 0.11, 0.31, 0.32, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
+            pipeInData_bic = gen_ramp(T = [0.0, 0.01, 0.02,  0.22, 0.23, 2.0], L = [0.0, 0.0, 240000.0, 240000.0, 0.0, 0.0], FILT = False)
             pipeInDataBic=[]
             for i in xrange(0,  2048):
                 pipeInDataBic.append(max(0.0,  pipeInData_bic[i]))
              
                 
-            pipeIndata_tri = gen_ramp(T = [0.0, 0.3, 0.31, 0.51, 0.52, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
+            pipeIndata_tri = gen_ramp(T = [0.0, 0.21, 0.22, 0.42, 0.43, 2.0], L = [0.0, 0.0, 240000.0, 240000.0, 0.0, 0.0], FILT = False)
             pipeInDataTri=[]
             for i in xrange(0,  2048):
                 pipeInDataTri.append(max(0.0,  pipeIndata_tri[i]))
@@ -358,11 +357,22 @@ class armSetup:
             xem_cortical_tri.SendPipe(pipeInDataTri)
             
             
+            xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) #  
+            xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) # 
+ 
+            xem_cortical_tri.SendButton(False, BUTTON_RESET_SIM) # 
+            xem_cortical_bic.SendButton(False, BUTTON_RESET_SIM) # 
+#
+##            
+#            xem_cortical_bic.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+#            xem_cortical_tri.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
 
+            
 #            xem_cortical_bic.SendButton(False, BUTTON_RESET_SIM) #  
 #            xem_cortical_tri.SendButton(False, BUTTON_RESET_SIM) # 
             
-            
+
+                
             
     
     def keyControl(self):
@@ -380,26 +390,28 @@ class armSetup:
 #            self.gForearm_body.torque = -0.1 
 
             if (isMinJerk):
-                d = 15   # 40 ,  speed
+                d = 40   # 40 ,  speed
                 jmax = 0.8  # 1.0 , joint maxzz
                 t = jmax * (10*(self.timeMinJerk/d)**3 - 15*(self.timeMinJerk/d)**4 + 6*(self.timeMinJerk/d)**5)
+                
                 if t > jmax:
                     self.jointMin = jmax  
                     xem_cortical_bic.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
                     xem_cortical_tri.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
- 
+
             
                 else:
                     self.jointMin = t
-                    
-                    xem_cortical_bic.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
-                    xem_cortical_tri.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
-                    
-                    xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) #  
-                    xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) # 
-   
-                    
-    
+                    if self.timeMinJerk == 0.0:  # enter only once
+                        xem_cortical_bic.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+                        xem_cortical_tri.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+                        xem_cortical_bic.SendPara(bitVal = 5000, trigEvent = 8) # up
+                    elif self.timeMinJerk == 7.0:
+                        xem_cortical_tri.SendPara(bitVal = 5000, trigEvent = 8)  # down 
+                        
+
+       
+
             
                 self.timeMinJerk+= 1.0   # time step
             """ key control """
@@ -411,13 +423,17 @@ class armSetup:
                     self.running = False
                 elif event.type == KEYDOWN and event.key == K_p: # Point-to-point
                     isMinJerk = True
-                   
-                    self.point2pointForce(True)
-
-                    bitVal = convertType(6000.0, fromType = 'f', toType = 'I')
-                    xem_cortical_bic.SendPara(bitVal = bitVal, trigEvent = 8)
+                    xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) #  
+                    xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) # 
+ 
+                    xem_cortical_tri.SendButton(False, BUTTON_RESET_SIM) # 
+                    xem_cortical_bic.SendButton(False, BUTTON_RESET_SIM) #           
+#                    self.point2pointForce(True)
                     
-                    xem_cortical_tri.SendPara(bitVal = bitVal, trigEvent = 8)
+
+                    bitVal = convertType(200.0, fromType = 'f', toType = 'I')
+#                    xem_cortical_bic.SendPara(bitVal = 5000, trigEvent = 8)
+#                    xem_cortical_tri.SendPara(bitVal = 5000, trigEvent = 8)
                     
                 elif event.type == KEYDOWN and event.key == K_j:
                     self.gForearm_body.torque -= 14.0
@@ -425,13 +441,13 @@ class armSetup:
                     #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
                     self.gForearm_body.torque += 14.0
                 elif event.type == KEYDOWN and event.key == K_t:   # tonic on
-                    bitVal = convertType(6000.0, fromType = 'f', toType = 'I')
-                    xem_cortical_bic.SendPara(bitVal = bitVal, trigEvent = 8)
-                    xem_cortical_tri.SendPara(bitVal = bitVal, trigEvent = 8)
+#                    bitVal = convertType(6000.0, fromType = 'f', toType = 'I')
+                    xem_cortical_bic.SendPara(bitVal = 5000, trigEvent = 8)
+                    xem_cortical_tri.SendPara(bitVal = 5000, trigEvent = 8)
                 elif event.type == KEYDOWN and event.key == K_y:   # tonic off
                     bitVal = convertType(0.0, fromType = 'f', toType = 'I')
-                    xem_cortical_bic.SendPara(bitVal = bitVal, trigEvent = 8)
-                    xem_cortical_tri.SendPara(bitVal = bitVal, trigEvent = 8)
+                    xem_cortical_bic.SendPara(bitVal = 0, trigEvent = 8)
+                    xem_cortical_tri.SendPara(bitVal = 0, trigEvent = 8)
                 elif event.type == KEYDOWN and event.key == K_z:
 #                    self.gRest_joint_angle = self.angle
                     self.gForearm_body.angle = 0.0
@@ -502,7 +518,7 @@ class armSetup:
             dt = 1.0/fps/step
             for x in range(step):
 #                self.gSpace.step(dt)
-                self.gSpace.step(0.001*8)
+                self.gSpace.step(0.001*15)
             
             """ text message"""    
             myfont = self.pygame.font.SysFont("monospace", 15)
