@@ -12,8 +12,8 @@ M_PI = 3.1415926
 JOINT_MIN = -1.2
 JOINT_MAX = 1.2
 JOINT_RANGE = JOINT_MAX - JOINT_MIN 
-
-
+BUTTON_INPUT_FROM_TRIGGER = 1
+BUTTON_RESET_SIM = 2
 
 
 class armSetup:
@@ -69,7 +69,7 @@ class armSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.22 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.20 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -170,7 +170,7 @@ class armSetup:
 
             """   Get forces   """
             force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
-            force_bic_pre = force_bic_pre * 2 # force adjustment for quick reflex return
+            force_bic_pre = force_bic_pre * 1.0 # force adjustment for quick reflex return
             self.spikecnt_bic = xem_muscle_bic.ReadFPGA(0x30, "int32")  
             self.emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG 
             self.timeref_bic = xem_spindle_bic.ReadFPGA(0x28, "float32")  # 
@@ -285,7 +285,7 @@ class armSetup:
 #            emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG         
             self.spikecnt_tri = xem_muscle_tri.ReadFPGA(0x30, "int32")  
             force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
-            force_tri_pre = force_tri_pre * 2 # force adjustment for quick reflex return
+            force_tri_pre = force_tri_pre * 1.0 # force adjustment for quick reflex return
             self.emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
             self.timeref_tri = xem_spindle_tri.ReadFPGA(0x28, "float32")  # 
             
@@ -368,12 +368,43 @@ class armSetup:
   
     def dataRecordLoop(self):
         while (self.running):
-            temp_bic = self.elapsedTime_bic, self.lce_bic, self.linearV, self.spikecnt_bic, self.force_bic, self.emg_bic,  self.ind,  self.sinewave[self.ind],  self.timeref_bic
+            temp_bic = self.elapsedTime_bic, self.angle,  self.lce_bic, self.spikecnt_bic, self.force_bic, self.emg_bic,  self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_bic
             self.data_bic.append(temp_bic)
-            temp_tri = self.elapsedTime_tri, self.lce_tri, self.linearV, self.spikecnt_tri,   self.force_tri,  self.emg_tri, self.ind,  self.sinewave[self.ind],  self.timeref_tri
+            temp_tri = self.elapsedTime_tri, self.angle,  self.lce_tri, self.spikecnt_tri, self.force_tri,  self.emg_tri, self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_tri
             self.data_tri.append(temp_tri)
             time.sleep(0.001)
-            
+        
+        
+        
+    
+#    def point2pointForce(self,  checked):
+#        print 'enter'
+#        if (checked) :
+#            print 'checked'
+##            pipeInData_bic = gen_ramp(T = [0.0, 0.1, 0.11, 0.31, 0.32, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
+#            pipeInData_bic = gen_sin(F = 1.0, AMP = 50000.0,  BIAS = 0.0,  T = 2.0) # was 150000 for CN_general
+#            pipeInDataBic=[]
+#            for i in xrange(0,  2048):
+#                pipeInDataBic.append(max(0.0,  pipeInData_bic[i]))
+#             
+#                
+##            pipeIndata_tri = gen_ramp(T = [0.0, 0.3, 0.31, 0.51, 0.52, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
+#            pipeIndata_tri = -gen_sin(F = 1.0,  AMP = 50000.0,  BIAS = 0.0,  T = 2.0)
+#            pipeInDataTri=[]
+#            for i in xrange(0,  2048):
+#                pipeInDataTri.append(max(0.0,  pipeIndata_tri[i]))
+#
+#            xem_cortical_bic.SendPipe(pipeInDataBic)
+#            xem_cortical_tri.SendPipe(pipeInDataTri)
+#            
+#            
+#                    
+#            xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) #  
+#            xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) # 
+#
+#            xem_cortical_bic.SendButton(False, BUTTON_RESET_SIM) #  
+#            xem_cortical_tri.SendButton(False, BUTTON_RESET_SIM) #     
+        
     def keyControl(self):
         
         while (self.running):
@@ -381,6 +412,13 @@ class armSetup:
             mouse_position = from_pygame( Vec2d(self.pygame.mouse.get_pos()), self.screen )
             forced_angle = (mouse_position-self.gForearm_body.position).angle   # calculate angle with mouse cursor loc. 
             
+            
+#            xem_cortical_bic.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+#            xem_cortical_tri.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+#            
+#            xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) #  
+#            xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) # 
+   
             
             # move the unfired arrow together with the cannon
 #            arrow_body.position = cannon_body.position + Vec2d(cannon_shape.radius + 40, 0).rotated(cannon_body.angle)
@@ -394,12 +432,31 @@ class armSetup:
                 elif event.type == KEYDOWN and event.key == K_ESCAPE:
                     self.plotData(self.data_bic, self.data_tri)
                     self.running = False
+                elif event.type == KEYDOWN and event.key == K_p: 
+                    self.point2pointForce(True)
+                   
+                    
                 elif event.type == KEYDOWN and event.key == K_j:
                     self.gForearm_body.torque -= 6*14.0
 
                 elif event.type == KEYDOWN and event.key == K_f:
                     #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
                     self.gForearm_body.torque += 6*14.0
+#                    
+#                elif event.type == KEYDOWN and event.key == K_t:   # selective tonic on
+#                    bitVal1 = convertType(500.0, fromType = 'f', toType = 'I')
+#                    xem_cortical_bic.SendPara(bitVal = bitVal1, trigEvent = 8)
+#                   
+#                elif event.type == KEYDOWN and event.key == K_r:   # selective tonic on
+#                    bitVal2 = convertType(200.0, fromType = 'f', toType = 'I')
+#                    xem_cortical_tri.SendPara(bitVal = bitVal2, trigEvent = 8)
+#                    
+#                elif event.type == KEYDOWN and event.key == K_y:   # tonic off
+#                    bitVal = convertType(0.0, fromType = 'f', toType = 'I')
+#                    xem_cortical_bic.SendPara(bitVal = bitVal, trigEvent = 8)
+#                    xem_cortical_tri.SendPara(bitVal = bitVal, trigEvent = 8)    
+                    
+                    
                 elif event.type == KEYDOWN and event.key == K_z:
 #                    self.gRest_joint_angle = self.angle
                     self.gForearm_body.angle = 0.0
@@ -469,7 +526,7 @@ class armSetup:
             dt = 1.0/fps/step
             
             for x in range(step):
-                self.gSpace.step(0.001*6) # matters, matched with control loop update speed..
+                self.gSpace.step(0.001*8) # matters, matched with control loop update speed..
                 
                 self.ind += 1
                  
@@ -521,6 +578,10 @@ class armSetup:
         
         
         threading.Thread(target=self.dataRecordLoop).start()
+#        
+#        xem_cortical_bic.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+#        xem_cortical_tri.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+#        
         
 
         
@@ -560,9 +621,10 @@ if __name__ == '__main__':
     xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '124300046A')
     xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '1201000216')
     xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12430003T2')
-    
-    
-    
+#    
+#    xem_cortical_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12320003RM')
+#    xem_cortical_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '11160001CJ')
+#    
     
     
 #    
