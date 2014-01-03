@@ -342,13 +342,13 @@ class armSetup:
     def point2pointForce(self,  checked):
         if (checked) :
             print 'checked'
-            pipeInData_bic = gen_ramp(T = [0.0, 0.01, 0.02,  0.22, 0.23, 2.0], L = [0.0, 0.0, 240000.0, 240000.0, 0.0, 0.0], FILT = False)
+            pipeInData_bic = gen_ramp(T = [0.0, 0.01, 0.02,  0.22, 0.23, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
             pipeInDataBic=[]
             for i in xrange(0,  2048):
                 pipeInDataBic.append(max(0.0,  pipeInData_bic[i]))
-             
-                
-            pipeIndata_tri = gen_ramp(T = [0.0, 0.21, 0.22, 0.42, 0.43, 2.0], L = [0.0, 0.0, 240000.0, 240000.0, 0.0, 0.0], FILT = False)
+            
+            
+            pipeIndata_tri = gen_ramp(T = [0.0, 0.21, 0.22, 0.52, 0.53, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
             pipeInDataTri=[]
             for i in xrange(0,  2048):
                 pipeInDataTri.append(max(0.0,  pipeIndata_tri[i]))
@@ -356,14 +356,14 @@ class armSetup:
             xem_cortical_bic.SendPipe(pipeInDataBic)
             xem_cortical_tri.SendPipe(pipeInDataTri)
             
-            
-            xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) #  
-            xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) # 
+            xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) #  
+            xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) # 
  
             xem_cortical_tri.SendButton(False, BUTTON_RESET_SIM) # 
             xem_cortical_bic.SendButton(False, BUTTON_RESET_SIM) # 
 #
 ##            
+
 #            xem_cortical_bic.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
 #            xem_cortical_tri.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
 
@@ -398,16 +398,19 @@ class armSetup:
                     self.jointMin = jmax  
                     xem_cortical_bic.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
                     xem_cortical_tri.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+                    print "t > jmax"
 
             
                 else:
                     self.jointMin = t
                     if self.timeMinJerk == 0.0:  # enter only once
+                        print "time 0"
                         xem_cortical_bic.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
                         xem_cortical_tri.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
-                        xem_cortical_bic.SendPara(bitVal = 5000, trigEvent = 8) # up
+#                        xem_cortical_bic.SendPara(bitVal = 5000, trigEvent = 8) # up  (TONIC ON triceps)
                     elif self.timeMinJerk == 7.0:
-                        xem_cortical_tri.SendPara(bitVal = 5000, trigEvent = 8)  # down 
+#                        xem_cortical_tri.SendPara(bitVal = 5000, trigEvent = 8)  # down  (TONIC ON biceps)
+                        print "time 7"
                         
 
        
@@ -423,15 +426,15 @@ class armSetup:
                     self.running = False
                 elif event.type == KEYDOWN and event.key == K_p: # Point-to-point
                     isMinJerk = True
-                    xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) #  
-                    xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) # 
- 
-                    xem_cortical_tri.SendButton(False, BUTTON_RESET_SIM) # 
-                    xem_cortical_bic.SendButton(False, BUTTON_RESET_SIM) #           
-#                    self.point2pointForce(True)
+#                    xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) #  
+#                    xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) # 
+# 
+#                    xem_cortical_tri.SendButton(False, BUTTON_RESET_SIM) # 
+#                    xem_cortical_bic.SendButton(False, BUTTON_RESET_SIM) #           
+                    self.point2pointForce(True)  # point-to-point movement
                     
 
-                    bitVal = convertType(200.0, fromType = 'f', toType = 'I')
+#                    bitVal = convertType(200.0, fromType = 'f', toType = 'I')   
 #                    xem_cortical_bic.SendPara(bitVal = 5000, trigEvent = 8)
 #                    xem_cortical_tri.SendPara(bitVal = 5000, trigEvent = 8)
                     
@@ -455,7 +458,16 @@ class armSetup:
                     self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (4,  0))
                 elif event.type == KEYDOWN and event.key == K_u:
                     self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (-4,  0))
-#                    
+                    
+                elif event.type == KEYDOWN and event.key == K_s:  #reset-sim boards
+                    xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) #  
+                    xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) # 
+                    xem_cortical_tri.SendButton(False, BUTTON_RESET_SIM) # 
+                    xem_cortical_bic.SendButton(False, BUTTON_RESET_SIM) #     
+                elif event.type == KEYDOWN and event.key == K_e:  # trigger off
+                    xem_cortical_bic.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+                    xem_cortical_tri.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+                
 #                elif event.type == KEYDOWN and event.key == K_o:  # CN syn gain 50
 #                    bitVal50 = convertType(50.0, fromType = 'f', toType = 'I')
 #                    xem_muscle_bic.SendPara(bitVal = bitVal50, trigEvent = 10) 
@@ -518,7 +530,7 @@ class armSetup:
             dt = 1.0/fps/step
             for x in range(step):
 #                self.gSpace.step(dt)
-                self.gSpace.step(0.001*15)
+                self.gSpace.step(0.001*8)
             
             """ text message"""    
             myfont = self.pygame.font.SysFont("monospace", 15)

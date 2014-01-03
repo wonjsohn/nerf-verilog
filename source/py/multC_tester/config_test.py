@@ -5,10 +5,11 @@ FPGA_OUTPUT_B1 =    (0x20,      'population_neuron0',      1.0,         'spike32
                 (0x22,      'Ia_spindle0',      1.0,         'float32',      Qt.red),  \
                 (0x24,      'II_spindle0',      1.0,         'float32',      Qt.green),  \
                 (0x26,      'mixed_input',      1.0,         'float32',      Qt.black),  \
-                (0x28,      'timeref_wave',      1.0,         'float32',      Qt.magenta),  \
+                (0x28,      'i_wn_counter',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'i_rng_current_to_SN_Ia',      1.0,         'int32',      Qt.darkRed),  \
                 (0x2C,      'spike_count_Ia_normal',      1.0,         'int32',      Qt.darkGray),  \
-                (0x2E,      'spike_count_II_normal',      1.0,         'int32',      Qt.blue)
+                (0x2E,      'spike_count_II_normal',      1.0,         'int32',      Qt.blue),  \
+                (0x30,      'population_neuron0_II',      1.0,         'spike32',      Qt.red)
                 
 ##            address         name   visual_gain         type            color
 #FPGA_OUTPUT_B2 =   (0x20,      'i_I_from_CN2extra_buttonScaled',      1.0,         'int32',      Qt.blue),  \
@@ -26,7 +27,7 @@ FPGA_OUTPUT_B2 =   (0x20,      'i_rng_CN1_extra_drive',      1.0,         'int32
                 (0x26,      'f_drive_to_CN',      1.0,         'float32',      Qt.black),  \
                 (0x28,      'i_CN2_extra_drive',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'i_I_from_spindle',      1.0,         'int32',      Qt.darkRed),  \
-                (0x2C,      'i_stuffed_scaler',      1.0,         'int32',      Qt.darkGray),  \
+                (0x2C,      'i_cn_counter',      1.0,         'int32',      Qt.darkGray),  \
                 (0x2E,      'i_scaled_drive_to_CN',      1.0,         'int32',      Qt.red)
                  
                 #            address         name   visual_gain         type            color
@@ -40,7 +41,7 @@ FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.bl
                 (0x30,      'total_spike_count_sync',      1.0,         'int32',      Qt.red),  \
                 (0x32,      'total_force_out_muscle0_sync',      1.0,         'float32',      Qt.green),  \
                 (0x34,      'xxx',      1.0,         'int32',      Qt.magenta),  \
-                (0x36,      'i_I_drive_to_MN',      1.0,         'int32',      Qt.black)
+                (0x36,      'i_mn_counter',      1.0,         'int32',      Qt.black)
  
 ### For video recording: only display force 
 ##            address         name   visual_gain         type            color
@@ -79,8 +80,8 @@ USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      1.2), \
                     (15, 'BDAMP_chain',      'float32',        0.0132)
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B2 =   (1, 'xxx',  'float32',      30.0), \
-                    (2, 'xxx',  'float32',      0.03), \
+USER_INPUT_B2 =   (1, 'f_Ia_gain',  'float32',      1.0), \
+                    (2, 'f_II_gain',  'float32',      1.0), \
                     (3, 'synapse_gain',   'int32',       1), \
                     (4, 'overflow',    'float32',      1.0), \
                     (5, 'xxx',    'float32',      80.0), \

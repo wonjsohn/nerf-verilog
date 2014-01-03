@@ -87,7 +87,10 @@
         wire [31:0] each_I_synapse1;  // raw synaptic currents
 
         
-
+        // triggered input f_Ia_gani
+        reg [31:0] f_Ia_gain;
+        reg [31:0] f_II_gain;
+        
         // Triggered Input triggered_input0 Wire Definitions
         reg [31:0] triggered_input0;    // Triggered input sent from USB (ltp)       
         
@@ -101,7 +104,8 @@
         
 
         // Triggered Input triggered_input3 Wire Definitions
-        reg [31:0] triggered_input3;    // Triggered input sent from USB (syn_gain)       
+        reg [31:0] triggered_input3;    // Triggered input sent from USB (syn_gain)    
+   
         
         reg [31:0] f_overflow_proportion;
         // Triggered Input triggered_input4 Wire Definitions
@@ -164,12 +168,18 @@
         
    
    
-   
+ 
+        wire [31:0] f_Ia_weighted;
+        mult Ia_to_CN(.x(f_I_synapse_Ia), .y(f_Ia_gain), .out(f_Ia_weighted));
+        
+        wire [31:0] f_II_weighted;
+        mult II_to_CN(.x(f_I_synapse_II), .y(f_II_gain), .out(f_II_weighted));
+
 
         
         //*********** add currents from two synapse (Ia, II)  *********
         wire [31:0] f_I_synapse_both;
-        add addCurrentsFrom_Ia_and_II(.x(f_I_synapse_Ia), .y(f_I_synapse_II), .out(f_I_synapse_both));
+        add addCurrentsFrom_Ia_and_II(.x(f_Ia_weighted), .y(f_II_weighted), .out(f_I_synapse_both));
         
          
         //*********** add currents from extra cortical input 1(M1)  *********
@@ -336,6 +346,21 @@
             triggered_input2 <= {ep02wire, ep01wire};      
         
 
+
+        // Triggered Input f_Ia_gain Instance Definition (f_Ia_gain)
+        always @ (posedge ep50trig[1] or posedge reset_global)
+        if (reset_global)
+            f_Ia_gain <= 32'h3F800000;           //reset to 1.0      
+        else
+            f_Ia_gain <= {ep02wire, ep01wire};      
+        
+        // Triggered Input f_II_gain Instance Definition (f_II_gain)
+        always @ (posedge ep50trig[2] or posedge reset_global)
+        if (reset_global)
+            f_II_gain <= 32'h3F800000;          //reset to 1.0      
+        else
+            f_II_gain <= {ep02wire, ep01wire};              
+            
         // Triggered Input triggered_input3 Instance Definition (syn_gain)
         always @ (posedge ep50trig[3] or posedge reset_global)
         if (reset_global)
@@ -561,8 +586,8 @@
         okWireOut wo2A (    .ep_datain(i_I_from_spindle[15:0]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h2A)    );
         okWireOut wo2B (    .ep_datain(i_I_from_spindle[31:16]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2B)   ); 
         
-        okWireOut wo2C (    .ep_datain(i_stuffed_scaler[15:0]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2C)    );
-        okWireOut wo2D (    .ep_datain(i_stuffed_scaler[31:16]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2D)   ); 
+        okWireOut wo2C (    .ep_datain(i_time[15:0]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2C)    );
+        okWireOut wo2D (    .ep_datain(i_time[31:16]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2D)   ); 
 
         okWireOut wo2E (    .ep_datain(i_scaled_drive_to_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2E)    );
         okWireOut wo2F (    .ep_datain(i_scaled_drive_to_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2F)   ); 
@@ -583,6 +608,22 @@
             .clk_out3(spindle_clk),
             .int_neuron_cnt_out()
         );
+        
+        
+        reg [31:0] i_time;
+
+        always @(posedge sim_clk or posedge reset_global)
+         begin
+           if (reset_global)
+            begin
+              i_time <= 32'd0;
+            end else begin
+              i_time <= i_time + 1; 
+            end
+          end
+        
+        
+        
            //***   Addition of two currents ******//
        //ire [31:0] i_drive_to_CN_F0;
        // assign i_drive_to_CN_F0 = i_EPSC_synapse0 + i_EPSC_synapse0_II + i_EPSC_synapse1 + i_CN_extra_drive;   

@@ -45,6 +45,7 @@ class SingleXemTester(QDialog):
         self.data = []
         self.isLogData = False
         self.running = False
+        self.startTime=int(time.time()*1000)  # in milisecond
 
     def updateTrigger(trigEvent):
         def realUpdateTrigger(function):
@@ -76,6 +77,8 @@ class SingleXemTester(QDialog):
         Core function of Controller, polling data from Model(fpga) and sending to Viewer.
         """
         newData = self.dispView.reportData()
+        newData.append(int(time.time()*1000)-self.startTime) # time tag
+#        print newData
         #print newData[0::3] 
             #        newSpike1 = self.nerfModel.ReadPipe(0xA0, 5000) # read ## bytes
 #        newSpike2 = self.nerfModel.ReadPipe(0xA1, 5000) # read ## bytes
