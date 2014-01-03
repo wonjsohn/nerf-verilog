@@ -129,7 +129,7 @@
 
         // Output and OpalKelly Interface Wire Definitions
         
-        wire [21*17-1:0] ok2x;
+        wire [23*17-1:0] ok2x;
         wire [15:0] ep00wire, ep01wire, ep02wire;
         wire [15:0] ep50trig;
         
@@ -358,7 +358,7 @@
         assign reset_global = ep00wire[0] | reset_external_clean;
         assign reset_sim = ep00wire[2] | reset_external_clean;
         assign is_from_trigger = ~ep00wire[1];
-        okWireOR # (.N(21)) wireOR (ok2, ok2x);
+        okWireOR # (.N(23)) wireOR (ok2, ok2x);
         okHost okHI(
             .hi_in(hi_in),  .hi_out(hi_out),    .hi_inout(hi_inout),    .hi_aa(hi_aa),
             .ti_clk(ti_clk),    .ok1(ok1),  .ok2(ok2)   );
@@ -385,8 +385,8 @@
         okWireOut wo26 (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h26)    );
         okWireOut wo27 (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h27)   );    
         
-        okWireOut wo28 (    .ep_datain(timeref_wave[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
-        okWireOut wo29 (    .ep_datain(timeref_wave[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   );    
+        okWireOut wo28 (    .ep_datain(i_time[15:0]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h28)    );
+        okWireOut wo29 (    .ep_datain(i_time[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h29)   );    
         
         okWireOut wo2A (    .ep_datain(i_rng_current_to_SN_Ia[15:0]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2A)    );
         okWireOut wo2B (    .ep_datain(i_rng_current_to_SN_Ia[31:16]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2B)   );    
@@ -397,7 +397,10 @@
         okWireOut wo2E (    .ep_datain(spike_count_II_normal[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
         okWireOut wo2F (    .ep_datain(spike_count_II_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
         
-        okBTPipeIn ep82 (   .ok1(ok1), .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h82), .ep_write(pipe_in_write_timeref),
+        okWireOut wo30 (    .ep_datain(population_neuron0_II[15:0]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h30)    );
+        okWireOut wo31 (    .ep_datain(population_neuron0_II[31:16]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h31)   );         
+        
+        okBTPipeIn ep82 (   .ok1(ok1), .ok2(ok2x[19*17 +: 17]), .ep_addr(8'h82), .ep_write(pipe_in_write_timeref),
                             .ep_blockstrobe(), .ep_dataout(pipe_in_data_timeref), .ep_ready(1'b1));
         
                 
@@ -412,8 +415,20 @@
             .clk_out3(spindle_clk),
             .int_neuron_cnt_out()
         );
+                
+        // time tagging       
+       reg [31:0] i_time;
+
+        always @(posedge sim_clk or posedge reset_global)
+         begin
+           if (reset_global)
+            begin
+              i_time <= 32'd0;
+            end else begin
+              i_time <= i_time + 1; 
+            end
+          end
         
-    
     
        wire [31:0] SN_Ia_rand_out;
        rng rng_SN_Ia(               
@@ -424,7 +439,7 @@
         );     
         
        wire [31:0] i_rng_current_to_SN_Ia;
-       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:6] , SN_Ia_rand_out[5:0]}; // randomness
+       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:10] , SN_Ia_rand_out[9:0]}; // randomness
 //       assign i_rng_current_to_SN_Ia= fixed_Ia_spindle0;  // no randomness
        
        
@@ -437,8 +452,8 @@
         );     
         
        wire [31:0] i_rng_current_to_SN_II;
-//       assign i_rng_current_to_SN_II= {fixed_II_spindle0[31:1] , SN_II_rand_out[0:0]};
-       assign i_rng_current_to_SN_II= fixed_II_spindle0;  // no randomness
+       assign i_rng_current_to_SN_II= {fixed_II_spindle0[31:10] , SN_II_rand_out[9:0]};
+//       assign i_rng_current_to_SN_II= fixed_II_spindle0;  // no randomness
         
         // Neuron neuron0 Instance Definition (connected by Ia afferent)
         izneuron_th_control neuron0(

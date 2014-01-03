@@ -69,7 +69,7 @@ class armSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.20 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.25 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -151,10 +151,10 @@ class armSetup:
         return arrow_body, arrow_shape
   
     def udp_send(self,  f_emg):
-        UDP_IP = "192.168.0.121"
+        UDP_IP = "192.168.0.104"
         UDP_PORT = 8899
 #        MESSAGE = "Hello, from Eric!"
-
+##
 #        print "UDP target IP:", UDP_IP
 #        print "UDP target port:", UDP_PORT
 #        print "message:", MESSAGE
@@ -232,7 +232,7 @@ class armSetup:
             
 #            self.linearV = 0.0
     #        print linearV
-            self.scale = 15.0 #10.0   # unstable when extra cortical signal is given, 30 is for doornik data collection
+            self.scale = 100.0 #15.0   # unstable when extra cortical signal is given, 30 is for doornik data collection
             
             #self.linearV = min(0, self.linearV ) # testing: only vel component in afferent active when lengthing 
             
@@ -526,7 +526,7 @@ class armSetup:
             dt = 1.0/fps/step
             
             for x in range(step):
-                self.gSpace.step(0.001*8) # matters, matched with control loop update speed..
+                self.gSpace.step(0.001*7) #(0.001*8) matters, matched with control loop update speed..
                 
                 self.ind += 1
                  

@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -31,8 +32,8 @@ if __name__ == "__main__":
     assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
     TWO_BOARDS= 0
-    THREE_BOARDS=0
-    CORTICAL_BOARDS= 1
+    THREE_BOARDS=1
+    CORTICAL_BOARDS= 0
     assert (TWO_BOARDS+THREE_BOARDS+CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING!"
     
     if (WINDOWS==1) :

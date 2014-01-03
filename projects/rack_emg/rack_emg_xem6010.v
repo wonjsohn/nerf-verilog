@@ -597,7 +597,7 @@
       //1*9/16 = 0.5625 (MU17)  
       //1*8/16 = 0.5  (MU20)    *
    
-     parameter randomness = 7;
+     parameter randomness = 10;
      
      wire [31:0] MN1_rand_out;
      rng rng_MN1(               
@@ -878,8 +878,8 @@
 //        okWireOut wo34 (    .ep_datain(i_spike_count_neuron_sync_inputPin[15:0]),  .ok1(ok1),  .ok2(ok2x[21*17 +: 17]), .ep_addr(8'h34)    );
 //        okWireOut wo35 (    .ep_datain(i_spike_count_neuron_sync_inputPin[31:16]),  .ok1(ok1),  .ok2(ok2x[22*17 +: 17]), .ep_addr(8'h35)   );       
 
-        okWireOut wo36 (    .ep_datain(i_I_drive_to_MN[15:0]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h36)    );
-        okWireOut wo37 (    .ep_datain(i_I_drive_to_MN[31:16]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h37)   );            
+        okWireOut wo36 (    .ep_datain(i_time[15:0]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h36)    );
+        okWireOut wo37 (    .ep_datain(i_time[31:16]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h37)   );            
 
        
 
@@ -893,6 +893,19 @@
             .int_neuron_cnt_out()
         );
         
+        // time tagging       
+       reg [31:0] i_time;
+
+        always @(posedge sim_clk or posedge reset_global)
+         begin
+           if (reset_global)
+            begin
+              i_time <= 32'd0;
+            end else begin
+              i_time <= i_time + 1; 
+            end
+        end
+          
 
 //////
      wire [31:0]  spike_count_neuron_sync_MN1;

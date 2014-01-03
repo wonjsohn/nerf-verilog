@@ -17,6 +17,7 @@ from generate_sin import gen as gen_sin
 from generate_tri import gen as gen_tri
 from generate_spikes import spike_train
 from generate_sequence import gen as gen_ramp
+from generate_nasir import gen as gen_wave
 from generate_min_jerk import gen as gen_jerk
 from functools import partial
 from math import floor
@@ -115,7 +116,7 @@ class View(QMainWindow, Ui_Dialog):
         QMainWindow.__init__(self, parent)
 #        self.setStyleSheet("background-color:  rgb(240, 235, 235); margin: 2px;")
         self.setStyleSheet("background-color:  white; margin: 2px;")
-        self.setWindowOpacity(1.00)
+        self.setWindowOpacity(0.7)
 
 #                                    "QLineEdit { border-width: 20px;border-style: solid; border-color: darkblue; };")
         self.setupUi(self)
@@ -355,14 +356,16 @@ class View(QMainWindow, Ui_Dialog):
         if choice == "waveform 1":
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
-#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2,1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 100ms rise
-#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.12, 1.1, 1.11,1.12, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 100ms rise
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2,1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 100ms rise
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.12, 1.1, 1.11,1.12, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 10ms rise
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
+            """ 
             up_pulse, dummy = gen_jerk(xi=1.0,  xf = 1.5,  T = 0.05)
             down_pulse, dummy = gen_jerk(xi=1.5,  xf=1.0,  T=0.05)
             flat_tail = np.array([1.0]*np.floor((1.0-0.1)*1024 + 1))
             pipeInData = np.hstack((up_pulse, down_pulse, flat_tail, up_pulse, down_pulse, flat_tail))
             print len(pipeInData)
+            """
 #            pipeInData = np.append(p1, flat_tail)
             print pipeInData
             print "waveform 1 fed"
@@ -374,12 +377,11 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = spike_train(firing_rate = 10)      
 #            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
 #            pipeInData = gen_tri(T = 2.0) 
-#            pipeInData = gen_ramp(T = [0.0, 0.1, 1.0, 1.4, 1.5, 2.0], L = [0.9, 0.9, 1.5, 1.5, 0.9,  0.9], FILT = False)
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.21, 0.22, 1.0, 1.1, 1.11,  1.21, 1.22, 2.0], L = [1.2, 1.2, 1.5, 1.5, 1.2, 1.2, 1.2, 1.5, 1.5, 1.2, 1.2], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [0.9, 0.9, 1.3, 1.3, 0.8,  0.8], FILT = False)
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.51, 0.52, 1.0, 1.1, 1.11,  1.51, 1.52, 2.0], L = [0.7, 0.7, 1.5, 1.5, 0.7, 0.7, 0.7, 1.5, 1.5, 0.7, 0.7], FILT = False)  # one second repeat
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.51, 0.52, 1.0, 2.0], L = [0.7, 0.7, 1.5, 1.5, 0.7, 0.7, 0.7], FILT = False) # two second repeat
 
-
-                
-            
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.101, 0.121, 0.122, 1.0, 1.1, 1.101,  1.121, 1.122, 2.0], L = [1.2, 1.2, 1.5, 1.5, 1.2, 1.2, 1.2, 1.5, 1.5, 1.2, 1.2], FILT = False)   # 20ms pulse for LLSR
           
  
         elif choice == "waveform 3":
@@ -387,10 +389,35 @@ class View(QMainWindow, Ui_Dialog):
 
 #            pipeInData = spike_train(firing_rate = 1) 
             print "waveform 3 fed"
-            pipeInData = gen_sin(F = 0.5, AMP = 0.4,  BIAS = 1.0,  T = 2.0) 
+            #pipeInData = gen_sin(F = 0.5, AMP = 0.4,  BIAS = 1.0,  T = 2.0) 
+            self.j1List=[]
+            self.j2List=[]
+            self.j3List=[]
+            self.j4List=[]
+            self.j5List=[]
+            self.j6List=[]
+
+            for line in open('/home/eric/wonjoon_codes/matlab_wjsohn/posAllData.txt',  "r").readlines(): 
+                j1 ,  j2,  j3,  j4,  j5,  j6= line.split('\t')
+                j1 = float(j1)
+                j2 = float(j2)
+                self.j1List.append(j1)   #
+                self.j2List.append(j2)   #
+                self.j3List.append(j3)   #
+                self.j4List.append(j4)   #
+                self.j5List.append(j5)   #
+                self.j6List.append(j6)   #
+            
+#            print self.j1List
+            
+            pipeInData_bf = gen_wave(L=self.j1List,  FILT = False)
+            pipeInData = [x+1.0 for x in pipeInData_bf]
+
+
+            
             #pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.3, 1.3, 1.0, 1.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.4, 1.5, 1.55,  1.6,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)
-#                pipeInData = gen_ramp(T = [0.0, 0.2, 0.25, 1.75,  1.8,  2.0], L = [1.0,  1.0,  5000.0, 5000.0, 1.0, 1.0], FILT = False)  # abrupt rise / fall
+#            pipeInData = gen_ramp(T = [0.0, 0.2, 0.25, 1.75,  1.8,  2.0], L = [1.0,  1.0,  5000.0, 5000.0, 1.0, 1.0], FILT = False)  # abrupt rise / fall
 #            pipeInData = spike_train(firing_rate = 1000) 
 
         self.nerfModel.SendPipe(pipeInData)

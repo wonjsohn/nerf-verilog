@@ -19,7 +19,7 @@ for k = 1:2
       fname1 = sprintf('20130920_150701');  
       load([fname1, '.mat']); 
   elseif (k==2)
-      fname2 = sprintf('20131001_173404'); 
+      fname2 = sprintf('20131220_171407'); 
       load([fname2, '.mat']);
   end
  % figure 4a: 20130824_174839,    20130824_174958  (DC-UP),  
@@ -143,7 +143,7 @@ start =500;
 %start = 1250;
 last = 12800;
 % last = 1800
-offset =-250; %150; %480;
+offset =-230; %150; %480;
 
 t_bic= data_bic(:,1);
 t_tri= data_tri(:,1);
@@ -484,11 +484,12 @@ for i = 1:length(cursor_info_0920)-1 % get rid of last cursor
     EMG_interp_offset=[EMG_interp_offset EMG_interp_temp];
 end
 
+t_new = linspace(2, 85, 10800);
 subplot(4, 1, 1);
-plot(t_interp, len_interp, 'LineWidth',3, 'color', 'black');
+plot(t_new, len_interp, 'LineWidth',3, 'color', 'black');
 axis off
 subplot(4, 1, 2);
-t_new = linspace(2, 85, 10800);
+
 % plot(t_new, len_interp, '-',  'LineWidth',1, 'color', 'black');
 hold on
 plot(t_new, len_interp_offset, 'LineWidth',3, 'color', 'black');
