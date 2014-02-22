@@ -85,10 +85,10 @@ if __name__ == "__main__":
 #        xemSerialList = ['11160001CG', '1137000222'] 
     elif (THREE_BOARDS ==1 and LINUX == 1):
         print "3 boards in linux setup"
-        xemSerialList = ['124300046A', '12320003RM', '1201000216']
+#        xemSerialList = ['124300046A', '12320003RM', '1201000216'] 
 #        xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
 #        xemSerialList = ['000000054G', '000000054P',  '000000053U'] # copper top
-#        xemSerialList = ['000000054K', '000000053X',  '0000000550'] # copper top
+        xemSerialList = ['000000054K', '000000053X',  '0000000550'] # copper top
 #        xemSerialList = ['113700021E', '0000000547', '0000000542']  # BBDL setting
 #        xemSerialList = ['11160001CG', '000000054B', '1137000222']  # BBDL setting
     elif (WINDOWS == 1):

@@ -4,7 +4,7 @@
 // rack_test_xem6010.v
 // Generated on Wed Mar 13 14:57:46 -0700 2013
 
-    module rack_test_xem6010(
+    module rack_test_xem6010 (
 	    input  wire [7:0]  hi_in,
 	    output wire [1:0]  hi_out,
 	    inout  wire [15:0] hi_inout,
@@ -439,7 +439,7 @@
         );     
         
        wire [31:0] i_rng_current_to_SN_Ia;
-       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:10] , SN_Ia_rand_out[9:0]}; // randomness
+       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:10] , SN_Ia_rand_out[11:0]}; // randomness
 //       assign i_rng_current_to_SN_Ia= fixed_Ia_spindle0;  // no randomness
        
        
@@ -452,7 +452,7 @@
         );     
         
        wire [31:0] i_rng_current_to_SN_II;
-       assign i_rng_current_to_SN_II= {fixed_II_spindle0[31:10] , SN_II_rand_out[9:0]};
+       assign i_rng_current_to_SN_II= {fixed_II_spindle0[31:10] , SN_II_rand_out[11:0]};
 //       assign i_rng_current_to_SN_II= fixed_II_spindle0;  // no randomness
         
         // Neuron neuron0 Instance Definition (connected by Ia afferent)
