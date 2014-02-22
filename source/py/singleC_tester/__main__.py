@@ -38,7 +38,8 @@ if __name__ == "__main__":
 
    
 #    PROJECT_LIST = ["izneuron_range_test"] 
-    PROJECT_LIST = ["rack_mn_muscle"] 
+#    PROJECT_LIST = ["rack_mn_muscle"] 
+    PROJECT_LIST = ["stdp_test"] 
 
     PROJECT_PATH = [(ROOT_PATH + p) for p in PROJECT_LIST]
     DEVICE_MODEL = "xem6010"
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     
     #sys.path.append(PROJECT_PATH)
     print PROJECT_PATH
-    os.chdir('/home/eric/nerf_verilog_eric/projects/rack_mn_muscle')
+    os.chdir('/home/eric/nerf_verilog_eric/projects/stdp_test')
     from config_test_local import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT,  USER_INPUT  
     FPGA_OUTPUT_B = []
     USER_INPUT_B = []
