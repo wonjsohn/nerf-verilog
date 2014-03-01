@@ -11,6 +11,7 @@ from M_Fpga import SomeFpga # Model in MVC
 from V_Display import View, ViewChannel,  CtrlChannel # Viewer in MVC
 import os
 
+
 sys.path.append('../')
 import platform 
 arch = platform.architecture()[0]

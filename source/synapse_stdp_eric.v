@@ -59,7 +59,7 @@ wire [31:0] i_mem; // I_out
 wire [31:0] i_mem_in;
 
 //i_mem updates every neuron_clk
-assign i_mem_in = first_pass ? 0 : (i_mem >>> 1) + (i_mem >>> 2) + (i_mem >>> 3) + (i_mem >>> 4) +  (i_mem >>> 5) + impulse; //I = 0.97*I + impulse  (current decay+impulse) 
+assign i_mem_in = first_pass ? 0 : i_mem - (i_mem >>> 4) + impulse; //I = 0.93*I + impulse  (current decay+impulse) 
 
 wire [31:0] spike_history_mem;
 wire [31:0] spike_history_mem_in;
@@ -77,13 +77,15 @@ assign ps_spike_history_mem_in = first_pass ? 0 : {ps_spike_history_mem[30:0], p
 
 wire [31:0] delta_w_ltd;
 
-assign delta_w_ltd = spike ? ((ps_spike_history_mem == 32'd0) ? 0 : ltd) : 0 ; // make a LookupTabe STDP curve
+assign delta_w_ltd = spike ? ((ps_spike_history_mem == 32'd0) ? 0 : ltd) : 0 ; // make a LookupTable STDP curve
                         
 wire [31:0] random_out;
 wire [31:0] impulse_decay;
 
-assign impulse_decay = (random_out <= p_delta) ? impulse_mem >>> 7 : 0; // I don't get this. -Eric
-    
+assign impulse_decay = (random_out <= p_delta) ? impulse_mem >>> 7 : 0; // not used.
+ 
+
+ 
     rng decay_rng(
             .clk1(clk),
             .clk2(clk),
@@ -104,12 +106,13 @@ wire [31:0] impulse_stdp;
 //assign impulse_mem_in = first_pass ? 32'd10240 : impulse_mem+delta_w+delta_w_ltd-impulse_decay;
 //assign impulse_stdp = first_pass ? 32'd10240 : impulse_mem+delta_w+delta_w_ltd-impulse_decay;
 //assign impulse_stdp = first_pass ? base_strength : impulse_mem+delta_w-delta_w_ltd-impulse_decay;  
-assign impulse_stdp = first_pass ? base_strength : impulse_mem - (impulse_mem >>> 11) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. modified by eric
+
+assign impulse_stdp = first_pass ? base_strength : impulse_mem - (impulse_mem >>> 13) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. modified by eric
 
 //assign impulse_mem_in = impulse_bcm;
 //assign impulse_mem_in = impulse_mem;
 
-assign impulse_mem_in = impulse_stdp;
+assign impulse_mem_in = (impulse_stdp >= base_strength)? impulse_stdp: base_strength;  // set minimum synaptic strength 
 // STATE MACHINE //////////////////////////////////////////////////////////////////////////////////////
     
     reg state;

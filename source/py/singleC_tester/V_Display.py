@@ -20,6 +20,7 @@ from generate_sequence import gen as gen_ramp
 from functools import partial
 from math import floor
 from glob import glob
+import socket
 
 PIXEL_OFFSET = 200 # pixels offsets
 BUTTON_INPUT_FROM_TRIGGER = 1
@@ -70,7 +71,7 @@ class ViewChannel:
 
         self.data = deque([0]*100, maxlen=100)
         self.slider = QtGui.QSlider(hostDialog)
-        self.slider.setGeometry(QtCore.QRect(100, 70+ id*80, 29, 80))
+        self.slider.setGeometry(QtCore.QRect(170, 70+ id*60, 29, 80))
         self.slider.setOrientation(QtCore.Qt.Vertical)
         self.slider.setObjectName("gain_"+name)
 
@@ -80,8 +81,17 @@ class ViewChannel:
         self.label.setPalette(pal)
         self.label.setObjectName("label_"+name)
         self.label.setText(name)
-        self.label.setGeometry(QtCore.QRect(10, 70+ id*80, 80, 100))
+        self.label.setGeometry(QtCore.QRect(0, 70+ id*60, 80, 100))
         self.label.show()
+        
+        self.labelnum = QtGui.QLabel(hostDialog)
+        palnum = self.labelnum.palette()
+        palnum.setColor( QtGui.QPalette.Foreground, color )
+        self.labelnum.setPalette(pal)
+        self.labelnum.setObjectName("label_"+name)
+        self.labelnum.setText(name)
+        self.labelnum.setGeometry(QtCore.QRect(80, 70+ id*60, 80, 100))
+        self.labelnum.show()
 
 
 def onVisualSlider(self, whichCh, value = -1):
@@ -208,9 +218,30 @@ class View(QMainWindow, Ui_Dialog):
     def newDataIO(self, newData, newSpikeAll = []):
         for (name, ch), pt in zip(self.allFpgaOutput.iteritems(), newData):
             ch.data.appendleft(pt)
-            ch.label.setText("%4.6f" % pt)      
+            ch.labelnum.setText("%4.6f" % pt)     
+            
+            if ch.addr == 0x24 or ch.addr == 0x2C or ch.addr == 0x34 or ch.addr == 0x3A:   # synaptic strength
+                #self.udp_send(pt)   # send udp
+                self.udp_send("%d,%d" % (pt,  ch.addr))
+                #print pt
 
         self.spike_all = newSpikeAll
+        
+    def udp_send(self,  val):
+        UDP_IP = "192.168.0.122" #works in local wifi
+        
+        #UDP_IP = "192.168.0.1"
+        UDP_PORT = 50000
+        MESSAGE = "Hello, from Eric!"
+#        print val
+##
+#        print "UDP target IP:", UDP_IP
+#        print "UDP target port:", UDP_PORT
+#        print "message:", MESSAGE
+
+        sock = socket.socket(socket.AF_INET, # Internet
+                             socket.SOCK_DGRAM) # UDP
+        sock.sendto(val, (UDP_IP, UDP_PORT))
 
     def onTimeOut(self):
         if (self.isPause):
@@ -243,6 +274,7 @@ class View(QMainWindow, Ui_Dialog):
 
     def drawRaster(self, gp, ch):           
         size = self.size()
+#        print size.height()
         winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 4;
         self.pen.setStyle(Qt.SolidLine)
         self.pen.setWidth(2)
@@ -252,11 +284,14 @@ class View(QMainWindow, Ui_Dialog):
         gp.setPen(self.pen)
         
         yOffset = int(size.height()*0.20 + size.height()*0.818/self.NUM_CHANNEL * ch.id)
-        bit_mask = 0x0000001
+        #print yOffset,   self.x
+        bit_mask = 0x00000001
         ## display the spike rasters
-#        print ch.data[0]
-        spike_train = int(ch.data[0])
-        #print spike_train
+        #print ch.data[0]
+        #spike_train = int(ch.data[0])
+        spike_train = ch.data[0]
+
+#        print spike_train ,"spiketrain"
         for i in xrange(32):
             ## flexors
             if (bit_mask & spike_train) : ## Ia
@@ -373,7 +408,9 @@ class View(QMainWindow, Ui_Dialog):
 
 #            pipeInData = spike_train(firing_rate = 1) 
             print "waveform 3 fed"
-            pipeInData = gen_sin(F = 0.5, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
+#            pipeInData = gen_sin(F = 0.5, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
+            pipeInData = abs(gen_sin(F = 0.5, AMP = 12000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
+            
             #pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.3, 1.3, 1.0, 1.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.4, 1.5, 1.55,  1.6,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)
 #                pipeInData = gen_ramp(T = [0.0, 0.2, 0.25, 1.75,  1.8,  2.0], L = [1.0,  1.0,  5000.0, 5000.0, 1.0, 1.0], FILT = False)  # abrupt rise / fall
@@ -443,3 +480,23 @@ class View(QMainWindow, Ui_Dialog):
 #        else:
 #            self.nerfModel.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2=0, bitVal3=0, trigEvent = 9)
 #        
+    
+    @pyqtSignature("bool")
+    def on_checkBox_3_clicked(self, checked):
+        """
+        cut_synapse1
+        """
+        newInput = checked
+        print newInput
+        self.nerfModel.SendButton(newInput, BUTTON_CUT_SYNAPSE1)
+    
+    
+    @pyqtSignature("bool")
+    def on_checkBox_4_clicked(self, checked):
+        """
+        cut_synapse2
+        """
+        newInput = checked
+        print newInput
+        self.nerfModel.SendButton(newInput, BUTTON_CUT_SYNAPSE2)
+    
