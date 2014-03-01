@@ -118,7 +118,19 @@ class SomeFpga:
                 self.xem.SetWireInValue(0x00, 0x04, 0x04)
             else :
                 self.xem.SetWireInValue(0x00, 0x00, 0x04)
-            self.xem.UpdateWireIns()            
+            self.xem.UpdateWireIns()
+        elif evt == BUTTON_CUT_SYNAPSE1:
+            if (buttonValue) :
+                self.xem.SetWireInValue(0x00, 0x08, 0x08)
+            else :
+                self.xem.SetWireInValue(0x00, 0x00, 0x08)
+            self.xem.UpdateWireIns()   
+        elif evt == BUTTON_CUT_SYNAPSE2:
+            if (buttonValue) :
+                self.xem.SetWireInValue(0x00, 0x10, 0x10)
+            else :
+                self.xem.SetWireInValue(0x00, 0x00, 0x10)
+            self.xem.UpdateWireIns()                 
 
     def SendPipe(self, pipeInData):
         """ Send byte stream to OpalKelly board
