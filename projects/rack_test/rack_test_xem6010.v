@@ -373,8 +373,8 @@
         okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
                             .ep_blockstrobe(), .ep_dataout(pipe_in_data), .ep_ready(1'b1));
         
-        okWireOut wo20 (    .ep_datain(population_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h20)    );
-        okWireOut wo21 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h21)   );    
+        okWireOut wo20 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h20)    );
+        okWireOut wo21 (    .ep_datain(population_neuron0[47:32]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h21)   );    
         
         okWireOut wo22 (    .ep_datain(Ia_spindle0[15:0]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h22)    );
         okWireOut wo23 (    .ep_datain(Ia_spindle0[31:16]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h23)   );    
@@ -397,8 +397,8 @@
         okWireOut wo2E (    .ep_datain(spike_count_II_normal[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
         okWireOut wo2F (    .ep_datain(spike_count_II_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
         
-        okWireOut wo30 (    .ep_datain(population_neuron0_II[15:0]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h30)    );
-        okWireOut wo31 (    .ep_datain(population_neuron0_II[31:16]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h31)   );         
+        okWireOut wo30 (    .ep_datain(population_neuron0_II[31:16]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h30)    );
+        okWireOut wo31 (    .ep_datain(population_neuron0_II[47:32]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h31)   );         
         
         okBTPipeIn ep82 (   .ok1(ok1), .ok2(ok2x[19*17 +: 17]), .ep_addr(8'h82), .ep_write(pipe_in_write_timeref),
                             .ep_blockstrobe(), .ep_dataout(pipe_in_data_timeref), .ep_ready(1'b1));
@@ -439,7 +439,7 @@
         );     
         
        wire [31:0] i_rng_current_to_SN_Ia;
-       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:10] , SN_Ia_rand_out[11:0]}; // randomness
+       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:15] , SN_Ia_rand_out[14:0]}; // randomness
 //       assign i_rng_current_to_SN_Ia= fixed_Ia_spindle0;  // no randomness
        
        
@@ -452,7 +452,7 @@
         );     
         
        wire [31:0] i_rng_current_to_SN_II;
-       assign i_rng_current_to_SN_II= {fixed_II_spindle0[31:10] , SN_II_rand_out[11:0]};
+       assign i_rng_current_to_SN_II= {fixed_II_spindle0[31:15] , SN_II_rand_out[14:0]};
 //       assign i_rng_current_to_SN_II= fixed_II_spindle0;  // no randomness
         
         // Neuron neuron0 Instance Definition (connected by Ia afferent)

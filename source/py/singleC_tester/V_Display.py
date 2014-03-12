@@ -17,6 +17,7 @@ from generate_sin import gen as gen_sin
 from generate_tri import gen as gen_tri
 from generate_spikes import spike_train
 from generate_sequence import gen as gen_ramp
+from generate_rand import gen as gen_rand
 from functools import partial
 from math import floor
 from glob import glob
@@ -71,7 +72,7 @@ class ViewChannel:
 
         self.data = deque([0]*100, maxlen=100)
         self.slider = QtGui.QSlider(hostDialog)
-        self.slider.setGeometry(QtCore.QRect(170, 70+ id*60, 29, 80))
+        self.slider.setGeometry(QtCore.QRect(200, 70+ id*55, 29, 80))
         self.slider.setOrientation(QtCore.Qt.Vertical)
         self.slider.setObjectName("gain_"+name)
 
@@ -81,7 +82,7 @@ class ViewChannel:
         self.label.setPalette(pal)
         self.label.setObjectName("label_"+name)
         self.label.setText(name)
-        self.label.setGeometry(QtCore.QRect(0, 70+ id*60, 80, 100))
+        self.label.setGeometry(QtCore.QRect(0, 70+ id*55, 120, 100))
         self.label.show()
         
         self.labelnum = QtGui.QLabel(hostDialog)
@@ -90,7 +91,7 @@ class ViewChannel:
         self.labelnum.setPalette(pal)
         self.labelnum.setObjectName("label_"+name)
         self.labelnum.setText(name)
-        self.labelnum.setGeometry(QtCore.QRect(80, 70+ id*60, 80, 100))
+        self.labelnum.setGeometry(QtCore.QRect(120, 70+ id*55, 80, 100))
         self.labelnum.show()
 
 
@@ -396,9 +397,13 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
 #            pipeInData = gen_tri(T = 2.0) 
             #pipeInData = gen_ramp(T = [0.0, 0.1, 0.9, 1.4, 1.9, 2.0], L = [0.5, 0.5, 1.5, 1.5, 0.5,  0.5], FILT = False)
-            pipeInData = gen_ramp(T = [0.0, 1.8, 2.0], L = [0.0, 30000.0, 0.0], FILT = False)
+            #pipeInData = gen_ramp(T = [0.0, 1.8, 2.0], L = [0.0, 30000.0, 0.0], FILT = False)
+            
+            #pipeInData = abs(gen_sin(F = 0.5, AMP = 17000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
+            #pipeInData[:] = [1 - x for x in pipeInData]  #( 1 - pipeIndata)
 
-
+            pipeInData =  gen_rand(BIAS = 2700.0, AMP = 3000.0)
+            pipeInData2 =  gen_rand(BIAS = 2700.0, AMP = 3000.0)
                 
             
           
@@ -409,7 +414,7 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = spike_train(firing_rate = 1) 
             print "waveform 3 fed"
 #            pipeInData = gen_sin(F = 0.5, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
-            pipeInData = abs(gen_sin(F = 0.5, AMP = 12000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
+            pipeInData = abs(gen_sin(F = 0.5, AMP = 17000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
             
             #pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.3, 1.3, 1.0, 1.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.4, 1.5, 1.55,  1.6,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)
@@ -417,6 +422,7 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = spike_train(firing_rate = 1000) 
 
         self.nerfModel.SendPipe(pipeInData)
+        self.nerfModel.SendPipe2(pipeInData2)
           
 
 

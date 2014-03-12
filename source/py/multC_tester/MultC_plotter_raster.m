@@ -5,8 +5,8 @@
 % load('/home/eric/nerf_verilog_eric/source/py/multC_tester/rack_emg_20130815_063455.mat');
 cd /home/eric/nerf_verilog_eric/source/py/multC_tester
 
-fname = sprintf('rack_emg_20131223_161012');
-fname2 = sprintf('rack_test_20131223_161009');
+fname = sprintf('rack_emg_20140309_193330');
+fname2 = sprintf('rack_test_20140309_193327');
 load([fname, '.mat']);
 load([fname2, '.mat']);
 
@@ -226,7 +226,7 @@ SNII_spikeindex=[];
 binarySNIa = dec2bin(population_neuron0);
 binarySNII = dec2bin(population_neuron0_II);
 
-numofrow = 6;
+numofrow = 12;
 for i=1:last*numofrow,  % get two rows for each MN
     if binarySNIa(i) =='1'
         SNIa_spikeindex = [SNIa_spikeindex i]; 
