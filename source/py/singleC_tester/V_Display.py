@@ -45,7 +45,7 @@ class CtrlChannel:
                                         #"border-left: 1px solid none;"
                       # "border-right: 1px solid none; border-bottom: 1px solid black; width: 0px; height: 0px;")
         SPINBOX_VOFFSET = 130
-        SPINBOX_HOFFSET = 180
+        SPINBOX_HOFFSET = 280
         self.doubleSpinBox.setGeometry(QtCore.QRect(SPINBOX_HOFFSET + 620, SPINBOX_VOFFSET+ id * 30, 205, 30))
         self.doubleSpinBox.setSingleStep(0.000001)
         self.doubleSpinBox.setDecimals(7)
@@ -127,7 +127,7 @@ class View(QMainWindow, Ui_Dialog):
 #                                    "QLineEdit { border-width: 20px;border-style: solid; border-color: darkblue; };")
         self.setupUi(self)
         self.projectName = projectName
-        self.move(10+count*950,  100)
+        self.move(10+count*1050,  100)
 
         self.x = 200
         self.pen = QPen()
@@ -223,7 +223,8 @@ class View(QMainWindow, Ui_Dialog):
             
             if ch.addr == 0x24 or ch.addr == 0x2C or ch.addr == 0x34 or ch.addr == 0x3A:   # synaptic strength
                 #self.udp_send(pt)   # send udp
-                self.udp_send("%d,%d" % (pt,  ch.addr))
+                val = self.allUserInput["flag_sync_inputs"].doubleSpinBox.value()      #flag_sync_inputs
+                self.udp_send("%d,%d,%d" % (pt,  ch.addr,  val))
                 #print pt
 
         self.spike_all = newSpikeAll
@@ -402,8 +403,8 @@ class View(QMainWindow, Ui_Dialog):
             #pipeInData = abs(gen_sin(F = 0.5, AMP = 17000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
             #pipeInData[:] = [1 - x for x in pipeInData]  #( 1 - pipeIndata)
 
-            pipeInData =  gen_rand(BIAS = 2700.0, AMP = 3000.0)
-            pipeInData2 =  gen_rand(BIAS = 2700.0, AMP = 3000.0)
+            pipeInData =  gen_rand(BIAS = 1600.0, AMP = 4200.0)
+            pipeInData2 =  gen_rand(BIAS = 1600.0, AMP = 4200.0)
                 
             
           
