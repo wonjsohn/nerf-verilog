@@ -1,4 +1,5 @@
 from numpy import *
+import numpy
 import random
 
 def gen(F = 1.0, T =1.0, BIAS = 2000.0, AMP = 2000.0, SAMPLING_RATE = 1024):
@@ -14,8 +15,11 @@ def gen(F = 1.0, T =1.0, BIAS = 2000.0, AMP = 2000.0, SAMPLING_RATE = 1024):
     max_n = int(T * SAMPLING_RATE) - 1
     n = linspace(0 , max_n + 1, max_n + 1)
     
-    ## x = AMP * cos(pi + w * n) + BIAS
+    """random function"""
+    #x = [BIAS+random.normalvariate(AMP,  AMP*5) for i in xrange(SAMPLING_RATE*2)]
+    #x = [BIAS+numpy.random.poisson(AMP) for i in xrange(SAMPLING_RATE*2)]
     x = [BIAS+AMP*random.random() for i in xrange(SAMPLING_RATE*2)]
+    
     return x
 
 

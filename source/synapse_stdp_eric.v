@@ -216,7 +216,7 @@ assign lut_out32_F0 = {27'b0, lut_out};
 //assign impulse_stdp = first_pass ? 32'd10240 : impulse_mem+delta_w+delta_w_ltd-impulse_decay;
 //assign impulse_stdp = first_pass ? base_strength : impulse_mem+delta_w-delta_w_ltd-impulse_decay;  
 
-assign impulse_stdp = first_pass ? base_strength : impulse_mem - (impulse_mem >>> 13) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. modified by eric
+assign impulse_stdp = first_pass ? base_strength : impulse_mem - (impulse_mem >>> 12) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. modified by eric
 
 //assign impulse_mem_in = impulse_bcm;
 //assign impulse_mem_in = impulse_mem;
