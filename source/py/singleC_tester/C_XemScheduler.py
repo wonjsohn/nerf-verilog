@@ -43,6 +43,7 @@ class SingleXemTester(QDialog):
 
         #self.dispView.show()
         self.data = []
+        self.pipeData = []
         self.isLogData = False
         self.running = False
 
@@ -57,6 +58,7 @@ class SingleXemTester(QDialog):
     def close(self):
         self.dispView.close()
         self.dispView.plotData(self.data)
+        self.dispView.savePipeOutData(self.pipeData)
         
         
     def startSim(self):
@@ -75,7 +77,7 @@ class SingleXemTester(QDialog):
         """
         Core function of Controller, polling data from Model(fpga) and sending to Viewer.
         """
-        newData = self.dispView.reportData()
+        newData,  newPipeData = self.dispView.reportData()
         #print newData[0::3] 
             #        newSpike1 = self.nerfModel.ReadPipe(0xA0, 5000) # read ## bytes
 #        newSpike2 = self.nerfModel.ReadPipe(0xA1, 5000) # read ## bytes
@@ -88,12 +90,13 @@ class SingleXemTester(QDialog):
         newSpike4 = ""
         newSpike5 = ""
         
-        self.dispView.newDataIO(newData, [newSpike1, newSpike2, newSpike3, newSpike4, newSpike5])
+        self.dispView.newDataIO(newData,  [newSpike1, newSpike2, newSpike3, newSpike4, newSpike5])
         self.dispView.onTimeOut()
         
         #self.dispView.newDataIO(newData, [])
         if (self.isLogData):
-            self.data.append(newData)          
+            self.data.append(newData)
+            self.pipeData.append(newPipeData)
     
     @updateTrigger(TRIG_CLKRATE) # This nice syntax runs updateTrigger after onClkRate()
     def onClkRate(self, value):   

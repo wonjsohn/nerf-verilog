@@ -5,8 +5,8 @@
 % load('/home/eric/nerf_verilog_eric/source/py/multC_tester/rack_emg_20130815_063455.mat');
 cd /home/eric/nerf_verilog_eric/source/py/multC_tester
 
-fname = sprintf('rack_emg_20140309_193330');
-fname2 = sprintf('rack_test_20140309_193327');
+fname = sprintf('rack_emg_20140319_121658');
+fname2 = sprintf('rack_test_20140319_121657');
 load([fname, '.mat']);
 load([fname2, '.mat']);
 
@@ -201,7 +201,7 @@ hfig  = figure(1);
 % ax(7) = subplot (n,1,7);
 figure; subplot(2, 1, 1);
 plot (t,  mixed_input, 'LineWidth',3, 'color', 'black');
-axis([0 700, 0.5 1.6])
+%axis([0 700, 0.5 1.6])
 axis off    
 
 
@@ -226,7 +226,7 @@ SNII_spikeindex=[];
 binarySNIa = dec2bin(population_neuron0);
 binarySNII = dec2bin(population_neuron0_II);
 
-numofrow = 12;
+numofrow = 32;
 for i=1:last*numofrow,  % get two rows for each MN
     if binarySNIa(i) =='1'
         SNIa_spikeindex = [SNIa_spikeindex i]; 
@@ -242,6 +242,7 @@ allSN_raster = [SNIa_spikeindex (last*numofrow*1)+SNII_spikeindex (last*numofrow
 
 % subplot(2, 1, 1);
 
+hfig2  = figure(2);
 rasterplot(allSN_raster, numofrow*2, last);axis off    
 
 
@@ -264,7 +265,7 @@ binaryMN6 = dec2bin(raster0_31_MN6);
 [r,c] = size(binaryMN1);  % 761, 32
 
 
-numofrow = 2;
+numofrow = 10;
 for i=1:last*numofrow,  % get two rows for each MN
     if binaryMN1(i) =='1'
         MN1_spikeindex = [MN1_spikeindex i]; 
@@ -402,7 +403,7 @@ rasterplot(allMN_raster, numofrow*6, last);axis off
 %print(hfig, '-dpng', (['figure' num2str(date),  datestr(now, '  HH:MM:SS')]);
 % 
 % fname = sprintf('myfile%d.mat', i);
-print(hfig, '-dpng', [fname, '_raster']);
+print(hfig2, '-dpng', [fname, '_raster']);
 % print(hfig2, '-dpng', [fname, '_perturb_tri']);
 
 %-dpng 

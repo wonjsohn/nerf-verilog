@@ -206,14 +206,28 @@ class View(QMainWindow, Ui_Dialog):
             timeTag = time.strftime("%Y%m%d_%H%M%S")
             savemat(self.projectName+"_"+timeTag+".mat", {eachName: forplot[:, i] for i, eachName in enumerate(self.allFpgaOutput)})
 
+    def savePipeOutData(self,  pipeData):
+        from pylab import plot, show, subplot, title
+        from scipy.io import savemat, loadmat
+        import numpy as np
+        
+        #forplot = np.array(pipeData)
+        
+        #print forplot
+        timeTag = time.strftime("%Y%m%d_%H%M%S")
+        savemat(self.projectName+"_pipeOut_"+timeTag+".mat",  mdict={'pipeData': pipeData})
+        #savemat(self.projectName+"_pipeOut_"+timeTag+".mat",  {forplot[]}mdict={'pipeData': pipeData})
+
 
     def reportData(self):
         newData = []
+        newPipeData = []
         for name, chan in self.allFpgaOutput.iteritems(): # Sweep thru channels coming out of Fpga
             #newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(chan.addr, chan.type))))  # disable range limitation for spike raster
             newData.append(self.nerfModel.ReadFPGA(chan.addr, chan.type))
 #            newData.append(self.nerfModel.ReadFPGA(chan.addr, chan.type))
-        return newData
+            newPipeData.append(self.nerfModel.readFromPipe())  #BTPipeOut data
+        return newData,  newPipeData  #pipedata has 128 elements 
 
 
     def newDataIO(self, newData, newSpikeAll = []):
@@ -223,8 +237,9 @@ class View(QMainWindow, Ui_Dialog):
             
             if ch.addr == 0x24 or ch.addr == 0x2C or ch.addr == 0x34 or ch.addr == 0x3A:   # synaptic strength
                 #self.udp_send(pt)   # send udp
-                val = self.allUserInput["flag_sync_inputs"].doubleSpinBox.value()      #flag_sync_inputs
-                self.udp_send("%d,%d,%d" % (pt,  ch.addr,  val))
+                val1 = self.allUserInput["flag_sync_inputs"].doubleSpinBox.value()      #flag_sync_inputs
+                val2 = self.allUserInput["block_neuron2"].doubleSpinBox.value()      #block_neuron2
+                self.udp_send("%d,%d,%d,%d" % (pt,  ch.addr,  val1,  val2))
                 #print pt
 
         self.spike_all = newSpikeAll
@@ -403,8 +418,11 @@ class View(QMainWindow, Ui_Dialog):
             #pipeInData = abs(gen_sin(F = 0.5, AMP = 17000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
             #pipeInData[:] = [1 - x for x in pipeInData]  #( 1 - pipeIndata)
 
-            pipeInData =  gen_rand(BIAS = 1600.0, AMP = 4200.0)
-            pipeInData2 =  gen_rand(BIAS = 1600.0, AMP = 4200.0)
+            pipeInData =  gen_rand(T=16.0,  BIAS = 1500.0, AMP = 4400.0) # 16 seconds
+            pipeInData2 =  gen_rand(T=16.0,  BIAS = 1500.0, AMP = 4400.0) # 16 seconds
+            
+            #pipeInData =  gen_rand(BIAS = 3500.0, AMP = 400.0)   # also works. input current bordered around threshold
+            #pipeInData2 =  gen_rand(BIAS = 3500.0, AMP = 400.0)
                 
             
           

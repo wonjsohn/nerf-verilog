@@ -18,7 +18,7 @@ def gen(F = 1.0, T =1.0, BIAS = 2000.0, AMP = 2000.0, SAMPLING_RATE = 1024):
     """random function"""
     #x = [BIAS+random.normalvariate(AMP,  AMP*5) for i in xrange(SAMPLING_RATE*2)]
     #x = [BIAS+numpy.random.poisson(AMP) for i in xrange(SAMPLING_RATE*2)]
-    x = [BIAS+AMP*random.random() for i in xrange(SAMPLING_RATE*2)]
+    x = [BIAS+AMP*random.random() for i in xrange(SAMPLING_RATE*16)]
     
     return x
 

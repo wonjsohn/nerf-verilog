@@ -99,6 +99,7 @@ if __name__ == "__main__":
 #    xemSerialList = ['1137000222', '11160001CJ', '12430003T2']
     #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
 #    xemSerialList = ['12320003RN']
+#    xemSerialList=['13500007MB', '13500007M8']  # new boards shipped March 2014
 
     print xemSerialList
     
