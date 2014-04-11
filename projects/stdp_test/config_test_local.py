@@ -1,4 +1,7 @@
 from PyQt4.QtCore import Qt
+import numpy
+import random
+
 
 #            address         name   visual_gain         type            color
 FPGA_OUTPUT =    (0x20,      'neuron0_input',      1.0,         'int32',      Qt.darkGray),  \
@@ -22,11 +25,11 @@ FPGA_OUTPUT =    (0x20,      'neuron0_input',      1.0,         'int32',      Qt
 USER_INPUT =   (1, 'xxx',  'float32',      30.0), \
                     (2, 'xxx',  'float32',      0.03), \
                     (3, 'flag_sync_inputs',   'int32',       0), \
-                    (4, 'xxx',    'int32',      0), \
+                    (4, 'xxx',    'float32',      0), \
                     (5, 'xxx',    'int32',      10240), \
                     (6, 'N0_in',      'int32',        10240),  \
                     (7, 'half_count',      'int32',        381),  \
-                    (8, 'sync_scale',      'int32',        1),  \
+                    (8, 'block_neuron2',      'int32',        0),  \
                     (9, 'lce',      'float32',        1.0),  \
                     (10, 'p_delta',      'int32',        0),  \
                     (11, 'ltd_scale',      'int32',        1),  \
@@ -34,3 +37,4 @@ USER_INPUT =   (1, 'xxx',  'float32',      30.0), \
 
 SAMPLING_RATE = 1024
 NUM_NEURON = 128
+

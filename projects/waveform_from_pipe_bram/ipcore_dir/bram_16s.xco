@@ -1,7 +1,7 @@
 ##############################################################
 #
-# Xilinx Core Generator version 13.1
-# Date: Thu Apr  5 20:51:42 2012
+# Xilinx Core Generator version 13.4
+# Date: Wed Mar 26 22:24:29 2014
 #
 ##############################################################
 #
@@ -12,12 +12,16 @@
 #
 ##############################################################
 #
+#  Generated from component: xilinx.com:ip:blk_mem_gen:6.1
+#
+##############################################################
+#
 # BEGIN Project Options
 SET addpads = false
 SET asysymbol = true
 SET busformat = BusFormatAngleBracketNotRipped
 SET createndf = false
-SET designentry = Advanced
+SET designentry = Verilog
 SET device = xc6slx150
 SET devicefamily = spartan6
 SET flowvendor = Other
@@ -27,9 +31,9 @@ SET implementationfiletype = Ngc
 SET package = fgg484
 SET removerpms = false
 SET simulationfiles = Behavioral
-SET speedgrade = -3
+SET speedgrade = -2
 SET verilogsim = true
-SET vhdlsim = true
+SET vhdlsim = false
 # END Project Options
 # BEGIN Select
 SELECT Block_Memory_Generator xilinx.com:ip:blk_mem_gen:6.1
@@ -95,7 +99,7 @@ CSET write_width_a=16
 CSET write_width_b=32
 # END Parameters
 # BEGIN Extra information
-MISC pkg_timestamp=2011-02-03T22:20:43.000Z
+MISC pkg_timestamp=2012-01-07T13:55:09Z
 # END Extra information
 GENERATE
-# CRC: 7c8dc111
+# CRC: c8f9b1b8

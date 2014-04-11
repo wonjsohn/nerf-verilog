@@ -61,6 +61,7 @@ wire [31:0] i_mem; // I_out
 wire [31:0] i_mem_in;
 
 //i_mem updates every neuron_clk
+//  current of >>>2 decay is too fast 
 assign i_mem_in = first_pass ? 0 : i_mem - (i_mem >>> 3) + impulse; //I = 0.875*I + impulse  (current decay+impulse)  
 
 wire [31:0] spike_history_mem;
@@ -189,7 +190,7 @@ assign delta_w_ltd_pre = spike ?
 wire [31:0] random_out;
 wire [31:0] impulse_decay;
 
-assign impulse_decay = (random_out <= p_delta) ? impulse_mem >>> 7 : 0; // not used.
+assign impulse_decay = (random_out <= p_delta) ? impulse_mem >>> 12 : 0; // possion delay? 
  
 
  
@@ -216,12 +217,15 @@ assign lut_out32_F0 = {27'b0, lut_out};
 //assign impulse_stdp = first_pass ? 32'd10240 : impulse_mem+delta_w+delta_w_ltd-impulse_decay;
 //assign impulse_stdp = first_pass ? base_strength : impulse_mem+delta_w-delta_w_ltd-impulse_decay;  
 
-assign impulse_stdp = first_pass ? base_strength : impulse_mem - (impulse_mem >>> 12) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. modified by eric
-
-//assign impulse_mem_in = impulse_bcm;
+//assign impulse_stdp = first_pass ? base_strength : impulse_mem - (impulse_mem >>> 12) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. modified by eric
+assign impulse_stdp = first_pass ? base_strength :  (impulse_mem <= 4096)? impulse_mem-1+ delta_w_ltp - delta_w_ltd:   impulse_mem - (impulse_mem >>> 12) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. modified by eric assign impulse_mem_in = impulse_bcm;
 //assign impulse_mem_in = impulse_mem;
 
-assign impulse_mem_in = (impulse_stdp >= base_strength)? impulse_stdp: base_strength;  // set minimum synaptic strength 
+//assign impulse_mem_in = (impulse_stdp >= base_strength)? impulse_stdp: base_strength;  // set minimum synaptic strength
+assign impulse_mem_in =(impulse_stdp <= 32'd5120)? 32'd5120 :impulse_stdp; ////minimum strenth =5120 
+//assign impulse_mem_in = impulse_stdp;
+
+
 // STATE MACHINE //////////////////////////////////////////////////////////////////////////////////////
     
     reg state;
@@ -275,10 +279,11 @@ always @ (negedge clk or negedge reset_bar) begin
     end else begin
         if (state) begin
             each_I <= i_mem_in;
+            synaptic_strength <= impulse_mem_in; // 128 synapse output  % moved out
             if (neuron_index == 7'h7f) begin  //every 128 neuron_clk
                 first_pass <= 0;
                 I_out <= i_mem_in;
-                synaptic_strength <= impulse_mem_in;
+                
                // lut_out32 <= lut_out32_F0;
             end
         end

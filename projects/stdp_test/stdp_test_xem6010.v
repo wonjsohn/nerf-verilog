@@ -105,10 +105,11 @@
 
         // Output and OpalKelly Interface Wire Definitions
         
-        wire [36*17-1:0] ok2x;
+        wire [40*17-1:0] ok2x;
         wire [15:0] ep00wire, ep01wire, ep02wire;
         wire [15:0] ep50trig;
         
+        wire pipe_out_read;
         wire pipe_in_write;
         wire pipe_in_write_2;
         wire [15:0] pipe_in_data;
@@ -230,7 +231,9 @@
         if (reset_global)
             flag_sync_inputs <= 32'd0;   //32'd0   
         else
-            flag_sync_inputs <= {ep02wire, ep01wire};            
+            flag_sync_inputs <= {ep02wire, ep01wire};     
+
+            
             
 //                   // Triggered Input triggered_input1 Instance Definition (lut2_index)
 //       reg [31:0] neuron2_input_offset;
@@ -266,12 +269,12 @@
             triggered_input4 <= {ep02wire, ep01wire};        
             
         // Triggered Input triggered_input4 Instance Definition (sync_scale)
-        reg [31:0] sync_scale;
+        reg [31:0] block_neuron2;
         always @ (posedge ep50trig[8] or posedge reset_global)
         if (reset_global)
-            sync_scale <= 32'd1;         //reset to 1      
+            block_neuron2 <= 32'd0;         //reset to 0     
         else
-            sync_scale <= {ep02wire, ep01wire};        
+            block_neuron2 <= {ep02wire, ep01wire};        
         
 
         // Triggered Input triggered_input5 Instance Definition (clk_divider)
@@ -294,14 +297,41 @@
         
 
 
+//        wire [31:0] mixed_input0;
+//        // Waveform Generator mixed_input0 Instance Definition
+//        waveform_from_pipe_bram_2s gen_input2n0(
+//            .reset(reset_sim),               // reset the waveform
+//            .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
+//            .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
+//            .data_from_trig(triggered_input0),	// data from one of ep50 channel
+//            .is_from_trigger(is_from_trigger),
+//            .pipe_in_data(pipe_in_data),        // waveform data from opalkelly pipe in
+//            .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
+//            .wave(mixed_input0)                   // wave out signal
+//        );
+//        
+//        // time reference for latency measure 
+//         // Waveform Generator mixed_input0 Instance Definition
+//         wire [31:0] mixed_input2;
+//        waveform_from_pipe_bram_2s gen_input2n2(
+//            .reset(reset_sim),               // reset the waveform
+//            .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
+//            .pipe_in_write(pipe_in_write_2),      // write enable signal from opalkelly pipe in
+//            .data_from_trig(triggered_input0),	// data from one of ep50 channel
+//            .is_from_trigger(1'd0),
+//            .pipe_in_data(pipe_in_data_2),        // waveform data from opalkelly pipe in
+//            .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
+//            .wave(mixed_input2)                   // wave out signal
+//        );
+
         wire [31:0] mixed_input0;
         // Waveform Generator mixed_input0 Instance Definition
-        waveform_from_pipe_bram_2s gen_input2n0(
+        waveform_from_pipe_bram_16s gen_input2n0_16(
             .reset(reset_sim),               // reset the waveform
             .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
             .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
-            .data_from_trig(triggered_input0),	// data from one of ep50 channel
-            .is_from_trigger(is_from_trigger),
+            //.data_from_trig(triggered_input0),	// data from one of ep50 channel
+            //.is_from_trigger(is_from_trigger),
             .pipe_in_data(pipe_in_data),        // waveform data from opalkelly pipe in
             .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
             .wave(mixed_input0)                   // wave out signal
@@ -310,16 +340,21 @@
         // time reference for latency measure 
          // Waveform Generator mixed_input0 Instance Definition
          wire [31:0] mixed_input2;
-        waveform_from_pipe_bram_2s gen_input2n2(
+        waveform_from_pipe_bram_16s gen_input2n2_16(
             .reset(reset_sim),               // reset the waveform
             .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
             .pipe_in_write(pipe_in_write_2),      // write enable signal from opalkelly pipe in
-            .data_from_trig(triggered_input0),	// data from one of ep50 channel
-            .is_from_trigger(1'd0),
+            //.data_from_trig(triggered_input0),	// data from one of ep50 channel
+            //.is_from_trigger(1'd0),
             .pipe_in_data(pipe_in_data_2),        // waveform data from opalkelly pipe in
             .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
             .wave(mixed_input2)                   // wave out signal
         );
+        
+               
+                      
+                                
+                             
         
         
     //FPGA-FPGA Outputs
@@ -354,7 +389,7 @@
         assign cut_synapse1 = ~ep00wire[3];
         assign cut_synapse2 = ~ep00wire[4];
         
-        okWireOR # (.N(36)) wireOR (ok2, ok2x);
+        okWireOR # (.N(40)) wireOR (ok2, ok2x);
         okHost okHI(
             .hi_in(hi_in),  .hi_out(hi_out),    .hi_inout(hi_inout),    .hi_aa(hi_aa),
             .ti_clk(ti_clk),    .ok1(ok1),  .ok2(ok2)   );
@@ -421,8 +456,11 @@
                             .ep_blockstrobe(), .ep_dataout(pipe_in_data), .ep_ready(1'b1));
         okBTPipeIn ep82 (   .ok1(ok1), .ok2(ok2x[34*17 +: 17]), .ep_addr(8'h82), .ep_write(pipe_in_write_2),
                             .ep_blockstrobe(), .ep_dataout(pipe_in_data_2), .ep_ready(1'b1));
-                
-
+                     
+        okBTPipeOut epA0 (.ok1(ok1), .ok2(ok2x[36*17 +: 17]), .ep_addr(8'ha0), .ep_datain(variable_synaptic_strength0[15:0]), .ep_read(pipe_out_read),
+                                .ep_blockstrobe(), .ep_ready(1'b1));
+        okBTPipeOut epA2 (.ok1(ok1), .ok2(ok2x[38*17 +: 17]), .ep_addr(8'ha2), .ep_datain(variable_synaptic_strength0[31:16]), .ep_read(pipe_out_read),
+                                .ep_blockstrobe(), .ep_ready(1'b1));                        
 
         // Clock Generator clk_gen0 Instance Definition
         gen_clk clocks(
@@ -485,17 +523,46 @@
             .out(i_mixed_input2)
         );
 
+
+    
+        //Control input to neuron 2 (e.g. ambliopia)
+        //wire [31:0] i_mixed_input2_scaled;
+        //unsigned_mult32 mult_changeNeuron2(.out(i_mixed_input2_scaled), .a(i_mixed_input2), .b(sync_scale));
+
         
         wire [31:0] neuron0_input;
         assign neuron0_input = is_from_trigger? triggered_input0 :i_mixed_input0;
         wire [31:0] neuron2_input;
         assign neuron2_input = is_from_trigger? triggered_input0: flag_sync_inputs? i_mixed_input0: i_mixed_input2;
         
+//        // randomization of input current 
+//        wire [31:0] rand_n01;
+//        rng randomize_n0Input(
+//                .clk1(neuron_clk),
+//                .clk2(neuron_clk),
+//                .reset(reset_sim),
+//                .out(rand_n01)
+//               
+//        );
+//        wire [31:0] i_rng_current_to_neuron0;
+//        assign i_rng_current_to_neuron0= {i_mixed_input0[31:12] , rand_n01[11:0]};
+//        
+//         wire [31:0] rand_n02;
+//        rng randomize_n2Input(
+//                .clk1(neuron_clk),
+//                .clk2(neuron_clk),
+//                .reset(reset_sim),
+//                .out(rand_n02)
+//               
+//        );
+//        wire [31:0] i_rng_current_to_neuron2;
+//        assign i_rng_current_to_neuron2= {i_mixed_input2[31:12] , rand_n02[11:0]};    
+        
         // Neuron neuron0 Instance Definition 
         izneuron_th_control neuron0(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( neuron0_input),          // input current from synapse
+            .I_in( i_mixed_input0),          // input current from synapse
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron0),               // membrane potential
             .spike(spike_neuron0),           // spike sample
@@ -510,7 +577,7 @@
         izneuron_th_control neuron1(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in(  (each_I_synapse0<<<1) + (each_I_synapse2 >>>1)  ),          // input current from synapse. crosstalk contribution smaller.
+            .I_in(  (each_I_synapse0) + (each_I_synapse2)  ),          // input current from synapse. crosstalk contribution smaller.
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron1),               // membrane potential
             .spike(spike_neuron1),           // spike sample
@@ -530,7 +597,7 @@
         izneuron_th_control neuron2(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in(  neuron2_input ),          // input current from synapse
+            .I_in( (block_neuron2)? 32'd0 : i_mixed_input2 ),          // input current from synapse
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron2),               // membrane potential
             .spike(spike_neuron2),           // spike sample
@@ -542,7 +609,7 @@
          izneuron_th_control neuron3(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in(  (each_I_synapse1>>>1) + (each_I_synapse3<<<1) ),          // input current from synapse crosstalk contribution smaller.
+            .I_in(  (each_I_synapse1) + (each_I_synapse3) ),          // input current from synapse crosstalk contribution smaller.
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron3),               // membrane potential
             .spike(spike_neuron3),           // spike sample
@@ -586,7 +653,7 @@
 
 // Synapse synapse0 Instance Definition
         
-    assign synaptic_strength_synapse0 = 32'd10240>>>2; // baseline synaptic strength
+    assign synaptic_strength_synapse0 = 32'd10240<<<1; // baseline synaptic strength
      wire [31:0] variable_synaptic_strength0;
      wire [31:0] delta_w_ltp;
     synapse_stdp_eric synapse0(
@@ -610,7 +677,7 @@
 
     // Synapse synapse1 Instance Definition
     
-    assign synaptic_strength_synapse1 = 32'd10240>>>2; // baseline synaptic strength
+    assign synaptic_strength_synapse1 = 32'd10240>>>1; // baseline synaptic strength
     wire [31:0] variable_synaptic_strength1;
     synapse_stdp_eric synapse1(
         .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
@@ -631,7 +698,7 @@
 //
     // Synapse synapse2 Instance Definition
     
-    assign synaptic_strength_synapse2 = 32'd10240>>>2; // baseline synaptic strength
+    assign synaptic_strength_synapse2 = 32'd10240>>>1; // baseline synaptic strength
     wire [31:0] variable_synaptic_strength2;
     synapse_stdp_eric synapse2(
         .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
@@ -652,7 +719,7 @@
 
     // Synapse synapse3 Instance Definition
     
-    assign synaptic_strength_synapse3 = 32'd10240>>>2; // baseline synaptic strength
+    assign synaptic_strength_synapse3 = 32'd10240<<<1; // baseline synaptic strength
      wire [31:0] variable_synaptic_strength3;
     synapse_stdp_eric synapse3(
         .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)

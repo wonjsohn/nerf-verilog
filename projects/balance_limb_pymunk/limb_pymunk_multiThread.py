@@ -617,15 +617,21 @@ if __name__ == '__main__':
 
     
   
-    xem_spindle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12320003RN')
-    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '124300046A')
-    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '1201000216')
-    xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12430003T2')
+#    xem_spindle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12320003RN')
+#    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '124300046A')
+#    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '1201000216')
+#    xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12430003T2')
 #    
 #    xem_cortical_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12320003RM')
 #    xem_cortical_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '11160001CJ')
-#    
+#   
+    xem_spindle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054K')
+    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054G')
+    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053U')
+    xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '0000000550')
     
+#    xemSerialList = ['000000054G', '000000054P',  '000000053U'] # copper top
+#    xemSerialList = ['000000054K', '000000053X',  '0000000550'] # copper top
     
 #    
 #    view_muscle_bic = View(count = 1,  projectName = "rack_emg" ,  projectPath = "/home/eric/nerf_verilog_eric/projects/rack_emg",  nerfModel = xem_muscle_bic,  fpgaOutput = FPGA_OUTPUT_B3,  userInput = USER_INPUT_B3)
