@@ -6,6 +6,8 @@ from pymunk import Vec2d
 import math, sys, random
 from pylab import *
 import socket
+from time import sleep
+from pykeyboard import PyKeyboard
 
 
 M_PI = 3.1415926
@@ -16,7 +18,7 @@ BUTTON_INPUT_FROM_TRIGGER = 1
 BUTTON_RESET_SIM = 2
 
 
-class armSetup:
+class ArmSetup:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((600, 600))
@@ -69,12 +71,12 @@ class armSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.1 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.0 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
         """ create arrow """
-        arrow_body,arrow_shape = self.create_arrow()
+        arrow_body,arrow_shape = self.createArrow()
         self.gSpace.add(arrow_shape)
         
         
@@ -110,11 +112,65 @@ class armSetup:
         self.sinewave = 0.0
         self.ind = 0  # index for sinewave
 
-        self.main()
+    """ clock-wise torque """
+    def cTorque(self):
+        self.gForearm_body.torque -= 6*14.0
+    
+    """ counter clock-wise torque """
+    def ccTorque(self):
+        #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
+        self.gForearm_body.torque += 6*14.0
+#                    
+        
+    """ escape """
+    def escape(self):                    
+        self.plotData(self.data_bic, self.data_tri)
+        self.running = False
+    
+    """ tonic drive on/off"""
+    def tonicDrive(self, val):
+        bitVal2 = convertType(val, fromType = 'f', toType = 'I')
+        xem_cortical_tri.SendPara(bitVal = bitVal2, trigEvent = 8)
+        #bitVal = convertType(0.0, fromType = 'f', toType = 'I')
+        #xem_cortical_bic.SendPara(bitVal = bitVal, trigEvent = 8)
+        #xem_cortical_tri.SendPara(bitVal = bitVal, trigEvent = 8)    
+                    
+                    
+                    
+    """ set cortical gain """
+    def corticalGain(self, val):                    
+       bitVal50 = convertType(val, fromType = 'f', toType = 'I')
+       xem_muscle_bic.SendPara(bitVal = bitVal50, trigEvent = 10) 
+       xem_muscle_tri.SendPara(bitVal = bitVal50, trigEvent = 10)
+    
+    """ set gamma dyn drive """
+    def gammaDynDrive(self, val):
+        bitVal = convertType(val, fromType = 'f', toType = 'I')
+        xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 4) 
+        xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 4) 
+    
+    """ set gamma static drive """
+    def gammaStaDrive(self, val):
+        bitVal = convertType(val, fromType = 'f', toType = 'I')
+        xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 5) 
+        xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 5) 
+        
+    def softReset(self):
+        self.running = True
+    
+
+        # left flipper
+        self.gForearm_body.angle = 0
+        
+        """ create arrow """
+        self.gForearm_shape.group = 1
+        self.gForearm_shape.elasticity = 1.0
+
+        self.gRest_joint_angle = 0.0
         
 
 
-    def to_pygame(self,  p):
+    def toPygame(self,  p):
         """Small hack to convert pymunk to pygame coordinates"""
         return int(p.x), int(-p.y+600)
 
@@ -139,7 +195,7 @@ class armSetup:
         savemat(timeTag+".mat", mdict={'data_bic': data_bic,  'data_tri': data_tri})
     
     
-    def create_arrow(self):
+    def createArrow(self):
         vs = [(-30,0), (0,3), (10,0), (0,-3)]
         mass = 1
         moment = pymunk.moment_for_poly(mass, vs)
@@ -241,7 +297,8 @@ class armSetup:
             
             xem_muscle_bic.SendMultiPara(bitVal1 = bitVal, bitVal2 = bitVal_bic_i,  trigEvent = 9)
             xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
-            self.udp_send("%.4f" % self.emg_bic)
+            """ udp sending """
+            #self.udp_send("%.4f" % self.emg_bic)
             
             
             """ Alpha-gamma coactivation """
@@ -430,49 +487,36 @@ class armSetup:
                 if event.type == QUIT:
                     self.running = False
                 elif event.type == KEYDOWN and event.key == K_ESCAPE:
-                    self.plotData(self.data_bic, self.data_tri)
-                    self.running = False
+                    self.escape()
                 elif event.type == KEYDOWN and event.key == K_p: 
                     self.point2pointForce(True)
-                   
-                    
                 elif event.type == KEYDOWN and event.key == K_j:
-                    self.gForearm_body.torque -= 6*14.0
-
+                    self.cTorque()   # clock-wise torque
+                elif event.type == KEYDOWN and event.key == K_0:
+                    self.softReset()
                 elif event.type == KEYDOWN and event.key == K_f:
-                    #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
-                    self.gForearm_body.torque += 6*14.0
-#                    
-#                elif event.type == KEYDOWN and event.key == K_t:   # selective tonic on
-#                    bitVal1 = convertType(500.0, fromType = 'f', toType = 'I')
-#                    xem_cortical_bic.SendPara(bitVal = bitVal1, trigEvent = 8)
-#                   
-#                elif event.type == KEYDOWN and event.key == K_r:   # selective tonic on
-#                    bitVal2 = convertType(200.0, fromType = 'f', toType = 'I')
-#                    xem_cortical_tri.SendPara(bitVal = bitVal2, trigEvent = 8)
-#                    
-#                elif event.type == KEYDOWN and event.key == K_y:   # tonic off
-#                    bitVal = convertType(0.0, fromType = 'f', toType = 'I')
-#                    xem_cortical_bic.SendPara(bitVal = bitVal, trigEvent = 8)
-#                    xem_cortical_tri.SendPara(bitVal = bitVal, trigEvent = 8)    
-                    
-                    
+                    self.ccTorque()   # counter-clockwise torque
+                elif event.type == KEYDOWN and event.key == K_r:   # selective tonic on
+                    self.tonicDrive(200.0) 
+                elif event.type == KEYDOWN and event.key == K_y:   # tonic off
+                    self.tonicDrive(0.0)
                 elif event.type == KEYDOWN and event.key == K_z:
-#                    self.gRest_joint_angle = self.angle
                     self.gForearm_body.angle = 0.0
+                elif event.type == KEYDOWN and event.key == K_d:     # set gamma dyn drive1
+                    self.gammaDynDrive(200.0)
+                elif event.type == KEYDOWN and event.key == K_e:     # set gamma dyn drive2
+                    self.gammaDynDrive(0.0)
+                elif event.type == KEYDOWN and event.key == K_s:     # set gamma dyn drive1
+                    self.gammaStaDrive(200.0)
+                elif event.type == KEYDOWN and event.key == K_w:     # set gamma dyn drive2
+                    self.gammaStaDrive(0.0)
 #                elif event.type == KEYDOWN and event.key == K_r:
 #                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (4,  0))
 #                elif event.type == KEYDOWN and event.key == K_u:
 #                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (-4,  0))
-#                    
-#                elif event.type == KEYDOWN and event.key == K_o:  # CN syn gain 50
-#                    bitVal50 = convertType(50.0, fromType = 'f', toType = 'I')
-#                    xem_muscle_bic.SendPara(bitVal = bitVal50, trigEvent = 10) 
-#                    xem_muscle_tri.SendPara(bitVal = bitVal50, trigEvent = 10)
-#                elif event.type == KEYDOWN and event.key == K_p:  # CN syn gain 100
-#                    bitVal100 = convertType(100.0, fromType = 'f', toType = 'I')
-#                    xem_muscle_bic.SendPara(bitVal = bitVal100, trigEvent = 10) 
-#                    xem_muscle_tri.SendPara(bitVal = bitVal100, trigEvent = 10)  
+                    
+                elif event.type == KEYDOWN and event.key == K_o:  # set CN syn gain= 50
+                    self.corticalGain(50.0) 
                 elif event.type == KEYDOWN and event.key == K_m:  # forced movement, follow the mouse    
                     self.mouseOn = True
                 elif event.type == KEYDOWN and event.key == K_l:  # doornik replay
@@ -505,14 +549,13 @@ class armSetup:
             for f in [self.gForearm_shape,]:
                 ps = f.get_points()
                 ps.append(ps[0])
-                ps = map(self.to_pygame, ps)
+                ps = map(self.toPygame, ps)
 
                 color = THECOLORS["black"]
                 self.pygame.draw.lines(self.screen, color, False, ps,  2)
             #if abs(flipper_body.angle) < 0.001: flipper_body.angle = 0
 
             """draw circle """
-
 #            pygame.draw.circle(self.screen, THECOLORS["black"], (300,  300), int(42), 0)
 #            pygame.draw.circle(self.screen, THECOLORS["white"], (300,  300), int(40), 0)
 #            pygame.draw.circle(self.screen, THECOLORS["black"], (300,  300), int(3), 0)
@@ -530,12 +573,10 @@ class armSetup:
                 
                 self.ind += 1
                  
-
-                
-            
+ 
             """ text message"""    
             myfont = self.pygame.font.SysFont("monospace", 15)
-            label1 = myfont.render("j:torque down, f: torque up" , 1,  THECOLORS["black"])
+            label1 = myfont.render("j:torque c, f: torque cc" , 1,  THECOLORS["black"])
             label2 = myfont.render("l: mouse-controlled movement, esc:out" , 1,  THECOLORS["black"])
             self.screen.blit(label1, (10, 10))
             self.screen.blit(label2, (10, 40))
@@ -567,17 +608,48 @@ class armSetup:
         pipeInData = gen_sin(F = 10.0, AMP = 0.3,  BIAS = 1.0,  T = 2.0) # pipe in to fpga
         xem_spindle_bic.SendPipe2(pipeInData)
         xem_spindle_tri.SendPipe2(pipeInData)
+
+
+        
+    def runExp(self):
+        k = PyKeyboard()
+
+
+        for i in xrange(10):
+            if (self.running):
+                print "Trial ", i
+                sleep(1.0)
+                
+                # To Create an Alt+Tab combo
+                k.type_string('j')
+                sleep(2)
+                k.type_string('0')
         
     def main(self):
 #        Process(target=self.controlLoopBiceps)
         self.readData() # read doornik data
         self.timeReference()
-        threading.Thread(target=self.keyControl).start()
-        threading.Thread(target=self.controlLoopBiceps).start()
-        threading.Thread(target=self.controlLoopTriceps).start()
+        t1 = threading.Thread(target=self.keyControl)
+        t2 = threading.Thread(target=self.controlLoopBiceps)
+        t3 = threading.Thread(target=self.controlLoopTriceps)
+        t4 = threading.Thread(target=self.dataRecordLoop)
+        t5 = threading.Thread(target=self.runExp)
         
         
-        threading.Thread(target=self.dataRecordLoop).start()
+        
+        t1.start()
+        t2.start()
+        t3.start()
+        t4.start()
+        t5.start()
+        
+        
+        
+        t1.join()
+        t2.join()
+        t3.join()
+        t4.join()
+        t5.join()
 #        
 #        xem_cortical_bic.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
 #        xem_cortical_tri.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
@@ -625,6 +697,7 @@ if __name__ == '__main__':
 #    xem_cortical_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12320003RM')
 #    xem_cortical_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '11160001CJ')
 #   
+
     xem_spindle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054K')
     xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054G')
     xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053U')
@@ -651,6 +724,9 @@ if __name__ == '__main__':
 #    xem0.SendPara(bitVal = bitVal, trigEvent = 1)
 #    xem1.SendPara(bitVal = bitVal, trigEvent = 1)
     
-    arm1 = armSetup()
+    arm1 = ArmSetup()
+    arm1.main() # Start the main loop until ESC 
+    
+    
     
     sys.exit()
