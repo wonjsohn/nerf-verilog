@@ -42,7 +42,8 @@ class ArmSetup:
 
         # left flipper
         #gForearm_body = pymunk.Body(mass, moment_of_inertia)
-        self.gForearm_body = pymunk.Body(mass, 0.0372)
+#        self.gForearm_body = pymunk.Body(mass, 0.0372)
+        self.gForearm_body = pymunk.Body(mass, 0.0172)
         self.gForearm_body.position = 300, 300
         self.gForearm_shape = pymunk.Poly(self.gForearm_body, [(-x,y) for x,y in fp])
 #        self.gForearm_shape.friction = 10.0
@@ -71,7 +72,7 @@ class ArmSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.0 #was 0.1
+        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.01 #was 0.1
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
         self.gSpace.add(j,  j1,  s) # 
         
@@ -111,20 +112,28 @@ class ArmSetup:
         self.timeRef = 0.0
         self.sinewave = 0.0
         self.ind = 0  # index for sinewave
+        
+        self.SWEEP_STEP_SIZE = 5 # nxn trials
+        self.TOTAL_TRIALS = self.SWEEP_STEP_SIZE**2
+        self.GAMMA_INC = 200.0 / self.SWEEP_STEP_SIZE
+        self.currTrial = 0 # Current number of trial, for dividing the saved data files
+        self.currGammaDyn = 0.0 
+        self.currGammaSta = 0.0 
+        self.torqueMultiplier = 0.45
 
     """ clock-wise torque """
     def cTorque(self):
-        self.gForearm_body.torque -= 6*14.0
+        self.gForearm_body.torque -= 2*14.0
     
     """ counter clock-wise torque """
     def ccTorque(self):
         #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
-        self.gForearm_body.torque += 6*14.0
+        self.gForearm_body.torque += 2*14.0
 #                    
         
     """ escape """
     def escape(self):                    
-        self.plotData(self.data_bic, self.data_tri)
+        self.finalizeData(self.data_bic, self.data_tri)
         self.running = False
     
     """ tonic drive on/off"""
@@ -144,23 +153,23 @@ class ArmSetup:
        xem_muscle_tri.SendPara(bitVal = bitVal50, trigEvent = 10)
     
     """ set gamma dyn drive """
-    def gammaDynDrive(self, val):
-        bitVal = convertType(val, fromType = 'f', toType = 'I')
+    def setGammaDyn(self):
+        bitVal = convertType(self.currGammaDyn, fromType = 'f', toType = 'I')
         xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 4) 
         xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 4) 
     
     """ set gamma static drive """
-    def gammaStaDrive(self, val):
-        bitVal = convertType(val, fromType = 'f', toType = 'I')
+    def setGammaSta(self):
+        bitVal = convertType(self.currGammaSta, fromType = 'f', toType = 'I')
         xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 5) 
         xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 5) 
         
     def softReset(self):
         self.running = True
-    
 
         # left flipper
-        self.gForearm_body.angle = 0
+        self.gForearm_body.angle = 0.0
+        self.gForearm_body.torque = 0.0
         
         """ create arrow """
         self.gForearm_shape.group = 1
@@ -177,14 +186,14 @@ class ArmSetup:
     def angle2length(self,  angle):
         max_length = 1.3
         length = max_length + ((2.0-max_length)-max_length) / (3.14)* (angle- JOINT_MIN)      # angle in rad 
-        length = 0.3*angle+1     # was: 0.3*angle+1 / angle in rad 
+        length = 0.4*angle+1     # was: 0.3*angle+1 / angle in rad 
         return length
 
     def angular2LinearV(self, angularV):
         linearV = angularV * 0.3
         return linearV
     
-    def plotData(self,  data_bic,  data_tri):
+    def finalizeData(self,  data_bic,  data_tri):
         from pylab import plot, show, subplot, title
         from scipy.io import savemat, loadmat
         import numpy as np
@@ -206,7 +215,7 @@ class ArmSetup:
         arrow_shape.collision_type = 1
         return arrow_body, arrow_shape
   
-    def udp_send(self,  f_emg):
+    def sendUdp(self,  f_emg):
         UDP_IP = "192.168.0.104"
         UDP_PORT = 8899
 #        MESSAGE = "Hello, from Eric!"
@@ -244,7 +253,7 @@ class ArmSetup:
 #            force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
 #            emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
             
-            self.force_bic = force_bic_pre #+ pipeInData_bic[j]
+            self.force_bic = force_bic_pre*self.torqueMultiplier  #+ pipeInData_bic[j]
 #            force_tri = force_tri_pre #+ pipeInData_bic[j] 
             """ overflow to opposite muscle test (helps to stabilize - eric)"""
 #            temp_force_tri = self.force_tri
@@ -298,7 +307,7 @@ class ArmSetup:
             xem_muscle_bic.SendMultiPara(bitVal1 = bitVal, bitVal2 = bitVal_bic_i,  trigEvent = 9)
             xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
             """ udp sending """
-            #self.udp_send("%.4f" % self.emg_bic)
+            #self.sendUdp("%.4f" % self.emg_bic)
             
             
             """ Alpha-gamma coactivation """
@@ -347,7 +356,7 @@ class ArmSetup:
             self.timeref_tri = xem_spindle_tri.ReadFPGA(0x28, "float32")  # 
             
 #            force_bic = force_bic_pre #+ pipeInData_bic[j]
-            self.force_tri = force_tri_pre #+ pipeInData_bic[j] 
+            self.force_tri = force_tri_pre *self.torqueMultiplier #+ pipeInData_bic[j] 
             """  force curve (f-input spikes) saturation effect"""
 #            self.force_tri = self.force_tri * (1-exp(-self.force_tri/self.fmax)) 
               
@@ -425,9 +434,11 @@ class ArmSetup:
   
     def dataRecordLoop(self):
         while (self.running):
-            temp_bic = self.elapsedTime_bic, self.angle,  self.lce_bic, self.spikecnt_bic, self.force_bic, self.emg_bic,  self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_bic
+#            temp_bic = self.currTrial, self.currGammaDyn, self.currGammaSta, self.elapsedTime_bic, self.angle,  self.lce_bic, self.spikecnt_bic, self.force_bic, self.emg_bic,  self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_bic
+            temp_bic = self.currTrial, self.currGammaDyn, self.currGammaSta, self.force_bic, self.lce_bic, self.emg_bic
             self.data_bic.append(temp_bic)
-            temp_tri = self.elapsedTime_tri, self.angle,  self.lce_tri, self.spikecnt_tri, self.force_tri,  self.emg_tri, self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_tri
+#            temp_tri = self.currTrial, self.currGammaDyn, self.currGammaSta, self.elapsedTime_tri, self.angle,  self.lce_tri, self.spikecnt_tri, self.force_tri,  self.emg_tri, self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_tri
+            temp_tri = self.currTrial, self.currGammaDyn, self.currGammaSta, self.force_tri, self.lce_tri, self.emg_tri
             self.data_tri.append(temp_tri)
             time.sleep(0.001)
         
@@ -502,14 +513,20 @@ class ArmSetup:
                     self.tonicDrive(0.0)
                 elif event.type == KEYDOWN and event.key == K_z:
                     self.gForearm_body.angle = 0.0
-                elif event.type == KEYDOWN and event.key == K_d:     # set gamma dyn drive1
-                    self.gammaDynDrive(200.0)
-                elif event.type == KEYDOWN and event.key == K_e:     # set gamma dyn drive2
-                    self.gammaDynDrive(0.0)
-                elif event.type == KEYDOWN and event.key == K_s:     # set gamma dyn drive1
-                    self.gammaStaDrive(200.0)
-                elif event.type == KEYDOWN and event.key == K_w:     # set gamma dyn drive2
-                    self.gammaStaDrive(0.0)
+                elif event.type == KEYDOWN and event.key == K_d:
+                    self.currGammaDyn = 0.0
+                    self.softReset()
+                    self.setGammaDyn()
+                elif event.type == KEYDOWN and event.key == K_e:
+                    self.currGammaDyn += self.GAMMA_INC
+                    self.setGammaDyn()
+                elif event.type == KEYDOWN and event.key == K_s:
+                    self.currGammaSta = 0.0
+                    self.setGammaSta()
+                elif event.type == KEYDOWN and event.key == K_w:
+                    self.currGammaSta += self.GAMMA_INC
+                    self.softReset()
+                    self.setGammaSta()
 #                elif event.type == KEYDOWN and event.key == K_r:
 #                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (4,  0))
 #                elif event.type == KEYDOWN and event.key == K_u:
@@ -571,15 +588,17 @@ class ArmSetup:
             for x in range(step):
                 self.gSpace.step(0.001*7) #(0.001*8) matters, matched with control loop update speed..
                 
-                self.ind += 1
-                 
+                self.ind += 1                 
  
             """ text message"""    
             myfont = self.pygame.font.SysFont("monospace", 15)
             label1 = myfont.render("j:torque c, f: torque cc" , 1,  THECOLORS["black"])
             label2 = myfont.render("l: mouse-controlled movement, esc:out" , 1,  THECOLORS["black"])
+            label3 = myfont.render("Trial %d/%d, GammaDyn %.1f, GammaSta %.1f" % \
+                                        (self.currTrial, self.TOTAL_TRIALS, self.currGammaDyn, self.currGammaSta), 1,  THECOLORS["black"])
             self.screen.blit(label1, (10, 10))
             self.screen.blit(label2, (10, 40))
+            self.screen.blit(label3, (10, 70))
         
             
             """ Flip screen (big delay from here!) """ 
@@ -587,7 +606,6 @@ class ArmSetup:
             self.gClock.tick(fps)  # target fps
     #        self.gClock.tick(80)  # oscillate
             self.pygame.display.set_caption("fps: " + str(self.gClock.get_fps())) 
-
 
     def readData(self):
         self.j1List=[]
@@ -608,22 +626,39 @@ class ArmSetup:
         pipeInData = gen_sin(F = 10.0, AMP = 0.3,  BIAS = 1.0,  T = 2.0) # pipe in to fpga
         xem_spindle_bic.SendPipe2(pipeInData)
         xem_spindle_tri.SendPipe2(pipeInData)
-
-
-        
+     
     def runExp(self):
         k = PyKeyboard()
-
-
-        for i in xrange(10):
+        
+        for i in xrange(self.SWEEP_STEP_SIZE):           
             if (self.running):
-                print "Trial ", i
-                sleep(1.0)
+                # Resetting gammaSta
+                k.type_string('s')
                 
-                # To Create an Alt+Tab combo
-                k.type_string('j')
-                sleep(2)
-                k.type_string('0')
+                for j in xrange(self.SWEEP_STEP_SIZE):           
+                    if (self.running):
+                        self.currTrial = i*self.SWEEP_STEP_SIZE + j + 1
+                            
+                        # Reset and cool-down
+                        for nagging in xrange(5):
+                            k.type_string('0')
+                            sleep(0.1)
+                        
+                        sleep(2.0)
+                        # Perturbation
+                        k.type_string('j')
+                        sleep(12)
+                        
+                        
+                        # Increasing gammaSta
+                        k.type_string('w')
+                        sleep(1.0)
+                
+                # Increasing gammaDyn
+                k.type_string('e')
+                        
+        k.tap_key(k.escape_key)
+                
         
     def main(self):
 #        Process(target=self.controlLoopBiceps)
@@ -635,32 +670,18 @@ class ArmSetup:
         t4 = threading.Thread(target=self.dataRecordLoop)
         t5 = threading.Thread(target=self.runExp)
         
-        
-        
         t1.start()
         t2.start()
         t3.start()
         t4.start()
         t5.start()
         
-        
-        
         t1.join()
         t2.join()
         t3.join()
         t4.join()
         t5.join()
-#        
-#        xem_cortical_bic.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
-#        xem_cortical_tri.SendButton(False, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
-#        
         
-
-        
-        
-        
-        
-
 if __name__ == '__main__':
     import sys
     sys.path.append('../../source/py/multC_tester')
@@ -685,9 +706,6 @@ if __name__ == '__main__':
     from pymunk.vec2d import Vec2d
     from pymunk.pygame_util import draw_space, from_pygame
     from pygame.color import *
-  
-
-    
   
 #    xem_spindle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12320003RN')
 #    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '124300046A')
@@ -725,8 +743,6 @@ if __name__ == '__main__':
 #    xem1.SendPara(bitVal = bitVal, trigEvent = 1)
     
     arm1 = ArmSetup()
-    arm1.main() # Start the main loop until ESC 
-    
-    
+    arm1.main() # Start the main loop until ESC     
     
     sys.exit()
