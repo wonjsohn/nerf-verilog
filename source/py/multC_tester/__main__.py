@@ -91,9 +91,11 @@ if __name__ == "__main__":
 #        xemSerialList = ['000000054K', '000000053X',  '0000000550'] # copper top
 #        xemSerialList = ['113700021E', '0000000547', '0000000542']  # BBDL setting
 #        xemSerialList = ['11160001CG', '000000054B', '1137000222']  # BBDL setting
-    elif (WINDOWS == 1):
+    elif (WINDOWS == 1): # assumes three board setting
         print "windows setup"
-        xemSerialList = ['11160001CG', '1137000222']    #PXI first couple 
+        xemSerialList = ['113700021E', '0000000547', '0000000542']  # BBDL setting
+        xemSerialList = ['11160001CG', '000000054B', '1137000222']  # BBDL setting
+#        xemSerialList = ['11160001CG', '1137000222']    #PXI first couple 
 #      xemSerialList = ['113700021E', '0000000542']   # PXI sercond couple
 
 #    xemSerialList = ['1137000222', '11160001CJ', '12430003T2']
@@ -102,6 +104,8 @@ if __name__ == "__main__":
 #    xemSerialList=['13500007MB', '13500007M8']  # new boards shipped March 2014
 
     print xemSerialList
+    
+    
     
         
         
