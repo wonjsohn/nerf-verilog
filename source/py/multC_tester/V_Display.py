@@ -60,8 +60,9 @@ class CtrlChannel:
         self.label = QtGui.QLabel(hostDialog)
         self.label.setObjectName("label_"+name)
         self.label.setText(name)
-        self.label.setGeometry(QtCore.QRect(SPINBOX_HOFFSET + 510, SPINBOX_VOFFSET+ id * 30, 105, 30))           
-
+        self.label.setGeometry(QtCore.QRect(SPINBOX_HOFFSET + 510, SPINBOX_VOFFSET+ id * 30, 105, 30))    
+  
+    
 class ViewChannel:
     def __init__(self, hostDialog, name, id, width = 2, color = Qt.blue, addr = 0x20, type = ""):
         self.id = id
@@ -84,8 +85,18 @@ class ViewChannel:
         self.label.setPalette(pal)
         self.label.setObjectName("label_"+name)
         self.label.setText(name)
-        self.label.setGeometry(QtCore.QRect(10, 70+ id*80, 80, 100))
+        self.label.setGeometry(QtCore.QRect(10, 70+ id*80, 120, 100))
         self.label.show()
+        
+        self.labelnum = QtGui.QLabel(hostDialog)
+        palnum = self.labelnum.palette()
+        palnum.setColor( QtGui.QPalette.Foreground, color )
+        self.labelnum.setPalette(pal)
+        self.labelnum.setObjectName("label_"+name)
+        self.labelnum.setText(name)
+        self.labelnum.setGeometry(QtCore.QRect(120, 70+ id*80, 80, 100))
+        self.labelnum.show()  
+
 
 
 def onVisualSlider(self, whichCh, value = -1):
@@ -116,7 +127,7 @@ class View(QMainWindow, Ui_Dialog):
         QMainWindow.__init__(self, parent)
 #        self.setStyleSheet("background-color:  rgb(240, 235, 235); margin: 2px;")
         self.setStyleSheet("background-color:  white; margin: 2px;")
-        self.setWindowOpacity(0.7)
+        self.setWindowOpacity(0.9)
 
 #                                    "QLineEdit { border-width: 20px;border-style: solid; border-color: darkblue; };")
         self.setupUi(self)
@@ -376,8 +387,9 @@ class View(QMainWindow, Ui_Dialog):
             print "waveform  fed"
 #            pipeInData = spike_train(firing_rate = 10)      
 #            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
-#            pipeInData = gen_tri(T = 2.0) 
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.4, 1.4, 1.0,  1.0], FILT = False)
+#            pipeInData = gen_tri(T = 2.0)
+            pipeInData = gen_sin(F = 1.0, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
+            #pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.4, 1.4, 1.0,  1.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.51, 0.52, 1.0, 1.1, 1.11,  1.51, 1.52, 2.0], L = [0.7, 0.7, 1.5, 1.5, 0.7, 0.7, 0.7, 1.5, 1.5, 0.7, 0.7], FILT = False)  # one second repeat
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.51, 0.52, 1.0, 2.0], L = [0.7, 0.7, 1.5, 1.5, 0.7, 0.7, 0.7], FILT = False) # two second repeat
 

@@ -20,6 +20,16 @@ BUTTON_RESET_SIM = 2
 
 class ArmSetup:
     def __init__(self):
+        self.SWEEP_STEP_SIZE = 10 # nxn trials
+        self.TOTAL_TRIALS = self.SWEEP_STEP_SIZE**2
+        self.GAMMA_INC = 400.0 / self.SWEEP_STEP_SIZE
+        self.currTrial = 0 # Current number of trial, for dividing the saved data files
+        self.currGammaDyn = 0.0 
+        self.currGammaSta = 0.0 
+        self.torqueMultiplier = 1.55 #1.55 # 0.55 works the best so far
+        self.JOINT_DAMPING = 0.0
+#        self.RATIO_RECIPROCAL_INHIBITION = 2.0
+        
         pygame.init()
         self.screen = pygame.display.set_mode((600, 600))
         self.gClock = pygame.time.Clock()
@@ -37,13 +47,13 @@ class ArmSetup:
 #        fp = [(-40, -5), (-30, -15),  (-20,-20),   (150, -10), (150,  10), (-20,20),  (-30,  15),  (-40,  5)]
  
  
-        mass = 1.52 # was 1.52
+        mass = 0.52 # was 1.52
         moment = pymunk.moment_for_poly(mass, fp)
 
         # left flipper
         #gForearm_body = pymunk.Body(mass, moment_of_inertia)
 #        self.gForearm_body = pymunk.Body(mass, 0.0372)
-        self.gForearm_body = pymunk.Body(mass, 0.0172)
+        self.gForearm_body = pymunk.Body(mass, 0.0372)
         self.gForearm_body.position = 300, 300
         self.gForearm_shape = pymunk.Poly(self.gForearm_body, [(-x,y) for x,y in fp])
 #        self.gForearm_shape.friction = 10.0
@@ -72,9 +82,11 @@ class ArmSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.01 #was 0.1
-        s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
-        self.gSpace.add(j,  j1,  s) # 
+        s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, self.JOINT_DAMPING)
+        self.strong_damper = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, 100)
+        self.gSpace.add(j, j1, s, self.strong_damper) # 
+        
+        
         
         """ create arrow """
         arrow_body,arrow_shape = self.createArrow()
@@ -113,22 +125,16 @@ class ArmSetup:
         self.sinewave = 0.0
         self.ind = 0  # index for sinewave
         
-        self.SWEEP_STEP_SIZE = 5 # nxn trials
-        self.TOTAL_TRIALS = self.SWEEP_STEP_SIZE**2
-        self.GAMMA_INC = 200.0 / self.SWEEP_STEP_SIZE
-        self.currTrial = 0 # Current number of trial, for dividing the saved data files
-        self.currGammaDyn = 0.0 
-        self.currGammaSta = 0.0 
-        self.torqueMultiplier = 0.45
+
 
     """ clock-wise torque """
     def cTorque(self):
-        self.gForearm_body.torque -= 2*14.0
+        self.gForearm_body.torque -= 0.8*7.0 #2*7.0 
     
     """ counter clock-wise torque """
     def ccTorque(self):
         #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
-        self.gForearm_body.torque += 2*14.0
+        self.gForearm_body.torque += 0.8*7.0 #2*7.0
 #                    
         
     """ escape """
@@ -170,13 +176,7 @@ class ArmSetup:
         # left flipper
         self.gForearm_body.angle = 0.0
         self.gForearm_body.torque = 0.0
-        
-        """ create arrow """
-        self.gForearm_shape.group = 1
-        self.gForearm_shape.elasticity = 1.0
-
-        self.gRest_joint_angle = 0.0
-        
+               
 
 
     def toPygame(self,  p):
@@ -235,7 +235,7 @@ class ArmSetup:
 
             """   Get forces   """
             force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
-            force_bic_pre = force_bic_pre * 1.0 # force adjustment for quick reflex return
+            #force_bic_pre = force_bic_pre * 1.0 # force adjustment for quick reflex return
             self.spikecnt_bic = xem_muscle_bic.ReadFPGA(0x30, "int32")  
             self.emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG 
             self.timeref_bic = xem_spindle_bic.ReadFPGA(0x28, "float32")  # 
@@ -260,20 +260,17 @@ class ArmSetup:
 #            self.force_tri = self.force_tri + force_bic*0.3  # overflow to the opposite muscle
 #            force_bic = force_bic + temp_force_tri*0.3       # overflow to the opposite muscle
             
-          
-            """ reciprocal inhibition  """
-#            if (self.linearV > 0): # biceps force contraction phase
-#                self.force_tri = self.force_tri*0.5
-#            else:   # triceps contraction phase
-#                force_bic = force_bic*0.5
-                
+                          
 
             """  force curve (f-input spikes) saturation effect"""
 #            self.fmax =90.0
 #            force_bic = force_bic * (1-exp(-force_bic/self.fmax)) 
 
     
-            self.gForearm_body.torque = (self.force_bic - self.force_tri) * 0.03 # was 0.06
+#            self.force_bic = max(0, self.force_bic - self.force_tri * self.RATIO_RECIPROCAL_INHIBITION)
+#            self.force_tri = max(0, self.force_tri - self.force_bic * self.RATIO_RECIPROCAL_INHIBITION)
+            
+            self.gForearm_body.torque = (self.force_bic - self.force_tri) * 0.02 #0.03 # was 0.06
                                             
             self.angle = ((self.gForearm_body.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
             
@@ -311,11 +308,13 @@ class ArmSetup:
             
             
             """ Alpha-gamma coactivation """
-    #        ag_coact, ag_bias = 30.0, -70.0
-    #        ag_coact, ag_bias = 0.0, 50.0
-    #        gd_bic = force_bic * ag_coact + ag_bias
-    #        bitval = convertType(gd_bic, fromType = 'f', toType = 'I')
-    #        xem_spindle_bic.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
+#            ag_coact, ag_bias = 30.0, -70.0
+#            ag_coact, ag_bias = 30.0, 50.0
+#            gd_bic = force_bic * ag_coact + ag_bias
+##            print gd_bic
+#            bitval = convertType(gd_bic, fromType = 'f', toType = 'I')
+#            xem_spindle_bic.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
+#            xem_spindle_bic.SendPara(bitVal = bitval,  trigEvent = 5) # 4 = Gamma_sta
             
             """ Send lce of triceps """
 #            bitVal = convertType(self.lce_tri, fromType = 'f', toType = 'I')
@@ -400,11 +399,11 @@ class ArmSetup:
 #            xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
             
             """ Alpha-gamma coactivation """
-    #        ag_coact, ag_bias = 30.0, -70.0
-    #        ag_coact, ag_bias = 0.0, 50.0
-    #        gd_bic = force_bic * ag_coact + ag_bias
-    #        bitval = convertType(gd_bic, fromType = 'f', toType = 'I')
-    #        xem_spindle_bic.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
+#            ag_coact, ag_bias = 30.0, 50.0
+#            gd_tri = force_tri * ag_coact + ag_bias
+#            bitval = convertType(gd_tri, fromType = 'f', toType = 'I')
+#            xem_spindle_tri.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
+#            xem_spindle_tri.SendPara(bitVal = bitval,  trigEvent = 5) # 4 = Gamma_sta
             
             """ Send lce of triceps """
             bitVal = convertType(self.lce_tri, fromType = 'f', toType = 'I')
@@ -415,9 +414,7 @@ class ArmSetup:
     #        xem_muscle_tri.SendPara(bitVal = bitVal, trigEvent = 9)
             xem_muscle_tri.SendMultiPara(bitVal1 = bitVal, bitVal2= bitVal_tri_i,   trigEvent = 9)
             xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 9)
-          
- 
-            
+
             """ Alpha-gamma coactivation """
     #        gd_tri = force_tri * ag_coact + ag_bias
     #        bitval = convertType(gd_tri, fromType = 'f', toType = 'I')
@@ -581,12 +578,12 @@ class ArmSetup:
     
             
             """ Update physics  """
-            fps = 30.0 #was 30.0
+            fps = 60.0 #was 30.0
             step = 1
             dt = 1.0/fps/step
             
             for x in range(step):
-                self.gSpace.step(0.001*7) #(0.001*8) matters, matched with control loop update speed..
+                self.gSpace.step(dt) #(0.001*8) matters, matched with control loop update speed..
                 
                 self.ind += 1                 
  
@@ -594,11 +591,19 @@ class ArmSetup:
             myfont = self.pygame.font.SysFont("monospace", 15)
             label1 = myfont.render("j:torque c, f: torque cc" , 1,  THECOLORS["black"])
             label2 = myfont.render("l: mouse-controlled movement, esc:out" , 1,  THECOLORS["black"])
-            label3 = myfont.render("Trial %d/%d, GammaDyn %.1f, GammaSta %.1f" % \
-                                        (self.currTrial, self.TOTAL_TRIALS, self.currGammaDyn, self.currGammaSta), 1,  THECOLORS["black"])
+            label3 = myfont.render("Trial %d/%d, GammaDynBic %.1f, GammaStaBic %.1f" % \
+                                        (self.currTrial, self.TOTAL_TRIALS, \
+                                        self.currGammaDyn, self.currGammaSta), 1,  THECOLORS["black"])
+            label5 = myfont.render("LceBic %.1f, LceTri %.1f" % \
+                                        (self.lce_bic, self.lce_tri), 1,  THECOLORS["black"])
+            label6 = myfont.render("ForceBic %.1f, ForceTri %.1f" % \
+                                        (self.force_bic, self.force_tri), 1,  THECOLORS["black"])
             self.screen.blit(label1, (10, 10))
-            self.screen.blit(label2, (10, 40))
-            self.screen.blit(label3, (10, 70))
+            self.screen.blit(label2, (10, 30))
+            self.screen.blit(label3, (10, 50))
+#            self.screen.blit(label4, (10, 70))
+            self.screen.blit(label5, (10, 90))
+            self.screen.blit(label6, (10, 110))
         
             
             """ Flip screen (big delay from here!) """ 
@@ -629,6 +634,9 @@ class ArmSetup:
      
     def runExp(self):
         k = PyKeyboard()
+        # Resetting both gammas
+        k.type_string('s')
+        k.type_string('d')
         
         for i in xrange(self.SWEEP_STEP_SIZE):           
             if (self.running):
@@ -638,21 +646,41 @@ class ArmSetup:
                 for j in xrange(self.SWEEP_STEP_SIZE):           
                     if (self.running):
                         self.currTrial = i*self.SWEEP_STEP_SIZE + j + 1
-                            
+                    
                         # Reset and cool-down
                         for nagging in xrange(5):
                             k.type_string('0')
-                            sleep(0.1)
+                            sleep(0.3)
+                    
+                        self.strong_damper.damping = 0.0     
                         
-                        sleep(2.0)
+                        
                         # Perturbation
                         k.type_string('j')
-                        sleep(12)
+                        sleep(3)
                         
                         
                         # Increasing gammaSta
                         k.type_string('w')
                         sleep(1.0)
+                        
+                        
+                        # Add a strong damper to stop any motion
+                        self.strong_damper.damping = 100.0
+                        
+                        # attmept to remove the residual torque.
+                        bitVal = convertType(0.0, fromType = 'f', toType = 'I')
+                        xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 1) # Ia gain
+                        xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 1) 
+                        xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 10) # II gain
+                        xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 10) 
+                        sleep(2.0)
+                        bitVal = convertType(1.2, fromType = 'f', toType = 'I')
+                        xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 1) # Ia gain
+                        xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 1)
+                        bitVal_II = convertType(2.0, fromType = 'f', toType = 'I') 
+                        xem_spindle_bic.SendPara(bitVal = bitVal_II, trigEvent = 10) # II gain
+                        xem_spindle_tri.SendPara(bitVal = bitVal_II, trigEvent = 10) 
                 
                 # Increasing gammaDyn
                 k.type_string('e')

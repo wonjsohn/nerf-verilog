@@ -199,12 +199,12 @@
     sub sub_spindle0_II(.x(II_spindle0), .y(f_spindle_offset_II), .out(f_temp_spindle_remove_offset_II));
 	
     //gain control for spindle output rate  
-	wire [31:0] Ia_gain_controlled_spindle0_II;
-	mult mult_spindle0_II(.x(f_temp_spindle_remove_offset_II), .y(triggered_input8), .out(Ia_gain_controlled_spindle0_II));
+	wire [31:0] II_gain_controlled_spindle0;
+	mult mult_spindle0_II(.x(f_temp_spindle_remove_offset_II), .y(triggered_input8), .out(II_gain_controlled_spindle0));
 
         // Ia Afferent datatype conversion (floating point -> integer -> fixed point)
         floor   ia_spindle0_float_to_int_II(
-            .in(Ia_gain_controlled_spindle0_II),
+            .in(II_gain_controlled_spindle0),
             .out(int_II_spindle0)
         );
 
@@ -398,7 +398,7 @@
         okWireOut wo2F (    .ep_datain(spike_count_II_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
         
         okWireOut wo30 (    .ep_datain(population_neuron0_II[31:16]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h30)    );
-        okWireOut wo31 (    .ep_datain(population_neuron0_II[47:32]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h31)   );         
+        okWireOut wo31 (    .ep_datain(population_neuron0_II[47:32]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h31)   );        
         
         okBTPipeIn ep82 (   .ok1(ok1), .ok2(ok2x[19*17 +: 17]), .ep_addr(8'h82), .ep_write(pipe_in_write_timeref),
                             .ep_blockstrobe(), .ep_dataout(pipe_in_data_timeref), .ep_ready(1'b1));
@@ -439,7 +439,7 @@
         );     
         
        wire [31:0] i_rng_current_to_SN_Ia;
-       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:15] , SN_Ia_rand_out[14:0]}; // randomness
+       assign i_rng_current_to_SN_Ia= {fixed_Ia_spindle0[31:11] , SN_Ia_rand_out[10:0]}; // randomness
 //       assign i_rng_current_to_SN_Ia= fixed_Ia_spindle0;  // no randomness
        
        
@@ -452,7 +452,7 @@
         );     
         
        wire [31:0] i_rng_current_to_SN_II;
-       assign i_rng_current_to_SN_II= {fixed_II_spindle0[31:15] , SN_II_rand_out[14:0]};
+       assign i_rng_current_to_SN_II= {fixed_II_spindle0[31:11] , SN_II_rand_out[10:0]};
 //       assign i_rng_current_to_SN_II= fixed_II_spindle0;  // no randomness
         
         // Neuron neuron0 Instance Definition (connected by Ia afferent)
