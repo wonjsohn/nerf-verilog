@@ -132,7 +132,7 @@ class View(QMainWindow, Ui_Dialog):
 #                                    "QLineEdit { border-width: 20px;border-style: solid; border-color: darkblue; };")
         self.setupUi(self)
         self.projectName = projectName
-        self.move(10+count*950,  100)
+        self.move(10+count*500,  100)
 
         self.x = 200
         self.pen = QPen()
