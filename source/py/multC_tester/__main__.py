@@ -10,7 +10,7 @@ from MVC_MainGUI import MultiXemScheduler
 from C_XemScheduler import SingleXemTester # Controller in MVC
 from M_Fpga import SomeFpga # Model in MVC
 from V_Display import View, ViewChannel,  CtrlChannel # Viewer in MVC
-from cortex import cortexView
+#from cortex import cortexView
 import os
 
 sys.path.append('../')
