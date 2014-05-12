@@ -120,7 +120,7 @@ USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001238), \
                     (5, 'xxx',    'float32',      -2.238), \
                     (6, 'xxx',      'float32',        1.67),  \
                     (7, 'half_cnt',      'int32',        0),  \
-                    (8, 'xxx',      'float32',        -0.4152),  \
+                    (8, 'MN_offset',      'int32',        0),  \
                     (9, 'Lce_vel',      'float32',        1.0),  \
                     (10, 'syn_CN_gain',      'float32',        200.0),  \
                     (11, 'syn_II_gain',      'float32',        60.0),  \
