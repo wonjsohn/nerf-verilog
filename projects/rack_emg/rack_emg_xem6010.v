@@ -360,12 +360,12 @@
         assign triggered_input11 = 32'hBED49518; // - 0.4152(a3 default)
         
         
-//        wire [31:0] randomness; 
-//        always @ (posedge ep50trig[8] or posedge reset_global)
-//        if (reset_global)
-//            randomness <= 32'd5;     
-//        else
-//            randomness <= {ep02wire, ep01wire}; 
+        reg [31:0] i_MN_offset; 
+        always @ (posedge ep50trig[8] or posedge reset_global)
+        if (reset_global)
+            i_MN_offset <= 32'd0;     
+        else
+            i_MN_offset <= {ep02wire, ep01wire}; 
 
 
 
@@ -546,9 +546,14 @@
         );
 
         
+        // alpha drive to MN
+
+        wire [31:0]  i_total_drive_to_MN;
+        assign i_total_drive_to_MN = i_MN_offset + i_drive_to_MN;
+        
         //wire [31:0] fixed_I_synapse;
         //assign fixed_I_synapse= int_I_synapse << 
-        assign i_I_drive_to_MN_F0 = i_drive_to_MN; // + i_extraMN_drive; 
+        assign i_I_drive_to_MN_F0 = i_total_drive_to_MN; // + i_extraMN_drive; 
 //        wire [31:0] int_I_synapse;
 //        unsigned_mult32 synapse_simple1_gain(.out(int_I_synapse), .a(i_spike_count_neuron_sync_inputPin), .b(triggered_input5));    // I to each_I   
         
