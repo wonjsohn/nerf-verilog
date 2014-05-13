@@ -602,7 +602,7 @@
       //1*9/16 = 0.5625 (MU17)  
       //1*8/16 = 0.5  (MU20)    *
    
-     parameter randomness = 10;
+     //parameter randomness = 10;
      
      wire [31:0] MN1_rand_out;
      rng rng_MN1(               
@@ -613,7 +613,7 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN1;
-       assign i_rng_current_to_MN1= {i_I_drive_to_MN[31:randomness+1] , MN1_rand_out[randomness:0]};
+       assign i_rng_current_to_MN1= {i_I_drive_to_MN[31:6] , MN1_rand_out[5:0]};
 //        assign i_rng_current_to_MN1 = i_I_drive_to_MN;
         
       wire [31:0] MN2_rand_out;
@@ -625,7 +625,7 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN2;
-       assign i_rng_current_to_MN2= {i_I_drive_to_MN[31:randomness+1] , MN2_rand_out[randomness:0]};
+       assign i_rng_current_to_MN2= {i_I_drive_to_MN[31:6] , MN2_rand_out[5:0]};
 //       assign i_rng_current_to_MN2 = i_I_drive_to_MN;
        
            wire [31:0] MN3_rand_out;
@@ -637,7 +637,7 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN3;
-       assign i_rng_current_to_MN3= {i_I_drive_to_MN[31:randomness+1] , MN3_rand_out[randomness:0]};
+       assign i_rng_current_to_MN3= {i_I_drive_to_MN[31:6] , MN3_rand_out[5:0]};
 //       assign i_rng_current_to_MN3 = i_I_drive_to_MN;
 
       wire [31:0] MN4_rand_out;
@@ -649,7 +649,7 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN4;
-       assign i_rng_current_to_MN4= {i_I_drive_to_MN[31:randomness+1] , MN4_rand_out[randomness:0]};
+       assign i_rng_current_to_MN4= {i_I_drive_to_MN[31:6] , MN4_rand_out[5:0]};
 //       assign i_rng_current_to_MN4 = i_I_drive_to_MN;
 
       wire [31:0] MN5_rand_out;
@@ -661,7 +661,7 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN5;
-       assign i_rng_current_to_MN5= {i_I_drive_to_MN[31:randomness+1] , MN5_rand_out[randomness:0]};
+       assign i_rng_current_to_MN5= {i_I_drive_to_MN[31:6] , MN5_rand_out[5:0]};
 //    assign i_rng_current_to_MN5 = i_I_drive_to_MN;
 
       wire [31:0] MN6_rand_out;
@@ -673,7 +673,7 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN6;
-       assign i_rng_current_to_MN6= {i_I_drive_to_MN[31:randomness+1] , MN6_rand_out[randomness:0]};
+       assign i_rng_current_to_MN6= {i_I_drive_to_MN[31:6] , MN6_rand_out[5:0]};
 //       assign i_rng_current_to_MN6 = i_I_drive_to_MN;
 //
 //      wire [31:0] MN7_rand_out;
