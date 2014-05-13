@@ -80,8 +80,8 @@ USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      1.2), \
                     (15, 'BDAMP_chain',      'float32',        0.0132)
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B2 =   (1, 'f_Ia_gain',  'float32',      1.0), \
-                    (2, 'f_II_gain',  'float32',      1.0), \
+USER_INPUT_B2 =   (1, 'xxx',  'float32',      1.0), \
+                    (2, 'xxx',  'float32',      1.0), \
                     (3, 'synapse_gain',   'int32',       1), \
                     (4, 'overflow',    'float32',      1.0), \
                     (5, 'xxx',    'float32',      80.0), \
