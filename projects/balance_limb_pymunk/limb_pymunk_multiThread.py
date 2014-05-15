@@ -24,8 +24,8 @@ class ArmSetup:
         self.TOTAL_TRIALS = self.SWEEP_STEP_SIZE**2
         self.GAMMA_INC = 400.0 / self.SWEEP_STEP_SIZE
         self.currTrial = 0 # Current number of trial, for dividing the saved data files
-        self.currGammaDyn = 0.0 
-        self.currGammaSta = 0.0 
+        self.currGammaDyn = 80.0 
+        self.currGammaSta = 80.0 
         self.torqueMultiplier = 1.55 #1.55 # 0.55 works the best so far
         self.JOINT_DAMPING = 0.0
 #        self.RATIO_RECIPROCAL_INHIBITION = 2.0
@@ -439,8 +439,7 @@ class ArmSetup:
             self.data_tri.append(temp_tri)
             time.sleep(0.001)
         
-        
-        
+
     
 #    def point2pointForce(self,  checked):
 #        print 'enter'
@@ -696,19 +695,19 @@ class ArmSetup:
         t2 = threading.Thread(target=self.controlLoopBiceps)
         t3 = threading.Thread(target=self.controlLoopTriceps)
         t4 = threading.Thread(target=self.dataRecordLoop)
-        t5 = threading.Thread(target=self.runExp)
+#        t5 = threading.Thread(target=self.runExp)
         
         t1.start()
         t2.start()
         t3.start()
         t4.start()
-        t5.start()
+#        t5.start()
         
-        t1.join()
-        t2.join()
-        t3.join()
-        t4.join()
-        t5.join()
+#        t1.join()
+#        t2.join()
+#        t3.join()
+#        t4.join()
+#        t5.join()
         
 if __name__ == '__main__':
     import sys
