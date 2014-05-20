@@ -118,7 +118,7 @@ USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001238), \
                     (3, 'syn_Ia_gain',   'float32',       60.0), \
                     (4, 'b2',    'float32',      -0.001273), \
                     (5, 'xxx',    'float32',      -2.238), \
-                    (6, 'xxx',      'float32',        1.67),  \
+                    (6, 's_weight',      'int32',        0),  \
                     (7, 'half_cnt',      'int32',        0),  \
                     (8, 'MN_offset',      'int32',        0),  \
                     (9, 'Lce_vel',      'float32',        1.0),  \

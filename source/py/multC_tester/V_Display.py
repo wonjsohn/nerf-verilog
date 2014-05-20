@@ -365,9 +365,10 @@ class View(QMainWindow, Ui_Dialog):
         """
         choice = p0
         if choice == "waveform 1":
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.65, 0.66, 16.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2,1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 100ms rise
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2,1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 100ms rise
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.12, 1.1, 1.11,1.12, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 10ms rise
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
             """ 
