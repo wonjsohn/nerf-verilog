@@ -796,7 +796,7 @@
     </transform>
     <transform xil_pn:end_ts="1345243592" xil_pn:name="TRAN_ISimulateBehavioralModel" xil_pn:start_ts="1345243592">
       <status xil_pn:value="SuccessfullyRun"/>
-      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
@@ -814,6 +814,7 @@
     <transform xil_pn:end_ts="1399940323" xil_pn:in_ck="2966925084471072993" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="5601601945580616379" xil_pn:start_ts="1399940322">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
       <outfile xil_pn:name="remote_sources/_/_/source/io/neuron_ram.ngc"/>
       <outfile xil_pn:name="remote_sources/_/_/source/io/neuron_ram.v"/>
     </transform>
@@ -828,15 +829,18 @@
     <transform xil_pn:end_ts="1381445312" xil_pn:in_ck="1402939086501607071" xil_pn:name="TRAN_SubProjectPreToStructuralProxy" xil_pn:prop_ck="-2098939838453108159" xil_pn:start_ts="1381445312">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
     </transform>
     <transform xil_pn:end_ts="1381445312" xil_pn:name="TRAN_platgen" xil_pn:prop_ck="1020225827949551813" xil_pn:start_ts="1381445312">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
     </transform>
     <transform xil_pn:end_ts="1399940471" xil_pn:in_ck="-8921679187223521277" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="1099597022181534826" xil_pn:start_ts="1399940323">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="_xmsgs/xst.xmsgs"/>
@@ -854,74 +858,65 @@
     <transform xil_pn:end_ts="1381445318" xil_pn:in_ck="-6112064346208689993" xil_pn:name="TRAN_compileBCD2" xil_pn:prop_ck="-2963562967742041811" xil_pn:start_ts="1381445318">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
     </transform>
     <transform xil_pn:end_ts="1399940481" xil_pn:in_ck="-333113341925099290" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="2351838634264901052" xil_pn:start_ts="1399940471">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_ngo"/>
-      <outfile xil_pn:name="_xmsgs/ngdbuild.xmsgs"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.bld"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.ngd"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010_ngdbuild.xrpt"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1399940628" xil_pn:in_ck="4995096133086332393" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1399940481">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
       <status xil_pn:value="OutputChanged"/>
-      <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.pcf"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010_map.map"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010_map.mrp"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010_map.ncd"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010_map.ngm"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010_map.xrpt"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010_summary.xml"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010_usage.xml"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1399940736" xil_pn:in_ck="-1052549704246472478" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1399940628">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/par.xmsgs"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.ncd"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.pad"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.par"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.ptwx"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.unroutes"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.xpi"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010_pad.csv"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010_pad.txt"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010_par.xrpt"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1399940778" xil_pn:in_ck="-6112064346208697618" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1399940736">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.bgn"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.bit"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.drc"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.ut"/>
-      <outfile xil_pn:name="usage_statistics_webtalk.html"/>
-      <outfile xil_pn:name="webtalk.log"/>
-      <outfile xil_pn:name="webtalk_pn.xml"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1399940736" xil_pn:in_ck="-1221516807351126555" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1399940716">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
-      <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.twr"/>
-      <outfile xil_pn:name="rack_CN_simple_S1M1_xem6010.twx"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputRemoved"/>
+      <status xil_pn:value="OutputRemoved"/>
     </transform>
     <transform xil_pn:end_ts="1391726071" xil_pn:in_ck="-1052549704246472478" xil_pn:name="TRAN_preRouteTrce" xil_pn:prop_ck="722859607460791352" xil_pn:start_ts="1391726049">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputChanged"/>
       <status xil_pn:value="InputRemoved"/>

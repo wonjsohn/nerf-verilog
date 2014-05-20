@@ -41,13 +41,14 @@ if __name__ == "__main__":
 #    PROJECT_LIST = ["izneuron_range_test"] 
 #    PROJECT_LIST = ["rack_mn_muscle"] 
     PROJECT_LIST = ["stdp_test"] 
+ #   PROJECT_LIST = ["emg"] 
 
     PROJECT_PATH = [(ROOT_PATH + p) for p in PROJECT_LIST]
     DEVICE_MODEL = "xem6010"
     
-    #BITFILE_NAME = PROJECT_PATH1 + "/" + PROJECT_NAME + "_" + DEVICE_MODEL + ".bit"
-    #print BITFILE_NAME
-    #assert os.path.exists(BITFILE_NAME.encode('utf-8')), ".bit file NOT found!"
+#    BITFILE_NAME = PROJECT_PATH1 + "/" + PROJECT_NAME + "_" + DEVICE_MODEL + ".bit"
+#    print BITFILE_NAME
+#    assert os.path.exists(BITFILE_NAME.encode('utf-8')), ".bit file NOT found!"
     
     #sys.path.append(PROJECT_PATH)
     print PROJECT_PATH
@@ -73,7 +74,7 @@ if __name__ == "__main__":
     print "Found ",  numFpga, " OpalKelly devices:"           
 #    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
 
-    xemSerialList = ['12320003RM']
+    xemSerialList = ['000000054K']
 
     print xemSerialList
     

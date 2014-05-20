@@ -129,9 +129,10 @@ module shadmehr_active_force(i_spikes, f_active_force_out, f_fp_spikes_out, clk,
     //assign  spikes_i = spikes * 32'sd1024;// 32'sd128;
 	int_to_float get_fp_spike(.out(spikes_i), .in(i_spikes));
 	 
-	
-    //h_diff_eq gen_h(spikes_i1, spikes_i2, h_i1, h_i2, h_i);
-	 fuglevand_twitch twitch(spikes_i1, spikes_i2, h_i1, h_i2, h_i, f_tau);
+    //two competing active muscle models
+    h_diff_eq gen_h(.x_i1(spikes_i1), .x_i2(spikes_i2), .y_i1(h_i1), .y_i2(h_i2), .y_i(h_i));
+    
+	fuglevand_twitch twitch(.x_i1(spikes_i1), .x_i2(spikes_i2), .y_i1(h_i1), .y_i2(h_i2), .y_i(h_i), .tau(f_tau));
 	 
 	 
 	 
@@ -158,11 +159,12 @@ endmodule
 
 
 // *** Shadmehr muscle: spike_cnt => current_total_force
-module shadmehr_muscle(i_spike_cnt, f_pos, f_vel, clk, reset, f_total_force_out, f_current_A, f_current_fp_spikes, f_tau);
+module shadmehr_muscle(i_spike_cnt, f_pos, f_vel, clk, reset, apply_s_weight, f_total_force_out, f_current_A, f_current_fp_spikes, f_tau);
     input [31:0] i_spike_cnt;
     input [31:0] f_pos, f_vel;
     input clk;
     input reset;
+    input apply_s_weight;
 	 input [31:0] f_tau;
     output [31:0] f_total_force_out;
     output [31:0] f_current_A;
@@ -180,12 +182,12 @@ module shadmehr_muscle(i_spike_cnt, f_pos, f_vel, clk, reset, f_total_force_out,
 			.f_tau(f_tau)
     );
         
-    wire 	[31:0]	f_weightout, f_current_A;
+    wire 	[31:0]	f_weightout, f_current_A_SW, f_current_A;
     
-    //s_weight  s_func (	.x_i(f_pos), .weight(f_weightout));
-    //mult		multA(.x(f_weightout), .y(f_current_h), .out(f_current_A));
+    s_weight  s_func (	.x_i(f_pos), .weight(f_weightout));
+    mult		multA(.x(f_weightout), .y(f_current_h), .out(f_current_A_SW));
     
-	  assign f_current_A = f_current_h;
+	assign f_current_A = apply_s_weight? f_current_A_SW: f_current_h;
 		  
     wire    [31:0]  current_dT;
     shadmehr_total_force total1

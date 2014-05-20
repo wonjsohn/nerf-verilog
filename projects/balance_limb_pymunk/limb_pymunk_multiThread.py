@@ -26,8 +26,8 @@ class ArmSetup:
         self.currTrial = 0 # Current number of trial, for dividing the saved data files
         self.currGammaDyn = 80.0 
         self.currGammaSta = 80.0 
-        self.torqueMultiplier = 1.55 #1.55 # 0.55 works the best so far
-        self.JOINT_DAMPING = 0.0
+        self.torqueMultiplier = 1.0 #(for fuglevand: 1.55 # 0.55 works the best so far)
+        self.JOINT_DAMPING = 0.1
 #        self.RATIO_RECIPROCAL_INHIBITION = 2.0
         
         pygame.init()
@@ -82,6 +82,10 @@ class ArmSetup:
         
         pymunk.collision_slop = 0
         JOINT_DAMPING_SCHEIDT2007 = 2.1
+        
+#        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.2 #was 0.1
+#        s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
+#        self.gSpace.add(j,  j1,  s) # 
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, self.JOINT_DAMPING)
         self.strong_damper = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, 100)
         self.gSpace.add(j, j1, s, self.strong_damper) # 
@@ -129,12 +133,12 @@ class ArmSetup:
 
     """ clock-wise torque """
     def cTorque(self):
-        self.gForearm_body.torque -= 0.8*7.0 #2*7.0 
+        self.gForearm_body.torque -= 2*7.0 #0.8*7.0 #2*7.0 
     
     """ counter clock-wise torque """
     def ccTorque(self):
         #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
-        self.gForearm_body.torque += 0.8*7.0 #2*7.0
+        self.gForearm_body.torque += 2*7.0 #0.8*7.0 #2*7.0
 #                    
         
     """ escape """
@@ -143,20 +147,19 @@ class ArmSetup:
         self.running = False
     
     """ tonic drive on/off"""
-    def tonicDrive(self, val):
-        bitVal2 = convertType(val, fromType = 'f', toType = 'I')
+    def tonicDrive(self, intVal):
+        bitVal2 = convertType(intVal, 'I',  'i') 
         xem_cortical_tri.SendPara(bitVal = bitVal2, trigEvent = 8)
-        #bitVal = convertType(0.0, fromType = 'f', toType = 'I')
-        #xem_cortical_bic.SendPara(bitVal = bitVal, trigEvent = 8)
-        #xem_cortical_tri.SendPara(bitVal = bitVal, trigEvent = 8)    
+        xem_cortical_bic.SendPara(bitVal = bitVal2, trigEvent = 8) 
                     
                     
                     
     """ set cortical gain """
-    def corticalGain(self, val):                    
-       bitVal50 = convertType(val, fromType = 'f', toType = 'I')
-       xem_muscle_bic.SendPara(bitVal = bitVal50, trigEvent = 10) 
-       xem_muscle_tri.SendPara(bitVal = bitVal50, trigEvent = 10)
+    def corticalGainControl(self, val):                    
+       bitVal = convertType(val, fromType = 'f', toType = 'I')
+#       bitVal = convertType(val, 'I', 'f')
+       xem_cortical_bic.SendPara(bitVal = bitVal, trigEvent = 13) 
+       xem_cortical_tri.SendPara(bitVal = bitVal, trigEvent = 13)
     
     """ set gamma dyn drive """
     def setGammaDyn(self):
@@ -431,15 +434,48 @@ class ArmSetup:
   
     def dataRecordLoop(self):
         while (self.running):
-#            temp_bic = self.currTrial, self.currGammaDyn, self.currGammaSta, self.elapsedTime_bic, self.angle,  self.lce_bic, self.spikecnt_bic, self.force_bic, self.emg_bic,  self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_bic
-            temp_bic = self.currTrial, self.currGammaDyn, self.currGammaSta, self.force_bic, self.lce_bic, self.emg_bic
+##            temp_bic = self.currTrial, self.currGammaDyn, self.currGammaSta, self.elapsedTime_bic, self.angle,  self.lce_bic, self.spikecnt_bic, self.force_bic, self.emg_bic,  self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_bic
+#            temp_bic = self.currTrial, self.currGammaDyn, self.currGammaSta, self.force_bic, self.lce_bic, self.emg_bic
+#            self.data_bic.append(temp_bic)
+##            temp_tri = self.currTrial, self.currGammaDyn, self.currGammaSta, self.elapsedTime_tri, self.angle,  self.lce_tri, self.spikecnt_tri, self.force_tri,  self.emg_tri, self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_tri
+#            temp_tri = self.currTrial, self.currGammaDyn, self.currGammaSta, self.force_tri, self.lce_tri, self.emg_tri
+#            self.data_tri.append(temp_tri)
+#            time.sleep(0.001)
+#            
+            temp_bic = self.elapsedTime_bic, self.angle,  self.lce_bic, self.spikecnt_bic, self.force_bic, self.emg_bic,  self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_bic
             self.data_bic.append(temp_bic)
-#            temp_tri = self.currTrial, self.currGammaDyn, self.currGammaSta, self.elapsedTime_tri, self.angle,  self.lce_tri, self.spikecnt_tri, self.force_tri,  self.emg_tri, self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_tri
-            temp_tri = self.currTrial, self.currGammaDyn, self.currGammaSta, self.force_tri, self.lce_tri, self.emg_tri
+            temp_tri = self.elapsedTime_tri, self.angle,  self.lce_tri, self.spikecnt_tri, self.force_tri,  self.emg_tri, self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_tri
             self.data_tri.append(temp_tri)
             time.sleep(0.001)
         
+    def isometricForce(self,  checked):
+        print 'enter'
+        if (checked) :
+            print 'checked'
+            pipeInData_bic = gen_ramp(T = [0.0, 0.1, 0.11, 1.00, 1.01, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
+#            pipeInData_bic = gen_sin(F = 1.0, AMP = 50000.0,  BIAS = 0.0,  T = 2.0) # was 150000 for CN_general
+            pipeInDataBic=[]
+            for i in xrange(0,  2048):
+                pipeInDataBic.append(max(0.0,  pipeInData_bic[i]))
+             
+#            pipeIndata_tri = gen_ramp(T = [0.0, 1.1, 1.11, 1.31, 1.32, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
+            pipeIndata_tri = gen_ramp(T = [0.0, 0.1, 0.11, 1.00, 1.01, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
+#            pipeIndata_tri = -gen_sin(F = 1.0,  AMP = 50000.0,  BIAS = 0.0,  T = 2.0)
+            pipeInDataTri=[]
+            for i in xrange(0,  2048):
+                pipeInDataTri.append(max(0.0,  pipeIndata_tri[i]))
 
+            xem_cortical_bic.SendPipe(pipeInDataBic)
+            xem_cortical_tri.SendPipe(pipeInDataTri)
+            
+            
+                    
+            xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) #  
+            xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) # 
+
+            xem_cortical_bic.SendButton(False, BUTTON_RESET_SIM) #  
+            xem_cortical_tri.SendButton(False, BUTTON_RESET_SIM) #     
+#        
     
 #    def point2pointForce(self,  checked):
 #        print 'enter'
@@ -496,17 +532,27 @@ class ArmSetup:
                 elif event.type == KEYDOWN and event.key == K_ESCAPE:
                     self.escape()
                 elif event.type == KEYDOWN and event.key == K_p: 
-                    self.point2pointForce(True)
+#                    xem_cortical_bic.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+#                    xem_cortical_tri.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
+#                    self.isometricForce(True)
+                    self.tonicDrive(120000)
+                    self.tonicDrive(120000)
                 elif event.type == KEYDOWN and event.key == K_j:
                     self.cTorque()   # clock-wise torque
                 elif event.type == KEYDOWN and event.key == K_0:
                     self.softReset()
                 elif event.type == KEYDOWN and event.key == K_f:
                     self.ccTorque()   # counter-clockwise torque
-                elif event.type == KEYDOWN and event.key == K_r:   # selective tonic on
-                    self.tonicDrive(200.0) 
+                elif event.type == KEYDOWN and event.key == K_r:   # tonic on
+                    self.tonicDrive(1000) 
                 elif event.type == KEYDOWN and event.key == K_y:   # tonic off
                     self.tonicDrive(0.0)
+                elif event.type == KEYDOWN and event.key == K_t:   # tonic low
+                    self.tonicDrive(250.0)
+                elif event.type == KEYDOWN and event.key == K_h:   # hi-gain on
+                    self.corticalGainControl(6.0)
+                elif event.type == KEYDOWN and event.key == K_g:   # hi-gain off
+                    self.corticalGainControl(2.0)
                 elif event.type == KEYDOWN and event.key == K_z:
                     self.gForearm_body.angle = 0.0
                 elif event.type == KEYDOWN and event.key == K_d:
@@ -528,8 +574,6 @@ class ArmSetup:
 #                elif event.type == KEYDOWN and event.key == K_u:
 #                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (-4,  0))
                     
-                elif event.type == KEYDOWN and event.key == K_o:  # set CN syn gain= 50
-                    self.corticalGain(50.0) 
                 elif event.type == KEYDOWN and event.key == K_m:  # forced movement, follow the mouse    
                     self.mouseOn = True
                 elif event.type == KEYDOWN and event.key == K_l:  # doornik replay
@@ -747,6 +791,10 @@ if __name__ == '__main__':
     xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054G')
     xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053U')
     xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '0000000550')
+    
+    
+    xem_cortical_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054P')
+    xem_cortical_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053X')
     
 #    xemSerialList = ['000000054G', '000000054P',  '000000053U'] # copper top
 #    xemSerialList = ['000000054K', '000000053X',  '0000000550'] # copper top
