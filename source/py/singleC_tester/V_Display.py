@@ -45,7 +45,7 @@ class CtrlChannel:
                                         #"border-left: 1px solid none;"
                       # "border-right: 1px solid none; border-bottom: 1px solid black; width: 0px; height: 0px;")
         SPINBOX_VOFFSET = 130
-        SPINBOX_HOFFSET = 280
+        SPINBOX_HOFFSET = 180
         self.doubleSpinBox.setGeometry(QtCore.QRect(SPINBOX_HOFFSET + 620, SPINBOX_VOFFSET+ id * 30, 205, 30))
         self.doubleSpinBox.setSingleStep(0.000001)
         self.doubleSpinBox.setDecimals(7)
@@ -72,7 +72,7 @@ class ViewChannel:
 
         self.data = deque([0]*100, maxlen=100)
         self.slider = QtGui.QSlider(hostDialog)
-        self.slider.setGeometry(QtCore.QRect(200, 70+ id*55, 29, 80))
+        self.slider.setGeometry(QtCore.QRect(170, 70+ id*60, 29, 80))
         self.slider.setOrientation(QtCore.Qt.Vertical)
         self.slider.setObjectName("gain_"+name)
 
@@ -82,7 +82,7 @@ class ViewChannel:
         self.label.setPalette(pal)
         self.label.setObjectName("label_"+name)
         self.label.setText(name)
-        self.label.setGeometry(QtCore.QRect(0, 70+ id*55, 120, 100))
+        self.label.setGeometry(QtCore.QRect(0, 70+ id*60, 120, 100))
         self.label.show()
         
         self.labelnum = QtGui.QLabel(hostDialog)
@@ -91,7 +91,7 @@ class ViewChannel:
         self.labelnum.setPalette(pal)
         self.labelnum.setObjectName("label_"+name)
         self.labelnum.setText(name)
-        self.labelnum.setGeometry(QtCore.QRect(120, 70+ id*55, 80, 100))
+        self.labelnum.setGeometry(QtCore.QRect(120, 70+ id*60, 80, 100))
         self.labelnum.show()
 
 
@@ -127,7 +127,7 @@ class View(QMainWindow, Ui_Dialog):
 #                                    "QLineEdit { border-width: 20px;border-style: solid; border-color: darkblue; };")
         self.setupUi(self)
         self.projectName = projectName
-        self.move(10+count*1050,  100)
+        self.move(10+count*950,  100)
 
         self.x = 200
         self.pen = QPen()
@@ -206,28 +206,14 @@ class View(QMainWindow, Ui_Dialog):
             timeTag = time.strftime("%Y%m%d_%H%M%S")
             savemat(self.projectName+"_"+timeTag+".mat", {eachName: forplot[:, i] for i, eachName in enumerate(self.allFpgaOutput)})
 
-    def savePipeOutData(self,  pipeData):
-        from pylab import plot, show, subplot, title
-        from scipy.io import savemat, loadmat
-        import numpy as np
-        
-        #forplot = np.array(pipeData)
-        
-        #print forplot
-        timeTag = time.strftime("%Y%m%d_%H%M%S")
-        savemat(self.projectName+"_pipeOut_"+timeTag+".mat",  mdict={'pipeData': pipeData})
-        #savemat(self.projectName+"_pipeOut_"+timeTag+".mat",  {forplot[]}mdict={'pipeData': pipeData})
-
 
     def reportData(self):
         newData = []
-        newPipeData = []
         for name, chan in self.allFpgaOutput.iteritems(): # Sweep thru channels coming out of Fpga
             #newData.append(max(-16777216, min(16777216, self.nerfModel.ReadFPGA(chan.addr, chan.type))))  # disable range limitation for spike raster
             newData.append(self.nerfModel.ReadFPGA(chan.addr, chan.type))
 #            newData.append(self.nerfModel.ReadFPGA(chan.addr, chan.type))
-            newPipeData.append(self.nerfModel.readFromPipe())  #BTPipeOut data
-        return newData,  newPipeData  #pipedata has 128 elements 
+        return newData
 
 
     def newDataIO(self, newData, newSpikeAll = []):
@@ -239,13 +225,14 @@ class View(QMainWindow, Ui_Dialog):
                 #self.udp_send(pt)   # send udp
                 val1 = self.allUserInput["flag_sync_inputs"].doubleSpinBox.value()      #flag_sync_inputs
                 val2 = self.allUserInput["block_neuron2"].doubleSpinBox.value()      #block_neuron2
-                self.udp_send("%d,%d,%d,%d" % (pt,  ch.addr,  val1,  val2))
+                val3 = self.allUserInput["block_neuron1"].doubleSpinBox.value()      #block_neuron1
+                self.udp_send("%d,%d,%d,%d,%d" % (pt,  ch.addr,  val1,  val2, val3))
                 #print pt
 
         self.spike_all = newSpikeAll
         
     def udp_send(self,  val):
-        UDP_IP = "192.168.0.122" #works in local wifi
+        UDP_IP = "192.168.0.110" #works in local wifi
         
         #UDP_IP = "192.168.0.1"
         UDP_PORT = 50000
@@ -364,6 +351,7 @@ class View(QMainWindow, Ui_Dialog):
 #        print "self.x=",  self.x
 #        print "y0=" ,  y0
 #        print "y1=" ,  y1
+        print ch.addr, y0, y1 
         qp.drawLine(self.x - 1 , y0, self.x + 1 , y1)
 
 
@@ -418,12 +406,15 @@ class View(QMainWindow, Ui_Dialog):
             #pipeInData = abs(gen_sin(F = 0.5, AMP = 17000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
             #pipeInData[:] = [1 - x for x in pipeInData]  #( 1 - pipeIndata)
 
-            pipeInData =  gen_rand(T=16.0,  BIAS = 1500.0, AMP = 4400.0) # 16 seconds
-            pipeInData2 =  gen_rand(T=16.0,  BIAS = 1500.0, AMP = 4400.0) # 16 seconds
+            pipeInData =  gen_rand(T=16.0,  BIAS = 1600.0, AMP = 3800.0) # 16 seconds
+            pipeInData2 =  gen_rand(T=16.0,  BIAS = 1600.0, AMP = 3800.0) # 16 seconds
             
-            #pipeInData =  gen_rand(BIAS = 3500.0, AMP = 400.0)   # also works. input current bordered around threshold
-            #pipeInData2 =  gen_rand(BIAS = 3500.0, AMP = 400.0)
-                
+#            pipeInData =  gen_rand(BIAS = 3500.0, AMP = 400.0)   # also works. input current bordered around threshold
+#            pipeInData2 =  gen_rand(BIAS = 3500.0, AMP = 400.0)
+
+            """ new setting 060514 """
+#            pipeInData =  gen_rand(T=16.0,  BIAS = 9000.0, AMP = 6400.0) # 16 seconds
+#            pipeInData2 =  gen_rand(T=16.0,  BIAS = 9000.0, AMP = 6400.0) # 16 seconds
             
           
  
@@ -433,7 +424,7 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = spike_train(firing_rate = 1) 
             print "waveform 3 fed"
 #            pipeInData = gen_sin(F = 0.5, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
-            pipeInData = abs(gen_sin(F = 0.5, AMP = 17000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
+            pipeInData = abs(gen_sin(F = 0.5, AMP = 12000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
             
             #pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.3, 1.3, 1.0, 1.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.4, 1.5, 1.55,  1.6,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)

@@ -99,42 +99,6 @@ class SomeFpga:
         ## print "%d" % (outValLo), 
         
         return outVal
-    
-    
-    def readFromPipe(self):
-        newPipeData = []
-        #buf = "\x02" * 2048  # too slow. why?
-        #buf = "\x02" * 32
-        buf = "\x00" *512
-
-        self.xem.ReadFromBlockPipeOut(0xa0, 4,  buf)  #(PIPE_OUT_ADDR = 0xa0, length, data)
-        #stream = unpack("%d" % (len(buf)/4)+  "i", buf)  # little endian or s.t. like that.
-        stream = unpack("%d" % (len(buf)/4)+  "I", buf)  #
-      
-        # unpack("64i", 64*"\xFF\xFF\x00\x00")
-        #print len(buf)
-        #print stream
-        
-        #print "len_stream = %d" % len(stream)
-        #print stream
-        #return stream
-        
-        int_x = []
-        for i in xrange(len(stream)):
-            intValLo = stream[i]  & 0xffff # length = 16-bit
-            #intValHi = self.xem.GetWireOutValue(getAddr + 0x01) & 0xffff # length = 16-bit
-            intValHi = 0x0000
-            pre_x = ((intValHi << 16) + intValLo) & 0xFFFFFFFF
-            
-            #pre_x = stream[i] & 0xFFFFFFFF
-            ## print "%0x" % pre_x
-            int= convertType(pre_x, 'I', 'i')
-            #print "%d" % int
-            int_x.append(int)
-        #print(int_x)
-        
-        return int_x
-
 
     def SendButton(self, buttonValue, evt = None):
         if evt == BUTTON_RESET:
@@ -202,6 +166,8 @@ class SomeFpga:
         else:
             print "Send pipe filed! %d bytes sent" % byteSent
             
+
+
     def SendPipeInt(self, pipeInData):
         """ Send byte stream to OpalKelly board
         """

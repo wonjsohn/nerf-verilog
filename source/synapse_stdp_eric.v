@@ -279,11 +279,11 @@ always @ (negedge clk or negedge reset_bar) begin
     end else begin
         if (state) begin
             each_I <= i_mem_in;
-            synaptic_strength <= impulse_mem_in; // 128 synapse output  % moved out
+            
             if (neuron_index == 7'h7f) begin  //every 128 neuron_clk
                 first_pass <= 0;
                 I_out <= i_mem_in;
-                
+                synaptic_strength <= impulse_mem_in; // 128 synapse output  % moved out
                // lut_out32 <= lut_out32_F0;
             end
         end
