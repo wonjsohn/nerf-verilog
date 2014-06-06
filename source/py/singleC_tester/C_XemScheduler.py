@@ -58,7 +58,7 @@ class SingleXemTester(QDialog):
     def close(self):
         self.dispView.close()
         self.dispView.plotData(self.data)
-        self.dispView.savePipeOutData(self.pipeData)
+#        self.dispView.savePipeOutData(self.pipeData)
         
         
     def startSim(self):
@@ -77,7 +77,8 @@ class SingleXemTester(QDialog):
         """
         Core function of Controller, polling data from Model(fpga) and sending to Viewer.
         """
-        newData,  newPipeData = self.dispView.reportData()
+#        newData,  newPipeData = self.dispView.reportData()
+        newData= self.dispView.reportData()
         #print newData[0::3] 
             #        newSpike1 = self.nerfModel.ReadPipe(0xA0, 5000) # read ## bytes
 #        newSpike2 = self.nerfModel.ReadPipe(0xA1, 5000) # read ## bytes

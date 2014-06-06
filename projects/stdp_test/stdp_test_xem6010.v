@@ -266,7 +266,15 @@
         if (reset_global)
             triggered_input4 <= 32'd0;         //reset to 0      
         else
-            triggered_input4 <= {ep02wire, ep01wire};        
+            triggered_input4 <= {ep02wire, ep01wire};      
+
+        // Triggered Input triggered_input4 Instance Definition (sync_scale)
+        reg [31:0] block_neuron1;
+        always @ (posedge ep50trig[4] or posedge reset_global)
+        if (reset_global)
+            block_neuron1 <= 32'd0;         //reset to 0     
+        else
+            block_neuron1 <= {ep02wire, ep01wire};               
             
         // Triggered Input triggered_input4 Instance Definition (sync_scale)
         reg [31:0] block_neuron2;
@@ -562,7 +570,7 @@
         izneuron_th_control neuron0(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( i_mixed_input0),          // input current from synapse
+            .I_in( (block_neuron1)? 32'd0 : i_mixed_input0),          // input current from synapse
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron0),               // membrane potential
             .spike(spike_neuron0),           // spike sample
