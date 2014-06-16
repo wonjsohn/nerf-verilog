@@ -351,7 +351,7 @@ class View(QMainWindow, Ui_Dialog):
 #        print "self.x=",  self.x
 #        print "y0=" ,  y0
 #        print "y1=" ,  y1
-        print ch.addr, y0, y1 
+#        print ch.addr, y0, y1 
         qp.drawLine(self.x - 1 , y0, self.x + 1 , y1)
 
 

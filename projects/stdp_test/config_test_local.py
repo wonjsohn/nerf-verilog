@@ -22,12 +22,12 @@ FPGA_OUTPUT =    (0x20,      'neuron0_input',      1.0,         'int32',      Qt
 		(0x3E,      'each_I_synapse3',      1.0,         'int32',      Qt.darkGray)
 
 #            trig_id    name          type          default_value                
-USER_INPUT =   (1, 'xxx',  'float32',      30.0), \
-                    (2, 'xxx',  'float32',      0.03), \
+USER_INPUT =   (1, 'synaptic_decay',  'int32',      0), \
+                    (2, 'random_digits',  'int32',      13), \
                     (3, 'flag_sync_inputs',   'int32',       0), \
                     (4, 'block_neuron1',    'int32',      0), \
                     (5, 'xxx',    'int32',      10240), \
-                    (6, 'N0_in',      'int32',        10240),  \
+                    (6, 'N0_in',      'int32',        1600),  \
                     (7, 'half_count',      'int32',        381),  \
                     (8, 'block_neuron2',      'int32',        0),  \
                     (9, 'lce',      'float32',        1.0),  \
