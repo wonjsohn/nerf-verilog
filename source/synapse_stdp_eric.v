@@ -26,6 +26,7 @@ module synapse_stdp_eric(
                 input wire spike_in,
                 input wire [31:0] lut2_index,
                 input wire postsynaptic_spike_in,
+                input wire i_synaptic_decay,
                 
                 
                 output reg signed [31:0] I_out,  // updates once per population (scaling factor 1024) 
@@ -62,7 +63,9 @@ wire [31:0] i_mem_in;
 
 //i_mem updates every neuron_clk
 //  current of >>>2 decay is too fast 
+// I(n+1) = 0.95* I(n+1) : 20ms time constant (form 1ms time interval)
 assign i_mem_in = first_pass ? 0 : i_mem - (i_mem >>> 3) + impulse; //I = 0.875*I + impulse  (current decay+impulse)  
+//assign i_mem_in = first_pass ? 0 : i_mem - (i_mem >>> 4) + impulse; //I = 0.9365*I + impulse  (current decay+impulse) 
 
 wire [31:0] spike_history_mem;
 wire [31:0] spike_history_mem_in;
@@ -190,7 +193,7 @@ assign delta_w_ltd_pre = spike ?
 wire [31:0] random_out;
 wire [31:0] impulse_decay;
 
-assign impulse_decay = (random_out <= p_delta) ? impulse_mem >>> 12 : 0; // possion delay? 
+//assign impulse_decay = (random_out <= p_delta) ? impulse_mem >>> 12 : 0; // possion delay? 
  
 
  
@@ -203,9 +206,14 @@ assign impulse_decay = (random_out <= p_delta) ? impulse_mem >>> 12 : 0; // poss
             .lfsr(),
             .casr()
     );
+   wire [31:0] random_out_cut;
+   assign random_out_cut = {22'b0,random_out[9:0]};
+   assign impulse_decay = (random_out_cut <= p_delta) ? impulse_mem >>> 10 : 0; // possion delay? 
+ 
     
 wire [31:0] impulse_mem;
 wire [31:0] impulse_mem_in;
+wire [31:0] impulse_stdp_decay;
 
 wire [31:0] impulse_stdp;
 wire [31:0] lut_out32_F0;
@@ -218,7 +226,15 @@ assign lut_out32_F0 = {27'b0, lut_out};
 //assign impulse_stdp = first_pass ? base_strength : impulse_mem+delta_w-delta_w_ltd-impulse_decay;  
 
 //assign impulse_stdp = first_pass ? base_strength : impulse_mem - (impulse_mem >>> 12) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. modified by eric
-assign impulse_stdp = first_pass ? base_strength :  (impulse_mem <= 4096)? impulse_mem-1+ delta_w_ltp - delta_w_ltd:   impulse_mem - (impulse_mem >>> 12) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. modified by eric assign impulse_mem_in = impulse_bcm;
+//assign impulse_stdp = first_pass ? base_strength :  (impulse_mem <= 4096)? impulse_mem-1+ delta_w_ltp - delta_w_ltd:   impulse_mem - (impulse_mem >>> 12) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. 060614
+
+// Zero synaptic decay. (lambda = 0)
+//assign impulse_stdp = first_pass ? base_strength : impulse_mem  + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // No decay
+
+//Synaptic decay selection option 0: no decay, 1: yes decay.
+assign impulse_stdp = first_pass ? base_strength : (i_synaptic_decay)? impulse_mem - impulse_decay + delta_w_ltp - delta_w_ltd:  impulse_mem  + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // No decay
+
+
 //assign impulse_mem_in = impulse_mem;
 
 //assign impulse_mem_in = (impulse_stdp >= base_strength)? impulse_stdp: base_strength;  // set minimum synaptic strength

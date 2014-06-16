@@ -19,7 +19,6 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-
 // Difference eq. description of active_state, see Shadmehr h(x) & nerf-py/muscle/gen_active_force.py
 module h_diff_eq(x_i1, x_i2, y_i1, y_i2, y_i);
     input signed		 [31:0] x_i1, x_i2;

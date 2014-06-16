@@ -27,7 +27,7 @@ class ArmSetup:
         self.currGammaDyn = 80.0 
         self.currGammaSta = 80.0 
         self.torqueMultiplier = 1.0 #(for fuglevand: 1.55 # 0.55 works the best so far)
-        self.JOINT_DAMPING = 0.1
+        self.JOINT_DAMPING = 0.01
 #        self.RATIO_RECIPROCAL_INHIBITION = 2.0
         
         pygame.init()
@@ -739,13 +739,13 @@ class ArmSetup:
         t2 = threading.Thread(target=self.controlLoopBiceps)
         t3 = threading.Thread(target=self.controlLoopTriceps)
         t4 = threading.Thread(target=self.dataRecordLoop)
-#        t5 = threading.Thread(target=self.runExp)
+        t5 = threading.Thread(target=self.runExp)
         
         t1.start()
         t2.start()
         t3.start()
         t4.start()
-#        t5.start()
+        t5.start()
         
 #        t1.join()
 #        t2.join()
@@ -788,13 +788,19 @@ if __name__ == '__main__':
 #   
 
     xem_spindle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054K')
-    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054G')
-    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053U')
+#    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054G')
+#    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053U')
     xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '0000000550')
     
     
-    xem_cortical_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054P')
+#    xem_cortical_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054P')
     xem_cortical_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053X')
+    
+    # silver top
+    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12320003RN')
+    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12430003T2')
+    xem_cortical_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '11160001CJ')
+    
     
 #    xemSerialList = ['000000054G', '000000054P',  '000000053U'] # copper top
 #    xemSerialList = ['000000054K', '000000053X',  '0000000550'] # copper top

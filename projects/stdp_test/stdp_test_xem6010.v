@@ -208,12 +208,28 @@
 /////////////////////// BEGIN INSTANCE DEFINITIONS ////////////////////////
 
 
+
+   reg [31:0] i_synaptic_decay;
+        // Triggered Input 
+        always @ (posedge ep50trig[1] or posedge reset_global)
+        if (reset_global)
+            i_synaptic_decay <= 32'd0;    //32'd0 = no decay;           
+        else
+            i_synaptic_decay <= {ep02wire, ep01wire};   
+
+        reg [31:0] i_random_digit;
+        // Triggered Input 
+        always @ (posedge ep50trig[2] or posedge reset_global)
+        if (reset_global)
+            i_random_digit <= 32'd13;    //32'd8;           
+        else
+            i_random_digit <= {ep02wire, ep01wire};     
         
 
         // Triggered Input triggered_input0 Instance Definition (left_m1_in)
         always @ (posedge ep50trig[6] or posedge reset_global)
         if (reset_global)
-            triggered_input0 <= 32'd10240;    //32'd10240;         //reset to 10      
+            triggered_input0 <= 32'd1600;    //32'd1600;           
         else
             triggered_input0 <= {ep02wire, ep01wire};        
         
@@ -358,6 +374,7 @@
             .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
             .wave(mixed_input2)                   // wave out signal
         );
+        
         
                
                       
@@ -530,8 +547,75 @@
             .in(mixed_input2),
             .out(i_mixed_input2)
         );
+        
+        // random signal generated in FPGA
+        //parameter random_digits = 9;
+        wire [31:0] n0_rand_out_neuronclk;
+        rng rng_neuron0(               
+        .clk1(neuron_clk),
+        .clk2(neuron_clk),
+        .reset(reset_sim),
+        .out(n0_rand_out_neuronclk)
+        ); 
+        
+       wire [31:0] i_rng_current_to_N0;
+       //assign i_rng_current_to_N1= {i_I_drive_to_N[31:random_digits+1] , n1_rand_out[random_digits:0]};
+       wire [31:0] i_rand32_n0;
+       
+        assign i_rand32_n0 = 
+                            (i_random_digit==32'd14)? {17'b0,n0_rand_out[14:0]}: 
+                            (i_random_digit==32'd13)? {18'b0,n0_rand_out[13:0]}:
+                            (i_random_digit==32'd12)? {19'b0,n0_rand_out[12:0]}:
+                            (i_random_digit==32'd11)? {20'b0,n0_rand_out[11:0]}: 
+                            (i_random_digit==32'd10)? {21'b0,n0_rand_out[10:0]}: 
+                            (i_random_digit==32'd9)?  {22'b0,n0_rand_out[9:0]}:
+                            {23'b0,n0_rand_out[8:0]};
+        assign i_rng_current_to_N0 = triggered_input0 + i_rand32_n0;
 
-
+    // random signal generated in FPGA
+        wire [31:0] n2_rand_out_neuronclk;
+        rng rng_neuron2(               
+        .clk1(neuron_clk),
+        .clk2(neuron_clk),
+        .reset(reset_sim),
+        .out(n2_rand_out_neuronclk)
+        ); 
+        
+        
+       // sample ramdonness at sim_clk (to imitate python waveform input )
+       reg [31:0] n0_rand_out;
+        always @(posedge sim_clk or posedge reset_global)
+         begin
+           if (reset_global)
+            begin
+              n0_rand_out <= n0_rand_out_neuronclk;
+            end else begin
+              n0_rand_out <= n0_rand_out_neuronclk; 
+            end
+          end       
+        
+        reg [31:0] n2_rand_out;
+       always @(posedge sim_clk or posedge reset_global)
+         begin
+           if (reset_global)
+            begin
+              n2_rand_out <= n2_rand_out_neuronclk;
+            end else begin
+              n2_rand_out <= n2_rand_out_neuronclk; 
+            end
+          end
+        
+       wire [31:0] i_rng_current_to_N2;
+       //assign i_rng_current_to_N1= {i_I_drive_to_N[31:random_digits+1] , n1_rand_out[random_digits:0]};
+        wire [31:0] i_rand32_n2;
+        assign i_rand32_n2 = (i_random_digit==32'd14)? {17'b0,n2_rand_out[30:16]}: 
+                            (i_random_digit==32'd13)? {18'b0,n2_rand_out[29:16]}:
+                            (i_random_digit==32'd12)? {19'b0,n2_rand_out[28:16]}:
+                            (i_random_digit==32'd11)? {20'b0,n2_rand_out[27:16]}: 
+                            (i_random_digit==32'd10)? {21'b0,n2_rand_out[26:16]}: 
+                            (i_random_digit==32'd9)?  {22'b0,n2_rand_out[25:16]}:
+                            {23'b0,n2_rand_out[24:16]};
+        assign i_rng_current_to_N2 = triggered_input0 +  i_rand32_n2;
     
         //Control input to neuron 2 (e.g. ambliopia)
         //wire [31:0] i_mixed_input2_scaled;
@@ -539,9 +623,18 @@
 
         
         wire [31:0] neuron0_input;
-        assign neuron0_input = is_from_trigger? triggered_input0 :i_mixed_input0;
-        wire [31:0] neuron2_input;
-        assign neuron2_input = is_from_trigger? triggered_input0: flag_sync_inputs? i_mixed_input0: i_mixed_input2;
+        //assign neuron0_input = is_from_trigger? triggered_input0 :i_mixed_input0; (ver 1)
+        assign neuron0_input = is_from_trigger? i_rng_current_to_N0 :i_mixed_input0;
+        //assign neuron0_input= i_rng_current_to_N0; (ver 2.)
+        
+        
+        wire [31:0] neuron2_input_pre, neuron2_input;
+        //assign neuron2_input = is_from_trigger? triggered_input0: flag_sync_inputs? i_mixed_input0: i_mixed_input2; (ver 1)
+        assign neuron2_input_pre = is_from_trigger?  i_rng_current_to_N2: i_mixed_input2; 
+                                                   
+        assign neuron2_input = flag_sync_inputs?  neuron0_input: neuron2_input_pre;
+        
+        //assign neuron2_input = flag_sync_inputs? i_rng_current_to_N0: i_rng_current_to_N2; (ver 2)
         
 //        // randomization of input current 
 //        wire [31:0] rand_n01;
@@ -570,7 +663,7 @@
         izneuron_th_control neuron0(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( (block_neuron1)? 32'd0 : i_mixed_input0),          // input current from synapse
+            .I_in( (block_neuron1)? 32'd0 : neuron0_input),          // input current from synapse
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron0),               // membrane potential
             .spike(spike_neuron0),           // spike sample
@@ -605,7 +698,7 @@
         izneuron_th_control neuron2(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( (block_neuron2)? 32'd0 : i_mixed_input2 ),          // input current from synapse
+            .I_in( (block_neuron2)? 32'd0 : neuron2_input ),          // input current from synapse
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron2),               // membrane potential
             .spike(spike_neuron2),           // spike sample
@@ -669,7 +762,7 @@
         .reset(reset_sim),                       // reset synaptic weights
         .spike_in(each_spike_neuron0),             // spike from presynaptic neuron
         .postsynaptic_spike_in(each_spike_neuron1),   //spike from postsynaptic neuron
-        
+        .i_synaptic_decay(i_synaptic_decay[0]),       //0: no synaptic decay, 1: yes synaptic decay (slow constant deduction -1)
         
         .I_out(I_synapse0),                           // sample of synaptic current out
         .synaptic_strength(variable_synaptic_strength0),                           // sample of synaptic current out
@@ -692,6 +785,8 @@
         .reset(reset_sim),                       // reset synaptic weights
         .spike_in(cut_synapse1? each_spike_neuron0:32'd0),             // spike from presynaptic neuron
         .postsynaptic_spike_in(each_spike_neuron3),   //spike from postsynaptic neuron
+        .i_synaptic_decay(i_synaptic_decay[0]),       //0: no synaptic decay, 1: yes synaptic decay (slow constant deduction -1)
+        
         .I_out(I_synapse1),                           // sample of synaptic current out
         .synaptic_strength(variable_synaptic_strength1),                           // sample of synaptic current out
         .each_I(each_I_synapse1),                      // raw synaptic currents
@@ -713,6 +808,8 @@
         .reset(reset_sim),                       // reset synaptic weights
         .spike_in(cut_synapse2? each_spike_neuron2:32'd0),             // spike from presynaptic neuron
         .postsynaptic_spike_in(each_spike_neuron1),   //spike from postsynaptic neuron
+        .i_synaptic_decay(i_synaptic_decay[0]),       //0: no synaptic decay, 1: yes synaptic decay (slow constant deduction -1)
+        
         .I_out(I_synapse2),                           // sample of synaptic current out
         .synaptic_strength(variable_synaptic_strength2),                           // sample of synaptic current out
         .each_I(each_I_synapse2),                      // raw synaptic currents
@@ -734,6 +831,8 @@
         .reset(reset_sim),                       // reset synaptic weights
         .spike_in(each_spike_neuron2),             // spike from presynaptic neuron
         .postsynaptic_spike_in(each_spike_neuron3),   //spike from postsynaptic neuron
+        .i_synaptic_decay(i_synaptic_decay[0]),       //0: no synaptic decay, 1: yes synaptic decay (slow constant deduction -1)
+        
         .I_out(I_synapse3),                           // sample of synaptic current out
         .synaptic_strength(variable_synaptic_strength3),                           // sample of synaptic current out
         .each_I(each_I_synapse3),                      // raw synaptic currents
