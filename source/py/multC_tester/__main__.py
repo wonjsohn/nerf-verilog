@@ -10,6 +10,8 @@ from MVC_MainGUI import MultiXemScheduler
 from C_XemScheduler import SingleXemTester # Controller in MVC
 from M_Fpga import SomeFpga # Model in MVC
 from V_Display import View, ViewChannel,  CtrlChannel # Viewer in MVC
+import importlib
+
 #from cortex import cortexView
 import os
 
@@ -26,29 +28,25 @@ if __name__ == "__main__":
     app = PyQt4.QtGui.QApplication(sys.argv)
     
 #    ROOT_PATH = QFileDialog.getExistingDirectory(None, "Path for the Verilog .bit file", os.getcwd() + "../../")
-
-    LINUX = 1
-    WINDOWS = 0
-    assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
-    TWO_BOARDS= 0
-    THREE_BOARDS=1
-    CORTICAL_BOARDS= 0
-    assert (TWO_BOARDS+THREE_BOARDS+CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING!"
+    board_scheme = importlib.import_module(str(sys.argv[1]))
     
-    if (WINDOWS==1) :
+    assert (board_scheme.LINUX + board_scheme.WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
+    assert (board_scheme.TWO_BOARDS+board_scheme.THREE_BOARDS+board_scheme.CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING!"
+    
+    if (board_scheme.WINDOWS==1) :
         ROOT_PATH = "C:\\nerf_sangerlab\\projects\\"  # windows setting
-    if (LINUX==1):
+    if (board_scheme.LINUX==1):
         ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
 
     #################################################
-    if (TWO_BOARDS == 1):
+    if (board_scheme.TWO_BOARDS == 1):
         PROJECT_LIST = ["rack_test", "rack_emg"] 
 
-    if (THREE_BOARDS ==1) :
+    if (board_scheme.THREE_BOARDS ==1) :
         PROJECT_LIST = ["rack_test", "rack_CN_simple_S1M1", "rack_emg"]   # rack_CN_simple_general
     
-    if (CORTICAL_BOARDS ==1) :
+    if (board_scheme.CORTICAL_BOARDS ==1) :
         PROJECT_LIST = ["rack_CN_simple_S1M1", "rack_CN_simple_S1M1"]   # rack_CN_general
         
     PROJECT_PATH = [(ROOT_PATH + p) for p in PROJECT_LIST]
@@ -68,42 +66,11 @@ if __name__ == "__main__":
     numFpga = testrun.GetDeviceCount()
     assert numFpga > 0, "No OpalKelly boards found, is one connected?"
     print "Found ",  numFpga, " OpalKelly devices:"           
-    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
-    print xemSerialList
-    if (CORTICAL_BOARDS ==1) :   
-        print "cortical boards setup"
-#        xemSerialList = [ '11160001CJ',  '12320003RM']  # CORTICAL BOARDS
-        xemSerialList = [ '000000054P',  '000000053X']  # CORTICAL BOARDS 6 copper top
-#        xemSerialList = ['0000000547', '000000054B']  # CORTICAL BOARDS  BBDL setting
-    elif (TWO_BOARDS ==1 and LINUX == 1):
-##        print "2 boards in linux setup"
-#        xemSerialList = ['124300046A', '1201000216']
-#        xemSerialList = ['12320003RN', '12430003T2'] 
-        xemSerialList = ['000000054G', '000000053U'] #6 copper top
-#        xemSerialList = ['000000054K', '0000000550'] # copper top
-#        xemSerialList = ['113700021E', '0000000542'] 
-#        xemSerialList = ['11160001CG', '1137000222'] 
-    elif (THREE_BOARDS ==1 and LINUX == 1):
-        print "3 boards in linux setup"
-#        xemSerialList = ['124300046A', '12320003RM', '1201000216'] 
-        xemSerialList = ['12320003RN', '11160001CJ',  '12430003T2']
-#        xemSerialList = ['000000054G', '000000054P',  '000000053U'] # copper top
-#        xemSerialList = ['000000054K', '000000053X',  '0000000550'] # copper top
-#        xemSerialList = ['113700021E', '0000000547', '0000000542']  # BBDL setting
-#        xemSerialList = ['11160001CG', '000000054B', '1137000222']  # BBDL setting
-    elif (WINDOWS == 1): # assumes three board setting
-        print "windows setup"
-        xemSerialList = ['113700021E', '0000000547', '0000000542']  # BBDL setting
-#        xemSerialList = ['11160001CG', '000000054B', '1137000222']  # BBDL setting
-#        xemSerialList = ['11160001CG', '1137000222']    #PXI first couple 
-#      xemSerialList = ['113700021E', '0000000542']   # PXI sercond couple
+    availableFPGAs = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
+    print availableFPGAs
+    
 
-#    xemSerialList = ['1137000222', '11160001CJ', '12430003T2']
-    #xemSerialList = ['12320003RN', '0000000542',  '12430003T2']
-#    xemSerialList = ['12320003RN']
-#    xemSerialList=['13500007MB', '13500007M8']  # new boards shipped March 2014
-
-    print xemSerialList
+    print board_scheme.xemSerialList
     
     
     
@@ -114,13 +81,13 @@ if __name__ == "__main__":
     FPGA_OUTPUT_B = []
     USER_INPUT_B = []
     
-    if (TWO_BOARDS ==1) :
+    if (board_scheme.TWO_BOARDS ==1) :
         FPGA_OUTPUT_B.append(FPGA_OUTPUT_B1)
         FPGA_OUTPUT_B.append(FPGA_OUTPUT_B3)
         USER_INPUT_B.append(USER_INPUT_B1)
         USER_INPUT_B.append(USER_INPUT_B3)
     
-    if (THREE_BOARDS ==1) :
+    if (board_scheme.THREE_BOARDS ==1) :
         FPGA_OUTPUT_B.append(FPGA_OUTPUT_B1)
         FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
         FPGA_OUTPUT_B.append(FPGA_OUTPUT_B3)
@@ -128,15 +95,15 @@ if __name__ == "__main__":
         USER_INPUT_B.append(USER_INPUT_B2)
         USER_INPUT_B.append(USER_INPUT_B3)
     
-    if (CORTICAL_BOARDS==1):
+    if (board_scheme.CORTICAL_BOARDS==1):
         FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
         FPGA_OUTPUT_B.append(FPGA_OUTPUT_B2)
         USER_INPUT_B.append(USER_INPUT_B2)
         USER_INPUT_B.append(USER_INPUT_B2)
     
-    for idx,  name in enumerate(xemSerialList):
+    for idx,  name in enumerate(board_scheme.xemSerialList):
         print idx,  name
-        serX = xemSerialList[idx]
+        serX = board_scheme.xemSerialList[idx]
         xem = SomeFpga(NUM_NEURON, SAMPLING_RATE, serX)
         xemList.append(xem)
     
@@ -144,7 +111,7 @@ if __name__ == "__main__":
     BUTTON_RESET =0
     BUTTON_INPUT_FROM_TRIGGER = 1
     
-    for idx,  name in enumerate(xemSerialList):
+    for idx,  name in enumerate(board_scheme.xemSerialList):
         xemList[idx].SendButton(True, BUTTON_RESET)   # send to FPGA (flexor)
         xemList[idx].SendButton(False, BUTTON_RESET)
         print "reset_global board:",  idx
