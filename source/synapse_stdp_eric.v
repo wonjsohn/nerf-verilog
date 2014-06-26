@@ -39,7 +39,8 @@ module synapse_stdp_eric(
                 
                 input wire [31:0] ltp_scale,              // long term potentiation delta (stdp)
                 input wire [31:0] ltd_scale,              // long term depression delta   (stdp)
-                input wire [31:0] p_delta           // probability of synaptic decay event
+                input wire [31:0] p_delta,           // probability of synaptic weight decay event
+                input wire [31:0] p_growth          // probability of synaptic weight change by STDP 
     );
 
 // COMPUTE EACH SYNAPTIC CURRENT /////////////////////////////////////////////////////////////////
@@ -50,13 +51,13 @@ module synapse_stdp_eric(
 //wire [31:0] p_delta;
 //assign p_delta= 32'd0;
 
-wire [31:0] impulse;
+wire [31:0] synapticW;
 
 reg spike;
 reg postsynaptic_spike;
-//assign impulse = spike ? 31'd1024 : 0; // 1(unit?) current per spike
-//assign impulse = spike ? 31'd10240 : 0; // 10(unit?) c urrent per spike
-assign impulse = spike ? impulse_mem_in : 0;  // synaptic strength
+//assign synapticW = spike ? 31'd1024 : 0; // 1(unit?) current per spike
+//assign synapticW = spike ? 31'd10240 : 0; // 10(unit?) c urrent per spike
+assign synapticW = spike ? synapticW_mem_in : 0;  // synaptic strength
 
 wire [31:0] i_mem; // I_out
 wire [31:0] i_mem_in;
@@ -64,8 +65,8 @@ wire [31:0] i_mem_in;
 //i_mem updates every neuron_clk
 //  current of >>>2 decay is too fast 
 // I(n+1) = 0.95* I(n+1) : 20ms time constant (form 1ms time interval)
-assign i_mem_in = first_pass ? 0 : i_mem - (i_mem >>> 3) + impulse; //I = 0.875*I + impulse  (current decay+impulse)  
-//assign i_mem_in = first_pass ? 0 : i_mem - (i_mem >>> 4) + impulse; //I = 0.9365*I + impulse  (current decay+impulse) 
+assign i_mem_in = first_pass ? 0 : i_mem - (i_mem >>> 3) + synapticW; //I = 0.875*I + synapticW  (current decay+synapticW)  
+//assign i_mem_in = first_pass ? 0 : i_mem - (i_mem >>> 4) + synapticW; //I = 0.9365*I + synapticW  (current decay+synapticW) 
 
 wire [31:0] spike_history_mem;
 wire [31:0] spike_history_mem_in;
@@ -191,9 +192,10 @@ assign delta_w_ltd_pre = spike ?
                                 (ps_spike_history_mem[1]?31:0)) : 0;
                         
 wire [31:0] random_out;
-wire [31:0] impulse_decay;
+wire [31:0] synapticW_decay;
+wire [31:0] synapticW_change;
 
-//assign impulse_decay = (random_out <= p_delta) ? impulse_mem >>> 12 : 0; // possion delay? 
+//assign synapticW_decay = (random_out <= p_delta) ? synapticW_mem >>> 12 : 0; // possion delay? 
  
 
  
@@ -208,38 +210,44 @@ wire [31:0] impulse_decay;
     );
    wire [31:0] random_out_cut;
    assign random_out_cut = {22'b0,random_out[9:0]};
-   assign impulse_decay = (random_out_cut <= p_delta) ? impulse_mem >>> 10 : 0; // possion delay? 
+   // random chance for synapticW decay 
+   assign synapticW_decay = (random_out_cut <= p_delta) ? synapticW_mem >>> 8 : 0; // possion delay? 
+ 
+   /// random chance for synapticW change by STDP 
+   assign synapticW_change = (random_out_cut <= p_growth) ? delta_w_ltp - delta_w_ltd : 0; 
+ 
+ 
  
     
-wire [31:0] impulse_mem;
-wire [31:0] impulse_mem_in;
-wire [31:0] impulse_stdp_decay;
+wire [31:0] synapticW_mem;
+wire [31:0] synapticW_mem_in;
+wire [31:0] synapticW_stdp_decay;
 
-wire [31:0] impulse_stdp;
+wire [31:0] synapticW_stdp;
 wire [31:0] lut_out32_F0;
 assign lut_out32_F0 = {27'b0, lut_out}; 
-//wire [31:0] impulse_bcm;
-//reg [31:0] impulse_bcm;
+//wire [31:0] synapticW_bcm;
+//reg [31:0] synapticW_bcm;
 
-//assign impulse_mem_in = first_pass ? 32'd10240 : impulse_mem+delta_w+delta_w_ltd-impulse_decay;
-//assign impulse_stdp = first_pass ? 32'd10240 : impulse_mem+delta_w+delta_w_ltd-impulse_decay;
-//assign impulse_stdp = first_pass ? base_strength : impulse_mem+delta_w-delta_w_ltd-impulse_decay;  
+//assign synapticW_mem_in = first_pass ? 32'd10240 : synapticW_mem+delta_w+delta_w_ltd-synapticW_decay;
+//assign synapticW_stdp = first_pass ? 32'd10240 : synapticW_mem+delta_w+delta_w_ltd-synapticW_decay;
+//assign synapticW_stdp = first_pass ? base_strength : synapticW_mem+delta_w-delta_w_ltd-synapticW_decay;  
 
-//assign impulse_stdp = first_pass ? base_strength : impulse_mem - (impulse_mem >>> 12) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. modified by eric
-//assign impulse_stdp = first_pass ? base_strength :  (impulse_mem <= 4096)? impulse_mem-1+ delta_w_ltp - delta_w_ltd:   impulse_mem - (impulse_mem >>> 12) + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // small decay. 060614
+//assign synapticW_stdp = first_pass ? base_strength : synapticW_mem - (synapticW_mem >>> 12) + delta_w_ltp - delta_w_ltd; //-synapticW strength_decay; // small decay. modified by eric
+//assign synapticW_stdp = first_pass ? base_strength :  (synapticW_mem <= 4096)? synapticW_mem-1+ delta_w_ltp - delta_w_ltd:   synapticW_mem - (synapticW_mem >>> 12) + delta_w_ltp - delta_w_ltd; //-synapticW strength_decay; // small decay. 060614
 
-// Zero synaptic decay. (lambda = 0)
-//assign impulse_stdp = first_pass ? base_strength : impulse_mem  + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // No decay
+// Zero synapticW decay. (lambda = 0)
+//assign synapticW_stdp = first_pass ? base_strength : synapticW_mem  + delta_w_ltp - delta_w_ltd; //-synapticW strength_decay; // No decay
 
-//Synaptic decay selection option 0: no decay, 1: yes decay.
-assign impulse_stdp = first_pass ? base_strength : (i_synaptic_decay)? impulse_mem - impulse_decay + delta_w_ltp - delta_w_ltd:  impulse_mem  + delta_w_ltp - delta_w_ltd; //-synaptic strength_decay; // No decay
+//synapticW decay selection option 0: no decay, 1: yes decay.
+assign synapticW_stdp = first_pass ? base_strength : (i_synaptic_decay)? synapticW_mem - synapticW_decay + synapticW_change:  synapticW_mem  + synapticW_change;//-synaptic strength_decay; // No decay
 
 
-//assign impulse_mem_in = impulse_mem;
+//assign synapticW_mem_in = synapticW_mem;
 
-//assign impulse_mem_in = (impulse_stdp >= base_strength)? impulse_stdp: base_strength;  // set minimum synaptic strength
-assign impulse_mem_in =(impulse_stdp <= 32'd5120)? 32'd5120 :impulse_stdp; ////minimum strenth =5120 
-//assign impulse_mem_in = impulse_stdp;
+//assign synapticW_mem_in = (synapticW_stdp >= base_strength)? synapticW_stdp: base_strength;  // set minimum synaptic strength
+assign synapticW_mem_in =(synapticW_stdp <= 32'd5120)? 32'd5120 :synapticW_stdp; ////minimum strenth =5120 
+//assign synapticW_mem_in = synapticW_stdp;
 
 
 // STATE MACHINE //////////////////////////////////////////////////////////////////////////////////////
@@ -299,7 +307,7 @@ always @ (negedge clk or negedge reset_bar) begin
             if (neuron_index == 7'h7f) begin  //every 128 neuron_clk
                 first_pass <= 0;
                 I_out <= i_mem_in;
-                synaptic_strength <= impulse_mem_in; // 128 synapse output  % moved out
+                synaptic_strength <= synapticW_mem_in; // 128 synapse output  % moved out
                // lut_out32 <= lut_out32_F0;
             end
         end
@@ -346,12 +354,12 @@ end
   .doutb() // output [31 : 0] doutb
     );
 
-    neuron_ram impulse_ram (
+    neuron_ram synapticW_ram (
   .clka(~clk), // input clka
   .wea(write), // input [0 : 0] wea
   .addra(neuron_index), // input [6 : 0] addra
-  .dina(impulse_mem_in), // input [31 : 0] dina
-  .douta(impulse_mem), // output [31 : 0] douta
+  .dina(synapticW_mem_in), // input [31 : 0] dina
+  .douta(synapticW_mem), // output [31 : 0] douta
   .clkb(clk), // input clkb
   .web(1'b0), // input [0 : 0] web
   .addrb(7'd0), // input [6 : 0] addrb
