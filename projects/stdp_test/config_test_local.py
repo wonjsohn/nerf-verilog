@@ -26,7 +26,7 @@ USER_INPUT =   (1, 'synaptic_decay',  'int32',      0), \
                     (2, 'random_digits',  'int32',      13), \
                     (3, 'flag_sync_inputs',   'int32',       0), \
                     (4, 'block_neuron1',    'int32',      0), \
-                    (5, 'xxx',    'int32',      10240), \
+                    (5, 'p_growth',    'int32',      0), \
                     (6, 'N0_in',      'int32',        1600),  \
                     (7, 'half_count',      'int32',        381),  \
                     (8, 'block_neuron2',      'int32',        0),  \

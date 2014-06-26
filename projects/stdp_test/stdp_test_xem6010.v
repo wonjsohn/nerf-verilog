@@ -237,7 +237,7 @@
         // Triggered Input triggered_input1 Instance Definition (right_m1_in)
         always @ (posedge ep50trig[5] or posedge reset_global)
         if (reset_global)
-            triggered_input1 <= 32'd10240;   //32'd10240;         //reset to 10      
+            triggered_input1 <= 32'd0;   //32'd0;         //reset to 0    
         else
             triggered_input1 <= {ep02wire, ep01wire};        
             
@@ -772,7 +772,8 @@
     
         .ltp_scale(triggered_input2),                        // long term potentiation weight
         .ltd_scale(triggered_input3),                        // long term depression weight
-        .p_delta(triggered_input4)                 // chance for decay 
+        .p_delta(triggered_input4),                 // chance for decay 
+        .p_growth(triggered_input1)                //chance for synaptic growth. 
     );
     
 
@@ -795,7 +796,8 @@
     
         .ltp_scale(triggered_input2),                        // long term potentiation weight
         .ltd_scale(triggered_input3),                        // long term depression weight
-        .p_delta(triggered_input4)                 // chance for decay 
+        .p_delta(triggered_input4),                 // chance for decay 
+        .p_growth(triggered_input1)                //chance for synaptic growth. 
     );
     
 //
@@ -818,7 +820,8 @@
     
         .ltp_scale(triggered_input2),                        // long term potentiation weight
         .ltd_scale(triggered_input3),                        // long term depression weight
-        .p_delta(triggered_input4)                 // chance for decay 
+        .p_delta(triggered_input4),                 // chance for decay 
+        .p_growth(triggered_input1)                //chance for synaptic growth. 
     );
     
 
@@ -841,7 +844,8 @@
     
         .ltp_scale(triggered_input2),                        // long term potentiation weight
         .ltd_scale(triggered_input3),                        // long term depression weight
-        .p_delta(triggered_input4)                 // chance for decay 
+        .p_delta(triggered_input4),                 // chance for decay 
+        .p_growth(triggered_input1)                //chance for synaptic growth. 
     );
 
 
