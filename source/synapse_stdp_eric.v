@@ -79,71 +79,75 @@ assign spike_history_mem_in = first_pass ? 0 : {spike_history_mem[30:0], spike};
 wire [31:0] delta_w_ltp_pre;
 //assign delta_w_ltp = delta_w_ltp_pre*ltp_scale;
 unsigned_mult32 multltp(.out(delta_w_ltp), .a(delta_w_ltp_pre), .b(ltp_scale));
-assign delta_w_ltp_pre = postsynaptic_spike ? 
-                           ((spike_history_mem[31]? 1:0)+
-                                (spike_history_mem[30]? 2 :0) +
-                                (spike_history_mem[29]?3:0)+
-                                (spike_history_mem[28]?4:0)+
-                                (spike_history_mem[27]?5:0)+
-                                (spike_history_mem[26]?6:0)+
-                                (spike_history_mem[25]?7:0)+
-                                (spike_history_mem[24]?8:0)+
-                                (spike_history_mem[23]?9:0)+
-                                (spike_history_mem[22]?10:0)+
-                                (spike_history_mem[21]?11:0)+
-                                (spike_history_mem[20]?12:0)+
-                                (spike_history_mem[19]?13:0)+
-                                (spike_history_mem[18]?14:0)+
-                                (spike_history_mem[17]?15:0)+
-                                (spike_history_mem[16]?16:0)+
-                                (spike_history_mem[15]?17:0)+
-                                (spike_history_mem[14]?18:0)+
-                                (spike_history_mem[13]?19:0)+
-                                (spike_history_mem[12]?20:0)+
-                                (spike_history_mem[11]?21:0)+
-                                (spike_history_mem[10]?22:0)+
-                                (spike_history_mem[9]?23:0)+
-                                (spike_history_mem[8]?24:0)+
-                                (spike_history_mem[7]?25:0)+
-                                (spike_history_mem[6]?26:0)+
-                                (spike_history_mem[5]?27:0)+
-                                (spike_history_mem[4]?28:0)+
-                                (spike_history_mem[3]?29:0)+
-                                (spike_history_mem[2]?30:0)+
-                                (spike_history_mem[1]?31:0)) : 0;
 
-//lut2_index0= spike_history_mem[31]? 0 :  ; // lut2
-//lut2_index1= spike_history_mem[30]? 1 :  ; // lut2
-//lut2_index2= spike_history_mem[29]? 2 :  ; // lut2
-//lut2_index3= spike_history_mem[28]? 3 :  ; // lut2
-//lut2_index4= spike_history_mem[27]? 4 :  ; // lut2
-//lut2_index5= spike_history_mem[26]? 5 :  ; // lut2
-//lut2_index6= spike_history_mem[25]? 6 :  ; // lut2
-//lut2_index7= spike_history_mem[24]? 7 :  ; // lut2
-//lut2_index8= spike_history_mem[23]? 8 :  ; // lut2
-//lut2_index9= spike_history_mem[22]? 9 :  ; // lut2
-//lut2_index10= spike_history_mem[21]? 10 :  ; // lut2
-//lut2_index11= spike_history_mem[20]? 11 :  ; // lut2
-//lut2_index12= spike_history_mem[19]? 12 :  ; // lut2
-//lut2_index13= spike_history_mem[18]? 13 :  ; // lut2
-//lut2_index14= spike_history_mem[17]? 14 :  ; // lut2
-//lut2_index15= spike_history_mem[16]? 15 :  ; // lut2
-//lut2_index16= spike_history_mem[15]? 16 :  ; // lut2
-//lut2_index17= spike_history_mem[14]? 17 :  ; // lut2
-//lut2_index18= spike_history_mem[13]? 18 :  ; // lut2
-//lut2_index19= spike_history_mem[12]? 19 :  ; // lut2
-//lut2_index20= spike_history_mem[11]? 20 :  ; // lut2
-//lut2_index21= spike_history_mem[10]? 21 :  ; // lut2
-//lut2_index22= spike_history_mem[9]? 22 :  ; // lut2
-//lut2_index23= spike_history_mem[8]? 23 :  ; // lut2
-//lut2_index24= spike_history_mem[7]? 24 :  ; // lut2
-//lut2_index25= spike_history_mem[6]? 25 :  ; // lut2
-//lut2_index26= spike_history_mem[5]? 26 :  ; // lut2
-//lut2_index27= spike_history_mem[4]? 27 :  ; // lut2
-//lut2_index28= spike_history_mem[3]? 28 :  ; // lut2
-//lut2_index29= spike_history_mem[2]? 29 :  ; // lut2
-//lut2_index30= spike_history_mem[1]? 30 :  ; // lut2
-//lut2_index31= spike_history_mem[0]? 31 :  ; // lut2
+//// linear STDP curve
+//assign delta_w_ltp_pre = postsynaptic_spike ? 
+//                           ((spike_history_mem[31]? 1:0)+
+//                                (spike_history_mem[30]? 2 :0) +
+//                                (spike_history_mem[29]?3:0)+
+//                                (spike_history_mem[28]?4:0)+
+//                                (spike_history_mem[27]?5:0)+
+//                                (spike_history_mem[26]?6:0)+
+//                                (spike_history_mem[25]?7:0)+
+//                                (spike_history_mem[24]?8:0)+
+//                                (spike_history_mem[23]?9:0)+
+//                                (spike_history_mem[22]?10:0)+
+//                                (spike_history_mem[21]?11:0)+
+//                                (spike_history_mem[20]?12:0)+
+//                                (spike_history_mem[19]?13:0)+
+//                                (spike_history_mem[18]?14:0)+
+//                                (spike_history_mem[17]?15:0)+
+//                                (spike_history_mem[16]?16:0)+
+//                                (spike_history_mem[15]?17:0)+
+//                                (spike_history_mem[14]?18:0)+
+//                                (spike_history_mem[13]?19:0)+
+//                                (spike_history_mem[12]?20:0)+
+//                                (spike_history_mem[11]?21:0)+
+//                                (spike_history_mem[10]?22:0)+
+//                                (spike_history_mem[9]?23:0)+
+//                                (spike_history_mem[8]?24:0)+
+//                                (spike_history_mem[7]?25:0)+
+//                                (spike_history_mem[6]?26:0)+
+//                                (spike_history_mem[5]?27:0)+
+//                                (spike_history_mem[4]?28:0)+
+//                                (spike_history_mem[3]?29:0)+
+//                                (spike_history_mem[2]?30:0)+
+//                                (spike_history_mem[1]?31:0)) : 0;
+
+
+// exponential STDP curve (parameters from Izhekevich & Desai 2003 ) 
+assign delta_w_ltp_pre = postsynaptic_spike ? 
+                           (   //(spike_history_mem[31]? 3:0)+
+                         //       (spike_history_mem[30]? 4 :0) +
+                         //       (spike_history_mem[29]?4:0)+
+                         //       (spike_history_mem[28]?4:0)+
+                         //       (spike_history_mem[27]?4:0)+
+                         //       (spike_history_mem[26]?5:0)+
+                         //       (spike_history_mem[25]?5:0)+
+                         //       (spike_history_mem[24]?6:0)+
+                         //       (spike_history_mem[23]?6:0)+
+                                (spike_history_mem[22]?7:0)+
+                                (spike_history_mem[21]?7:0)+
+                               (spike_history_mem[20]?8:0)+
+                                (spike_history_mem[19]?8:0)+
+                                (spike_history_mem[18]?9:0)+
+                                (spike_history_mem[17]?10:0)+
+                                (spike_history_mem[16]?10:0)+
+                                (spike_history_mem[15]?11:0)+
+                                (spike_history_mem[14]?12:0)+
+                                (spike_history_mem[13]?13:0)+
+                                (spike_history_mem[12]?14:0)+
+                                (spike_history_mem[11]?15:0)+
+                                (spike_history_mem[10]?16:0)+
+                                (spike_history_mem[9]?18:0)+
+                                (spike_history_mem[8]?19:0)+
+                                (spike_history_mem[7]?20:0)+
+                                (spike_history_mem[6]?22:0)+
+                                (spike_history_mem[5]?24:0)+
+                                (spike_history_mem[4]?25:0)+
+                                (spike_history_mem[3]?27:0)+
+                                (spike_history_mem[2]?29:0)+
+                                (spike_history_mem[1]?31:0)) : 0;
 
 
 
@@ -158,38 +162,75 @@ wire [31:0] delta_w_ltd;
 wire [31:0] delta_w_ltd_pre;
 //assign delta_w_ltd = delta_w_ltd_pre*ltd_scale;
 unsigned_mult32 multltd(.out(delta_w_ltd), .a(delta_w_ltd_pre), .b(ltd_scale));
+
+// linear STDP curve 
+//assign delta_w_ltd_pre = spike ? 
+//                                ((ps_spike_history_mem[31]? 1:0)+
+//                                (ps_spike_history_mem[30]? 2 :0) +
+//                                (ps_spike_history_mem[29]?3:0)+
+//                                (ps_spike_history_mem[28]?4:0)+
+//                                (ps_spike_history_mem[27]?5:0)+
+//                                (ps_spike_history_mem[26]?6:0)+
+//                                (ps_spike_history_mem[25]?7:0)+
+//                                (ps_spike_history_mem[24]?8:0)+
+//                                (ps_spike_history_mem[23]?9:0)+
+//                                (ps_spike_history_mem[22]?10:0)+
+//                                (ps_spike_history_mem[21]?11:0)+
+//                                (ps_spike_history_mem[20]?12:0)+
+//                                (ps_spike_history_mem[19]?13:0)+
+//                                (ps_spike_history_mem[18]?14:0)+
+//                                (ps_spike_history_mem[17]?15:0)+
+//                                (ps_spike_history_mem[16]?16:0)+
+//                                (ps_spike_history_mem[15]?17:0)+
+//                                (ps_spike_history_mem[14]?18:0)+
+//                                (ps_spike_history_mem[13]?19:0)+
+//                                (ps_spike_history_mem[12]?20:0)+
+//                                (ps_spike_history_mem[11]?21:0)+
+//                                (ps_spike_history_mem[10]?22:0)+
+//                                (ps_spike_history_mem[9]?23:0)+
+//                                (ps_spike_history_mem[8]?24:0)+
+//                                (ps_spike_history_mem[7]?25:0)+
+//                                (ps_spike_history_mem[6]?26:0)+
+//                                (ps_spike_history_mem[5]?27:0)+
+//                                (ps_spike_history_mem[4]?28:0)+
+//                                (ps_spike_history_mem[3]?29:0)+
+//                                (ps_spike_history_mem[2]?30:0)+
+//                                (ps_spike_history_mem[1]?31:0)) : 0;
+//                                
+// exponential STDP curve (parameters from Izhekevich & Desai 2003)                               
 assign delta_w_ltd_pre = spike ? 
-                                ((ps_spike_history_mem[31]? 1:0)+
-                                (ps_spike_history_mem[30]? 2 :0) +
-                                (ps_spike_history_mem[29]?3:0)+
-                                (ps_spike_history_mem[28]?4:0)+
-                                (ps_spike_history_mem[27]?5:0)+
-                                (ps_spike_history_mem[26]?6:0)+
-                                (ps_spike_history_mem[25]?7:0)+
-                                (ps_spike_history_mem[24]?8:0)+
+                                ((ps_spike_history_mem[31]?7:0)+
+                                (ps_spike_history_mem[30]?8:0) +
+                                (ps_spike_history_mem[29]?8:0)+
+                                (ps_spike_history_mem[28]?8:0)+
+                                (ps_spike_history_mem[27]?8:0)+
+                                (ps_spike_history_mem[26]?8:0)+
+                                (ps_spike_history_mem[25]?9:0)+
+                                (ps_spike_history_mem[24]?9:0)+
                                 (ps_spike_history_mem[23]?9:0)+
-                                (ps_spike_history_mem[22]?10:0)+
-                                (ps_spike_history_mem[21]?11:0)+
-                                (ps_spike_history_mem[20]?12:0)+
-                                (ps_spike_history_mem[19]?13:0)+
-                                (ps_spike_history_mem[18]?14:0)+
-                                (ps_spike_history_mem[17]?15:0)+
-                                (ps_spike_history_mem[16]?16:0)+
-                                (ps_spike_history_mem[15]?17:0)+
-                                (ps_spike_history_mem[14]?18:0)+
-                                (ps_spike_history_mem[13]?19:0)+
-                                (ps_spike_history_mem[12]?20:0)+
-                                (ps_spike_history_mem[11]?21:0)+
-                                (ps_spike_history_mem[10]?22:0)+
-                                (ps_spike_history_mem[9]?23:0)+
-                                (ps_spike_history_mem[8]?24:0)+
-                                (ps_spike_history_mem[7]?25:0)+
-                                (ps_spike_history_mem[6]?26:0)+
-                                (ps_spike_history_mem[5]?27:0)+
-                                (ps_spike_history_mem[4]?28:0)+
-                                (ps_spike_history_mem[3]?29:0)+
-                                (ps_spike_history_mem[2]?30:0)+
-                                (ps_spike_history_mem[1]?31:0)) : 0;
+                                (ps_spike_history_mem[22]?9:0)+
+                                (ps_spike_history_mem[21]?10:0)+
+                                (ps_spike_history_mem[20]?10:0)+
+                                (ps_spike_history_mem[19]?10:0)+
+                                (ps_spike_history_mem[18]?11:0)+
+                                (ps_spike_history_mem[17]?11:0)+
+                                (ps_spike_history_mem[16]?11:0)+
+                                (ps_spike_history_mem[15]?11:0)+
+                                (ps_spike_history_mem[14]?12:0)+
+                                (ps_spike_history_mem[13]?12:0)+
+                                (ps_spike_history_mem[12]?12:0)+
+                                (ps_spike_history_mem[11]?13:0)+
+                                (ps_spike_history_mem[10]?13:0)+
+                                (ps_spike_history_mem[9]?14:0)+
+                                (ps_spike_history_mem[8]?14:0)+
+                                (ps_spike_history_mem[7]?14:0)+
+                                (ps_spike_history_mem[6]?15:0)+
+                                (ps_spike_history_mem[5]?15:0)+
+                                (ps_spike_history_mem[4]?16:0)+
+                                (ps_spike_history_mem[3]?16:0)+
+                                (ps_spike_history_mem[2]?17:0)+
+                                (ps_spike_history_mem[1]?17:0)) : 0;                                
+                                
                         
 wire [31:0] random_out;
 wire [31:0] synapticW_decay;
@@ -211,10 +252,10 @@ wire [31:0] synapticW_change;
    wire [31:0] random_out_cut;
    assign random_out_cut = {22'b0,random_out[9:0]};
    // random chance for synapticW decay 
-   assign synapticW_decay = (random_out_cut <= p_delta) ? synapticW_mem >>> 8 : 0; // possion delay? 
+   assign synapticW_decay = (random_out_cut < p_delta) ? synapticW_mem >>> 8 : 0; // possion delay? 
  
    /// random chance for synapticW change by STDP 
-   assign synapticW_change = (random_out_cut <= p_growth) ? delta_w_ltp - delta_w_ltd : 0; 
+   assign synapticW_change = (random_out_cut < p_growth) ? delta_w_ltp - delta_w_ltd : 0; 
  
  
  
