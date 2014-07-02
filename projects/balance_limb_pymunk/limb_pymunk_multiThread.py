@@ -24,8 +24,8 @@ class ArmSetup:
         self.TOTAL_TRIALS = self.SWEEP_STEP_SIZE**2
         self.GAMMA_INC = 400.0 / self.SWEEP_STEP_SIZE
         self.currTrial = 0 # Current number of trial, for dividing the saved data files
-        self.currGammaDyn = 80.0 
-        self.currGammaSta = 80.0 
+        self.currGammaDyn = 200.0 
+        self.currGammaSta = 200.0 
         self.torqueMultiplier = 1.0 #(for fuglevand: 1.55 # 0.55 works the best so far)
         self.JOINT_DAMPING = 0.01
 #        self.RATIO_RECIPROCAL_INHIBITION = 2.0
@@ -87,7 +87,7 @@ class ArmSetup:
 #        s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
 #        self.gSpace.add(j,  j1,  s) # 
         s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, self.JOINT_DAMPING)
-        self.strong_damper = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, 100)
+        self.strong_damper = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, self.JOINT_DAMPING)
         self.gSpace.add(j, j1, s, self.strong_damper) # 
         
         
@@ -128,6 +128,10 @@ class ArmSetup:
         self.timeRef = 0.0
         self.sinewave = 0.0
         self.ind = 0  # index for sinewave
+        self.Ia_spindle_bic = 0.0
+        self.II_spindle_bic = 0.0
+        self.Ia_spindle_tri = 0.0
+        self.II_spindle_tri = 0.0
         
 
 
@@ -235,6 +239,9 @@ class ArmSetup:
     def controlLoopBiceps(self):
         
         while self.running:
+            """ from spindle board"""
+            self.Ia_spindle_bic = xem_spindle_bic.ReadFPGA(0x22, "float32")
+            self.II_spindle_bic = xem_spindle_bic.ReadFPGA(0x24, "float32")
 
             """   Get forces   """
             force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
@@ -347,6 +354,9 @@ class ArmSetup:
     def controlLoopTriceps(self):
         
         while self.running:
+            """ from spindle """
+            self.Ia_spindle_tri = xem_spindle_tri.ReadFPGA(0x22, "float32")
+            self.II_spindle_tri = xem_spindle_tri.ReadFPGA(0x24, "float32")
 
             """   Get forces   """
 #            force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
@@ -442,9 +452,9 @@ class ArmSetup:
 #            self.data_tri.append(temp_tri)
 #            time.sleep(0.001)
 #            
-            temp_bic = self.elapsedTime_bic, self.angle,  self.lce_bic, self.spikecnt_bic, self.force_bic, self.emg_bic,  self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_bic
+            temp_bic = self.elapsedTime_bic, self.angle,  self.lce_bic, self.spikecnt_bic, self.force_bic, self.emg_bic,  self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_bic, self.Ia_spindle_bic, self.II_spindle_bic
             self.data_bic.append(temp_bic)
-            temp_tri = self.elapsedTime_tri, self.angle,  self.lce_tri, self.spikecnt_tri, self.force_tri,  self.emg_tri, self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_tri
+            temp_tri = self.elapsedTime_tri, self.angle,  self.lce_tri, self.spikecnt_tri, self.force_tri,  self.emg_tri, self.linearV, self.ind,  self.sinewave[self.ind],  self.timeref_tri, self.Ia_spindle_tri, self.II_spindle_tri
             self.data_tri.append(temp_tri)
             time.sleep(0.001)
         
@@ -659,6 +669,7 @@ class ArmSetup:
         self.j1List=[]
         self.j2List=[]
         for line in open('doornik_curve_resampled.txt',  "r").readlines(): 
+            print line
             j1 ,  j2= line.split(',')
             j1 = float(j1)
             j2 = float(j2)
@@ -666,6 +677,21 @@ class ArmSetup:
 #            indexList.append(index)
             self.j1List.append(j1)   #joint1
             self.j2List.append(j2)   #joint2
+            
+    def readData_rampNHold(self):
+        self.j1List=[]
+        self.j2List=[]
+        with open('ramp_n_hold.txt',  "r") as f:
+            for line in f.readlines(): 
+                
+                print line
+                j1 ,  j2= line.split('\t')
+                j1 = float(j1)
+                j2 = float(j2)
+
+    ##            indexList.append(index)
+                self.j1List.append(j1)   #joint1
+                self.j2List.append(j2)   #joint2   
             
     def timeReference(self):
 ##        pipeInData =[]
@@ -733,19 +759,20 @@ class ArmSetup:
         
     def main(self):
 #        Process(target=self.controlLoopBiceps)
-        self.readData() # read doornik data
+#        self.readData() # read doornik data
+        self.readData_rampNHold() # read ramp and hold data
         self.timeReference()
         t1 = threading.Thread(target=self.keyControl)
         t2 = threading.Thread(target=self.controlLoopBiceps)
         t3 = threading.Thread(target=self.controlLoopTriceps)
         t4 = threading.Thread(target=self.dataRecordLoop)
-        t5 = threading.Thread(target=self.runExp)
+#        t5 = threading.Thread(target=self.e)
         
         t1.start()
         t2.start()
         t3.start()
         t4.start()
-        t5.start()
+#        t5.start()
         
 #        t1.join()
 #        t2.join()
