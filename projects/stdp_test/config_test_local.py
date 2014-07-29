@@ -8,18 +8,19 @@ FPGA_OUTPUT =    (0x20,      'neuron0_input',      1.0,         'int32',      Qt
                 (0x22,      'population_neuron0',      1.0,         'spike32',      Qt.red),  \
                 (0x24,      'variable_syn_strength0',      1.0,         'int32',      Qt.black),  \
                 (0x26,      'delta_w_ltp',      1.0,         'int32',      Qt.black),  \
-                (0x28,      'each_I_synapse0',      1.0,         'int32',      Qt.magenta),  \
+                (0x28,      'spike_count_0_normal',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'population_neuron1',      1.0,         'spike32',      Qt.red),  \
                 (0x2C,      'variable_syn_strength1',      1.0,         'int32',      Qt.black), \
- 		(0x2E,      'blank',      1.0,         'int32',      Qt.darkRed),  \
-                (0x30,      'each_I_synapse1',      1.0,         'int32',      Qt.darkGray), \
+ 		(0x2E,      'f_emg1',      1.0,         'float32',      Qt.darkRed),  \
+                (0x30,      'spike_count_1_normal',      1.0,         'int32',      Qt.darkGray), \
  		(0x32,      'population_neuron2',      1.0,         'spike32',      Qt.red),  \
 		(0x34,      'variable_syn_strength2',      1.0,         'int32',      Qt.black), \
-                (0x36,      'each_I_synapse2',      1.0,         'int32',      Qt.darkRed), \
+                (0x36,      'f_emg3',      1.0,         'float32',      Qt.darkRed), \
 		(0x38,      'population_neuron3',      1.0,         'spike32',      Qt.red), \
 		(0x3A,      'variable_syn_strength3',      1.0,         'int32',      Qt.black), \
 		(0x3C,      'neuron2_input',      1.0,         'int32',      Qt.darkGray), \
 		(0x3E,      'each_I_synapse3',      1.0,         'int32',      Qt.darkGray)
+
 
 #            trig_id    name          type          default_value                
 USER_INPUT =   (1, 'synaptic_decay',  'int32',      0), \
