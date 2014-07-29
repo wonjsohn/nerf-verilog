@@ -232,7 +232,7 @@ class View(QMainWindow, Ui_Dialog):
         self.spike_all = newSpikeAll
         
     def udp_send(self,  val):
-        UDP_IP = "192.168.0.102" #works in local wifi
+        UDP_IP = "192.168.0.106" #works in local wifi
         
         #UDP_IP = "192.168.0.1"
         UDP_PORT = 50000
