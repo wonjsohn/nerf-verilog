@@ -163,13 +163,19 @@
         
         
    
-   
+        wire [31:0] f_I_synapse_Ia_gainControlled;
+         mult mult_synapseIa(.x(f_I_synapse_Ia), .y(f_CN_Ia_gain), .out(f_I_synapse_Ia_gainControlled));
+         
+         wire [31:0] f_I_synapse_II_gainControlled;
+         mult mult_synapseII(.x(f_I_synapse_II), .y(f_CN_II_gain), .out(f_I_synapse_II_gainControlled));
    
 
         
         //*********** add currents from two synapse (Ia, II)  *********
         wire [31:0] f_I_synapse_both;
-        add addCurrentsFrom_Ia_and_II(.x(f_I_synapse_Ia), .y(f_I_synapse_II), .out(f_I_synapse_both));
+        add addCurrentsFrom_Ia_and_II(.x(f_I_synapse_Ia_gainControlled), .y(f_I_synapse_II_gainControlled), .out(f_I_synapse_both));
+        
+        
         
          
         //*********** add currents from extra cortical input 1(M1)  *********
@@ -405,9 +411,27 @@
         reg [31:0] f_extraCN_syn_gain;
         always @ (posedge ep50trig[13] or posedge reset_global)
         if (reset_global)
-            f_extraCN_syn_gain <= 32'h40000000;         //reset to 2.0  
+            f_extraCN_syn_gain <= 32'h3f800000;         //reset to 1.0  
         else
             f_extraCN_syn_gain <= {ep02wire, ep01wire};    
+        
+        
+          // Triggered Input extra CNs Gain Instance Definition 
+        reg [31:0] f_CN_Ia_gain;
+        always @ (posedge ep50trig[1] or posedge reset_global)
+        if (reset_global)
+            f_CN_Ia_gain <= 32'h3f800000;         //reset to 1.0  
+        else
+            f_CN_Ia_gain <= {ep02wire, ep01wire};   
+            
+            
+          // Triggered Input extra CNs Gain Instance Definition 
+        reg [31:0] f_CN_II_gain;
+        always @ (posedge ep50trig[2] or posedge reset_global)
+        if (reset_global)
+            f_CN_II_gain <= 32'h3f800000;         //reset to 1.0  
+        else
+            f_CN_II_gain <= {ep02wire, ep01wire};       
         
         
      wire [31:0]  spike_count_neuron_sync_CN1;

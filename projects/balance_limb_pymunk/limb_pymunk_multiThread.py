@@ -681,11 +681,11 @@ class ArmSetup:
     def readData_rampNHold(self):
         self.j1List=[]
         self.j2List=[]
-        with open('ramp_n_hold.txt',  "r") as f:
+        with open('ramp_n_hold.txt',  "r") as f:  # doornik_curve_resampled.txt
             for line in f.readlines(): 
                 
                 print line
-                j1 ,  j2= line.split('\t')
+                j1 ,  j2= line.split('\t') #','
                 j1 = float(j1)
                 j2 = float(j2)
 

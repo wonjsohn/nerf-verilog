@@ -80,8 +80,8 @@ USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      1.2), \
                     (15, 'BDAMP_chain',      'float32',        0.0132)
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B2 =   (1, 'xxx',  'float32',      1.0), \
-                    (2, 'xxx',  'float32',      1.0), \
+USER_INPUT_B2 =   (1, 'Ia_gain',  'float32',      1.0), \
+                    (2, 'II_gain',  'float32',      1.0), \
                     (3, 'synapse_gain',   'int32',       1), \
                     (4, 'overflow',    'float32',      1.0), \
                     (5, 'xxx',    'float32',      80.0), \
@@ -92,7 +92,7 @@ USER_INPUT_B2 =   (1, 'xxx',  'float32',      1.0), \
                     (10, 'p_delta',      'float32',        0.0),  \
                     (11, 'ltd',      'int32',        0),  \
                     (12, 'ltp',      'int32',        0),  \
-                    (13, 'f_extraCN_syn_gain',      'float32',        2.0)
+                    (13, 'f_extraCN_syn_gain',      'float32',        1.0)
 
 
 #Transfer function:  (close to simulink)

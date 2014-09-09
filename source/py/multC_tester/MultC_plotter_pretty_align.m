@@ -8,6 +8,14 @@ clear; clc; close all;
 %load('/home/eric/nerf_verilog_eric/projects/balance_limb_pymunk/20130808_175015.mat');
 cd /home/eric/nerf_verilog_eric/projects/balance_limb_pymunk
 
+fpgadata = '20140908_174422';
+
+% data_list = {'20140526_143633','20140526_144419','20140526_145205','20140526_145951','20140526_150737','20140526_151523','20140526_152309'};
+%     data_list = {'20140526_143806','20140526_144552','20140526_145338','20140526_150124','20140526_150910','20140526_151656','20140526_152442'};
+%     data_list = {'20140526_143940','20140526_144726','20140526_145511','20140526_150257','20140526_151043','20140526_151829','20140526_152615'};
+%     data_list = {'20140526_144113','20140526_144859','20140526_145645','20140526_150431','20140526_151217','20140526_152003','20140526_152749'};
+%     data_list = {'20140526_144246','20140526_145032','20140526_145818','20140526_150604','20140526_151350','20140526_152136','20140526_152922'};
+
 
 cursor_info = sprintf('cursor_info_20130920_150701');  % scaler 20130829_114414
 load([cursor_info, '.mat']); 
@@ -16,10 +24,10 @@ for k = 1:2
   %% process EMG
 
   if k==1
-      fname1 = sprintf('20130920_150701');  
+      fname1 = sprintf('20130920_150701');  % Baseline
       load([fname1, '.mat']); 
   elseif (k==2)
-      fname2 = sprintf('20131220_171407'); 
+      fname2 = sprintf(fpgadata);   % pathologic
       load([fname2, '.mat']);
   end
  % figure 4a: 20130824_174839,    20130824_174958  (DC-UP),  
@@ -143,7 +151,7 @@ start =500;
 %start = 1250;
 last = 12800;
 % last = 1800
-offset =-230; %150; %480;
+offset =-420; %150; %480;
 
 t_bic= data_bic(:,1);
 t_tri= data_tri(:,1);
@@ -169,8 +177,8 @@ if (k == 1)
 else
     start = start + offset;
     last = last + offset;
-%     t_bic= t_bic(start:last);
-%     t_tri= t_tri(start:last);
+%     t_bic_cut= t_bic(start:last);
+%     t_tri_cut= t_tri(start:last);
     length_bic_offset = length_bic(start:last);
     length_tri_offset = length_tri(start:last);
     f_emg_bic_offset = f_emg_bic(start:last);
@@ -237,7 +245,7 @@ subplot(n, 1, 1);
 if (k == 2)
     plot(t_bic_cut, length_bic_offset,'--', 'LineWidth',2, 'color', 'black');
 else
-%     plot(t_bic_cut, length_bic_cut, 'LineWidth',2, 'color', 'black');    
+     plot(t_bic_cut, length_bic_cut, 'LineWidth',2, 'color', 'black');    
 %     [pks, locs] = findpeaks(length_bic_cut);
 %     hold on
     % showing the peaks (manually acquired)  
@@ -261,9 +269,9 @@ grid on
 % 
 subplot(n, 1, 2);
 if (k == 2)
-    plot(t_bic_cut, EMG_bic_offset, '-', 'LineWidth',2, 'color', 'black');
+    plot(t_bic_cut, EMG_bic_offset, '--', 'LineWidth',2, 'color', 'black');
 else     
-%     plot(t_bic_cut, EMG_bic_cut, '-', 'LineWidth',2,'color', 'black');
+     plot(t_bic_cut, EMG_bic_cut, '-', 'LineWidth',2,'color', 'black');
 end
 % legend('full wave rect biceps emg');
 % grid on
@@ -274,7 +282,7 @@ grid on
 
 subplot(n, 1, 3);
 if (k == 2)
-    plot(t_bic_cut, force_bic_offset, '-', 'LineWidth',3, 'color', 'black');
+    plot(t_bic_cut, force_bic_offset, '--', 'LineWidth',3, 'color', 'black');
 else
     plot(t_bic_cut, force_bic_cut, 'LineWidth',2, 'color', 'black');
 end
@@ -511,17 +519,37 @@ ylim([0.0 1.7])
 %% correlation analysis
 
 len_interp = len_interp - mean(len_interp(~isnan(len_interp)));   % remove bias
-EMG_interp = EMG_interp - mean(EMG_interp(~isnan(EMG_interp)));   % remove bias\
+% EMG_interp = EMG_interp - mean(EMG_interp(~isnan(EMG_interp)));   % remove bias
 
 len_interp_offset = len_interp_offset - mean(len_interp_offset(~isnan(len_interp_offset)));   % remove bias
-EMG_interp_offset = EMG_interp_offset - mean(EMG_interp_offset(~isnan(EMG_interp_offset)));   % remove bias
+% EMG_interp_offset = EMG_interp_offset - mean(EMG_interp_offset(~isnan(EMG_interp_offset)));   % remove bias
 
 
 [rho, pval] = corr(transpose(len_interp(~isnan(len_interp))), transpose(EMG_interp(~isnan(EMG_interp))))
  
 %  [c, lags] = xcorr(transpose(len_interp(~isnan(len_interp))), transpose(EMG_interp(~isnan(EMG_interp))));
-[c, lags] = xcorr(transpose(len_interp(~isnan(len_interp))), transpose(EMG_interp(~isnan(EMG_interp))));
-[c_offset, lags_offset] = xcorr(transpose(len_interp_offset(~isnan(len_interp_offset))), transpose(EMG_interp_offset(~isnan(EMG_interp_offset))));
+
+% remove nan
+len_interp_nan_removed = len_interp(~isnan(len_interp));
+EMG_interp_nan_removed = EMG_interp(~isnan(EMG_interp));
+len_interp_offset_nan_removed = len_interp_offset(~isnan(len_interp_offset));
+EMG_interp_offset_nan_removed = EMG_interp_offset(~isnan(EMG_interp_offset));
+
+% % test phase change due to wave shift. (dramatic)
+% len_interp_nan_removed = len_interp_nan_removed(1:10612-25);
+% EMG_interp_nan_removed = EMG_interp_nan_removed(1:10612-25);
+% 
+% len_interp_offset_nan_removed = len_interp_offset_nan_removed(25:10612);
+% EMG_interp_offset_nan_removed = EMG_interp_offset_nan_removed(25:10612);
+
+figure(5);
+subplot(211)
+plot(len_interp_nan_removed);
+subplot(212);
+plot(len_interp_offset_nan_removed);
+
+[c, lags] = xcorr(transpose(len_interp_nan_removed), transpose(EMG_interp_nan_removed));
+[c_offset, lags_offset] = xcorr(transpose(len_interp_offset_nan_removed), transpose(EMG_interp_offset_nan_removed));
 
 figure;
 %  c = c(length(c)/2:end);
@@ -532,7 +560,16 @@ subplot(2,1,2);plot(lags_offset, c_offset,'k');
 %% piecewise cross correlation 
 
 
+%% Save all variables to mat files
+
+pathname = fileparts('/home/eric/Dropbox/MATLAB/WonJoon_code/DATA_DystoniaPaper/Doornik/Doornik_FPGAfulldata/HigainSweepRawData/');
+
+matfile = fullfile(pathname, fpgadata);
+save(matfile);
   
+
+
+
 % remove bias
 
 % 
