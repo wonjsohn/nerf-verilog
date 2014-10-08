@@ -140,8 +140,11 @@ module iz_corticalneuron_th_control(
     
     wire [31:0] spike_history_mem;
     wire [31:0] spike_history_mem_in;
+//    wire [31:0] spike_history2_mem; //extra delay for positive phase 09/09/14
+//    wire [31:0] spike_history2_mem_in; //extra delay for positive phase
 
-    assign spike_history_mem_in = first_pass ? 0 : {spike_history_mem[30:0], fired};
+//    assign spike_history_mem_in = first_pass ? 0 : {spike_history_mem[30:0], fired};
+//    assign spike_history2_mem_in = first_pass ? 0 : {spike_history2_mem_in[30:0], spike_history_mem[31]}; //concatenate 2 mems of size 32. 
     
     reg state;
     reg read;
@@ -189,13 +192,15 @@ always @ (negedge clk or negedge reset_bar) begin
     end else begin
         if (state) begin
             //each_spike <= fired;
-            each_spike <= spike_history_mem[28];  // was 14 
+            each_spike <= spike_history_mem[28];  // was 14 (32ms)
+            //each_spike <= spike_history2_mem[28];  //  (64ms)
             history[neuron_index] <= fired;
             if (neuron_index == 7'h7f) begin
                 first_pass <= 0;
                 v_out <= v_mem_in;
                 //spike <= fired;
-                spike <= spike_history_mem[28];  // was 14 
+                spike <= spike_history_mem[28];  // was 14 (32ms)
+                //spike <= spike_history2_mem[28];  //  (64ms)
                 //population <= {fired, history[126:0]};
                 population <= history;
             end
@@ -243,6 +248,20 @@ end
   .doutb() // output [31 : 0] doutb
     );
     
+    
+//    
+//    neuron_ram spike_history_ram2 (
+//  .clka(~clk), // input clka
+//  .wea(write), // input [0 : 0] wea
+//  .addra(neuron_index), // input [6 : 0] addra
+//  .dina(spike_history2_mem_in), // input [31 : 0] dina
+//  .douta(spike_history2_mem), // output [31 : 0] douta
+//  .clkb(clk), // input clkb
+//  .web(1'b0), // input [0 : 0] web
+//  .addrb(7'd0), // input [6 : 0] addrb
+//  .dinb(32'd0), // input [31 : 0] dinb
+//  .doutb() // output [31 : 0] doutb
+//    );    
 endmodule
 
 
