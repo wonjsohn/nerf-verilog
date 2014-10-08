@@ -82,7 +82,7 @@ class armSetup:
         self.scale = 1.0
         self.fmax = 0.0
         self.torqueMultiplier = 0.3
-        self.tonicValue = 0
+        self.tonicValue = 1000
         self.CNGainValue = 1.0
         self.elapsedTime = 0.0
         self.SWEEP_NUMBER = 1
@@ -90,13 +90,13 @@ class armSetup:
         self.currTrial = 0
         self.currGammaDyn = 80.0
         self.currGammaSta = 80.0
-        self.CNIaGain = 0.0
+        self.CNIaGain = 1.0
         self.CNIIGain = 1.0
         self.SNIaGain = 1.2   # default: 1.2
         self.SNIIGain = 2.0   # default: 2.0 (1.0 is too small)
-        self.MNIaGain = 0.0   # default: 80.0
-        self.MNIIGain = 00.0   # default: 80.0 
-        self.MNCNGain = 215.0   # default: 200.0
+        self.MNIaGain = 40.0   # default: 80.0
+        self.MNIIGain = 40.0   # default: 80.0 
+        self.MNCNGain = 200.0   # default: 200.0
         self.c = 0 # doornik replay counter
 
         self.main()
@@ -553,21 +553,13 @@ class armSetup:
 
     def runDoornik(self):
         k = PyKeyboard()
-        self.setSNIaGain()
-        self.setSNIIGain()
-        self.setCNIaGain()
-        self.setCNIIGain()
-        self.setMNIaGain()
-        self.setMNIIGain()
-        self.setMNCNGain()
-            
+ 
 
         for i in xrange(self.SWEEP_NUMBER):
 #        for i in xrange(1):
             if (self.running):
                 for j in xrange(self.REPEAT_NUMBER):
-                    self.setGammaDyn()
-                    self.setGammaSta()
+     
 #                for j in xrange(1):
                     if (self.running):
     #                     self.currTrial = i
@@ -603,6 +595,15 @@ class armSetup:
 
     
     def main(self):
+        self.setSNIaGain()
+        self.setSNIIGain()
+        self.setCNIaGain()
+        self.setCNIIGain()
+        self.setMNIaGain()
+        self.setMNIIGain()
+        self.setMNCNGain()
+        self.setGammaDyn()
+        self.setGammaSta()  
 #        Process(target=self.controlLoopBiceps)
         self.readData() # read doornik data
 #        threading.Thread(target=self.keyControl).start()
