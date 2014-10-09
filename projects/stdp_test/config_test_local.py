@@ -11,11 +11,11 @@ FPGA_OUTPUT =    (0x20,      'neuron0_input',      1.0,         'int32',      Qt
                 (0x28,      'spike_count_0_normal',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'population_neuron1',      1.0,         'spike32',      Qt.red),  \
                 (0x2C,      'variable_syn_strength1',      1.0,         'int32',      Qt.black), \
- 		(0x2E,      'f_emg1',      1.0,         'float32',      Qt.darkRed),  \
+ 		(0x2E,      'blank',      1.0,         'float32',      Qt.darkRed),  \
                 (0x30,      'spike_count_1_normal',      1.0,         'int32',      Qt.darkGray), \
  		(0x32,      'population_neuron2',      1.0,         'spike32',      Qt.red),  \
 		(0x34,      'variable_syn_strength2',      1.0,         'int32',      Qt.black), \
-                (0x36,      'f_emg3',      1.0,         'float32',      Qt.darkRed), \
+                (0x36,      'blank',      1.0,         'float32',      Qt.darkRed), \
 		(0x38,      'population_neuron3',      1.0,         'spike32',      Qt.red), \
 		(0x3A,      'variable_syn_strength3',      1.0,         'int32',      Qt.black), \
 		(0x3C,      'neuron2_input',      1.0,         'int32',      Qt.darkGray), \
@@ -27,14 +27,14 @@ USER_INPUT =   (1, 'synaptic_decay',  'int32',      0), \
                     (2, 'random_digits',  'int32',      13), \
                     (3, 'flag_sync_inputs',   'int32',       0), \
                     (4, 'block_neuron1',    'int32',      0), \
-                    (5, 'p_growth',    'int32',      0), \
+                    (5, 'i_p_deltaW',    'int32',      0), \
                     (6, 'N0_in',      'int32',        1600),  \
                     (7, 'half_count',      'int32',        381),  \
                     (8, 'block_neuron2',      'int32',        0),  \
                     (9, 'lce',      'float32',        1.0),  \
-                    (10, 'p_delta',      'int32',        0),  \
-                    (11, 'ltd_scale',      'int32',        1),  \
-                    (12, 'ltp_scale',      'int32',        2)
+                    (10, 'i_p_decay',      'int32',        0),  \
+                    (11, 'i_ltd_scale',      'int32',        1),  \
+                    (12, 'i_ltp_scale',      'int32',        2)
 
 SAMPLING_RATE = 1024
 NUM_NEURON = 128

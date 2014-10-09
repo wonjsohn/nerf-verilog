@@ -284,7 +284,7 @@
         else
             triggered_input4 <= {ep02wire, ep01wire};      
 
-        // Triggered Input triggered_input4 Instance Definition (sync_scale)
+        // Triggered Input triggered_input Instance Definition (sync_scale)
         reg [31:0] block_neuron1;
         always @ (posedge ep50trig[4] or posedge reset_global)
         if (reset_global)
@@ -292,7 +292,7 @@
         else
             block_neuron1 <= {ep02wire, ep01wire};               
             
-        // Triggered Input triggered_input4 Instance Definition (sync_scale)
+        // Triggered Input triggered_input Instance Definition (sync_scale)
         reg [31:0] block_neuron2;
         always @ (posedge ep50trig[8] or posedge reset_global)
         if (reset_global)
@@ -449,8 +449,8 @@
         okWireOut wo2c (    .ep_datain(variable_synaptic_strength1[15:0]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2c)    );
         okWireOut wo2d (    .ep_datain(variable_synaptic_strength1[31:16]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2d)   );    
         
-        okWireOut wo2e (    .ep_datain(f_emg1[15:0]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2e)    );
-        okWireOut wo2f (    .ep_datain(f_emg1[31:16]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2f)   );    
+//        okWireOut wo2e (    .ep_datain(f_emg1[15:0]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2e)    );
+//        okWireOut wo2f (    .ep_datain(f_emg1[31:16]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2f)   );    
         
         okWireOut wo30 (    .ep_datain(spike_count_1d_normal[15:0]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h30)    );
         okWireOut wo31 (    .ep_datain(spike_count_1d_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h31)   );    
@@ -461,9 +461,9 @@
         okWireOut wo34 (    .ep_datain(variable_synaptic_strength2[15:0]),  .ok1(ok1),  .ok2(ok2x[20*17 +: 17]), .ep_addr(8'h34)    );
         okWireOut wo35 (    .ep_datain(variable_synaptic_strength2[31:16]),  .ok1(ok1),  .ok2(ok2x[21*17 +: 17]), .ep_addr(8'h35)   );    
         
-        okWireOut wo36 (    .ep_datain(f_emg3[15:0]),  .ok1(ok1),  .ok2(ok2x[22*17 +: 17]), .ep_addr(8'h36)    );
-        okWireOut wo37 (    .ep_datain(f_emg3[31:16]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h37)   );    
-        
+//        okWireOut wo36 (    .ep_datain(f_emg3[15:0]),  .ok1(ok1),  .ok2(ok2x[22*17 +: 17]), .ep_addr(8'h36)    );
+//        okWireOut wo37 (    .ep_datain(f_emg3[31:16]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h37)   );    
+//        
         okWireOut wo38 (    .ep_datain(population_neuron3[31:16]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h38)    );
         okWireOut wo39 (    .ep_datain(population_neuron3[47:32]),  .ok1(ok1),  .ok2(ok2x[25*17 +: 17]), .ep_addr(8'h39)   );    
 //        
@@ -707,39 +707,39 @@
         wire [31:0] v_neuron1c;
         wire [31:0] v_neuron1d;
        // Neuron neuron1 Instance Definition 
-       // increase number of neurons for size princile (to get good emg)
-        izneuron_th_control neuron1_a(
-            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_sim),           // reset to initial conditions
-            .I_in(  (each_I_synapse_n0_n2)*12 ),          // input current from synapse. crosstalk contribution smaller.
-            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
-            .v_out(v_neuron1a),               // membrane potential
-            .spike(spike_neuron1a),           // spike sample
-            .each_spike(each_spike_neuron1a), // raw spikes
-            .population(population_neuron1)  // spikes of population per 1ms simulation time
-        );
-         // Neuron neuron1 Instance Definition 
-        izneuron_th_control neuron1_b(
-            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_sim),           // reset to initial conditions
-            .I_in(  (each_I_synapse_n0_n2)*9  ),          // input current from synapse. crosstalk contribution smaller.
-            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
-            .v_out(v_neuron1b),               // membrane potential
-            .spike(spike_neuron1b),           // spike sample
-            .each_spike(each_spike_neuron1b) // raw spikes
-            //.population(population_neuron1)  // spikes of population per 1ms simulation time
-        );
-                 // Neuron neuron1 Instance Definition 
-        izneuron_th_control neuron1_c(
-            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_sim),           // reset to initial conditions
-            .I_in( each_I_synapse_n0_n2*5  ),          // input current from synapse. crosstalk contribution smaller.
-            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
-            .v_out(v_neuron1c),               // membrane potential
-            .spike(spike_neuron1c),           // spike sample
-            .each_spike(each_spike_neuron1c) // raw spikes
-            //.population(population_neuron1)  // spikes of population per 1ms simulation time
-        );
+//       // increase number of neurons for size princile (to get good emg)
+//        izneuron_th_control neuron1_a(
+//            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+//            .reset(reset_sim),           // reset to initial conditions
+//            .I_in(  (each_I_synapse_n0_n2)*12 ),          // input current from synapse. crosstalk contribution smaller.
+//            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
+//            .v_out(v_neuron1a),               // membrane potential
+//            .spike(spike_neuron1a),           // spike sample
+//            .each_spike(each_spike_neuron1a), // raw spikes
+//            .population(population_neuron1)  // spikes of population per 1ms simulation time
+//        );
+//         // Neuron neuron1 Instance Definition 
+//        izneuron_th_control neuron1_b(
+//            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+//            .reset(reset_sim),           // reset to initial conditions
+//            .I_in(  (each_I_synapse_n0_n2)*9  ),          // input current from synapse. crosstalk contribution smaller.
+//            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
+//            .v_out(v_neuron1b),               // membrane potential
+//            .spike(spike_neuron1b),           // spike sample
+//            .each_spike(each_spike_neuron1b) // raw spikes
+//            //.population(population_neuron1)  // spikes of population per 1ms simulation time
+//        );
+//                 // Neuron neuron1 Instance Definition 
+//        izneuron_th_control neuron1_c(
+//            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+//            .reset(reset_sim),           // reset to initial conditions
+//            .I_in( each_I_synapse_n0_n2*5  ),          // input current from synapse. crosstalk contribution smaller.
+//            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
+//            .v_out(v_neuron1c),               // membrane potential
+//            .spike(spike_neuron1c),           // spike sample
+//            .each_spike(each_spike_neuron1c) // raw spikes
+//            //.population(population_neuron1)  // spikes of population per 1ms simulation time
+//        );
                     // Neuron neuron1 Instance Definition 
         izneuron_th_control neuron1_d(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
@@ -786,40 +786,40 @@
         wire [31:0] v_neuron3c;
         wire [31:0] v_neuron3d;
         // Neuron neuron3 Instance Definition 
-         izneuron_th_control neuron3_a(
-            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_sim),           // reset to initial conditions
-            .I_in(  each_I_synapse_n1_n3*12 ),          // input current from synapse crosstalk contribution smaller.
-            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
-            .v_out(v_neuron3a),               // membrane potential
-            .spike(spike_neuron3a),           // spike sample
-            .each_spike(each_spike_neuron3a), // raw spikes
-            .population(population_neuron3)  // spikes of population per 1ms simulation time
-        );
-        
-        
-             // Neuron neuron1 Instance Definition 
-        izneuron_th_control neuron3_b(
-            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_sim),           // reset to initial conditions
-            .I_in(  (each_I_synapse_n1_n3)*9  ),          // input current from synapse. crosstalk contribution smaller.
-            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
-            .v_out(v_neuron3b),               // membrane potential
-            .spike(spike_neuron3b),           // spike sample
-            .each_spike(each_spike_neuron3b) // raw spikes
-            //.population(population_neuron3)  // spikes of population per 1ms simulation time
-        );
-                 // Neuron neuron1 Instance Definition 
-        izneuron_th_control neuron3_c(
-            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
-            .reset(reset_sim),           // reset to initial conditions
-            .I_in( each_I_synapse_n1_n3*5  ),          // input current from synapse. crosstalk contribution smaller.
-            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
-            .v_out(v_neuron3c),               // membrane potential
-            .spike(spike_neuron3c),           // spike sample
-            .each_spike(each_spike_neuron3c) // raw spikes
-            //.population(population_neuron3)  // spikes of population per 1ms simulation time
-        );
+//         izneuron_th_control neuron3_a(
+//            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+//            .reset(reset_sim),           // reset to initial conditions
+//            .I_in(  each_I_synapse_n1_n3*12 ),          // input current from synapse crosstalk contribution smaller.
+//            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
+//            .v_out(v_neuron3a),               // membrane potential
+//            .spike(spike_neuron3a),           // spike sample
+//            .each_spike(each_spike_neuron3a), // raw spikes
+//            .population(population_neuron3)  // spikes of population per 1ms simulation time
+//        );
+//        
+////        
+//             // Neuron neuron1 Instance Definition 
+//        izneuron_th_control neuron3_b(
+//            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+//            .reset(reset_sim),           // reset to initial conditions
+//            .I_in(  (each_I_synapse_n1_n3)*9  ),          // input current from synapse. crosstalk contribution smaller.
+//            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
+//            .v_out(v_neuron3b),               // membrane potential
+//            .spike(spike_neuron3b),           // spike sample
+//            .each_spike(each_spike_neuron3b) // raw spikes
+//            //.population(population_neuron3)  // spikes of population per 1ms simulation time
+//        );
+//                 // Neuron neuron1 Instance Definition 
+//        izneuron_th_control neuron3_c(
+//            .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
+//            .reset(reset_sim),           // reset to initial conditions
+//            .I_in( each_I_synapse_n1_n3*5  ),          // input current from synapse. crosstalk contribution smaller.
+//            .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
+//            .v_out(v_neuron3c),               // membrane potential
+//            .spike(spike_neuron3c),           // spike sample
+//            .each_spike(each_spike_neuron3c) // raw spikes
+//            //.population(population_neuron3)  // spikes of population per 1ms simulation time
+//        );
                     // Neuron neuron1 Instance Definition 
         izneuron_th_control neuron3_d(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
@@ -832,7 +832,7 @@
             //.population(population_neuron3)  // spikes of population per 1ms simulation time
         );
         
-        
+//        
         
         
      wire [31:0]  spike_count_0_normal;
@@ -845,27 +845,27 @@
 //      
 //
 //                        
-      wire [31:0]  spike_count_1a_normal;
-      spike_counter  sync_counter_1a
-      (                 .clk(neuron_clk),
-                        .reset(reset_sim),
-                        .spike_in(each_spike_neuron1a),
-                        .spike_count(spike_count_1a_normal) );
+//      wire [31:0]  spike_count_1a_normal;
+//      spike_counter  sync_counter_1a
+//      (                 .clk(neuron_clk),
+//                        .reset(reset_sim),
+//                        .spike_in(each_spike_neuron1a),
+//                        .spike_count(spike_count_1a_normal) );
                         
-      wire [31:0]  spike_count_1b_normal;
-      spike_counter  sync_counter_1b
-      (                 .clk(neuron_clk),
-                        .reset(reset_sim),
-                        .spike_in(each_spike_neuron1b),
-                        .spike_count(spike_count_1b_normal) );
-                        
-      wire [31:0]  spike_count_1c_normal;
-      spike_counter  sync_counter_1c
-      (                 .clk(neuron_clk),
-                        .reset(reset_sim),
-                        .spike_in(each_spike_neuron1c),
-                        .spike_count(spike_count_1c_normal) );
-                        
+//      wire [31:0]  spike_count_1b_normal;
+//      spike_counter  sync_counter_1b
+//      (                 .clk(neuron_clk),
+//                        .reset(reset_sim),
+//                        .spike_in(each_spike_neuron1b),
+//                        .spike_count(spike_count_1b_normal) );
+//                        
+//      wire [31:0]  spike_count_1c_normal;
+//      spike_counter  sync_counter_1c
+//      (                 .clk(neuron_clk),
+//                        .reset(reset_sim),
+//                        .spike_in(each_spike_neuron1c),
+//                        .spike_count(spike_count_1c_normal) );
+//                        
        wire [31:0]  spike_count_1d_normal;
       spike_counter  sync_counter_1d
       (                 .clk(neuron_clk),
@@ -874,11 +874,11 @@
                         .spike_count(spike_count_1d_normal) );                   
                         
                         
-      wire [31:0] spike_count_1_normal;
-      assign spike_count_1_normal = (spike_count_1a_normal)*32'd6 
-                                    + (spike_count_1b_normal)*32'd10 
-                                    + (spike_count_1c_normal)*32'd14
-                                    + (spike_count_1d_normal)*32'd18;;
+//      wire [31:0] spike_count_1_normal;
+//      assign spike_count_1_normal = (spike_count_1a_normal)*32'd6 
+//                                    + (spike_count_1b_normal)*32'd10 
+//                                    + (spike_count_1c_normal)*32'd14
+//                                    + (spike_count_1d_normal)*32'd18;;
 //
 //    wire [31:0]  spike_count_2_normal;
 //      spike_counter  sync_counter_2
@@ -887,40 +887,40 @@
 //                        .spike_in(each_spike_neuron2),
 //                        .spike_count(spike_count_2_normal) );
 //                        
-     wire [31:0]  spike_count_3a_normal;
-      spike_counter  sync_counter_3a
-      (                 .clk(neuron_clk),
-                        .reset(reset_sim),
-                        .spike_in(each_spike_neuron3a),
-                        .spike_count(spike_count_3a_normal) );                   
-                        
-    wire [31:0]  spike_count_3b_normal;
-      spike_counter  sync_counter_3b
-      (                 .clk(neuron_clk),
-                        .reset(reset_sim),
-                        .spike_in(each_spike_neuron3b),
-                        .spike_count(spike_count_3b_normal) );
-                        
-      wire [31:0]  spike_count_3c_normal;
-      spike_counter  sync_counter_3c
-      (                 .clk(neuron_clk),
-                        .reset(reset_sim),
-                        .spike_in(each_spike_neuron3c),
-                        .spike_count(spike_count_3c_normal) );
-                        
-       wire [31:0]  spike_count_3d_normal;
-      spike_counter  sync_counter_3d
-      (                 .clk(neuron_clk),
-                        .reset(reset_sim),
-                        .spike_in(each_spike_neuron3d),
-                        .spike_count(spike_count_3d_normal) );       
+//     wire [31:0]  spike_count_3a_normal;
+//      spike_counter  sync_counter_3a
+//      (                 .clk(neuron_clk),
+//                        .reset(reset_sim),
+//                        .spike_in(each_spike_neuron3a),
+//                        .spike_count(spike_count_3a_normal) );                   
+//                        
+//    wire [31:0]  spike_count_3b_normal;
+//      spike_counter  sync_counter_3b
+//      (                 .clk(neuron_clk),
+//                        .reset(reset_sim),
+//                        .spike_in(each_spike_neuron3b),
+//                        .spike_count(spike_count_3b_normal) );
+//                        
+//      wire [31:0]  spike_count_3c_normal;
+//      spike_counter  sync_counter_3c
+//      (                 .clk(neuron_clk),
+//                        .reset(reset_sim),
+//                        .spike_in(each_spike_neuron3c),
+//                        .spike_count(spike_count_3c_normal) );
+//                        
+//       wire [31:0]  spike_count_3d_normal;
+//      spike_counter  sync_counter_3d
+//      (                 .clk(neuron_clk),
+//                        .reset(reset_sim),
+//                        .spike_in(each_spike_neuron3d),
+//                        .spike_count(spike_count_3d_normal) );       
 
 
-     wire [31:0] spike_count_3_normal;
-      assign spike_count_3_normal = (spike_count_3a_normal)*32'd6 
-                                    + (spike_count_3b_normal)*32'd10 
-                                    + (spike_count_3c_normal)*32'd14
-                                    + (spike_count_3d_normal)*32'd18;;                        
+//     wire [31:0] spike_count_3_normal;
+//      assign spike_count_3_normal = (spike_count_3a_normal)*32'd6 
+//                                    + (spike_count_3b_normal)*32'd10 
+//                                    + (spike_count_3c_normal)*32'd14
+//                                    + (spike_count_3d_normal)*32'd18;;                        
 
 // Synapse synapse0 Instance Definition
         
@@ -1023,29 +1023,29 @@
 /// **------------------EMG Modules ----------------------------------- **
 
 
-    wire [31:0] f_emg1;
-    emg_parameter emg_parater_n1
-    (   .f_total_emg_out(f_emg1), 
-        .i_spike_cnt(spike_count_1_normal), 
-        .b1_F0(32'h3AA24463),      //0.001238 (b1 default) 
-        .b2_F0(32'hBAA6DACB),      //-0.001273 (b2 default)
-        .a1_F0(32'hC00F3B64),       //- 2.238 (a1 default)
-        .a2_F0(32'h3FD5C28F),        //1.67 (a2 default)
-        .a3_F0(32'hBED49518),        // - 0.4152(a3 default)
-        .clk(sim_clk), 
-        .reset(reset_sim) ); 
-        
-     wire [31:0] f_emg3;
-    emg_parameter emg_parater_n3
-    (   .f_total_emg_out(f_emg3), 
-        .i_spike_cnt(spike_count_3_normal), 
-        .b1_F0(32'h3AA24463),      //0.001238 (b1 default) 
-        .b2_F0(32'hBAA6DACB),      //-0.001273 (b2 default)
-        .a1_F0(32'hC00F3B64),       //- 2.238 (a1 default)
-        .a2_F0(32'h3FD5C28F),        //1.67 (a2 default)
-        .a3_F0(32'hBED49518),        // - 0.4152(a3 default)
-        .clk(sim_clk), 
-        .reset(reset_sim) ); 
+//    wire [31:0] f_emg1;
+//    emg_parameter emg_parater_n1
+//    (   .f_total_emg_out(f_emg1), 
+//        .i_spike_cnt(spike_count_1_normal), 
+//        .b1_F0(32'h3AA24463),      //0.001238 (b1 default) 
+//        .b2_F0(32'hBAA6DACB),      //-0.001273 (b2 default)
+//        .a1_F0(32'hC00F3B64),       //- 2.238 (a1 default)
+//        .a2_F0(32'h3FD5C28F),        //1.67 (a2 default)
+//        .a3_F0(32'hBED49518),        // - 0.4152(a3 default)
+//        .clk(sim_clk), 
+//        .reset(reset_sim) ); 
+//        
+//     wire [31:0] f_emg3;
+//    emg_parameter emg_parater_n3
+//    (   .f_total_emg_out(f_emg3), 
+//        .i_spike_cnt(spike_count_3_normal), 
+//        .b1_F0(32'h3AA24463),      //0.001238 (b1 default) 
+//        .b2_F0(32'hBAA6DACB),      //-0.001273 (b2 default)
+//        .a1_F0(32'hC00F3B64),       //- 2.238 (a1 default)
+//        .a2_F0(32'h3FD5C28F),        //1.67 (a2 default)
+//        .a3_F0(32'hBED49518),        // - 0.4152(a3 default)
+//        .clk(sim_clk), 
+//        .reset(reset_sim) ); 
 
 /////////////////////// END INSTANCE DEFINITIONS //////////////////////////
 
