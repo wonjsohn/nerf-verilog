@@ -23,6 +23,8 @@ from math import floor
 from glob import glob
 import socket
 
+from MVC_MainGUI import MultiXemScheduler
+
 PIXEL_OFFSET = 200 # pixels offsets
 BUTTON_INPUT_FROM_TRIGGER = 1
 
@@ -69,6 +71,7 @@ class ViewChannel:
         self.yoffset = 1.0
         self.addr = addr
         self.type = type
+       
 
         self.data = deque([0]*100, maxlen=100)
         self.slider = QtGui.QSlider(hostDialog)
@@ -131,6 +134,7 @@ class View(QMainWindow, Ui_Dialog):
 
         self.x = 200
         self.pen = QPen()
+        self.resetSimClick = 0
 
         self.numPt = PIXEL_OFFSET
         self.isPause = False
@@ -172,6 +176,10 @@ class View(QMainWindow, Ui_Dialog):
             fn = partial(onVisualSlider, self, eachName) # Customizing onNewWireIn() into channel-specific 
             eachChan.slider.valueChanged.connect(fn)    
 
+
+    def abcd(self, val):
+        self.resetSimClick = val;
+        
     def individualWireIn(self, whichCh, value = -1):
         if value == -1: 
             value = self.allUserInput[whichCh].doubleSpinBox.value()         
@@ -226,13 +234,16 @@ class View(QMainWindow, Ui_Dialog):
                 val1 = self.allUserInput["flag_sync_inputs"].doubleSpinBox.value()      #flag_sync_inputs
                 val2 = self.allUserInput["block_neuron2"].doubleSpinBox.value()      #block_neuron2
                 val3 = self.allUserInput["block_neuron1"].doubleSpinBox.value()      #block_neuron1
-                self.udp_send("%d,%d,%d,%d,%d" % (pt,  ch.addr,  val1,  val2, val3))
+                val4 = self.allUserInput["half_count"].doubleSpinBox.value()      
+                val5 = self.resetSimClick
+                
+                self.udp_send("%d,%d,%d,%d,%d,%d,%d" % (pt,  ch.addr,  val1,  val2, val3, val4, val5))
                 #print pt
 
         self.spike_all = newSpikeAll
         
     def udp_send(self,  val):
-        UDP_IP = "192.168.0.106" #works in local wifi
+        UDP_IP = "192.168.0.108" #works in local wifi
         
         #UDP_IP = "192.168.0.1"
         UDP_PORT = 50000

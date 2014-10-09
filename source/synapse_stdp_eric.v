@@ -118,14 +118,17 @@ unsigned_mult32 multltp(.out(delta_w_ltp), .a(delta_w_ltp_pre), .b(ltp_scale));
 // exponential STDP curve (parameters from Izhekevich & Desai 2003 ) 
 assign delta_w_ltp_pre = postsynaptic_spike ? 
                            (   //(spike_history_mem[31]? 3:0)+
-                         //       (spike_history_mem[30]? 4 :0) +
-                         //       (spike_history_mem[29]?4:0)+
-                         //       (spike_history_mem[28]?4:0)+
-                         //       (spike_history_mem[27]?4:0)+
-                         //       (spike_history_mem[26]?5:0)+
-                         //       (spike_history_mem[25]?5:0)+
-                         //       (spike_history_mem[24]?6:0)+
-                         //       (spike_history_mem[23]?6:0)+
+//                                (spike_history_mem[30]? 4 :0) +
+//                                (spike_history_mem[29]?4:0)+
+//                                (spike_history_mem[28]?4:0)+
+//                                (spike_history_mem[27]?4:0)+
+//                                (spike_history_mem[26]?5:0)+
+//                                (spike_history_mem[25]?5:0)+
+//                                (spike_history_mem[24]?6:0)+
+//                                (spike_history_mem[23]?6:0)+
+                         
+                         // if you comment out above this line, it is Exponential STDP curve with equal area for Pos and Neg
+                         
                                 (spike_history_mem[22]?7:0)+
                                 (spike_history_mem[21]?7:0)+
                                (spike_history_mem[20]?8:0)+
@@ -327,7 +330,7 @@ wire [31:0] synapticW_change;
             .casr()
     );
    wire [31:0] random_out_cut;
-   assign random_out_cut = {22'b0,random_out[9:0]};
+   assign random_out_cut = {12'b0,random_out[19:0]};
    // random chance for synapticW decay 
    assign synapticW_decay = (random_out_cut < p_delta) ? synapticW_mem >>> 12 : 0; // possion delay? 
  
