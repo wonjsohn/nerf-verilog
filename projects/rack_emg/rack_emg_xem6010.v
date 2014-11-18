@@ -308,11 +308,28 @@
 //      0.001524 z^2 - 0.001555 z 
 //        -------------------------------------
 //       z^3 - 2.566 z^2 + 2.195 z - 0.6258    
+
+
+//tf_sym = subs(s_domain, {a,b,c}, {3, -200, -140})% 
+//positive lobe > negative lobe (10/26/14 - Eric)
+//Transfer function:
+//0.002389 z^2 - 0.002374 z - 1.054e-18
+//-------------------------------------
+// z^3 - 2.617 z^2 + 2.282 z - 0.6635
+
+//tf_sym = subs(s_domain, {a,b,c}, {2, -200, -170})% 
+//positive lobe > negative lobe (10/27/14 - Eric)
+//Transfer function:
+//0.001493 z^2 - 0.001538 z - 6.831e-19
+//-------------------------------------
+// z^3 - 2.541 z^2 + 2.152 z - 0.6077
         
         // b1
         always @ (posedge ep50trig[1] or posedge reset_global)
         if (reset_global)
-            triggered_input7 <= 32'h3AA24463;     //0.001238 (b1 default) 
+            //triggered_input7 <= 32'h3AA24463;     //0.001238 (b1 default) 
+            triggered_input7 <= 32'h3B1C90C5;      // 0.002389 (b1 default) 1
+            //triggered_input7 <= 32'h3AC3B0C4;       // 0.001493  (b1 default)   2
         else
             triggered_input7 <= {ep02wire, ep01wire};      
             //        .b1_F0(32'h3A9E55C1),      //0.001208 (b1 default)
@@ -325,7 +342,10 @@
         // b2
         always @ (posedge ep50trig[4] or posedge reset_global)
         if (reset_global)
-            triggered_input8 <= 32'hBAA6DACB;     //-0.001273 (b2 default)
+            //triggered_input8 <= 32'hBAA6DACB;     //-0.001273 (b2 default)  
+            //triggered_input8 <= 32'hBB1B951C;       // -0.002374 (b2 default)  1
+            //triggered_input8 <= 32'hBAC996B7;       // - 0.001538 (b2 default)  2
+            triggered_input8 <= 32'hBB2222D5;//-0.0024740 (1, 2, b2 default, makes difference in level upon tonic. 
         else
             triggered_input8 <= {ep02wire, ep01wire};  
 
@@ -362,11 +382,17 @@
         wire [31:0] triggered_input9; 
         wire [31:0] triggered_input10; 
         wire [31:0] triggered_input11; 
-        assign triggered_input9 = 32'hC00F3B64;     //- 2.238 (a1 default)
+        //assign triggered_input9 = 32'hC00F3B64;     //- 2.238 (a1 default)
+       assign triggered_input9 = 32'hC0277CEE;     //-2.617(a1 default)  1
+       //assign triggered_input9 = 32'hC0229FBE;  // -2.541(a1 default)    2
         //a2
-        assign triggered_input10 = 32'h3FD5C28F;     //1.67 (a2 default)
+        //assign triggered_input10 = 32'h3FD5C28F;     //1.67 (a2 default)
+        assign triggered_input10 = 32'h40120C4A;   //2.282 (a2 default)     1
+        //assign triggered_input10 = 32'h4009BA5E;   //2.152  (a2 default)     2
         //a3 
-        assign triggered_input11 = 32'hBED49518; // - 0.4152(a3 default)
+//        assign triggered_input11 = 32'hBED49518; // - 0.4152(a3 default)
+        assign triggered_input11 = 32'hBF29DB23;    // -0.6635(a3 default)   1
+       //assign triggered_input11 = 32'hBF1B923A;    // -0.6077 (a3 default)     2
         
         
         reg [31:0] i_MN_offset; 
@@ -1008,6 +1034,14 @@
 //      0.001524 z^2 - 0.001555 z 
 //        -------------------------------------
 //       z^3 - 2.566 z^2 + 2.195 z - 0.6258
+
+
+//positive lobe > negative lobe (10/26/14 - Eric)
+//Transfer function:
+//0.002389 z^2 - 0.002374 z - 1.054e-18
+//-------------------------------------
+// z^3 - 2.617 z^2 + 2.282 z - 0.6635
+
     wire [31:0] f_emg;
     emg_parameter emg_parater_foo
     (   .f_total_emg_out(f_emg), 

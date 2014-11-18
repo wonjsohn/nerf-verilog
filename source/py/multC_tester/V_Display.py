@@ -330,6 +330,8 @@ class View(QMainWindow, Ui_Dialog):
 #        print "self.x=",  self.x
 #        print "y0=" ,  y0
 #        print "y1=" ,  y1
+        
+
         qp.drawLine(self.x - 1 , y0, self.x + 1 , y1)
 
 
@@ -390,7 +392,7 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
 #            pipeInData = gen_tri(T = 2.0)
 #            pipeInData = gen_sin(F = 1.0, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.4, 1.4, 1.0,  1.0], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.16, 1.16, 1.0,  1.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.51, 0.52, 1.0, 1.1, 1.11,  1.51, 1.52, 2.0], L = [0.7, 0.7, 1.5, 1.5, 0.7, 0.7, 0.7, 1.5, 1.5, 0.7, 0.7], FILT = False)  # one second repeat
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.51, 0.52, 1.0, 2.0], L = [0.7, 0.7, 1.5, 1.5, 0.7, 0.7, 0.7], FILT = False) # two second repeat
 

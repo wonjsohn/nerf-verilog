@@ -38,8 +38,9 @@ FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.bl
                 (0x28,      'raster0_31_MN4',      1.0,         'spike32',      Qt.magenta),  \
                 (0x2A,      'raster0_31_MN5',      1.0,         'spike32',      Qt.darkRed),  \
                 (0x2C,      'raster0_31_MN6',      1.0,         'spike32',      Qt.darkGray),  \
-                (0x30,      'total_spike_count_sync',      1.0,         'int32',      Qt.red),  \
-                (0x32,      'total_force_out_muscle0_sync',      1.0,         'float32',      Qt.green),  \
+                (0x2E,      'xxx',      1.0,         'float32',      Qt.darkGray),  \
+                (0x30,      'i_active_muscleDrive',      1.0,         'int32',      Qt.red),  \
+                (0x32,      'f_force',      1.0,         'float32',      Qt.green),  \
                 (0x34,      'xxx',      1.0,         'int32',      Qt.magenta),  \
                 (0x36,      'i_mn_counter',      1.0,         'int32',      Qt.black)
  
@@ -113,10 +114,10 @@ USER_INPUT_B2 =   (1, 'Ia_gain',  'float32',      1.0), \
 #  z^3 - 2.238 z^2 + 1.67 z - 0.4152
 
 #            trig_id    name          type          default_value                
-USER_INPUT_B3 =   (1, 'b1',  'float32',      0.001238), \
+USER_INPUT_B3 =   (1, 'b1',  'float32',      0.002389), \
                     (2, 'tau',  'float32',      0.03), \
                     (3, 'syn_Ia_gain',   'float32',       60.0), \
-                    (4, 'b2',    'float32',      -0.001273), \
+                    (4, 'b2',    'float32',      -0.002474), \
                     (5, 'xxx',    'float32',      -2.238), \
                     (6, 's_weight',      'int32',        0),  \
                     (7, 'half_cnt',      'int32',        0),  \

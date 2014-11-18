@@ -213,7 +213,7 @@
         // Triggered Input 
         always @ (posedge ep50trig[1] or posedge reset_global)
         if (reset_global)
-            i_synaptic_decay <= 32'd0;    //32'd0 = no decay;           
+            i_synaptic_decay <= 32'd1;    //32'd0 = no decay;           
         else
             i_synaptic_decay <= {ep02wire, ep01wire};   
 
@@ -221,7 +221,7 @@
         // Triggered Input 
         always @ (posedge ep50trig[2] or posedge reset_global)
         if (reset_global)
-            i_random_digit <= 32'd13;    //32'd8;           
+            i_random_digit <= 32'd11;    //32'd13;           
         else
             i_random_digit <= {ep02wire, ep01wire};     
         
@@ -234,10 +234,10 @@
             triggered_input0 <= {ep02wire, ep01wire};        
         
 
-        // Triggered Input triggered_input1 Instance Definition (right_m1_in)
+        // Triggered Input triggered_input1 Instance Definition (P_w_delta)
         always @ (posedge ep50trig[5] or posedge reset_global)
         if (reset_global)
-            triggered_input1 <= 32'd0;   //32'd0;         //reset to 0    
+            triggered_input1 <= 32'd1000;   //32'd0;         //reset to 0    
         else
             triggered_input1 <= {ep02wire, ep01wire};        
             
@@ -264,7 +264,7 @@
         // Triggered Input triggered_input2 Instance Definition (ltp)
         always @ (posedge ep50trig[12] or posedge reset_global)
         if (reset_global)
-            triggered_input2 <= 32'd2;         //reset to 0      
+            triggered_input2 <= 32'd1;         //reset to 0      
         else
             triggered_input2 <= {ep02wire, ep01wire};        
         
@@ -277,12 +277,28 @@
             triggered_input3 <= {ep02wire, ep01wire};        
         
 
-        // Triggered Input triggered_input4 Instance Definition (p_delta)
+        // Triggered Input triggered_input4 Instance Definition (p_decay ipsilateral)
         always @ (posedge ep50trig[10] or posedge reset_global)
         if (reset_global)
-            triggered_input4 <= 32'd0;         //reset to 0      
+            triggered_input4 <= 32'd30;         //reset to 0      
         else
             triggered_input4 <= {ep02wire, ep01wire};      
+        
+        // Triggered Input triggered_input4 Instance Definition (p_decay_contralateral)
+        reg [31:0] i_contralateral_p_decay;
+        always @ (posedge ep50trig[13] or posedge reset_global)
+        if (reset_global)
+            i_contralateral_p_decay <= 32'd20;         //reset to 0      
+        else
+            i_contralateral_p_decay <= {ep02wire, ep01wire};      
+            
+          // Triggered Input triggered_input4 Instance Definition (i_weightUpperCap)
+        reg [31:0] i_weightUpperCap;
+        always @ (posedge ep50trig[9] or posedge reset_global)
+        if (reset_global)
+            i_weightUpperCap <= 32'd200000;         //reset to 200000     
+        else
+            i_weightUpperCap <= {ep02wire, ep01wire};      
 
         // Triggered Input triggered_input Instance Definition (sync_scale)
         reg [31:0] block_neuron1;
@@ -380,17 +396,22 @@
                       
                                 
                              
-        
+    wire [31:0] spike_spike_neuron1d;  
+    assign spike_spike_neuron1d = {32{spike_neuron1d}};   // usage:  {4{4'b1001} 
+    wire [31:0] spike_spike_neuron0;  
+    assign spike_spike_neuron0 = {32{spike_neuron0}};   // usage:  {4{4'b1001} 
+    wire [31:0] spike_spike_neuron3d;  
+    assign spike_spike_neuron3d = {32{spike_neuron3d}};   // usage:  {4{4'b1001} 
         
     //FPGA-FPGA Outputs
-    assign spikeout1 = 1'b0;
-    assign spikeout2 = 1'b0;
-    assign spikeout3 = 1'b0;
-    assign spikeout4 = 1'b0;
-    assign spikeout5 = 1'b0;
-    assign spikeout6 = 1'b0;
-    assign spikeout7 = 1'b0;
-    assign spikeout8 = 1'b0;
+    assign spikeout1 = spike_neuron1d;
+    assign spikeout2 = each_spike_neuron1d;
+    assign spikeout3 = spike_neuron3d;
+    assign spikeout4 = each_spike_neuron3d;
+    assign spikeout5 = spike_neuron0;
+    assign spikeout6 = each_spike_neuron0;
+    assign spikeout7 = spike_neuron2;
+    assign spikeout8 = each_spike_neuron2;
     assign spikeout9 = 1'b0;
     assign spikeout10 = 1'b0;   // Ia afferent spike output,  (randomized I input, in floating point way. )
     assign spikeout11 = 1'b0;
@@ -431,41 +452,41 @@
         okWireOut wo20 (    .ep_datain(neuron0_input[15:0]),  .ok1(ok1),  .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h20)    );
         okWireOut wo21 (    .ep_datain(neuron0_input[31:16]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h21)   );    
         
-        okWireOut wo22 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h22)    );
-        okWireOut wo23 (    .ep_datain(population_neuron0[47:32]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h23)   );    
+        okWireOut wo22 (    .ep_datain(each_I_synapse_n0_n2[15:0]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h22)    );
+        okWireOut wo23 (    .ep_datain(each_I_synapse_n0_n2[31:16]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h23)   );    
         
         okWireOut wo24 (    .ep_datain(variable_synaptic_strength0[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
         okWireOut wo25 (    .ep_datain(variable_synaptic_strength0[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
         
-        okWireOut wo26 (    .ep_datain(delta_w_ltp[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
-        okWireOut wo27 (    .ep_datain(delta_w_ltp[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
+        okWireOut wo26 (    .ep_datain(I_synapse0[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
+        okWireOut wo27 (    .ep_datain(I_synapse0[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
         
         okWireOut wo28 (    .ep_datain(spike_count_0_normal[15:0]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h28)    );
         okWireOut wo29 (    .ep_datain(spike_count_0_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h29)   );    
         
-        okWireOut wo2a (    .ep_datain(population_neuron1[31:16]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h2a)    );
-        okWireOut wo2b (    .ep_datain(population_neuron1[47:32]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2b)   );    
+        okWireOut wo2a (    .ep_datain(population_neuron1[15:0]),  .ok1(ok1),  .ok2(ok2x[10*17 +: 17]), .ep_addr(8'h2a)    );
+        okWireOut wo2b (    .ep_datain(population_neuron1[31:16]),  .ok1(ok1),  .ok2(ok2x[11*17 +: 17]), .ep_addr(8'h2b)   );    
         
         okWireOut wo2c (    .ep_datain(variable_synaptic_strength1[15:0]),  .ok1(ok1),  .ok2(ok2x[12*17 +: 17]), .ep_addr(8'h2c)    );
         okWireOut wo2d (    .ep_datain(variable_synaptic_strength1[31:16]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2d)   );    
         
-//        okWireOut wo2e (    .ep_datain(f_emg1[15:0]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2e)    );
-//        okWireOut wo2f (    .ep_datain(f_emg1[31:16]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2f)   );    
+        okWireOut wo2e (    .ep_datain(I_synapse1[15:0]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2e)    );
+        okWireOut wo2f (    .ep_datain(I_synapse1[31:16]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2f)   );    
         
-        okWireOut wo30 (    .ep_datain(spike_count_1d_normal[15:0]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h30)    );
-        okWireOut wo31 (    .ep_datain(spike_count_1d_normal[31:16]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h31)   );    
+        okWireOut wo30 (    .ep_datain(spike_spike_neuron0[15:0]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h30)    );
+        okWireOut wo31 (    .ep_datain(spike_spike_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h31)   );    
         
-        okWireOut wo32 (    .ep_datain(population_neuron2[31:16]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h32)    );
-        okWireOut wo33 (    .ep_datain(population_neuron2[47:32]),  .ok1(ok1),  .ok2(ok2x[19*17 +: 17]), .ep_addr(8'h33)   );    
+        okWireOut wo32 (    .ep_datain(population_neuron2[15:0]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h32)    );
+        okWireOut wo33 (    .ep_datain(population_neuron2[31:16]),  .ok1(ok1),  .ok2(ok2x[19*17 +: 17]), .ep_addr(8'h33)   );    
         
         okWireOut wo34 (    .ep_datain(variable_synaptic_strength2[15:0]),  .ok1(ok1),  .ok2(ok2x[20*17 +: 17]), .ep_addr(8'h34)    );
         okWireOut wo35 (    .ep_datain(variable_synaptic_strength2[31:16]),  .ok1(ok1),  .ok2(ok2x[21*17 +: 17]), .ep_addr(8'h35)   );    
         
-//        okWireOut wo36 (    .ep_datain(f_emg3[15:0]),  .ok1(ok1),  .ok2(ok2x[22*17 +: 17]), .ep_addr(8'h36)    );
-//        okWireOut wo37 (    .ep_datain(f_emg3[31:16]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h37)   );    
+        okWireOut wo36 (    .ep_datain(spike_spike_neuron1d[15:0]),  .ok1(ok1),  .ok2(ok2x[22*17 +: 17]), .ep_addr(8'h36)    );
+        okWireOut wo37 (    .ep_datain(spike_spike_neuron1d[31:16]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h37)   );    
 //        
-        okWireOut wo38 (    .ep_datain(population_neuron3[31:16]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h38)    );
-        okWireOut wo39 (    .ep_datain(population_neuron3[47:32]),  .ok1(ok1),  .ok2(ok2x[25*17 +: 17]), .ep_addr(8'h39)   );    
+        okWireOut wo38 (    .ep_datain(spike_spike_neuron3d[15:0]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h38)    );
+        okWireOut wo39 (    .ep_datain(spike_spike_neuron3d[31:16]),  .ok1(ok1),  .ok2(ok2x[25*17 +: 17]), .ep_addr(8'h39)   );    
 //        
         okWireOut wo3a (    .ep_datain(variable_synaptic_strength3[15:0]),  .ok1(ok1),  .ok2(ok2x[26*17 +: 17]), .ep_addr(8'h3a)    );
         okWireOut wo3b (    .ep_datain(variable_synaptic_strength3[31:16]),  .ok1(ok1),  .ok2(ok2x[27*17 +: 17]), .ep_addr(8'h3b)   );    
@@ -567,6 +588,7 @@
        wire [31:0] i_rand32_n0;
        
         assign i_rand32_n0 = 
+                            (i_random_digit==32'd20)?  {32'b0}:
                             (i_random_digit==32'd14)? {17'b0,n0_rand_out[14:0]}: 
                             (i_random_digit==32'd13)? {18'b0,n0_rand_out[13:0]}:
                             (i_random_digit==32'd12)? {19'b0,n0_rand_out[12:0]}:
@@ -574,6 +596,8 @@
                             (i_random_digit==32'd10)? {21'b0,n0_rand_out[10:0]}: 
                             (i_random_digit==32'd9)?  {22'b0,n0_rand_out[9:0]}:
                             {23'b0,n0_rand_out[8:0]};
+                            
+                          
         assign i_rng_current_to_N0 = triggered_input0 + i_rand32_n0;
 
     // random signal generated in FPGA
@@ -599,7 +623,7 @@
           end       
         
         reg [31:0] n2_rand_out;
-       always @(posedge sim_clk or posedge reset_global)
+       always @(posedge  sim_clk or posedge reset_global)
          begin
            if (reset_global)
             begin
@@ -608,6 +632,9 @@
               n2_rand_out <= n2_rand_out_neuronclk; 
             end
           end
+        
+
+        
         
        wire [31:0] i_rng_current_to_N2;
        //assign i_rng_current_to_N1= {i_I_drive_to_N[31:random_digits+1] , n1_rand_out[random_digits:0]};
@@ -694,6 +721,8 @@
             .population(population_neuron0)  // spikes of population per 1ms simulation time
         );
         
+
+        
         wire spike_neuron1a; // raw spike signals
         wire spike_neuron1b; // raw spike signals
         wire spike_neuron1c; // raw spike signals
@@ -744,12 +773,14 @@
         izneuron_th_control neuron1_d(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( each_I_synapse_n0_n2  ),          // input current from synapse. crosstalk contribution smaller.
+            ///.I_in( each_I_synapse_n0_n2  ),          // input current from synapse. crosstalk contribution smaller.
+            .I_in( I_synapse0 + I_synapse2  ),          // input current from synapse. crosstalk contribution smaller.
+            
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron1d),               // membrane potential
             .spike(spike_neuron1d),           // spike sample
-            .each_spike(each_spike_neuron1d) // raw spikes
-            //.population(population_neuron1)  // spikes of population per 1ms simulation time
+            .each_spike(each_spike_neuron1d), // raw spikes
+            .population(population_neuron1)  // spikes of population per 1ms simulation time
         );
         
         
@@ -824,12 +855,14 @@
         izneuron_th_control neuron3_d(
             .clk(neuron_clk),               // neuron clock (128 cycles per 1ms simulation time)
             .reset(reset_sim),           // reset to initial conditions
-            .I_in( each_I_synapse_n1_n3  ),          // input current from synapse. crosstalk contribution smaller.
+            //.I_in( each_I_synapse_n1_n3  ),          // input current from synapse. crosstalk contribution smaller.
+            .I_in( I_synapse1 + I_synapse3  ),          // input current from synapse. crosstalk contribution smaller.
+            
             .th_scaled(32'd30720),            // default 30mv threshold scaled x1024
             .v_out(v_neuron3d),               // membrane potential
             .spike(spike_neuron3d),           // spike sample
-            .each_spike(each_spike_neuron3d) // raw spikes
-            //.population(population_neuron3)  // spikes of population per 1ms simulation time
+            .each_spike(each_spike_neuron3d), // raw spikes
+            .population(population_neuron3)  // spikes of population per 1ms simulation time
         );
         
 //        
@@ -924,7 +957,7 @@
 
 // Synapse synapse0 Instance Definition
         
-    assign synaptic_strength_synapse0 = 32'd10240<<<1; // baseline synaptic strength
+    assign synaptic_strength_synapse0 = 32'd10240<<<2; // baseline synaptic strength
      wire [31:0] variable_synaptic_strength0;
      wire [31:0] delta_w_ltp;
     synapse_stdp_eric synapse0(
@@ -942,8 +975,9 @@
     
         .ltp_scale(triggered_input2),                        // long term potentiation weight
         .ltd_scale(triggered_input3),                        // long term depression weight
-        .p_delta(triggered_input4),                 // chance for decay 
-        .p_growth(triggered_input1)                //chance for synaptic growth. 
+        .p_delta(i_contralateral_p_decay),                 // chance for decay 
+        .p_growth(triggered_input1),                //chance for synaptic growth. 
+        .i_weightUpperCap(i_weightUpperCap)  // upper cap in synaptic weight
     );
     
 
@@ -967,13 +1001,14 @@
         .ltp_scale(triggered_input2),                        // long term potentiation weight
         .ltd_scale(triggered_input3),                        // long term depression weight
         .p_delta(triggered_input4),                 // chance for decay 
-        .p_growth(triggered_input1)                //chance for synaptic growth. 
+        .p_growth(triggered_input1),                //chance for synaptic growth. 
+        .i_weightUpperCap(i_weightUpperCap)  // upper cap in synaptic weight
     );
     
 //
     // Synapse synapse2 Instance Definition
     
-    assign synaptic_strength_synapse2 = 32'd10240>>>1; // baseline synaptic strength
+    assign synaptic_strength_synapse2 = 32'd10240>>>2; // baseline synaptic strength
     wire [31:0] variable_synaptic_strength2;
     synapse_stdp_eric synapse2(
         .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
@@ -991,7 +1026,8 @@
         .ltp_scale(triggered_input2),                        // long term potentiation weight
         .ltd_scale(triggered_input3),                        // long term depression weight
         .p_delta(triggered_input4),                 // chance for decay 
-        .p_growth(triggered_input1)                //chance for synaptic growth. 
+        .p_growth(triggered_input1),                //chance for synaptic growth. 
+        .i_weightUpperCap(i_weightUpperCap)  // upper cap in synaptic weight
     );
     
 
@@ -1014,8 +1050,9 @@
     
         .ltp_scale(triggered_input2),                        // long term potentiation weight
         .ltd_scale(triggered_input3),                        // long term depression weight
-        .p_delta(triggered_input4),                 // chance for decay 
-        .p_growth(triggered_input1)                //chance for synaptic growth. 
+        .p_delta(i_contralateral_p_decay),                 // chance for decay 
+        .p_growth(triggered_input1),                //chance for synaptic growth. 
+        .i_weightUpperCap(i_weightUpperCap)  // upper cap in synaptic weight
     );
 
 
@@ -1042,6 +1079,7 @@
 //        .b1_F0(32'h3AA24463),      //0.001238 (b1 default) 
 //        .b2_F0(32'hBAA6DACB),      //-0.001273 (b2 default)
 //        .a1_F0(32'hC00F3B64),       //- 2.238 (a1 default)
+
 //        .a2_F0(32'h3FD5C28F),        //1.67 (a2 default)
 //        .a3_F0(32'hBED49518),        // - 0.4152(a3 default)
 //        .clk(sim_clk), 
