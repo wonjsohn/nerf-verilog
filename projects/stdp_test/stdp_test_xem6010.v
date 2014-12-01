@@ -1008,7 +1008,7 @@
 //
     // Synapse synapse2 Instance Definition
     
-    assign synaptic_strength_synapse2 = 32'd10240>>>2; // baseline synaptic strength
+    assign synaptic_strength_synapse2 = 32'd10240>>>1; // baseline synaptic strength
     wire [31:0] variable_synaptic_strength2;
     synapse_stdp_eric synapse2(
         .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
@@ -1033,7 +1033,7 @@
 
     // Synapse synapse3 Instance Definition
     
-    assign synaptic_strength_synapse3 = 32'd10240<<<1; // baseline synaptic strength
+    assign synaptic_strength_synapse3 = 32'd10240<<<2; // baseline synaptic strength
      wire [31:0] variable_synaptic_strength3;
     synapse_stdp_eric synapse3(
         .clk(neuron_clk),                           // neuron clock (128 cycles per 1ms simulation time)
