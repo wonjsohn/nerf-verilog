@@ -482,15 +482,15 @@ assign synapticW_mem_in =(synapticW_stdp <= 32'd5120)? 32'd5120 :(synapticW_stdp
                     neuron_index <= neuron_index + 1;  
                     write <= 0;
                     state <= 1;
-                    spike <= spike_in;  // Eric 11/15/14
-                    postsynaptic_spike <= postsynaptic_spike_in; //Eric 11/15/14
+                    spike <= spike;   //Eric: putting spike_in here doesn't change much. 
+                    postsynaptic_spike <= postsynaptic_spike; //Eric: putting postsynapti_spike_in here doesn't change much. 
                     end
                 1:  begin
                     neuron_index <= neuron_index; 
                     write <= 1;
                     state <= 0;
-                    spike <= spike;   //Eric 11/15/14
-                    postsynaptic_spike <= postsynaptic_spike; //Eric 11/15/14
+                    spike <= spike_in; 
+                    postsynaptic_spike <= postsynaptic_spike_in; 
                     end
              endcase
         end
