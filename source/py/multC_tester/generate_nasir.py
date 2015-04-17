@@ -9,7 +9,8 @@ def gen(L = [0.0, 0.0, 200.0, 200.0], SAMPLING_RATE = 1024, FILT = False):
    """    
    dt = 1.0 / SAMPLING_RATE # Sampling interval in seconds
 
-   T = [dt*i for i in xrange(1024)]  #  1024 time regular timestamps in 1 second.
+#   T = [dt*i for i in xrange(1024)]  #  1024 time regular timestamps in 1 second.
+   T = [dt*i for i in xrange(2048)]  #  2048 time regular timestamps in 2 second.
 
    len_x = int(T[-1] * SAMPLING_RATE) + 1
    #x = zeros(len_x)
@@ -20,21 +21,27 @@ def gen(L = [0.0, 0.0, 200.0, 200.0], SAMPLING_RATE = 1024, FILT = False):
        n_seg = n2 - n1;
        x = x + ([l1 + i*(l2-l1)/n_seg for i in xrange(n_seg)])
 
-   # ensure the list size to be 1024. just extending the last value  
-   if len(x) < SAMPLING_RATE:
+   # ensure the list size to be 1024. just extending the last value
+#   if len(x) < SAMPLING_RATE:  
+#	tail= x[len(x)-1] 
+#	#tail = x(len(x))
+#	for i in xrange(SAMPLING_RATE-len(x)):
+#		x.append(tail) 
+
+   if len(x) < SAMPLING_RATE*2:  # modified for victor's input
 
 	tail= x[len(x)-1] 
 	#tail = x(len(x))
-	for i in xrange(SAMPLING_RATE-len(x)):
+	for i in xrange(SAMPLING_RATE*2-len(x)):
 		x.append(tail) 
 
-	
+   print len_x	
 
    if (FILT):
       b, a = butter(N=3, Wn=2*pi*10/SAMPLING_RATE , btype='low', analog=0, output='ba')
       x = filtfilt(b=b, a=a, x=x)
-
-   x.extend(x) # repeat 2 times in 2 seconds
+#
+#   x.extend(x) # repeat 2 times in 2 seconds
    return x
 
 

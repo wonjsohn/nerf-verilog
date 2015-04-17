@@ -17,12 +17,14 @@ from generate_sin import gen as gen_sin
 from generate_tri import gen as gen_tri
 from generate_spikes import spike_train
 from generate_sequence import gen as gen_ramp
-from generate_nasir import gen as gen_wave
+from generate_nasir16s import gen as gen_wave
 from generate_min_jerk import gen as gen_jerk
+#from generate_from_file import gen as gen_from_file
 from functools import partial
 from math import floor
 from glob import glob
 import numpy as np
+import os.path as path
 
 
 PIXEL_OFFSET = 200 # pixels offsets
@@ -146,7 +148,7 @@ class View(QMainWindow, Ui_Dialog):
         sys.path.append(projectPath)
         import os
         print projectPath
-        for eachBitFile in glob(projectPath+"/*.bit"): 
+        for eachBitFile in sorted(glob(projectPath+"/*.bit"), key=os.path.getmtime, reverse=True): 
 #            (filepath, filename) = os.path.split(eachBitFile) 
             self.listWidget.addItem(eachBitFile)
         self.listWidget.setCurrentRow(0)
@@ -367,12 +369,16 @@ class View(QMainWindow, Ui_Dialog):
         """
         choice = p0
         if choice == "waveform 1":
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.65, 0.66, 16.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.65, 0.66, 16.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2,1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 100ms rise
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.12, 1.1, 1.11,1.12, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 10ms rise
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
+            
+            pipeInData, self.gamma_dyn, self.gamma_sta = self.gen_from_file()
+            self.individualWireIn('gamma_sta', float(self.gamma_sta))
+            self.individualWireIn('gamma_dyn', float(self.gamma_dyn))
             """ 
             up_pulse, dummy = gen_jerk(xi=1.0,  xf = 1.5,  T = 0.05)
             down_pulse, dummy = gen_jerk(xi=1.5,  xf=1.0,  T=0.05)
@@ -392,7 +398,7 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
 #            pipeInData = gen_tri(T = 2.0)
 #            pipeInData = gen_sin(F = 1.0, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
-            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.16, 1.16, 1.0,  1.0], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.30, 1.30, 1.0,  1.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.51, 0.52, 1.0, 1.1, 1.11,  1.51, 1.52, 2.0], L = [0.7, 0.7, 1.5, 1.5, 0.7, 0.7, 0.7, 1.5, 1.5, 0.7, 0.7], FILT = False)  # one second repeat
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.51, 0.52, 1.0, 2.0], L = [0.7, 0.7, 1.5, 1.5, 0.7, 0.7, 0.7], FILT = False) # two second repeat
 
@@ -412,21 +418,34 @@ class View(QMainWindow, Ui_Dialog):
             self.j5List=[]
             self.j6List=[]
 
-            for line in open('/home/eric/wonjoon_codes/matlab_wjsohn/posAllData.txt',  "r").readlines(): 
-                j1 ,  j2,  j3,  j4,  j5,  j6= line.split('\t')
+#            for line in open('/home/eric/Dropbox/MATLAB/WonJoon_code/matlab_wjsohn/posAllData.txt',  "r").readlines():
+#                j1 ,  j2,  j3,  j4,  j5,  j6= line.split('\t')
+#                j1 = float(j1)
+#                j2 = float(j2)
+#                print type(j1)
+#                print j1
+#                self.j1List.append(j1)   #
+#                self.j2List.append(j2)   #
+#                self.j3List.append(j3)   #
+#                self.j4List.append(j4)   #
+#                self.j5List.append(j5)   #
+#                self.j6List.append(j6)   #
+#
+            for line in open('/home/eric/nerf_verilog_eric/source/py/1125_resampled/expt_rampnhold.gd_80.gs_80.rep_0.dev_fpga_resampled.txt',  "r").readlines(): 
+                j1, j2 = line.split('\n')
+#                j1 = line.splitlines()
+                
                 j1 = float(j1)
-                j2 = float(j2)
+                print type(j1)
+                print j1
+                
                 self.j1List.append(j1)   #
-                self.j2List.append(j2)   #
-                self.j3List.append(j3)   #
-                self.j4List.append(j4)   #
-                self.j5List.append(j5)   #
-                self.j6List.append(j6)   #
+              
             
 #            print self.j1List
             
             pipeInData_bf = gen_wave(L=self.j1List,  FILT = False)
-            pipeInData = [x+1.0 for x in pipeInData_bf]
+            pipeInData = [x for x in pipeInData_bf]
 
 
             
@@ -554,3 +573,37 @@ class View(QMainWindow, Ui_Dialog):
             for eachPort,  eachVal in zip(tempList,  tempVal):
                 self.tellFpga(eachPort, eachVal)
                 print "board",  eachPort, " is now ", eachVal
+                
+    def gen_from_file(self):
+        input_path = "/home/eric/nerf_verilog_eric/source/py/1125_resampled/"
+        conditions = np.loadtxt('conditions.txt')
+        gamma_dyn = int(conditions[0])
+        gamma_sta = int(conditions[1])
+        rep = int(conditions[2])
+        found = False
+        for i in range(gamma_dyn, 220, 40):
+            for j in range(gamma_sta, 220, 40):
+                for k in range(rep,20):
+                    file_name = "expt_rampnhold.gd_" + str(i) + ".gs_" + str(j) + ".rep_" + str(k) + ".dev_fpga_resampled.txt"
+                    if path.exists(input_path + file_name):
+                        print file_name
+                        x = np.loadtxt(input_path + file_name)
+                        found = True
+                        file = open('conditions.txt', 'w')
+                        if k < 19:
+                            file.write(str(i) + '\n' + str(j) + '\n' + str(k + 1) + '\n')
+                        elif j < 200:
+                            file.write(str(i) + '\n' + str(j + 20) + '\n' + str(0) + '\n')
+                        else:
+                            file.write(str(i + 20) + '\n' + str(0) + '\n' + str(0) + '\n')
+                        file.close()
+                    if found:
+                        break
+                rep = 0
+                if found:
+                    break
+            rep = 0
+            gamma_sta = 0
+            if found:
+                break
+        return x, i, j

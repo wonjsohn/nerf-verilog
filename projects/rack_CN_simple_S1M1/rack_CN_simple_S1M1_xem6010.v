@@ -411,7 +411,7 @@
         reg [31:0] f_extraCN_syn_gain;
         always @ (posedge ep50trig[13] or posedge reset_global)
         if (reset_global)
-            f_extraCN_syn_gain <= 32'h3f800000;         //reset to 1.0  
+            f_extraCN_syn_gain <= 32'h40800000;        //reset to 4.0  
         else
             f_extraCN_syn_gain <= {ep02wire, ep01wire};    
         
@@ -573,11 +573,11 @@
         okWireOut wo22 (    .ep_datain(i_gainScaled_I_from_spindle[15:0]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h22)    );
         okWireOut wo23 (    .ep_datain(i_gainScaled_I_from_spindle[31:16]),  .ok1(ok1),  .ok2(ok2x[3*17 +: 17]), .ep_addr(8'h23)   );    
         
-        okWireOut wo24 (    .ep_datain(i_I_from_spindle_neuronCompensated[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
-        okWireOut wo25 (    .ep_datain(i_I_from_spindle_neuronCompensated[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
+        okWireOut wo24 (    .ep_datain(fixed_drive_to_CN_offset_subtracted[15:0]),  .ok1(ok1),  .ok2(ok2x[4*17 +: 17]), .ep_addr(8'h24)    );
+        okWireOut wo25 (    .ep_datain(fixed_drive_to_CN_offset_subtracted[31:16]),  .ok1(ok1),  .ok2(ok2x[5*17 +: 17]), .ep_addr(8'h25)   );    
         
-        okWireOut wo26 (    .ep_datain(f_drive_to_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
-        okWireOut wo27 (    .ep_datain(f_drive_to_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
+        okWireOut wo26 (    .ep_datain(f_I_synapse_Ia[15:0]),  .ok1(ok1),  .ok2(ok2x[6*17 +: 17]), .ep_addr(8'h26)    );
+        okWireOut wo27 (    .ep_datain(f_I_synapse_Ia[31:16]),  .ok1(ok1),  .ok2(ok2x[7*17 +: 17]), .ep_addr(8'h27)   );    
         
         okWireOut wo28 (    .ep_datain(i_CN2_extra_drive[15:0]),  .ok1(ok1),  .ok2(ok2x[8*17 +: 17]), .ep_addr(8'h28)    );
         okWireOut wo29 (    .ep_datain(i_CN2_extra_drive[31:16]),  .ok1(ok1),  .ok2(ok2x[9*17 +: 17]), .ep_addr(8'h29)   );  
