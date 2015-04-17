@@ -23,8 +23,8 @@ FPGA_OUTPUT_B1 =    (0x20,      'population_neuron0',      1.0,         'spike32
 #            address         name   visual_gain         type            color
 FPGA_OUTPUT_B2 =   (0x20,      'i_rng_CN1_extra_drive',      1.0,         'int32',      Qt.blue),  \
                 (0x22,      'i_gainScaled_I_from_spindle',      1.0,         'int32',      Qt.red),  \
-                (0x24,      'i_I_from_S1_neuronCompensated',      1.0,         'int32',      Qt.green),  \
-                (0x26,      'f_drive_to_CN',      1.0,         'float32',      Qt.black),  \
+                (0x24,      'fixed_drive_to_CN_offset_subtracted',      1.0,         'int32',      Qt.green),  \
+                (0x26,      'f_I_synapse_Ia',      1.0,         'float32',      Qt.black),  \
                 (0x28,      'i_CN2_extra_drive',      1.0,         'int32',      Qt.magenta),  \
                 (0x2A,      'i_I_from_spindle',      1.0,         'int32',      Qt.darkRed),  \
                 (0x2C,      'i_cn_counter',      1.0,         'int32',      Qt.darkGray),  \
@@ -42,7 +42,7 @@ FPGA_OUTPUT_B3 =    (0x20,      'f_emg',      1.0,         'float32',      Qt.bl
                 (0x30,      'i_active_muscleDrive',      1.0,         'int32',      Qt.red),  \
                 (0x32,      'f_force',      1.0,         'float32',      Qt.green),  \
                 (0x34,      'xxx',      1.0,         'int32',      Qt.magenta),  \
-                (0x36,      'i_mn_counter',      1.0,         'int32',      Qt.black)
+                (0x36,      'f_I_synapse_CN',      1.0,         'float32',      Qt.black)
  
 ### For video recording: only display force 
 ##            address         name   visual_gain         type            color
@@ -66,10 +66,10 @@ FPGA_OUTPUT_DEFAULT =    (0x20,      'f_len',      1.0,         'float32',      
 #            trig_id    name          type          default_value                
 USER_INPUT_B1 =   (1, 'spindle_Ia_gain',  'float32',      1.2), \
                     (2, 'tau',  'float32',      0.03), \
-                    (3, 'spindl_Ia_offset',   'float32',   70.0), \
+                    (3, 'spindl_Ia_offset',   'float32',   0.0), \
                     (4, 'gamma_dyn',    'float32',      80.0), \
                     (5, 'gamma_sta',    'float32',      80.0), \
-                    (6, 'spindl_II_offset',      'float32',        50.0),  \
+                    (6, 'spindl_II_offset',      'float32',        0.0),  \
                     (7, 'half_cnt',      'int32',        0),  \
                     (8, 'xxx',      'int32',        0),  \
                     (9, 'Lce',      'float32',        1.0),  \
@@ -93,7 +93,7 @@ USER_INPUT_B2 =   (1, 'Ia_gain',  'float32',      1.0), \
                     (10, 'p_delta',      'float32',        0.0),  \
                     (11, 'ltd',      'int32',        0),  \
                     (12, 'ltp',      'int32',        0),  \
-                    (13, 'f_extraCN_syn_gain',      'float32',        1.0)
+                    (13, 'f_extraCN_syn_gain',      'float32',        4.0)
 
 
 #Transfer function:  (close to simulink)
@@ -116,15 +116,15 @@ USER_INPUT_B2 =   (1, 'Ia_gain',  'float32',      1.0), \
 #            trig_id    name          type          default_value                
 USER_INPUT_B3 =   (1, 'b1',  'float32',      0.002389), \
                     (2, 'tau',  'float32',      0.03), \
-                    (3, 'syn_Ia_gain',   'float32',       60.0), \
+                    (3, 'syn_Ia_gain',   'float32',       35.0), \
                     (4, 'b2',    'float32',      -0.002474), \
                     (5, 'xxx',    'float32',      -2.238), \
                     (6, 's_weight',      'int32',        0),  \
                     (7, 'half_cnt',      'int32',        0),  \
                     (8, 'MN_offset',      'int32',        0),  \
                     (9, 'Lce_vel',      'float32',        1.0),  \
-                    (10, 'syn_CN_gain',      'float32',        200.0),  \
-                    (11, 'syn_II_gain',      'float32',        60.0),  \
+                    (10, 'syn_CN_gain',      'float32',        50.0),  \
+                    (11, 'syn_II_gain',      'float32',        35.0),  \
                     (12, 'synapse_1n2_offset',      'float32',        0.0)
                
 

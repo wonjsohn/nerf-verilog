@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/MVC_MainGUI.ui'
 #
-# Created: Wed Dec  4 18:04:04 2013
+# Created: Mon Apr 13 19:54:00 2015
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -382,6 +382,14 @@ class Ui_Dialog(object):
         self.checkBox_2 = QtGui.QCheckBox(Dialog)
         self.checkBox_2.setGeometry(QtCore.QRect(870, 40, 97, 22))
         self.checkBox_2.setObjectName(_fromUtf8("checkBox_2"))
+        self.spinBox = QtGui.QSpinBox(Dialog)
+        self.spinBox.setGeometry(QtCore.QRect(370, 40, 60, 27))
+        self.spinBox.setMaximum(999999)
+        self.spinBox.setProperty("value", 380)
+        self.spinBox.setObjectName(_fromUtf8("spinBox"))
+        self.label_2 = QtGui.QLabel(Dialog)
+        self.label_2.setGeometry(QtCore.QRect(140, 40, 221, 20))
+        self.label_2.setObjectName(_fromUtf8("label_2"))
 
         self.retranslateUi(Dialog)
         QtCore.QObject.connect(self.horizontalSlider, QtCore.SIGNAL(_fromUtf8("valueChanged(int)")), self.lcdNumber.display)
@@ -401,6 +409,7 @@ class Ui_Dialog(object):
         self.checkBox.setText(QtGui.QApplication.translate("Dialog", "send sine", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Dialog", "overflow %", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox_2.setText(QtGui.QApplication.translate("Dialog", "send tonic", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("Dialog", "Global Halfcount. 380 = realtime", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":
