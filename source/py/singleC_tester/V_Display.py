@@ -17,6 +17,7 @@ from generate_sin import gen as gen_sin
 from generate_tri import gen as gen_tri
 from generate_spikes import spike_train
 from generate_sequence import gen as gen_ramp
+<<<<<<< HEAD
 from generate_rand import gen as gen_rand
 from functools import partial
 from math import floor
@@ -24,6 +25,11 @@ from glob import glob
 import socket
 
 from MVC_MainGUI import MultiXemScheduler
+=======
+from functools import partial
+from math import floor
+from glob import glob
+>>>>>>> development
 
 PIXEL_OFFSET = 200 # pixels offsets
 BUTTON_INPUT_FROM_TRIGGER = 1
@@ -71,11 +77,18 @@ class ViewChannel:
         self.yoffset = 1.0
         self.addr = addr
         self.type = type
+<<<<<<< HEAD
        
 
         self.data = deque([0]*100, maxlen=100)
         self.slider = QtGui.QSlider(hostDialog)
         self.slider.setGeometry(QtCore.QRect(170, 70+ id*60, 29, 80))
+=======
+
+        self.data = deque([0]*100, maxlen=100)
+        self.slider = QtGui.QSlider(hostDialog)
+        self.slider.setGeometry(QtCore.QRect(100, 70+ id*80, 29, 80))
+>>>>>>> development
         self.slider.setOrientation(QtCore.Qt.Vertical)
         self.slider.setObjectName("gain_"+name)
 
@@ -85,6 +98,7 @@ class ViewChannel:
         self.label.setPalette(pal)
         self.label.setObjectName("label_"+name)
         self.label.setText(name)
+<<<<<<< HEAD
         self.label.setGeometry(QtCore.QRect(0, 70+ id*60, 120, 100))
         self.label.show()
         
@@ -96,6 +110,10 @@ class ViewChannel:
         self.labelnum.setText(name)
         self.labelnum.setGeometry(QtCore.QRect(120, 70+ id*60, 80, 100))
         self.labelnum.show()
+=======
+        self.label.setGeometry(QtCore.QRect(10, 70+ id*80, 80, 100))
+        self.label.show()
+>>>>>>> development
 
 
 def onVisualSlider(self, whichCh, value = -1):
@@ -134,7 +152,10 @@ class View(QMainWindow, Ui_Dialog):
 
         self.x = 200
         self.pen = QPen()
+<<<<<<< HEAD
         self.resetSimClick = 0
+=======
+>>>>>>> development
 
         self.numPt = PIXEL_OFFSET
         self.isPause = False
@@ -176,10 +197,13 @@ class View(QMainWindow, Ui_Dialog):
             fn = partial(onVisualSlider, self, eachName) # Customizing onNewWireIn() into channel-specific 
             eachChan.slider.valueChanged.connect(fn)    
 
+<<<<<<< HEAD
 
     def abcd(self, val):
         self.resetSimClick = val;
         
+=======
+>>>>>>> development
     def individualWireIn(self, whichCh, value = -1):
         if value == -1: 
             value = self.allUserInput[whichCh].doubleSpinBox.value()         
@@ -227,6 +251,7 @@ class View(QMainWindow, Ui_Dialog):
     def newDataIO(self, newData, newSpikeAll = []):
         for (name, ch), pt in zip(self.allFpgaOutput.iteritems(), newData):
             ch.data.appendleft(pt)
+<<<<<<< HEAD
             ch.labelnum.setText("%4.6f" % pt)     
             
             if ch.addr == 0x24 or ch.addr == 0x2C or ch.addr == 0x34 or ch.addr == 0x3A:   # synaptic strength
@@ -257,6 +282,11 @@ class View(QMainWindow, Ui_Dialog):
         sock = socket.socket(socket.AF_INET, # Internet
                              socket.SOCK_DGRAM) # UDP
         sock.sendto(val, (UDP_IP, UDP_PORT))
+=======
+            ch.label.setText("%4.6f" % pt)      
+
+        self.spike_all = newSpikeAll
+>>>>>>> development
 
     def onTimeOut(self):
         if (self.isPause):
@@ -289,7 +319,10 @@ class View(QMainWindow, Ui_Dialog):
 
     def drawRaster(self, gp, ch):           
         size = self.size()
+<<<<<<< HEAD
 #        print size.height()
+=======
+>>>>>>> development
         winScale = size.height()*0.2 + size.height()*0.618/self.NUM_CHANNEL * 4;
         self.pen.setStyle(Qt.SolidLine)
         self.pen.setWidth(2)
@@ -299,6 +332,7 @@ class View(QMainWindow, Ui_Dialog):
         gp.setPen(self.pen)
         
         yOffset = int(size.height()*0.20 + size.height()*0.818/self.NUM_CHANNEL * ch.id)
+<<<<<<< HEAD
         #print yOffset,   self.x
         bit_mask = 0x00000001
         ## display the spike rasters
@@ -307,6 +341,13 @@ class View(QMainWindow, Ui_Dialog):
         spike_train = ch.data[0]
 
 #        print spike_train ,"spiketrain"
+=======
+        bit_mask = 0x0000001
+        ## display the spike rasters
+#        print ch.data[0]
+        spike_train = int(ch.data[0])
+        #print spike_train
+>>>>>>> development
         for i in xrange(32):
             ## flexors
             if (bit_mask & spike_train) : ## Ia
@@ -362,7 +403,10 @@ class View(QMainWindow, Ui_Dialog):
 #        print "self.x=",  self.x
 #        print "y0=" ,  y0
 #        print "y1=" ,  y1
+<<<<<<< HEAD
 #        print ch.addr, y0, y1 
+=======
+>>>>>>> development
         qp.drawLine(self.x - 1 , y0, self.x + 1 , y1)
 
 
@@ -412,6 +456,7 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
 #            pipeInData = gen_tri(T = 2.0) 
             #pipeInData = gen_ramp(T = [0.0, 0.1, 0.9, 1.4, 1.9, 2.0], L = [0.5, 0.5, 1.5, 1.5, 0.5,  0.5], FILT = False)
+<<<<<<< HEAD
             #pipeInData = gen_ramp(T = [0.0, 1.8, 2.0], L = [0.0, 30000.0, 0.0], FILT = False)
             
             #pipeInData = abs(gen_sin(F = 0.5, AMP = 17000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
@@ -426,6 +471,12 @@ class View(QMainWindow, Ui_Dialog):
             """ new setting 060514 """
 #            pipeInData =  gen_rand(T=16.0,  BIAS = 9000.0, AMP = 6400.0) # 16 seconds
 #            pipeInData2 =  gen_rand(T=16.0,  BIAS = 9000.0, AMP = 6400.0) # 16 seconds
+=======
+            pipeInData = gen_ramp(T = [0.0, 1.5, 2.0], L = [0.0, 4000.0, 0.0], FILT = False)
+
+
+                
+>>>>>>> development
             
           
  
@@ -434,16 +485,23 @@ class View(QMainWindow, Ui_Dialog):
 
 #            pipeInData = spike_train(firing_rate = 1) 
             print "waveform 3 fed"
+<<<<<<< HEAD
 #            pipeInData = gen_sin(F = 0.5, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
             pipeInData = abs(gen_sin(F = 0.5, AMP = 12000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
             
+=======
+            pipeInData = gen_sin(F = 0.5, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
+>>>>>>> development
             #pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.3, 1.3, 1.0, 1.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.4, 1.5, 1.55,  1.6,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)
 #                pipeInData = gen_ramp(T = [0.0, 0.2, 0.25, 1.75,  1.8,  2.0], L = [1.0,  1.0,  5000.0, 5000.0, 1.0, 1.0], FILT = False)  # abrupt rise / fall
 #            pipeInData = spike_train(firing_rate = 1000) 
 
         self.nerfModel.SendPipe(pipeInData)
+<<<<<<< HEAD
         self.nerfModel.SendPipe2(pipeInData2)
+=======
+>>>>>>> development
           
 
 
@@ -507,6 +565,7 @@ class View(QMainWindow, Ui_Dialog):
 #        else:
 #            self.nerfModel.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2=0, bitVal3=0, trigEvent = 9)
 #        
+<<<<<<< HEAD
     
     @pyqtSignature("bool")
     def on_checkBox_3_clicked(self, checked):
@@ -527,3 +586,5 @@ class View(QMainWindow, Ui_Dialog):
         print newInput
         self.nerfModel.SendButton(newInput, BUTTON_CUT_SYNAPSE2)
     
+=======
+>>>>>>> development

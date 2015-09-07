@@ -796,12 +796,26 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
+<<<<<<< HEAD
       <status xil_pn:value="OutOfDateForInputs"/>
       <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="InputRemoved"/>
       <status xil_pn:value="OutputChanged"/>
       <status xil_pn:value="OutputRemoved"/>
+=======
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="OutputChanged"/>
+      <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
+      <outfile xil_pn:name="rack_CN_general_xem6010.pcf"/>
+      <outfile xil_pn:name="rack_CN_general_xem6010_map.map"/>
+      <outfile xil_pn:name="rack_CN_general_xem6010_map.mrp"/>
+      <outfile xil_pn:name="rack_CN_general_xem6010_map.ncd"/>
+      <outfile xil_pn:name="rack_CN_general_xem6010_map.ngm"/>
+      <outfile xil_pn:name="rack_CN_general_xem6010_map.xrpt"/>
+      <outfile xil_pn:name="rack_CN_general_xem6010_summary.xml"/>
+      <outfile xil_pn:name="rack_CN_general_xem6010_usage.xml"/>
+>>>>>>> development
     </transform>
     <transform xil_pn:end_ts="1377391506" xil_pn:in_ck="-2787346829717599192" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1377391359">
       <status xil_pn:value="SuccessfullyRun"/>

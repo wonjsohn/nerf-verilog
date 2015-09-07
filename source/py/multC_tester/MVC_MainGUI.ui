@@ -9,8 +9,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
+<<<<<<< HEAD
     <width>1207</width>
     <height>76</height>
+=======
+    <width>989</width>
+    <height>32</height>
+>>>>>>> development
    </rect>
   </property>
   <property name="windowTitle">
@@ -617,7 +622,11 @@
   <widget class="QCheckBox" name="checkBox">
    <property name="geometry">
     <rect>
+<<<<<<< HEAD
      <x>870</x>
+=======
+     <x>880</x>
+>>>>>>> development
      <y>10</y>
      <width>97</width>
      <height>22</height>
@@ -627,6 +636,7 @@
     <string>send sine</string>
    </property>
   </widget>
+<<<<<<< HEAD
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
@@ -1168,6 +1178,8 @@
     <string>Global Halfcount. 380 = realtime</string>
    </property>
   </widget>
+=======
+>>>>>>> development
  </widget>
  <resources/>
  <connections>

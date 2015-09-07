@@ -40,7 +40,11 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         self.cList = cList
         self.vList = vList
         self.halfCountRealTime = halfCountRealTime
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> development
 #        self.cList.setWindowTitle('Global Control')
         #self.cList.show() 
 
@@ -145,8 +149,11 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         Slot documentation goes here.
         """
         newResetSim = checked
+<<<<<<< HEAD
         print self.vList
         self.vList[0].abcd(checked)
+=======
+>>>>>>> development
         for eachXem in self.xemList:
             eachXem.SendButton(newResetSim, BUTTON_RESET_SIM)
     

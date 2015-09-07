@@ -11,7 +11,10 @@ from M_Fpga import SomeFpga # Model in MVC
 from V_Display import View, ViewChannel,  CtrlChannel # Viewer in MVC
 import os
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> development
 sys.path.append('../')
 import platform 
 arch = platform.architecture()[0]
@@ -38,9 +41,13 @@ if __name__ == "__main__":
 
 
    
+<<<<<<< HEAD
 #    PROJECT_LIST = ["izneuron_range_test"] 
 #    PROJECT_LIST = ["rack_mn_muscle"] 
     PROJECT_LIST = ["stdp_test"] 
+=======
+    PROJECT_LIST = ["izneuron_range_test"] 
+>>>>>>> development
 
     PROJECT_PATH = [(ROOT_PATH + p) for p in PROJECT_LIST]
     DEVICE_MODEL = "xem6010"
@@ -51,7 +58,11 @@ if __name__ == "__main__":
     
     #sys.path.append(PROJECT_PATH)
     print PROJECT_PATH
+<<<<<<< HEAD
     os.chdir('/home/eric/nerf_verilog_eric/projects/stdp_test')
+=======
+    os.chdir('/home/eric/nerf_verilog_eric/projects/izneuron_range_test')
+>>>>>>> development
     from config_test_local import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT,  USER_INPUT  
     FPGA_OUTPUT_B = []
     USER_INPUT_B = []
@@ -71,9 +82,15 @@ if __name__ == "__main__":
     numFpga = testrun.GetDeviceCount()
     assert numFpga > 0, "No OpalKelly boards found, is one connected?"
     print "Found ",  numFpga, " OpalKelly devices:"           
+<<<<<<< HEAD
     xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
     print xemSerialList
     xemSerialList = ['11160001CJ']
+=======
+#    xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
+
+    xemSerialList = ['12320003RM']
+>>>>>>> development
 
     print xemSerialList
     

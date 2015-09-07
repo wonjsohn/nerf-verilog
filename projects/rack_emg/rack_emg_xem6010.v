@@ -246,7 +246,11 @@
         reg [31:0] f_CN_syn_gain;
         always @ (posedge ep50trig[10] or posedge reset_global)
         if (reset_global)
+<<<<<<< HEAD
             f_CN_syn_gain <= 32'h42480000;         //reset to 200.0  -> 50 
+=======
+            f_CN_syn_gain <= 32'h42480000;         //reset to 50.0  
+>>>>>>> development
         else
             f_CN_syn_gain <= {ep02wire, ep01wire};    
 
@@ -521,7 +525,11 @@
         synapse_simple synapse_simple_from_CN(
             .clk(sim_clk),
             .reset(reset_sim),
+<<<<<<< HEAD
             .spike_in(spikein9|spikein10),
+=======
+            .spike_in(spikein9),
+>>>>>>> development
             .f_I_out(f_I_synapse_CN)
         );
         
@@ -529,9 +537,15 @@
          
         //******************* synapse Ia output ****************************
         //Remove the offset in synapse output 
+<<<<<<< HEAD
 //        wire [31:0] f_temp_I_synapse_Ia_removed_offset;
 //        sub sub_spindle0_Ia(.x(f_I_synapse_Ia), .y(triggered_input2), .out(f_temp_I_synapse_Ia_removed_offset));
 
+=======
+        wire [31:0] f_temp_I_synapse_Ia_removed_offset;
+        sub sub_spindle0_Ia(.x(f_I_synapse_Ia), .y(triggered_input2), .out(f_temp_I_synapse_Ia_removed_offset));
+	
+>>>>>>> development
         //gain control for f_I_synapse_M1extra1synapse output
         wire [31:0] f_gain_controlled_I_synapse_Ia;
         mult mult_synapse_simple0_Ia(.x(f_I_synapse_Ia), .y(triggered_input5), .out(f_gain_controlled_I_synapse_Ia));
@@ -573,6 +587,7 @@
         
 
 //        
+<<<<<<< HEAD
         wire [31:0]  i_drive_to_MN;
         floor   synapse_float_to_int(
 //            .in(f_drive_to_MN),
@@ -589,6 +604,19 @@
         //wire [31:0] fixed_I_synapse;
         //assign fixed_I_synapse= int_I_synapse << 
         assign i_I_drive_to_MN_F0 = i_total_drive_to_MN[31]? 32'd0:i_total_drive_to_MN;// prevent negative current  // + i_extraMN_drive; 
+=======
+        wire [31:0]  i_drive_to_CN;
+        floor   synapse_float_to_int(
+//            .in(f_drive_to_CN),
+            .in(f_I_SNsCN),
+            .out(i_drive_to_CN)
+        );
+
+        
+        //wire [31:0] fixed_I_synapse;
+        //assign fixed_I_synapse= int_I_synapse << 
+        assign i_I_drive_to_MN_F0 = i_drive_to_CN; // + i_extraMN_drive; 
+>>>>>>> development
 //        wire [31:0] int_I_synapse;
 //        unsigned_mult32 synapse_simple1_gain(.out(int_I_synapse), .a(i_spike_count_neuron_sync_inputPin), .b(triggered_input5));    // I to each_I   
         
@@ -637,8 +665,12 @@
       //1*9/16 = 0.5625 (MU17)  
       //1*8/16 = 0.5  (MU20)    *
    
+<<<<<<< HEAD
      //parameter randomness = 10;
      
+=======
+   
+>>>>>>> development
      wire [31:0] MN1_rand_out;
      rng rng_MN1(               
         .clk1(neuron_clk),
@@ -648,8 +680,13 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN1;
+<<<<<<< HEAD
        assign i_rng_current_to_MN1= {i_I_drive_to_MN[31:8] , MN1_rand_out[7:0]};
 //        assign i_rng_current_to_MN1 = i_I_drive_to_MN;
+=======
+       assign i_rng_current_to_MN1= {i_I_drive_to_MN[31:6] , MN1_rand_out[5:0]};
+        
+>>>>>>> development
         
       wire [31:0] MN2_rand_out;
      rng rng_MN2(               
@@ -660,8 +697,13 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN2;
+<<<<<<< HEAD
        assign i_rng_current_to_MN2= {i_I_drive_to_MN[31:8] , MN2_rand_out[7:0]};
 //       assign i_rng_current_to_MN2 = i_I_drive_to_MN;
+=======
+       assign i_rng_current_to_MN2= {i_I_drive_to_MN[31:6] , MN2_rand_out[5:0]};
+       
+>>>>>>> development
        
            wire [31:0] MN3_rand_out;
      rng rng_MN3(               
@@ -672,8 +714,12 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN3;
+<<<<<<< HEAD
        assign i_rng_current_to_MN3= {i_I_drive_to_MN[31:8] , MN3_rand_out[7:0]};
 //       assign i_rng_current_to_MN3 = i_I_drive_to_MN;
+=======
+       assign i_rng_current_to_MN3= {i_I_drive_to_MN[31:6] , MN3_rand_out[5:0]};
+>>>>>>> development
 
       wire [31:0] MN4_rand_out;
      rng rng_MN4(               
@@ -684,8 +730,12 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN4;
+<<<<<<< HEAD
        assign i_rng_current_to_MN4= {i_I_drive_to_MN[31:8] , MN4_rand_out[7:0]};
 //       assign i_rng_current_to_MN4 = i_I_drive_to_MN;
+=======
+       assign i_rng_current_to_MN4= {i_I_drive_to_MN[31:6] , MN4_rand_out[5:0]};
+>>>>>>> development
 
       wire [31:0] MN5_rand_out;
      rng rng_MN5(               
@@ -696,8 +746,12 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN5;
+<<<<<<< HEAD
        assign i_rng_current_to_MN5= {i_I_drive_to_MN[31:8] , MN5_rand_out[7:0]};
 //    assign i_rng_current_to_MN5 = i_I_drive_to_MN;
+=======
+       assign i_rng_current_to_MN5= {i_I_drive_to_MN[31:6] , MN5_rand_out[5:0]};
+>>>>>>> development
 
       wire [31:0] MN6_rand_out;
      rng rng_MN6(               
@@ -708,8 +762,12 @@
         ); 
         
        wire [31:0] i_rng_current_to_MN6;
+<<<<<<< HEAD
        assign i_rng_current_to_MN6= {i_I_drive_to_MN[31:8] , MN6_rand_out[7:0]};
 //       assign i_rng_current_to_MN6 = i_I_drive_to_MN;
+=======
+       assign i_rng_current_to_MN6= {i_I_drive_to_MN[31:6] , MN6_rand_out[5:0]};
+>>>>>>> development
 //
 //      wire [31:0] MN7_rand_out;
 //     rng rng_MN7(               
@@ -906,15 +964,24 @@
         okWireOut wo2C (    .ep_datain(population_neuron_MN6[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
         okWireOut wo2D (    .ep_datain(population_neuron_MN6[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
         
+<<<<<<< HEAD
 //        okWireOut wo2E (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
 //        okWireOut wo2F (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
+=======
+      //  okWireOut wo2E (    .ep_datain(population_neuron_MN2[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
+      //  okWireOut wo2F (    .ep_datain(population_neuron_MN2[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
+>>>>>>> development
 
         okWireOut wo30 (    .ep_datain(i_active_muscleDrive[15:0]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h30)    );
         okWireOut wo31 (    .ep_datain(i_active_muscleDrive[31:16]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h31)   );         
 
         okWireOut wo32 (    .ep_datain(total_force_out_muscle0_sync[15:0]),  .ok1(ok1),  .ok2(ok2x[19*17 +: 17]), .ep_addr(8'h32)    );
         okWireOut wo33 (    .ep_datain(total_force_out_muscle0_sync[31:16]),  .ok1(ok1),  .ok2(ok2x[20*17 +: 17]), .ep_addr(8'h33)   );  
+<<<<<<< HEAD
 //        s
+=======
+//        
+>>>>>>> development
 //        okWireOut wo34 (    .ep_datain(i_spike_count_neuron_sync_inputPin[15:0]),  .ok1(ok1),  .ok2(ok2x[21*17 +: 17]), .ep_addr(8'h34)    );
 //        okWireOut wo35 (    .ep_datain(i_spike_count_neuron_sync_inputPin[31:16]),  .ok1(ok1),  .ok2(ok2x[22*17 +: 17]), .ep_addr(8'h35)   );       
 

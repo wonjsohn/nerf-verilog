@@ -62,9 +62,14 @@ class CtrlChannel:
         self.label = QtGui.QLabel(hostDialog)
         self.label.setObjectName("label_"+name)
         self.label.setText(name)
+<<<<<<< HEAD
         self.label.setGeometry(QtCore.QRect(SPINBOX_HOFFSET + 510, SPINBOX_VOFFSET+ id * 30, 105, 30))    
   
     
+=======
+        self.label.setGeometry(QtCore.QRect(SPINBOX_HOFFSET + 510, SPINBOX_VOFFSET+ id * 30, 105, 30))           
+
+>>>>>>> development
 class ViewChannel:
     def __init__(self, hostDialog, name, id, width = 2, color = Qt.blue, addr = 0x20, type = ""):
         self.id = id
@@ -89,6 +94,7 @@ class ViewChannel:
         self.label.setText(name)
         self.label.setGeometry(QtCore.QRect(10, 70+ id*80, 120, 100))
         self.label.show()
+<<<<<<< HEAD
         
         self.labelnum = QtGui.QLabel(hostDialog)
         palnum = self.labelnum.palette()
@@ -99,6 +105,8 @@ class ViewChannel:
         self.labelnum.setGeometry(QtCore.QRect(120, 70+ id*80, 80, 100))
         self.labelnum.show()  
 
+=======
+>>>>>>> development
 
 
 def onVisualSlider(self, whichCh, value = -1):
@@ -127,14 +135,23 @@ class View(QMainWindow, Ui_Dialog):
         self.nerfModel = nerfModel
 #        QMainWindow.__init__(self, parent, Qt.FramelessWindowHint)
         QMainWindow.__init__(self, parent)
+<<<<<<< HEAD
 #        self.setStyleSheet("background-color:  rgb(240, 235, 235); margin: 2px;")
         self.setStyleSheet("background-color:  white; margin: 2px;")
         self.setWindowOpacity(0.9)
+=======
+        self.setStyleSheet("background-color:  rgb(240, 235, 235); margin: 2px;")
+        self.setWindowOpacity(0.85)
+>>>>>>> development
 
 #                                    "QLineEdit { border-width: 20px;border-style: solid; border-color: darkblue; };")
         self.setupUi(self)
         self.projectName = projectName
+<<<<<<< HEAD
         self.move(10+count*500,  100)
+=======
+        self.move(10+count*950,  100)
+>>>>>>> development
 
         self.x = 200
         self.pen = QPen()
@@ -372,6 +389,7 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.65, 0.66, 16.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 120000.0, 120000.0, 0.0, 0.0], FILT = False)
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 1.0, 1.2, 2.0], L = [0.0, 0.0, 1.4, 1.4, 0.0, 0.0], FILT = False)
+<<<<<<< HEAD
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2,1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 100ms rise
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.12, 1.1, 1.11,1.12, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  0.8,  0.8], FILT = False) # 10ms rise
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
@@ -388,6 +406,11 @@ class View(QMainWindow, Ui_Dialog):
             """
 #            pipeInData = np.append(p1, flat_tail)
             print pipeInData
+=======
+#            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.25, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
+            pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.25, 0.3, 1.1, 1.2, 1.25,  1.3, 2.0], L = [0.8, 0.8, 1.4, 1.4, 0.8, 0.8, 1.4,  1.4,  0.8,  0.8], FILT = False)
+
+>>>>>>> development
             print "waveform 1 fed"
 #            pipeInData = gen_sin(F = 1.0, AMP = 100.0,  T = 2.0) 
             
@@ -396,6 +419,7 @@ class View(QMainWindow, Ui_Dialog):
             print "waveform  fed"
 #            pipeInData = spike_train(firing_rate = 10)      
 #            pipeInData = gen_sin(F = 0.5, AMP = 5000.0,  BIAS = 5001.0,  T = 2.0) 
+<<<<<<< HEAD
 #            pipeInData = gen_tri(T = 2.0)
 #            pipeInData = gen_sin(F = 1.0, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
             pipeInData = gen_ramp(T = [0.0, 0.1, 0.3, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.30, 1.30, 1.0,  1.0], FILT = False)
@@ -403,6 +427,14 @@ class View(QMainWindow, Ui_Dialog):
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.11, 0.51, 0.52, 1.0, 2.0], L = [0.7, 0.7, 1.5, 1.5, 0.7, 0.7, 0.7], FILT = False) # two second repeat
 
 #            pipeInData = gen_ramp(T = [0.0, 0.1, 0.101, 0.121, 0.122, 1.0, 1.1, 1.101,  1.121, 1.122, 2.0], L = [0.8, 0.8, 1.5, 1.5, 0.8, 0.8, 0.8, 1.5, 1.5, 0.8, 0.8], FILT = False)   # 20ms pulse for LLSR
+=======
+#            pipeInData = gen_tri(T = 2.0) 
+            pipeInData = gen_ramp(T = [0.0, 0.1, 1.0, 1.4, 1.5, 2.0], L = [0.9, 0.9, 1.5, 1.5, 0.9,  0.9], FILT = False)
+
+
+                
+            
+>>>>>>> development
           
  
         elif choice == "waveform 3":
@@ -518,6 +550,7 @@ class View(QMainWindow, Ui_Dialog):
 #        else:
 #            self.nerfModel.SendMultiPara_TEMP(bitVal1 = bitVal, bitVal2=0, bitVal3=0, trigEvent = 9)
 #        
+<<<<<<< HEAD
     
 #    @pyqtSignature("bool")
 #    def on_checkBox_3_clicked(self, checked):
@@ -607,3 +640,5 @@ class View(QMainWindow, Ui_Dialog):
             if found:
                 break
         return x, i, j
+=======
+>>>>>>> development
