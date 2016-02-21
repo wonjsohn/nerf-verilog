@@ -5,18 +5,14 @@ import pymunk
 from pymunk import Vec2d
 import math, sys, random
 from pylab import *
-<<<<<<< HEAD
 import socket
 from time import sleep
 from pykeyboard import PyKeyboard
 
-=======
->>>>>>> development
 
 M_PI = 3.1415926
 JOINT_MIN = -1.2
 JOINT_MAX = 1.2
-<<<<<<< HEAD
 JOINT_RANGE = JOINT_MAX - JOINT_MIN 
 BUTTON_INPUT_FROM_TRIGGER = 1
 BUTTON_RESET_SIM = 2
@@ -34,14 +30,6 @@ class ArmSetup:
         self.JOINT_DAMPING = 0.01
 #        self.RATIO_RECIPROCAL_INHIBITION = 2.0
         
-=======
-JOINT_RANGE = JOINT_MAX - JOINT_MIN
-
-
-
-class armSetup:
-    def __init__(self):
->>>>>>> development
         pygame.init()
         self.screen = pygame.display.set_mode((600, 600))
         self.gClock = pygame.time.Clock()
@@ -56,23 +44,16 @@ class armSetup:
 
 #        fp = [(20,-20), (-120, 0), (20,20)]
         fp = [(40, -5), (30, -15),  (20,-20),   (-150, -10), (-150,  10), (20,20),  (30,  15),  (40,  5)]
-<<<<<<< HEAD
 #        fp = [(-40, -5), (-30, -15),  (-20,-20),   (150, -10), (150,  10), (-20,20),  (-30,  15),  (-40,  5)]
  
  
         mass = 0.52 # was 1.52
-=======
- 
-        mass = 1.52 # was 1.52
->>>>>>> development
+
         moment = pymunk.moment_for_poly(mass, fp)
 
         # left flipper
         #gForearm_body = pymunk.Body(mass, moment_of_inertia)
-<<<<<<< HEAD
 #        self.gForearm_body = pymunk.Body(mass, 0.0372)
-=======
->>>>>>> development
         self.gForearm_body = pymunk.Body(mass, 0.0372)
         self.gForearm_body.position = 300, 300
         self.gForearm_shape = pymunk.Poly(self.gForearm_body, [(-x,y) for x,y in fp])
@@ -81,18 +62,13 @@ class armSetup:
 
         self.gElbow_joint_body = pymunk.Body()
         self.gElbow_joint_body.position = self.gForearm_body.position
-<<<<<<< HEAD
         j1 = pymunk.PivotJoint(self.gForearm_body,  self.gElbow_joint_body, (0,0), (0,0))
-=======
-        j1 = pymunk.PinJoint(self.gForearm_body,  self.gElbow_joint_body, (0,0), (0,0))
->>>>>>> development
         self.gElbow_joint_body.shape = pymunk.Circle(self.gElbow_joint_body, 250)
         
     #    j = pymunk.PinJoint(forearm_body, gElbow_joint_body, (0,0), (0,0))
         j = pymunk.RotaryLimitJoint(self.gForearm_body, self.gElbow_joint_body, JOINT_MIN, JOINT_MAX)
         
         
-<<<<<<< HEAD
 #        """ attempt to draw circle without affecting physics"""
 ##        circlespace=pymunk.Space()
 ##        circlebody = pymunk.Body(0, 0)  # mass, inertia
@@ -119,16 +95,7 @@ class armSetup:
         
         """ create arrow """
         arrow_body,arrow_shape = self.createArrow()
-=======
-        pymunk.collision_slop = 0
-        JOINT_DAMPING_SCHEIDT2007 = 2.1
-        JOINT_DAMPING = JOINT_DAMPING_SCHEIDT2007 * 0.15 #was 0.1
-        s = pymunk.DampedRotarySpring(self.gForearm_body, self.gElbow_joint_body, -0.0, 0.0, JOINT_DAMPING)
-        self.gSpace.add(j,  j1,  s) # 
-        
-        """ create arrow """
-        arrow_body,arrow_shape = self.create_arrow()
->>>>>>> development
+
         self.gSpace.add(arrow_shape)
         
         
@@ -142,7 +109,6 @@ class armSetup:
         self.data_tri = []
         self.start_time = time.time()
         self.pygame = pygame
-<<<<<<< HEAD
         self.force_bic = 0.0
         self.force_tri = 0.0
         self.lce_bic = 0.0
@@ -223,44 +189,20 @@ class armSetup:
 
 
     def toPygame(self,  p):
-=======
-        self.force_tri = 0.0
-        self.lce_bic = 0.0
-        self.lce_tri = 0.0
-        self.angle = 0.0
-        self.linearV = 0.0
-        self.record = False
-        self.scale = 1.0
-        self.fmax = 0.0
-
-        self.main()
-        
-
-
-    def to_pygame(self,  p):
->>>>>>> development
         """Small hack to convert pymunk to pygame coordinates"""
         return int(p.x), int(-p.y+600)
 
     def angle2length(self,  angle):
         max_length = 1.3
         length = max_length + ((2.0-max_length)-max_length) / (3.14)* (angle- JOINT_MIN)      # angle in rad 
-<<<<<<< HEAD
         length = 0.4*angle+1     # was: 0.3*angle+1 / angle in rad 
-=======
-        length = 0.3*angle+1     # was: 0.3*angle+1 / angle in rad 
->>>>>>> development
         return length
 
     def angular2LinearV(self, angularV):
         linearV = angularV * 0.3
         return linearV
     
-<<<<<<< HEAD
     def finalizeData(self,  data_bic,  data_tri):
-=======
-    def plotData(self,  data_bic,  data_tri):
->>>>>>> development
         from pylab import plot, show, subplot, title
         from scipy.io import savemat, loadmat
         import numpy as np
@@ -271,11 +213,7 @@ class armSetup:
         savemat(timeTag+".mat", mdict={'data_bic': data_bic,  'data_tri': data_tri})
     
     
-<<<<<<< HEAD
     def createArrow(self):
-=======
-    def create_arrow(self):
->>>>>>> development
         vs = [(-30,0), (0,3), (10,0), (0,-3)]
         mass = 1
         moment = pymunk.moment_for_poly(mass, vs)
@@ -286,7 +224,6 @@ class armSetup:
         arrow_shape.collision_type = 1
         return arrow_body, arrow_shape
   
-<<<<<<< HEAD
     def sendUdp(self,  f_emg):
         UDP_IP = "192.168.0.104"
         UDP_PORT = 8899
@@ -300,13 +237,10 @@ class armSetup:
                              socket.SOCK_DGRAM) # UDP
         sock.sendto(f_emg, (UDP_IP, UDP_PORT))
 
-=======
->>>>>>> development
 
     def controlLoopBiceps(self):
         
         while self.running:
-<<<<<<< HEAD
             """ from spindle board"""
             self.Ia_spindle_bic = xem_spindle_bic.ReadFPGA(0x22, "float32")
             self.II_spindle_bic = xem_spindle_bic.ReadFPGA(0x24, "float32")
@@ -332,64 +266,34 @@ class armSetup:
 #            emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
             
             self.force_bic = force_bic_pre*self.torqueMultiplier  #+ pipeInData_bic[j]
-=======
-
-            """   Get forces   """
-            force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
-            spikecnt_bic = xem_muscle_bic.ReadFPGA(0x30, "int32")  
-            emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG         
-#            force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
-#            emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
-            
-            force_bic = force_bic_pre #+ pipeInData_bic[j]
->>>>>>> development
 #            force_tri = force_tri_pre #+ pipeInData_bic[j] 
             """ overflow to opposite muscle test (helps to stabilize - eric)"""
 #            temp_force_tri = self.force_tri
 #            self.force_tri = self.force_tri + force_bic*0.3  # overflow to the opposite muscle
 #            force_bic = force_bic + temp_force_tri*0.3       # overflow to the opposite muscle
             
-<<<<<<< HEAD
-                          
-=======
-          
-            """ reciprocal inhibition  """
-#            if (self.linearV > 0): # biceps force contraction phase
-#                self.force_tri = self.force_tri*0.5
-#            else:   # triceps contraction phase
-#                force_bic = force_bic*0.5
-                
->>>>>>> development
 
             """  force curve (f-input spikes) saturation effect"""
 #            self.fmax =90.0
 #            force_bic = force_bic * (1-exp(-force_bic/self.fmax)) 
 
     
-<<<<<<< HEAD
 #            self.force_bic = max(0, self.force_bic - self.force_tri * self.RATIO_RECIPROCAL_INHIBITION)
 #            self.force_tri = max(0, self.force_tri - self.force_bic * self.RATIO_RECIPROCAL_INHIBITION)
             
             self.gForearm_body.torque = (self.force_bic - self.force_tri) * 0.02 #0.03 # was 0.06
-=======
-            self.gForearm_body.torque = (force_bic - self.force_tri) * 0.03 # was 0.06
->>>>>>> development
+
                                             
             self.angle = ((self.gForearm_body.angle + M_PI) % (2*M_PI)) - M_PI - self.gRest_joint_angle
             
             
 #            lce_tri = self.angle2length(angle)+ 0.02
-<<<<<<< HEAD
+
             self.lce_bic = 2.04 - self.lce_tri 
             
             # Send lce of biceps 
             bitVal = convertType(self.lce_bic, fromType = 'f', toType = 'I')
-=======
-            lce_bic = 2.04 - self.lce_tri 
-            
-            # Send lce of biceps 
-            bitVal = convertType(lce_bic, fromType = 'f', toType = 'I')
->>>>>>> development
+
     #        bitVal2 = convertType(0.0,  fromType = 'f', toType = 'I')
     #        bitVal3 = convertType(sineBic[j],  fromType = 'I', toType = 'I')
             #try M1_extra - 200000
@@ -404,11 +308,8 @@ class armSetup:
             
 #            self.linearV = 0.0
     #        print linearV
-<<<<<<< HEAD
             self.scale = 100.0 #15.0   # unstable when extra cortical signal is given, 30 is for doornik data collection
-=======
-            self.scale = 100.0 #150.0   # unstable when extra cortical signal is given
->>>>>>> development
+
             
             #self.linearV = min(0, self.linearV ) # testing: only vel component in afferent active when lengthing 
             
@@ -417,7 +318,7 @@ class armSetup:
             
             xem_muscle_bic.SendMultiPara(bitVal1 = bitVal, bitVal2 = bitVal_bic_i,  trigEvent = 9)
             xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
-<<<<<<< HEAD
+
             """ udp sending """
             #self.sendUdp("%.4f" % self.emg_bic)
             
@@ -430,15 +331,7 @@ class armSetup:
 #            bitval = convertType(gd_bic, fromType = 'f', toType = 'I')
 #            xem_spindle_bic.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
 #            xem_spindle_bic.SendPara(bitVal = bitval,  trigEvent = 5) # 4 = Gamma_sta
-=======
-            
-            """ Alpha-gamma coactivation """
-    #        ag_coact, ag_bias = 30.0, -70.0
-    #        ag_coact, ag_bias = 0.0, 50.0
-    #        gd_bic = force_bic * ag_coact + ag_bias
-    #        bitval = convertType(gd_bic, fromType = 'f', toType = 'I')
-    #        xem_spindle_bic.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
->>>>>>> development
+
             
             """ Send lce of triceps """
 #            bitVal = convertType(self.lce_tri, fromType = 'f', toType = 'I')
@@ -455,7 +348,6 @@ class armSetup:
     #        bitval = convertType(gd_tri, fromType = 'f', toType = 'I')
     #        xem_spindle_tri.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
             
-<<<<<<< HEAD
             #print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (self.lce_bic, self.lce_tri, self.gForearm_body.torque),                           
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, force_tri,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
@@ -464,33 +356,19 @@ class armSetup:
 #            self.data_bic.append(temp_bic)           #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
     #      
 #            time.sleep(1.0/1024*5)
-=======
-            #print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_bic, self.lce_tri, self.gForearm_body.torque),                           
-    #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, force_tri,  angle,  gd_bic,  angularV )                          
-            currentTime = time.time()
-            elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime,  lce_bic, self.linearV, spikecnt_bic,  force_bic, emg_bic
-            self.data_bic.append(tempData)
-            #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
-    #      
-            #time.sleep(0.001)
->>>>>>> development
+
   
             
     def controlLoopTriceps(self):
         
         while self.running:
-<<<<<<< HEAD
             """ from spindle """
             self.Ia_spindle_tri = xem_spindle_tri.ReadFPGA(0x22, "float32")
             self.II_spindle_tri = xem_spindle_tri.ReadFPGA(0x24, "float32")
-=======
->>>>>>> development
 
             """   Get forces   """
 #            force_bic_pre = max(0.0, xem_muscle_bic.ReadFPGA(0x32, "float32")) / 128 #- 0.2
 #            emg_bic = xem_muscle_bic.ReadFPGA(0x20, "float32")  # EMG         
-<<<<<<< HEAD
             self.spikecnt_tri = xem_muscle_tri.ReadFPGA(0x30, "int32")  
             force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
             force_tri_pre = force_tri_pre * 1.0 # force adjustment for quick reflex return
@@ -512,18 +390,6 @@ class armSetup:
 #            MN5_spikes = xem_muscle_tri.ReadFPGA(0x2A, "spike32")  #             
 #            MN6_spikes = xem_muscle_tri.ReadFPGA(0x2C, "spike32")  # 
 ###            
-=======
-            spikecnt_tri = xem_muscle_tri.ReadFPGA(0x30, "int32")  
-            force_tri_pre = max(0.0, xem_muscle_tri.ReadFPGA(0x32, "float32")) / 128 #- 2.64
-            emg_tri = xem_muscle_tri.ReadFPGA(0x20, "float32")  # EMG
-            
-#            force_bic = force_bic_pre #+ pipeInData_bic[j]
-            self.force_tri = force_tri_pre #+ pipeInData_bic[j] 
-            """  force curve (f-input spikes) saturation effect"""
-#            self.force_tri = self.force_tri * (1-exp(-self.force_tri/self.fmax)) 
-            
-            
->>>>>>> development
             
 #            self.gForearm_body.torque = (self.force_bic - self.force_tri) * 0.06
             
@@ -533,17 +399,10 @@ class armSetup:
             
             
             self.lce_tri = self.angle2length(self.angle)+ 0.02
-<<<<<<< HEAD
 #            self.lce_bic = 2.04 - self.lce_tri 
             
             # Send lce of biceps 
             bitVal = convertType(self.lce_bic, fromType = 'f', toType = 'I')
-=======
-            lce_bic = 2.04 - self.lce_tri 
-            
-            # Send lce of biceps 
-            bitVal = convertType(lce_bic, fromType = 'f', toType = 'I')
->>>>>>> development
     #        bitVal2 = convertType(0.0,  fromType = 'f', toType = 'I')
     #        bitVal3 = convertType(sineBic[j],  fromType = 'I', toType = 'I')
             #try M1_extra - 200000
@@ -561,19 +420,12 @@ class armSetup:
 #            xem_spindle_bic.SendPara(bitVal = bitVal, trigEvent = 9)
             
             """ Alpha-gamma coactivation """
-<<<<<<< HEAD
 #            ag_coact, ag_bias = 30.0, 50.0
 #            gd_tri = force_tri * ag_coact + ag_bias
 #            bitval = convertType(gd_tri, fromType = 'f', toType = 'I')
 #            xem_spindle_tri.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
 #            xem_spindle_tri.SendPara(bitVal = bitval,  trigEvent = 5) # 4 = Gamma_sta
-=======
-    #        ag_coact, ag_bias = 30.0, -70.0
-    #        ag_coact, ag_bias = 0.0, 50.0
-    #        gd_bic = force_bic * ag_coact + ag_bias
-    #        bitval = convertType(gd_bic, fromType = 'f', toType = 'I')
-    #        xem_spindle_bic.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
->>>>>>> development
+
             
             """ Send lce of triceps """
             bitVal = convertType(self.lce_tri, fromType = 'f', toType = 'I')
@@ -584,17 +436,13 @@ class armSetup:
     #        xem_muscle_tri.SendPara(bitVal = bitVal, trigEvent = 9)
             xem_muscle_tri.SendMultiPara(bitVal1 = bitVal, bitVal2= bitVal_tri_i,   trigEvent = 9)
             xem_spindle_tri.SendPara(bitVal = bitVal, trigEvent = 9)
-<<<<<<< HEAD
 
-=======
-            
->>>>>>> development
+
             """ Alpha-gamma coactivation """
     #        gd_tri = force_tri * ag_coact + ag_bias
     #        bitval = convertType(gd_tri, fromType = 'f', toType = 'I')
     #        xem_spindle_tri.SendPara(bitVal = bitval,  trigEvent = 4) # 4 = Gamma_dyn
-            
-<<<<<<< HEAD
+
     #        print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (self.lce_bic, lce_tri, gForearm_body.torque),                           
     #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, force_tri,  angle,  gd_bic,  angularV )                          
             currentTime = time.time()
@@ -678,36 +526,21 @@ class armSetup:
 #            xem_cortical_tri.SendButton(False, BUTTON_RESET_SIM) #     
         
     def keyControl(self):
-        
-=======
-    #        print "lce0 = %.2f :: lce1 = %.2f :: total_torque = %.2f" % (lce_bic, lce_tri, gForearm_body.torque),                           
-    #        print "force0 = %.2f :: force1 = %.2f :: angle = %.2f :: gd_bic = %.2f :: angularV =%.2f" % (force_bic, force_tri,  angle,  gd_bic,  angularV )                          
-            currentTime = time.time()
-            elapsedTime = currentTime- self.start_time
-            tempData = elapsedTime, self.lce_tri, self.linearV, spikecnt_tri,   self.force_tri,  emg_tri  
-            self.data_tri.append(tempData)
-            #r_flipper_body.apply_impulse(Vec2d.unit() * 40000, (force * 20,0))
-            #time.sleep(0.001)
-  
-            
-    def keyControl(self):
->>>>>>> development
+
         while (self.running):
             """ angle calculated from mouse cursor position"""
             mouse_position = from_pygame( Vec2d(self.pygame.mouse.get_pos()), self.screen )
             forced_angle = (mouse_position-self.gForearm_body.position).angle   # calculate angle with mouse cursor loc. 
             
             
-<<<<<<< HEAD
+
 #            xem_cortical_bic.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
 #            xem_cortical_tri.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
 #            
 #            xem_cortical_bic.SendButton(True, BUTTON_RESET_SIM) #  
 #            xem_cortical_tri.SendButton(True, BUTTON_RESET_SIM) # 
    
-            
-=======
->>>>>>> development
+
             # move the unfired arrow together with the cannon
 #            arrow_body.position = cannon_body.position + Vec2d(cannon_shape.radius + 40, 0).rotated(cannon_body.angle)
 #            arrow_body.angle = cannon_body.angle
@@ -718,7 +551,6 @@ class armSetup:
                 if event.type == QUIT:
                     self.running = False
                 elif event.type == KEYDOWN and event.key == K_ESCAPE:
-<<<<<<< HEAD
                     self.escape()
                 elif event.type == KEYDOWN and event.key == K_p: 
 #                    xem_cortical_bic.SendButton(True, BUTTON_INPUT_FROM_TRIGGER) # BUTTON_INPUT_FROM_TRIGGER = 1
@@ -766,35 +598,6 @@ class armSetup:
                 elif event.type == KEYDOWN and event.key == K_m:  # forced movement, follow the mouse    
                     self.mouseOn = True
                 elif event.type == KEYDOWN and event.key == K_l:  # doornik replay
-=======
-                    self.plotData(self.data_bic, self.data_tri)
-                    self.running = False
-                elif event.type == KEYDOWN and event.key == K_j:
-                    self.gForearm_body.torque -= 30.0
-                    pass
-                elif event.type == KEYDOWN and event.key == K_f:
-                    #self.gForearm_body.apply_force(Vec2d.unit() * -40000, (-100,0))
-                    self.gForearm_body.torque += 30.0
-                elif event.type == KEYDOWN and event.key == K_z:
-#                    self.gRest_joint_angle = self.angle
-                    self.gForearm_body.angle = 0.0
-                elif event.type == KEYDOWN and event.key == K_r:
-                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (4,  0))
-                elif event.type == KEYDOWN and event.key == K_u:
-                    self.gForearm_body.apply_impulse(Vec2d.unit()*0.1,  (-4,  0))
-#                    
-#                elif event.type == KEYDOWN and event.key == K_o:  # CN syn gain 50
-#                    bitVal50 = convertType(50.0, fromType = 'f', toType = 'I')
-#                    xem_muscle_bic.SendPara(bitVal = bitVal50, trigEvent = 10) 
-#                    xem_muscle_tri.SendPara(bitVal = bitVal50, trigEvent = 10)
-#                elif event.type == KEYDOWN and event.key == K_p:  # CN syn gain 100
-#                    bitVal100 = convertType(100.0, fromType = 'f', toType = 'I')
-#                    xem_muscle_bic.SendPara(bitVal = bitVal100, trigEvent = 10) 
-#                    xem_muscle_tri.SendPara(bitVal = bitVal100, trigEvent = 10)  
-                    
-
-                elif event.type == KEYDOWN and event.key == K_l:  # forced movement, follow the mouse
->>>>>>> development
                     if (self.record == True):
                         self.record = False
                     if (self.record == False):
@@ -803,7 +606,6 @@ class armSetup:
                   
                         
             """ mouse cursor controlled forced (passive) movement"""
-<<<<<<< HEAD
             if (self.mouseOn == True):
                 self.gForearm_body.angle =forced_angle
             
@@ -811,33 +613,20 @@ class armSetup:
             if (self.record == True):
                 #self.gForearm_body.angle =forced_angle
                 if k == len(self.j2List)-1:
-=======
-            if (self.record == True):
-                #self.gForearm_body.angle =forced_angle
-                if k == len(self.j2List):
->>>>>>> development
                     self.gForearm_body.angle = 0.0
                 else:
                     self.gForearm_body.angle = (self.j2List[k])*3.141592/180  # in radian   
                     k = k + 1
-<<<<<<< HEAD
                     #print self.j2List[k]  
                     
             """  Clear screen  """
             self.screen.fill(THECOLORS["white"])  # ~1ms
             
-=======
-                    print self.j2List[k]  
-                    
-            """  Clear screen  """
-            self.screen.fill(THECOLORS["white"])  # ~1ms
->>>>>>> development
 
             """ Draw stuff """
             for f in [self.gForearm_shape,]:
                 ps = f.get_points()
                 ps.append(ps[0])
-<<<<<<< HEAD
                 ps = map(self.toPygame, ps)
 
                 color = THECOLORS["black"]
@@ -879,27 +668,6 @@ class armSetup:
 #            self.screen.blit(label4, (10, 70))
             self.screen.blit(label5, (10, 90))
             self.screen.blit(label6, (10, 110))
-=======
-                ps = map(self.to_pygame, ps)
-
-                color = THECOLORS["red"]
-                self.pygame.draw.lines(self.screen, color, False, ps)
-            #if abs(flipper_body.angle) < 0.001: flipper_body.angle = 0
-
-            """ Update physics  """
-            fps = 30.0
-            step = 1
-            dt = 1.0/fps/step
-            for x in range(step):
-                self.gSpace.step(dt)
-            
-            """ text message"""    
-            myfont = self.pygame.font.SysFont("monospace", 15)
-            label1 = myfont.render("j:torque down, f: torque up" , 1,  THECOLORS["black"])
-            label2 = myfont.render("l: mouse-controlled movement, esc:out" , 1,  THECOLORS["black"])
-            self.screen.blit(label1, (10, 10))
-            self.screen.blit(label2, (10, 40))
->>>>>>> development
         
             
             """ Flip screen (big delay from here!) """ 
@@ -908,19 +676,11 @@ class armSetup:
     #        self.gClock.tick(80)  # oscillate
             self.pygame.display.set_caption("fps: " + str(self.gClock.get_fps())) 
 
-<<<<<<< HEAD
     def readData(self):
         self.j1List=[]
         self.j2List=[]
         for line in open('doornik_curve_resampled.txt',  "r").readlines(): 
             print line
-=======
-
-    def readData(self):
-        self.j1List=[]
-        self.j2List=[]
-        for line in open('doornik_curve.txt',  "r").readlines(): 
->>>>>>> development
             j1 ,  j2= line.split(',')
             j1 = float(j1)
             j2 = float(j2)
@@ -928,7 +688,6 @@ class armSetup:
 #            indexList.append(index)
             self.j1List.append(j1)   #joint1
             self.j2List.append(j2)   #joint2
-<<<<<<< HEAD
             
     def readData_rampNHold(self):
         self.j1List=[]
@@ -1032,42 +791,20 @@ class armSetup:
 #        t4.join()
 #        t5.join()
         
-=======
-
-    
-    def main(self):
-#        Process(target=self.controlLoopBiceps)
-        self.readData() # read doornik data
-        threading.Thread(target=self.keyControl).start()
-        threading.Thread(target=self.controlLoopBiceps).start()
-        threading.Thread(target=self.controlLoopTriceps).start()
-        
-        
-        
-        
-
->>>>>>> development
 if __name__ == '__main__':
     import sys
     sys.path.append('../../source/py/multC_tester')
     sys.path.append('../../source/py/')
-<<<<<<< HEAD
+
     
-=======
->>>>>>> development
     import sys, PyQt4
     from PyQt4.QtGui import QFileDialog
 
     from PyQt4.QtCore import QTimer,  SIGNAL, SLOT, Qt,  QRect
-<<<<<<< HEAD
+
     from M_Fpga import SomeFpga # Model in MVC   
     from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT_B1, FPGA_OUTPUT_B2, FPGA_OUTPUT_B3,   USER_INPUT_B1,  USER_INPUT_B2,  USER_INPUT_B3
     from Utilities import convertType
-=======
-    from Utilities import *
-    from M_Fpga import SomeFpga # Model in MVC   
-    from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT_B1, FPGA_OUTPUT_B2, FPGA_OUTPUT_B3,   USER_INPUT_B1,  USER_INPUT_B2,  USER_INPUT_B3
->>>>>>> development
     from generate_sin import gen as gen_sin
     from generate_sequence import gen as gen_ramp
     from pylab import plot, show, subplot, title
@@ -1081,7 +818,7 @@ if __name__ == '__main__':
     from pymunk.pygame_util import draw_space, from_pygame
     from pygame.color import *
   
-<<<<<<< HEAD
+
 #    xem_spindle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12320003RN')
 #    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '124300046A')
 #    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '1201000216')
@@ -1109,15 +846,6 @@ if __name__ == '__main__':
 #    xemSerialList = ['000000054G', '000000054P',  '000000053U'] # copper top
 #    xemSerialList = ['000000054K', '000000053X',  '0000000550'] # copper top
     
-=======
-
-    
-  
-    xem_spindle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12320003RN')
-    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '124300046A')
-    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '1201000216')
-    xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12430003T2')
->>>>>>> development
 #    
 #    view_muscle_bic = View(count = 1,  projectName = "rack_emg" ,  projectPath = "/home/eric/nerf_verilog_eric/projects/rack_emg",  nerfModel = xem_muscle_bic,  fpgaOutput = FPGA_OUTPUT_B3,  userInput = USER_INPUT_B3)
 #    
@@ -1136,11 +864,9 @@ if __name__ == '__main__':
 #    xem0.SendPara(bitVal = bitVal, trigEvent = 1)
 #    xem1.SendPara(bitVal = bitVal, trigEvent = 1)
     
-<<<<<<< HEAD
+
     arm1 = ArmSetup()
     arm1.main() # Start the main loop until ESC     
-=======
-    arm1 = armSetup()
->>>>>>> development
+
     
     sys.exit()

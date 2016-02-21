@@ -9,13 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-<<<<<<< HEAD
     <width>1018</width>
     <height>905</height>
-=======
-    <width>895</width>
-    <height>669</height>
->>>>>>> development
    </rect>
   </property>
   <property name="windowTitle">
@@ -98,7 +93,6 @@
     <string>input from wave</string>
    </property>
   </widget>
-<<<<<<< HEAD
   <widget class="QCheckBox" name="checkBox_3">
    <property name="geometry">
     <rect>
@@ -125,8 +119,6 @@
     <string>cut synapse2</string>
    </property>
   </widget>
-=======
->>>>>>> development
  </widget>
  <resources/>
  <connections/>

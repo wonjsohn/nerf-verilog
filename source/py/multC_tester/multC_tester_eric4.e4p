@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project multC_tester_eric4 -->
-<<<<<<< HEAD
-<!-- Saved: 2014-07-02, 14:15:09 -->
-<!-- Copyright (C) 2014 C. Minos Niu,  -->
-=======
-<!-- Saved: 2013-07-03, 01:55:39 -->
-<!-- Copyright (C) 2013 C. Minos Niu,  -->
->>>>>>> development
+<!-- Saved: 2016-02-20, 21:28:36 -->
+<!-- Copyright (C) 2016 C. Minos Niu,  -->
 <Project version="4.6">
   <Language>en</Language>
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -26,13 +21,8 @@
     <Source>MVC_MainGUI.py</Source>
     <Source>Ui_V_Display.py</Source>
     <Source>Ui_MVC_MainGUI.py</Source>
-    <Source>Ui_extraCNDrive.py</Source>
-<<<<<<< HEAD
-    <Source>Ui_cortex.py</Source>
     <Source>board_scheme_tri.py</Source>
     <Source>board_scheme_bic.py</Source>
-=======
->>>>>>> development
   </Sources>
   <Forms>
     <Form>V_Display.ui</Form>

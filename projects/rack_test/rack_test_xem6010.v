@@ -281,11 +281,7 @@
         // Triggered Input triggered_input6 Instance Definition (spindle_Ia_gain)
         always @ (posedge ep50trig[1] or posedge reset_global)
         if (reset_global)
-<<<<<<< HEAD
             triggered_input6 <= 32'h3F99999A;         //reset to 1.2      
-=======
-            triggered_input6 <= 32'h3FC00000;         //reset to 1.5      
->>>>>>> development
         else
             triggered_input6 <= {ep02wire, ep01wire};      
         
@@ -331,7 +327,6 @@
             .wave(mixed_input0)                   // wave out signal
         );
         
-<<<<<<< HEAD
         // time reference for latency measure 
          // Waveform Generator mixed_input0 Instance Definition
 //         wire [31:0] timeref_wave;
@@ -346,8 +341,7 @@
 //            .wave(timeref_wave)                   // wave out signal
 //        );
 //        
-=======
->>>>>>> development
+
         
     //FPGA-FPGA Outputs
     assign spikeout1 = each_spike_neuron0;

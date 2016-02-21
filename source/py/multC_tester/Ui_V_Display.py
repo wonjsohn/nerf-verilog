@@ -2,11 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/V_Display.ui'
 #
-<<<<<<< HEAD
 # Created: Mon Apr 13 19:53:59 2015
-=======
-# Created: Thu Jul 11 11:58:06 2013
->>>>>>> development
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!

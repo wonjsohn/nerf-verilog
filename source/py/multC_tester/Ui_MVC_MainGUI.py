@@ -2,11 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/eric/nerf_verilog_eric/source/py/multC_tester/MVC_MainGUI.ui'
 #
-<<<<<<< HEAD
 # Created: Mon Apr 13 19:54:00 2015
-=======
-# Created: Thu Jul 11 11:58:06 2013
->>>>>>> development
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -22,11 +18,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.setWindowModality(QtCore.Qt.WindowModal)
-<<<<<<< HEAD
         Dialog.resize(1207, 76)
-=======
-        Dialog.resize(989, 32)
->>>>>>> development
         self.pushButton_2 = QtGui.QPushButton(Dialog)
         self.pushButton_2.setGeometry(QtCore.QRect(0, 0, 71, 31))
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
@@ -219,7 +211,6 @@ class Ui_Dialog(object):
         self.pushButton_reset_sim.setCheckable(True)
         self.pushButton_reset_sim.setObjectName(_fromUtf8("pushButton_reset_sim"))
         self.checkBox = QtGui.QCheckBox(Dialog)
-<<<<<<< HEAD
         self.checkBox.setGeometry(QtCore.QRect(870, 10, 97, 22))
         self.checkBox.setObjectName(_fromUtf8("checkBox"))
         self.label = QtGui.QLabel(Dialog)
@@ -399,10 +390,6 @@ class Ui_Dialog(object):
         self.label_2 = QtGui.QLabel(Dialog)
         self.label_2.setGeometry(QtCore.QRect(140, 40, 221, 20))
         self.label_2.setObjectName(_fromUtf8("label_2"))
-=======
-        self.checkBox.setGeometry(QtCore.QRect(880, 10, 97, 22))
-        self.checkBox.setObjectName(_fromUtf8("checkBox"))
->>>>>>> development
 
         self.retranslateUi(Dialog)
         QtCore.QObject.connect(self.horizontalSlider, QtCore.SIGNAL(_fromUtf8("valueChanged(int)")), self.lcdNumber.display)
@@ -420,12 +407,9 @@ class Ui_Dialog(object):
         self.pushButton_burn.setText(QtGui.QApplication.translate("Dialog", "Burn", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_reset_sim.setText(QtGui.QApplication.translate("Dialog", "Reset Sim", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox.setText(QtGui.QApplication.translate("Dialog", "send sine", None, QtGui.QApplication.UnicodeUTF8))
-<<<<<<< HEAD
         self.label.setText(QtGui.QApplication.translate("Dialog", "overflow %", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox_2.setText(QtGui.QApplication.translate("Dialog", "send tonic", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("Dialog", "Global Halfcount. 380 = realtime", None, QtGui.QApplication.UnicodeUTF8))
-=======
->>>>>>> development
 
 
 if __name__ == "__main__":
