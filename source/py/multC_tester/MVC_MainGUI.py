@@ -55,7 +55,7 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
 
 
     def onClkRate(self, value):   
-        """ value = how many times of 1/10 real-time, 100 is real time...
+        """ value = how many times of 1/10 real-time
         """
         # F_fpga = C * NUM_NEURON * V * F_emu ,  (C : cycles_per_neuron = 2,  V = 365)
         # if F_fpga = 200Mhz,  F_emu = 1khz)
@@ -265,6 +265,7 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
             self.xemList[0].SendPara(bitVal = bitVal, trigEvent = 8)
             self.xemList[1].SendPara(bitVal = bitVal, trigEvent = 8)
     
+<<<<<<< HEAD
 
     
     
@@ -277,3 +278,5 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         for eachXem in self.xemList:
             eachXem.SendPara(bitVal = newHalfCnt, trigEvent = 7)
 
+=======
+>>>>>>> parent of 4fa6e18... snapshot before NCM

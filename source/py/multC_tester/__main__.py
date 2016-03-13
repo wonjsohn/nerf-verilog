@@ -16,14 +16,15 @@ import importlib
 #from cortex import cortexView
 import os
 
-sys.path.append('../')
-import platform 
+sys.path.append('..\\')
+# sys.path.append('C:\Program Files\Opal Kelly\FrontPanelUSB\FrontPanelHDL\XEM6010-LX150')
+import platform
 arch = platform.architecture()[0]
 print arch
 if arch == "32bit":
-    from opalkelly_32bit import ok
+    from opalkelly_32bit_windows import ok
 elif arch == "64bit":
-    from opalkelly_64bit import ok
+    from opalkelly_64bit_windows import ok
 
 
 if __name__ == "__main__":        
@@ -39,7 +40,8 @@ if __name__ == "__main__":
     assert (board_scheme.TWO_BOARDS+board_scheme.THREE_BOARDS+board_scheme.CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING!"
     
     if (board_scheme.WINDOWS==1) :
-        ROOT_PATH = "C:\\nerf_sangerlab\\projects\\"  # windows setting
+        #ROOT_PATH = "C:\\nerf_sangerlab\\projects\\"  # windows setting
+        ROOT_PATH = "C:\\Users\\wonjsohn\\Documents\\GitHub\\nerf_verilog\\projects\\"  # windows setting
     if (board_scheme.LINUX==1):
         ROOT_PATH = "/home/eric/nerf-verilog/projects/"
 

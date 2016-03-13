@@ -8,12 +8,15 @@ import os
 import sys
 from scipy.io import savemat, loadmat
 import platform
-sys.path.append('../')
+sys.path.append('..\\')
 arch = platform.architecture()[0]
+print arch
+print sys.path
 if arch == "32bit":
-    from opalkelly_32bit import ok
+    from opalkelly_32bit_windows import ok
 elif arch == "64bit":
-    from opalkelly_64bit import ok
+    from opalkelly_64bit_windows import ok
+
 
 import numpy as np
 from Utilities import *
@@ -131,6 +134,7 @@ class SomeFpga:
         for x in pipeInData:
             ##print x
             buf += pack('<f', x) # convert float_x to a byte string, '<' = little endian
+
 
         byteSent = self.xem.WriteToBlockPipeIn(PIPE_IN_ADDR, 4, buf)
 

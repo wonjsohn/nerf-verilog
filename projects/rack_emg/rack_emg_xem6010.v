@@ -237,7 +237,7 @@
         reg [31:0] f_syn2_gain;
         always @ (posedge ep50trig[11] or posedge reset_global)
         if (reset_global)
-            f_syn2_gain <= 32'h420c0000;         //reset to 60.0 -> 35    
+            f_syn2_gain <= 32'h42700000;         //reset to 60.0     
         else
             f_syn2_gain <= {ep02wire, ep01wire};    
 
@@ -246,7 +246,7 @@
         reg [31:0] f_CN_syn_gain;
         always @ (posedge ep50trig[10] or posedge reset_global)
         if (reset_global)
-            f_CN_syn_gain <= 32'h42480000;         //reset to 200.0  -> 50 
+            f_CN_syn_gain <= 32'h43480000;         //reset to 200.0  
         else
             f_CN_syn_gain <= {ep02wire, ep01wire};    
 
@@ -291,7 +291,7 @@
         // Triggered Input triggered_input5 Instance Definition (syn1_gain)
         always @ (posedge ep50trig[3] or posedge reset_global)
         if (reset_global)
-            triggered_input5 <= 32'h420c0000;         // gain 60.0 -> 35    
+            triggered_input5 <= 32'h42700000;         // gain 60.0    
         else
             triggered_input5 <= {ep02wire, ep01wire};      
         
@@ -928,8 +928,8 @@
 //        okWireOut wo34 (    .ep_datain(i_spike_count_neuron_sync_inputPin[15:0]),  .ok1(ok1),  .ok2(ok2x[21*17 +: 17]), .ep_addr(8'h34)    );
 //        okWireOut wo35 (    .ep_datain(i_spike_count_neuron_sync_inputPin[31:16]),  .ok1(ok1),  .ok2(ok2x[22*17 +: 17]), .ep_addr(8'h35)   );       
 
-        okWireOut wo36 (    .ep_datain(f_I_synapse_CN[15:0]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h36)    );
-        okWireOut wo37 (    .ep_datain(f_I_synapse_CN[31:16]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h37)   );            
+        okWireOut wo36 (    .ep_datain(i_time[15:0]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h36)    );
+        okWireOut wo37 (    .ep_datain(i_time[31:16]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h37)   );            
 
        
 

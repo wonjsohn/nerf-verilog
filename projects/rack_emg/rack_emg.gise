@@ -124,10 +124,14 @@
       <status xil_pn:value="ReadyToRun"/>
     </transform>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <transform xil_pn:end_ts="1429175754" xil_pn:in_ck="-2058608247590437630" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="-250485099339234008" xil_pn:start_ts="1429175533">
 =======
     <transform xil_pn:end_ts="1376529968" xil_pn:in_ck="7420693052821000550" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="-250485099339234008" xil_pn:start_ts="1376529542">
 >>>>>>> development
+=======
+    <transform xil_pn:end_ts="1414449793" xil_pn:in_ck="-2058608247590437630" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="-250485099339234008" xil_pn:start_ts="1414449378">
+>>>>>>> parent of 4fa6e18... snapshot before NCM
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -150,10 +154,14 @@
       <status xil_pn:value="ReadyToRun"/>
     </transform>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <transform xil_pn:end_ts="1429175771" xil_pn:in_ck="1280467268075578256" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-2263042145537328806" xil_pn:start_ts="1429175754">
 =======
     <transform xil_pn:end_ts="1376529994" xil_pn:in_ck="4743560313982403666" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-2263042145537328806" xil_pn:start_ts="1376529968">
 >>>>>>> development
+=======
+    <transform xil_pn:end_ts="1414449815" xil_pn:in_ck="1280467268075578256" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="-2263042145537328806" xil_pn:start_ts="1414449793">
+>>>>>>> parent of 4fa6e18... snapshot before NCM
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -163,6 +171,7 @@
       <outfile xil_pn:name="rack_emg_xem6010.ngd"/>
       <outfile xil_pn:name="rack_emg_xem6010_ngdbuild.xrpt"/>
     </transform>
+<<<<<<< HEAD
 <<<<<<< HEAD
     <transform xil_pn:end_ts="1429234659" xil_pn:in_ck="-9213047842918504283" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1429234381">
       <status xil_pn:value="SuccessfullyRun"/>
@@ -176,6 +185,14 @@
       <status xil_pn:value="OutOfDateForOutputs"/>
       <status xil_pn:value="OutputChanged"/>
 >>>>>>> development
+=======
+    <transform xil_pn:end_ts="1414450093" xil_pn:in_ck="-9213047842918504283" xil_pn:name="TRANEXT_map_spartan6" xil_pn:prop_ck="-5657126474599326901" xil_pn:start_ts="1414449815">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="WarningsGenerated"/>
+      <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="OutputChanged"/>
+>>>>>>> parent of 4fa6e18... snapshot before NCM
       <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
       <outfile xil_pn:name="rack_emg_xem6010.pcf"/>
       <outfile xil_pn:name="rack_emg_xem6010_map.map"/>
@@ -187,10 +204,14 @@
       <outfile xil_pn:name="rack_emg_xem6010_usage.xml"/>
     </transform>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <transform xil_pn:end_ts="1429234906" xil_pn:in_ck="1812296613568890558" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1429234659">
 =======
     <transform xil_pn:end_ts="1376531193" xil_pn:in_ck="1812296613568890558" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1376530498">
 >>>>>>> development
+=======
+    <transform xil_pn:end_ts="1414450445" xil_pn:in_ck="1812296613568890558" xil_pn:name="TRANEXT_par_spartan6" xil_pn:prop_ck="-2362651792651823936" xil_pn:start_ts="1414450093">
+>>>>>>> parent of 4fa6e18... snapshot before NCM
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
@@ -206,6 +227,7 @@
       <outfile xil_pn:name="rack_emg_xem6010_par.xrpt"/>
     </transform>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <transform xil_pn:end_ts="1429234998" xil_pn:in_ck="-8182988016590550740" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1429234906">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
@@ -218,8 +240,15 @@
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
 >>>>>>> development
+=======
+    <transform xil_pn:end_ts="1414450536" xil_pn:in_ck="-8182988016590550740" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="8144905581504103502" xil_pn:start_ts="1414450445">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="WarningsGenerated"/>
+      <status xil_pn:value="ReadyToRun"/>
+>>>>>>> parent of 4fa6e18... snapshot before NCM
       <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
       <outfile xil_pn:name="rack_emg_xem6010.bgn"/>
+      <outfile xil_pn:name="rack_emg_xem6010.bit"/>
       <outfile xil_pn:name="rack_emg_xem6010.drc"/>
       <outfile xil_pn:name="rack_emg_xem6010.ut"/>
       <outfile xil_pn:name="usage_statistics_webtalk.html"/>
@@ -229,14 +258,14 @@
     <transform xil_pn:end_ts="1375311744" xil_pn:in_ck="-8182988016590563594" xil_pn:name="TRAN_configureTargetDevice" xil_pn:prop_ck="8482462020707587906" xil_pn:start_ts="1375311742">
 <<<<<<< HEAD
       <status xil_pn:value="AbortedRun"/>
-      <status xil_pn:value="NotReadyToRun"/>
+      <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
-      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForced"/>
       <status xil_pn:value="InputAdded"/>
       <status xil_pn:value="InputChanged"/>
       <status xil_pn:value="InputRemoved"/>
     </transform>
+<<<<<<< HEAD
     <transform xil_pn:end_ts="1429234906" xil_pn:in_ck="48000635793620513" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1429234864">
 =======
       <status xil_pn:value="SuccessfullyRun"/>
@@ -246,6 +275,9 @@
     </transform>
     <transform xil_pn:end_ts="1376531193" xil_pn:in_ck="48000635793620513" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1376531152">
 >>>>>>> development
+=======
+    <transform xil_pn:end_ts="1414450445" xil_pn:in_ck="48000635793620513" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416184" xil_pn:start_ts="1414450402">
+>>>>>>> parent of 4fa6e18... snapshot before NCM
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>

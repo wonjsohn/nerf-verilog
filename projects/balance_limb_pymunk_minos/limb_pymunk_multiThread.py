@@ -651,28 +651,13 @@ if __name__ == '__main__':
 #    xem_cortical_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '11160001CJ')
 #    xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12430003T2')
     
-#    xem_spindle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054G')
-#    xem_cortical_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054P')
-#    xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053U')
-#    
-#    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054K')
-#    xem_cortical_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053X')
-#    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '0000000550')
+    xem_spindle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054G')
+    xem_cortical_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054P')
+    xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053U')
     
-    
-    xem_spindle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054K')
-#    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054G')
-#    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053U')
-    xem_muscle_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '0000000550')
-    
-    
-#    xem_cortical_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054P')
-    xem_cortical_tri = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053X')
-    
-    # silver top
-    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12320003RN')
-    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '12430003T2')
-    xem_cortical_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '11160001CJ')
+    xem_spindle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000054K')
+    xem_cortical_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '000000053X')
+    xem_muscle_bic = SomeFpga(NUM_NEURON, SAMPLING_RATE, '0000000550')
     
     
 #    
