@@ -10,7 +10,10 @@ FPGA_OUTPUT_B1 =    (0x20,      'population_neuron0',      1.0,         'spike32
                 (0x2C,      'spike_count_Ia_normal',      1.0,         'int32',      Qt.darkGray),  \
                 (0x2E,      'spike_count_II_normal',      1.0,         'int32',      Qt.blue),  \
                 (0x30,      'population_neuron0_II',      1.0,         'spike32',      Qt.red)
-                
+
+#           address         name    value   type
+FPGA_TRIGGER_OUT_B1 =(0x60, 'fifo_almost_full', 0.0, 'int32')
+
 ##            address         name   visual_gain         type            color
 #FPGA_OUTPUT_B2 =   (0x20,      'i_I_from_CN2extra_buttonScaled',      1.0,         'int32',      Qt.blue),  \
 #                (0x22,      'population_neuron_CN1',      1.0,         'spike32',      Qt.red),  \

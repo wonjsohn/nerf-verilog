@@ -87,7 +87,7 @@ if __name__ == "__main__":
         
         
     #sys.path.append(PROJECT_PATH)
-    from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT_B1, FPGA_OUTPUT_B2, FPGA_OUTPUT_B3,   USER_INPUT_B1,  USER_INPUT_B2,  USER_INPUT_B3
+    from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT_B1,FPGA_TRIGGER_OUT_B1,  FPGA_OUTPUT_B2, FPGA_OUTPUT_B3,   USER_INPUT_B1,  USER_INPUT_B2,  USER_INPUT_B3
     FPGA_OUTPUT_B = []
     USER_INPUT_B = []
     
@@ -131,7 +131,7 @@ if __name__ == "__main__":
 
  
     for i in xrange(len(xemList)):
-        dispWin = View(count = i,  projectName = PROJECT_LIST[i] ,  projectPath = PROJECT_PATH[i],  nerfModel = xemList[i],  fpgaOutput = FPGA_OUTPUT_B[i],  userInput = USER_INPUT_B[i])
+        dispWin = View(count = i,  projectName = PROJECT_LIST[i] ,  projectPath = PROJECT_PATH[i],  nerfModel = xemList[i],  fpgaOutput = FPGA_OUTPUT_B[i],  userInput = USER_INPUT_B[i] )
         vList.append(dispWin)
 
     # display VIEW windows for each channel

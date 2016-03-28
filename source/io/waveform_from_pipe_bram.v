@@ -73,6 +73,9 @@ bram_2048 block_ram (
   .dinb(31'd0), // input [31 : 0] dinb
   .doutb(wave_temp) // output [31 : 0] doutb
 );
+
+
+
 /*
 wire [31:0] ram_0_data;
 wire [31:0] ram_1_data;
@@ -157,6 +160,67 @@ RAMB16_S18_S36 ram_3(.CLKA(pipe_clk), .SSRA(1'b0), .ENA(ram_ena[3]),
 */                     
 endmodule
 
+
+
+
+module fifo_pipe_bram_2s(
+                                input wire reset,
+                                input wire pipe_clk,
+                                input wire pipe_in_write,
+                                input wire [15:0] pipe_in_data,
+                                input wire is_from_trigger,
+                                input wire [31:0] data_from_trig,	// data from one of ep50 channel
+                                input wire pipe_out_read,
+                                output wire [15:0] pipe_out_data,
+                                input wire pop_clk,
+                                output wire [31:0] wave
+                                
+                             
+    );
+
+
+assign wave = (is_from_trigger)? data_from_trig : wave_temp  ;
+
+
+// Pipe in functionality
+reg [11:0] pipe_addr;
+always @(posedge pipe_clk) begin
+	if (reset == 1'b1) begin
+		pipe_addr <= 11'd0;
+	end else begin
+		if (pipe_in_write == 1'b1 || pipe_out_read == 1'b1)
+			pipe_addr <= pipe_addr + 1;
+	end
+end
+
+// Wave out functionality
+reg [11:1] pop_addr;
+always @ (posedge pop_clk) begin
+    if (reset == 1'b1) begin
+        pop_addr <= 10'd0;
+    end else begin
+        pop_addr <= pop_addr + 1;
+    end
+end
+
+wire [31:0] wave_temp;
+bram_2048 block_ram (
+  .clka(pipe_clk), // input clka
+  .wea(pipe_in_write), // input [0 : 0] wea
+  .addra(pipe_addr), // input [11 : 0] addra
+  .dina(pipe_in_data), // input [15 : 0] dina
+  .douta(pipe_out_data), // output [15 : 0] douta
+  .clkb(pop_clk), // input clkb
+  .web(1'b0), // input [0 : 0] web
+  .addrb(pop_addr), // input [10 : 0] addrb
+  .dinb(31'd0), // input [31 : 0] dinb
+  .doutb(wave_temp) // output [31 : 0] doutb
+);
+
+endmodule
+
+
+
 module waveform_from_pipe_bram_16s(
                                 input wire reset,
                                 input wire pipe_clk,
@@ -211,3 +275,63 @@ bram_16s waveform_memory (
   .doutb(wave_temp) // output [31 : 0] doutb
 );           
 endmodule
+
+
+
+module waveform_from_pipe_bram_32s(
+                                input wire reset,
+                                input wire pipe_clk,
+                                input wire pipe_in_write,
+                                input wire [15:0] pipe_in_data,
+                                input wire is_from_trigger,
+                                input wire [31:0] data_from_trig,	// data from one of ep50 channel
+                                input wire pipe_out_read,
+                                output wire [15:0] pipe_out_data,
+                                input wire pop_clk,
+                                output wire [31:0] wave
+                                
+                             
+    );
+
+
+assign wave = (is_from_trigger)? data_from_trig : wave_temp  ;
+
+
+// Pipe in functionality
+reg [15:0] pipe_addr;
+always @(posedge pipe_clk) begin
+	if (reset == 1'b1) begin
+		pipe_addr <= 16'd0;
+	end else begin
+		if (pipe_in_write == 1'b1 || pipe_out_read == 1'b1)
+			pipe_addr <= pipe_addr + 1;
+	end
+end
+
+// Wave out functionality
+reg [15:1] pop_addr;
+always @ (posedge pop_clk) begin
+    if (reset == 1'b1) begin
+        pop_addr <= 15'd0;
+    end else begin
+        pop_addr <= pop_addr + 1;
+    end
+end
+
+wire [31:0] wave_temp;
+bram_32s waveform_memory (
+  .clka(pipe_clk), // input clka
+  .wea(pipe_in_write), // input [0 : 0] wea
+  .addra(pipe_addr), // input [15 : 0] addra
+  .dina(pipe_in_data), // input [15 : 0] dina
+  .douta(pipe_out_data), // output [15 : 0] douta
+  .clkb(pop_clk), // input clkb
+  .web(1'b0), // input [0 : 0] web
+  .addrb(pop_addr), // input [14 : 0] addrb
+  .dinb(31'd0), // input [31 : 0] dinb
+  .doutb(wave_temp) // output [31 : 0] doutb
+);           
+endmodule
+
+
+

@@ -129,12 +129,17 @@
 
         // Output and OpalKelly Interface Wire Definitions
         
-        wire [23*17-1:0] ok2x;
+        wire [24*17-1:0] ok2x;
+		  wire [16:0] ok2a; // test for trig out
         wire [15:0] ep00wire, ep01wire, ep02wire;
         wire [15:0] ep50trig;
+		  reg [15:0] ep60trig;  // trigger out to inidicate fifo fullness
         
         wire pipe_in_write;
         wire [15:0] pipe_in_data;
+		  
+		  wire fifo_almost_full;
+		  wire fifo_almost_empty;
         
         wire pipe_in_write_timeref;
         wire [15:0] pipe_in_data_timeref;
@@ -302,8 +307,21 @@
         
 
 
-        // Waveform Generator mixed_input0 Instance Definition
-        waveform_from_pipe_bram_2s gen_mixed_input0(
+//        // Waveform Generator mixed_input0 Instance Definition
+//        waveform_from_pipe_bram_2s gen_mixed_input0(
+//            .reset(reset_sim),               // reset the waveform
+//            .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
+//            .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
+//            .data_from_trig(triggered_input0),	// data from one of ep50 channel
+//            .is_from_trigger(is_from_trigger),
+//            .pipe_in_data(pipe_in_data),        // waveform data from opalkelly pipe in
+//            .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
+//            .wave(mixed_input0)                   // wave out signal
+//        );
+        
+		  
+		         // Waveform Generator mixed_input0 Instance Definition
+        fifo_long fifo1(
             .reset(reset_sim),               // reset the waveform
             .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
             .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
@@ -311,12 +329,27 @@
             .is_from_trigger(is_from_trigger),
             .pipe_in_data(pipe_in_data),        // waveform data from opalkelly pipe in
             .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
-            .wave(mixed_input0)                   // wave out signal
+            .wave(mixed_input0),                   // wave out signal
+				.almostfifofull1(fifo_almost_full),					// fifo is almost full
+				.n_fifo_almost_em(fifo_almost_empty)
         );
+		 
+		  
+		  // trigger out fifo full signal
+		  
+	   always @(posedge clk1 or posedge reset_global)
+         begin
+           if (reset_global)
+            begin
+              ep60trig <= 16'd0;
+            end else begin
+              ep60trig <= {14'd0,fifo_almost_empty, fifo_almost_full}; 
+            end
+          end
         
         // time reference for latency measure 
          // Waveform Generator mixed_input0 Instance Definition
-<<<<<<< HEAD
+
 //         wire [31:0] timeref_wave;
 //        waveform_from_pipe_bram_2s gen_additional_pipeinput(
 //            .reset(reset_sim),               // reset the waveform
@@ -328,22 +361,7 @@
 //            .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
 //            .wave(timeref_wave)                   // wave out signal
 //        );
-//        
 
-=======
-         wire [31:0] timeref_wave;
-        waveform_from_pipe_bram_2s gen_additional_pipeinput(
-            .reset(reset_sim),               // reset the waveform
-            .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
-            .pipe_in_write(pipe_in_write_timeref),      // write enable signal from opalkelly pipe in
-            .data_from_trig(triggered_input0),	// data from one of ep50 channel
-            .is_from_trigger(1'd0),
-            .pipe_in_data(pipe_in_data_timeref),        // waveform data from opalkelly pipe in
-            .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
-            .wave(timeref_wave)                   // wave out signal
-        );
-        
->>>>>>> parent of 4fa6e18... snapshot before NCM
         
     //FPGA-FPGA Outputs
     assign spikeout1 = each_spike_neuron0;
@@ -374,21 +392,25 @@
         assign reset_global = ep00wire[0] | reset_external_clean;
         assign reset_sim = ep00wire[2] | reset_external_clean;
         assign is_from_trigger = ~ep00wire[1];
-        okWireOR # (.N(23)) wireOR (ok2, ok2x);
+        okWireOR # (.N(24)) wireOR (ok2, ok2x);
         okHost okHI(
             .hi_in(hi_in),  .hi_out(hi_out),    .hi_inout(hi_inout),    .hi_aa(hi_aa),
             .ti_clk(ti_clk),    .ok1(ok1),  .ok2(ok2)   );
         
         //okTriggerIn ep50    (.ok1(ok1), .ep_addr(8'h50),    .ep_clk(clk1),  .ep_trigger(ep50trig)   );
         okTriggerIn ep50    (.ok1(ok1), .ep_addr(8'h50),    .ep_clk(sim_clk),  .ep_trigger(ep50trig)   );
-        
+        okTriggerOut ep60 (.ok1(ok1), .ok2(ok2x[20*17 +: 17]), .ep_addr(8'h60), .ep_clk(clk1), .ep_trigger(ep60trig));
+		  
         okWireIn    wi00    (.ok1(ok1), .ep_addr(8'h00),    .ep_dataout(ep00wire)   );
         okWireIn    wi01    (.ok1(ok1), .ep_addr(8'h01),    .ep_dataout(ep01wire)   );
         okWireIn    wi02    (.ok1(ok1), .ep_addr(8'h02),    .ep_dataout(ep02wire)   );
         
-        okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
-                            .ep_blockstrobe(), .ep_dataout(pipe_in_data), .ep_ready(1'b1));
+//        okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
+//                            .ep_blockstrobe(), .ep_dataout(pipe_in_data), .ep_ready(1'b1));
+        okPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
+                             .ep_dataout(pipe_in_data));
         
+		  
         okWireOut wo20 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h20)    );
         okWireOut wo21 (    .ep_datain(population_neuron0[47:32]),  .ok1(ok1),  .ok2(ok2x[2*17 +: 17]), .ep_addr(8'h21)   );    
         
@@ -627,7 +649,7 @@
     assign led[2] = ~spikeout1;
     assign led[3] = ~spikeout2;
     assign led[4] = ~0;
-    assign led[5] = ~0;
+    assign led[5] = ~ep60trig[0]; // fifo almost full
     assign led[6] = ~neuron_clk; // 
     assign led[7] = ~sim_clk; // clock
     

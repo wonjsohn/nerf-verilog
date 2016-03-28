@@ -105,6 +105,29 @@ class SomeFpga:
         
         return outVal
 
+    def IsFIFOReady(self, getAddr):
+        # assume int32
+        # Check for state change
+        self.xem.UpdateTriggerOuts()
+
+        if self.xem.IsTriggered(getAddr, 0x02) == True: # fifo_almost_empty
+            # print "full"
+            return 'fifo_almost_empty'
+        elif self.xem.IsTriggered(getAddr, 0x01) == True: # fifo_almost_full
+            # print "not full"
+            return  'fifo_almost_full'
+        else:
+            # print "else"
+            return 'else'
+
+        #intValLo = self.xem.GetWireOutValue(getAddr) & 0xffff # length = 16-bit
+        #intValHi = self.xem.GetWireOutValue(getAddr + 0x01) & 0xffff # length = 16-bit
+        #intVal = ((intValHi << 16) + intValLo) & 0xFFFFFFFF
+        #outVal = convertType(intVal, 'I',  'i')  # in mV De-Scaling factor = 128  #????
+
+
+
+
     def SendButton(self, buttonValue, evt = None):
         if evt == BUTTON_RESET:
             if (buttonValue) :
@@ -125,23 +148,47 @@ class SomeFpga:
                 self.xem.SetWireInValue(0x00, 0x00, 0x04)
             self.xem.UpdateWireIns()            
 
+
+    def SendLongPipe(self, pipeInData):
+        """ Send byte stream to OpalKelly board
+        """
+        # print pipeInData
+
+        buf = ""
+        for x in pipeInData:
+            ##print x
+            buf += pack('<f', x) # convert float_x to a byte string, '<' = little endian
+
+        # print len(buf)
+
+        bufbyte = bytearray(buf)  # required in windows
+        bytesize = 16 # 4 may be too slow for large data
+        byteSent = self.xem.WriteToPipeIn(PIPE_IN_ADDR, bufbyte)
+        if byteSent == len(buf):
+            print "%d bytes sent via PipeIn!" % byteSent
+        else:
+            print "Send pipe failed! %d bytes sent" % byteSent
+
+
+
     def SendPipe(self, pipeInData):
         """ Send byte stream to OpalKelly board
         """
         # print pipeInData
 
-        buf = "" 
+        buf = ""
         for x in pipeInData:
             ##print x
             buf += pack('<f', x) # convert float_x to a byte string, '<' = little endian
+            pri`nt len(buf)
 
-
-        byteSent = self.xem.WriteToBlockPipeIn(PIPE_IN_ADDR, 4, buf)
-
+        bufbyte = bytearray(buf)  # required in windows
+        bytesize = 4 # 4 may be too slow for large data, 16 doesn't work why?
+        byteSent = self.xem.WriteToBlockPipeIn(PIPE_IN_ADDR, bytesize, bufbyte)
         if byteSent == len(buf):
-            print "%d bytes sent via PipeIn!" % byteSent 
+            print "%d bytes sent via PipeIn!" % byteSent
         else:
-            print "Send pipe filed! %d bytes sent" % byteSent
+            print "Send pipe failed! %d bytes sent" % byteSent
     
     def SendPipe2(self, pipeInData):
         """ Send byte stream to OpalKelly board
@@ -153,7 +200,8 @@ class SomeFpga:
             ##print x
             buf += pack('<f', x) # convert float_x to a byte string, '<' = little endian
 
-        byteSent = self.xem.WriteToBlockPipeIn(0x82, 4, buf)
+        bufbyte = bytearray(buf) # required in windows
+        byteSent = self.xem.WriteToBlockPipeIn(0x82, 4, bufbyte)
 
         if byteSent == len(buf):
             print "%d bytes sent via PipeIn!" % byteSent 
@@ -170,7 +218,8 @@ class SomeFpga:
             ##print x
             buf += pack('<I', x) # convert float_x to a byte string, '<' = little endian
 
-        byteSent = self.xem.WriteToBlockPipeIn(PIPE_IN_ADDR, 4, buf)
+        bufbyte = bytearray(buf) # required in windows
+        byteSent = self.xem.WriteToBlockPipeIn(PIPE_IN_ADDR, 4, bufbyte)
 
         if byteSent == len(buf):
             print "%d bytes sent via PipeIn!" % byteSent 

@@ -265,18 +265,14 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
             self.xemList[0].SendPara(bitVal = bitVal, trigEvent = 8)
             self.xemList[1].SendPara(bitVal = bitVal, trigEvent = 8)
     
-<<<<<<< HEAD
 
     
     
-    @pyqtSignature("int")
-    def on_spinBox_valueChanged(self, newHalfCnt):
-        """
-        half count direct input to all boards
-        """
-        # TODO: not implemented yet
-        for eachXem in self.xemList:
-            eachXem.SendPara(bitVal = newHalfCnt, trigEvent = 7)
-
-=======
->>>>>>> parent of 4fa6e18... snapshot before NCM
+    # @pyqtSignature("int")
+    # # def on_spinBox_valueChanged(self, newHalfCnt):
+    #     """
+    #     half count direct input to all boards
+    #     """
+    #     # TODO: not implemented yet
+    #     for eachXem in self.xemList:
+    #         eachXem.SendPara(bitVal = newHalfCnt, trigEvent = 7)
