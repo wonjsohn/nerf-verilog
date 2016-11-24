@@ -16,13 +16,12 @@ import importlib
 #from cortex import cortexView
 import os
 
-sys.path.append('..\\')
-# sys.path.append('C:\Program Files\Opal Kelly\FrontPanelUSB\FrontPanelHDL\XEM6010-LX150')
-import platform
+sys.path.append('../')
+import platform 
 arch = platform.architecture()[0]
 print arch
 if arch == "32bit":
-    from opalkelly_32bit_windows import ok
+    from opalkelly_32bit import ok
 elif arch == "64bit":
     from opalkelly_64bit_windows import ok
 
@@ -40,10 +39,9 @@ if __name__ == "__main__":
     assert (board_scheme.TWO_BOARDS+board_scheme.THREE_BOARDS+board_scheme.CORTICAL_BOARDS== 1), "CHOOSE ONE BOARD SETTING!"
     
     if (board_scheme.WINDOWS==1) :
-        #ROOT_PATH = "C:\\nerf_sangerlab\\projects\\"  # windows setting
         ROOT_PATH = "C:\\Users\\wonjsohn\\Documents\\GitHub\\nerf_verilog\\projects\\"  # windows setting
     if (board_scheme.LINUX==1):
-        ROOT_PATH = "/home/eric/nerf-verilog/projects/"
+        ROOT_PATH = "/home/eric/nerf_verilog/projects/"
 
     #################################################
     if (board_scheme.TWO_BOARDS == 1):
@@ -51,7 +49,8 @@ if __name__ == "__main__":
 
     if (board_scheme.THREE_BOARDS ==1) :
         PROJECT_LIST = ["rack_test", "rack_CN_simple_S1M1", "rack_emg"]   # rack_CN_simple_general
-    
+
+
     if (board_scheme.CORTICAL_BOARDS ==1) :
         PROJECT_LIST = ["rack_CN_simple_S1M1", "rack_CN_simple_S1M1"]   # rack_CN_general
         
@@ -87,7 +86,7 @@ if __name__ == "__main__":
         
         
     #sys.path.append(PROJECT_PATH)
-    from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT_B1,FPGA_TRIGGER_OUT_B1,  FPGA_OUTPUT_B2, FPGA_OUTPUT_B3,   USER_INPUT_B1,  USER_INPUT_B2,  USER_INPUT_B3
+    from config_test import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT_B1, FPGA_OUTPUT_B2, FPGA_OUTPUT_B3,   USER_INPUT_B1,  USER_INPUT_B2,  USER_INPUT_B3
     FPGA_OUTPUT_B = []
     USER_INPUT_B = []
     
@@ -131,12 +130,14 @@ if __name__ == "__main__":
 
  
     for i in xrange(len(xemList)):
-        dispWin = View(count = i,  projectName = PROJECT_LIST[i] ,  projectPath = PROJECT_PATH[i],  nerfModel = xemList[i],  fpgaOutput = FPGA_OUTPUT_B[i],  userInput = USER_INPUT_B[i] )
+        dispWin = View(count = i,  projectName = PROJECT_LIST[i] ,  projectPath = PROJECT_PATH[i],  nerfModel = xemList[i],  fpgaOutput = FPGA_OUTPUT_B[i],  userInput = USER_INPUT_B[i])
         vList.append(dispWin)
 
     # display VIEW windows for each channel
-    for i in xrange(len(xemList)):
-        vList[i].show()
+    viewOn=1
+    if viewOn:
+        for i in xrange(len(xemList)):
+            vList[i].show()
     
     ### Building C::(M,V)->C in MVC
     cList = []
@@ -148,13 +149,13 @@ if __name__ == "__main__":
     
     print vList
     ### global control for MVC
-    threeBoard = MultiXemScheduler(xemList = xemList, cList = cList,  vList = vList, halfCountRealTime = xem.HalfCountRealTime() )
+    threeBoard = MultiXemScheduler(xemList = xemList, cList = cList,  vList = vList, halfCountRealTime = xem.HalfCountRealTime(), viewOn=viewOn )
     threeBoard.show()
    
-#    # cortical overflow 
+#    # cortical overflow
 #    cortexControl = cortexView(xemList = xemList)
 #    cortexControl.show()
-#    
+#
     sys.exit(app.exec_())
 
 

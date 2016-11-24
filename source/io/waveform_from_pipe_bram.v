@@ -221,60 +221,60 @@ endmodule
 
 
 
-module waveform_from_pipe_bram_16s(
-                                input wire reset,
-                                input wire pipe_clk,
-                                input wire pipe_in_write,
-                                input wire [15:0] pipe_in_data,
-                                input wire is_from_trigger,
-                                input wire [31:0] data_from_trig,	// data from one of ep50 channel
-                                input wire pipe_out_read,
-                                output wire [15:0] pipe_out_data,
-                                input wire pop_clk,
-                                output wire [31:0] wave
-                                
-                             
-    );
-
-
-assign wave = (is_from_trigger)? data_from_trig : wave_temp  ;
-
-
-// Pipe in functionality
-reg [14:0] pipe_addr;
-always @(posedge pipe_clk) begin
-	if (reset == 1'b1) begin
-		pipe_addr <= 15'd0;
-	end else begin
-		if (pipe_in_write == 1'b1 || pipe_out_read == 1'b1)
-			pipe_addr <= pipe_addr + 1;
-	end
-end
-
-// Wave out functionality
-reg [14:1] pop_addr;
-always @ (posedge pop_clk) begin
-    if (reset == 1'b1) begin
-        pop_addr <= 14'd0;
-    end else begin
-        pop_addr <= pop_addr + 1;
-    end
-end
-
-wire [31:0] wave_temp;
-bram_16s waveform_memory (
-  .clka(pipe_clk), // input clka
-  .wea(pipe_in_write), // input [0 : 0] wea
-  .addra(pipe_addr), // input [14 : 0] addra
-  .dina(pipe_in_data), // input [15 : 0] dina
-  .douta(pipe_out_data), // output [15 : 0] douta
-  .clkb(pop_clk), // input clkb
-  .web(1'b0), // input [0 : 0] web
-  .addrb(pop_addr), // input [13 : 0] addrb
-  .dinb(31'd0), // input [31 : 0] dinb
-  .doutb(wave_temp) // output [31 : 0] doutb
-);           
-endmodule
+//module waveform_from_pipe_bram_16s(
+//                                input wire reset,
+//                                input wire pipe_clk,
+//                                input wire pipe_in_write,
+//                                input wire [15:0] pipe_in_data,
+//                                input wire is_from_trigger,
+//                                input wire [31:0] data_from_trig,	// data from one of ep50 channel
+//                                input wire pipe_out_read,
+//                                output wire [15:0] pipe_out_data,
+//                                input wire pop_clk,
+//                                output wire [31:0] wave
+//                                
+//                             
+//    );
+//
+//
+//assign wave = (is_from_trigger)? data_from_trig : wave_temp  ;
+//
+//
+//// Pipe in functionality
+//reg [14:0] pipe_addr;
+//always @(posedge pipe_clk) begin
+//	if (reset == 1'b1) begin
+//		pipe_addr <= 15'd0;
+//	end else begin
+//		if (pipe_in_write == 1'b1 || pipe_out_read == 1'b1)
+//			pipe_addr <= pipe_addr + 1;
+//	end
+//end
+//
+//// Wave out functionality
+//reg [14:1] pop_addr;
+//always @ (posedge pop_clk) begin
+//    if (reset == 1'b1) begin
+//        pop_addr <= 14'd0;
+//    end else begin
+//        pop_addr <= pop_addr + 1;
+//    end
+//end
+//
+//wire [31:0] wave_temp;
+//bram_16s waveform_memory (
+//  .clka(pipe_clk), // input clka
+//  .wea(pipe_in_write), // input [0 : 0] wea
+//  .addra(pipe_addr), // input [14 : 0] addra
+//  .dina(pipe_in_data), // input [15 : 0] dina
+//  .douta(pipe_out_data), // output [15 : 0] douta
+//  .clkb(pop_clk), // input clkb
+//  .web(1'b0), // input [0 : 0] web
+//  .addrb(pop_addr), // input [13 : 0] addrb
+//  .dinb(31'd0), // input [31 : 0] dinb
+//  .doutb(wave_temp) // output [31 : 0] doutb
+//);           
+//endmodule
 
 
 
@@ -320,18 +320,118 @@ end
 
 wire [31:0] wave_temp;
 bram_32s waveform_memory (
+//  .clka(pipe_clk), // input clka
+//  .wea(pipe_in_write), // input [0 : 0] wea
+//  .addra(pipe_addr), // input [15 : 0] addra
+//  .dina(pipe_in_data), // input [15 : 0] dina
+//  .douta(pipe_out_data), // output [15 : 0] douta
+//  .clkb(pop_clk), // input clkb
+//  .web(1'b0), // input [0 : 0] web
+//  .addrb(pop_addr), // input [14 : 0] addrb
+//  .dinb(31'd0), // input [31 : 0] dinb
+//  .doutb(wave_temp) // output [31 : 0] doutb
+  
   .clka(pipe_clk), // input clka
   .wea(pipe_in_write), // input [0 : 0] wea
-  .addra(pipe_addr), // input [15 : 0] addra
+  .addra(pipe_addr), // input [16 : 0] addra
   .dina(pipe_in_data), // input [15 : 0] dina
-  .douta(pipe_out_data), // output [15 : 0] douta
   .clkb(pop_clk), // input clkb
-  .web(1'b0), // input [0 : 0] web
   .addrb(pop_addr), // input [14 : 0] addrb
-  .dinb(31'd0), // input [31 : 0] dinb
   .doutb(wave_temp) // output [31 : 0] doutb
+  
 );           
 endmodule
+
+
+//
+//
+//module waveform_from_pipe_bram_48s(
+//                                input wire reset,
+//                                input wire pipe_clk,
+//                                input wire pipe_in_write,
+//                                input wire [15:0] pipe_in_data,
+//                                input wire is_from_trigger,
+//                                input wire [31:0] data_from_trig,	// data from one of ep50 channel
+//                                input wire pipe_out_read,
+//                                output wire [15:0] pipe_out_data,
+//                                input wire pop_clk,
+//                                output wire [31:0] wave
+//                                
+//                             
+//    );
+//
+////input clka;
+////input [0 : 0] wea;
+////input [16 : 0] addra;
+////input [15 : 0] dina;
+////input clkb;
+////input [15 : 0] addrb;
+////output [31 : 0] doutb;
+//
+//
+//assign wave = (is_from_trigger)? data_from_trig : wave_temp  ;
+//
+//
+//// Pipe in functionality
+//reg [16:0] pipe_addr;
+//always @(posedge pipe_clk) begin
+//	if (reset == 1'b1) begin
+//		pipe_addr <= 17'd0;
+//	end else begin
+//		if (pipe_in_write == 1'b1 || pipe_out_read == 1'b1)
+//			pipe_addr <= pipe_addr + 1;
+//	end
+//end
+//
+//// Wave out functionality
+//reg [16:1] pop_addr;
+//always @ (posedge pop_clk) begin
+//    if (reset == 1'b1) begin
+//        pop_addr <= 16'd0;
+//    end else begin
+//        pop_addr <= pop_addr + 1;
+//    end
+//end
+//
+////wire [31:0] wave_temp;
+////bram_48s waveform_memory (
+////  .clka(pipe_clk), // input clka
+////  .wea(pipe_in_write), // input [0 : 0] wea
+////  .addra(pipe_addr), // input [16 : 0] addra
+////  .dina(pipe_in_data), // input [15 : 0] dina
+////  .douta(pipe_out_data), // output [15 : 0] douta
+////  .clkb(pop_clk), // input clkb
+////  .web(1'b0), // input [0 : 0] web
+////  .addrb(pop_addr), // input [14 : 0] addrb
+////  .dinb(31'd0), // input [31 : 0] dinb
+////  .doutb(wave_temp) // output [31 : 0] doutb
+////);           
+//
+//// single dual channel bram
+//wire [31:0] wave_temp;
+//bram_48s wavefrom_memory (
+////  .clka(pipe_clk), // input clka
+////  .wea(pipe_in_write), // input [0 : 0] wea
+////  .addra(pipe_addr), // input [16 : 0] addra
+////  .dina(pipe_in_data), // input [15 : 0] dina
+////  .douta(pipe_out_data), // output [15 : 0] douta
+////  .clkb(pop_clk), // input clkb
+////  .web(1'b0), // input [0 : 0] web
+////  .addrb(pop_addr), // input [14 : 0] addrb
+////  .dinb(31'd0), // input [31 : 0] dinb
+////  .doutb(wave_temp) // output [31 : 0] doutb
+//  
+//  .clka(pipe_clk), // input clka
+//  .wea(pipe_in_write), // input [0 : 0] wea
+//  .addra(pipe_addr), // input [16 : 0] addra
+//  .dina(pipe_in_data), // input [15 : 0] dina
+//  .clkb(pop_clk), // input clkb
+//  .addrb(pop_addr), // input [14 : 0] addrb
+//  .doutb(wave_temp) // output [31 : 0] doutb
+//  
+//);           
+//
+//endmodule
 
 
 

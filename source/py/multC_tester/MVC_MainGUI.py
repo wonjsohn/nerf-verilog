@@ -9,6 +9,11 @@ from PyQt4.QtCore import pyqtSignature, pyqtSlot
 from PyQt4.QtCore import QTimer,  SIGNAL, SLOT, Qt,  QRect
 from PyQt4 import QtCore, QtGui
 
+import sys
+import glob
+import errno
+import sys, PyQt4
+
 from Utilities import *
 from generate_sin import gen as gen_sin
 from generate_tri import gen as gen_tri
@@ -20,15 +25,26 @@ from functools import partial
 #from par_search import muscle_properties
 from Utilities import convertType
 #from M_Fpga import SendPara
+from loadMatTest import loadMat as loadMat
+from time import sleep
+import threading
+import time
+import multiprocessing
+import glob
+import logging
 
 from Ui_MVC_MainGUI import Ui_Dialog
 
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    _fromUtf8 = lambda s: s
 
 class MultiXemScheduler(QDialog, Ui_Dialog):
     """
     GUI class for feeding waveforms or user inputs to OpalKelly boards
     """
-    def __init__(self, xemList, cList, vList,  halfCountRealTime, parent = None):
+    def __init__(self, xemList, cList, vList,  halfCountRealTime, viewOn, parent = None):
         """
         Constructor
         """
@@ -39,6 +55,7 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         self.cList = cList
         self.vList = vList
         self.halfCountRealTime = halfCountRealTime
+        self.viewOn = viewOn
 
 #        self.cList.setWindowTitle('Global Control')
         #self.cList.show() 
@@ -52,10 +69,12 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
         self.onClkRate(10) 
 #        self.startSim()
         
-
+    def o(self):
+        print "close the window"
+        self.close()
 
     def onClkRate(self, value):   
-        """ value = how many times of 1/10 real-time
+        """ value = how many times of 1/10 real-time, 100 is real time...
         """
         # F_fpga = C * NUM_NEURON * V * F_emu ,  (C : cycles_per_neuron = 2,  V = 365)
         # if F_fpga = 200Mhz,  F_emu = 1khz)
@@ -244,35 +263,163 @@ class MultiXemScheduler(QDialog, Ui_Dialog):
             eachV.tellFpga('overflow', inputvalue)
 #
 
+
+    # logging.basicConfig(level=logging.DEBUG,
+    #                     format='(%threadName) -9s) %(messages)s',)
+
     @pyqtSignature("bool")
     def on_checkBox_2_clicked(self, checked):
         """
         Slot documentation goes here.
         """
         if (checked):
-#            bitVal1 = convertType(400.0, fromType = 'f', toType = 'I')
-#            bitVal2 = convertType(100.0, fromType = 'f', toType = 'I')
-            # TODO: not implemented yet
-            self.xemList[0].SendPara(bitVal = 1000, trigEvent = 8)
-            self.xemList[1].SendPara(bitVal = 5000, trigEvent = 8)
-            print self.xemList[0],  self.xemList[1]
+
+
+
+
+# #            bitVal1 = convertType(400.0, fromType = 'f', toType = 'I')
+# #            bitVal2 = convertType(100.0, fromType = 'f', toType = 'I')
+#             # TODO: not implemented yet
+#             self.xemList[0].SendPara(bitVal = 1000, trigEvent = 8)
+#             self.xemList[1].SendPara(bitVal = 5000, trigEvent = 8)
+            print self.xemList[0],  self.xemList[1], self.xemList[2]
+
+
+            #p = multiprocessing.Process(target=self.pipeinloop, name="pipeinloop", args=())
+            if self.viewOn:
+                self.pipeinloop( filepath = "C:\Users\wonjsohn\Dropbox\BBDL_data\sliceBy4Output\\", fileId = "Gd0_Gs200_c3_v4")
+            else:
+                p1=threading.Thread(target=self.pipeinloop, name='pipeinloop', args=("C:\Users\wonjsohn\Dropbox\BBDL_data\sliceBy4Output\\", "Gd0_Gs0_c3_v1",))
+                p2=threading.Thread(target=self.timer, name='timer')
+                p1.start()
+                p2.start()
+
+                p1.join()
+                p2.join()
+
+
+
+
+
+
 
         
+        # else:
+            # bitVal = convertType(0.0, fromType = 'f', toType = 'I')
+            #
+            # # TODO: not implemented yet
+            # self.xemList[0].SendPara(bitVal = bitVal, trigEvent = 8)
+            # self.xemList[1].SendPara(bitVal = bitVal, trigEvent = 8)
+    def timer(self):
+         n=1
+         # for num in range(1,2):
+         #    time.sleep(32)
+         #    print time.time()
+         #    n = n+1
+         #    print n
+         time.sleep(48)
+            # save data to mat file at this time
+         for eachC in self.cList:
+            eachC.close()
+            print "savefile called"
+
+                # logging.debug('in for loop')
+         #self.on_pushButton_2_clicked(True) # close all
+         # logging.debug('Exiting')
+
+
+    def pipeinloop(self, filepath, fileId):
+        # use glob.glob("C:\Users\wonjsohn\Dropbox\BBDL_data\sliceBy4Output\\*.mat"
+        # logging.debug('starting')
+        # filepath = "C:\Users\wonjsohn\Dropbox\BBDL_data\sliceBy4Output\\"
+        # fileId = "2_0_0_1_2"
+        for eachV in self.vList:
+            eachV.fileId = fileId
+        filename = fileId+".mat"
+        [flexorLengthThisGamma, GdArray ,GsArray, cortical, vel] = loadMat(filepath, filename)
+        print  GdArray[0][0],  GsArray[0][0], cortical[0][0], vel[0][0]
+        pipeInData = flexorLengthThisGamma
+        self.xemList[0].SendPipe(pipeInData)
+        self.xemList[2].SendPipe(pipeInData)
+        bitVal = convertType(3810,  fromType = 'i',  toType = 'I')
+        #self.on_spinBox_valueChanged(bitVal)  # set clock 1/10th of real time. (int)
+        time.sleep(0.1)
+        for eachXem in self.xemList:
+            eachXem.SendPara(bitVal = bitVal, trigEvent = 7)
+            time.sleep(0.1)
+
+        time.sleep(0.1)
+        # print GdArray[0][0],  GsArray[0][0], cortical[0][0]
+        #bitVal = convertType( GdArray[0][0], fromType = 'f', toType = 'I')
+        # self.xemList[0].SendPara(bitVal = bitVal,  trigEvent = 4) # 4 (float) - Gd
+        self.vList[0].tellFpga('gamma_dyn', GdArray[0][0]);
+        # bitVal = convertType( GsArray[0][0], fromType = 'f', toType = 'I')
+        # self.xemList[0].SendPara(bitVal = bitVal, trigEvent =5) # 5 (float) - Gs
+        self.vList[0].tellFpga('gamma_sta', GsArray[0][0]);
+        time.sleep(0.1)
+        # bitVal = convertType(cortical[0][0],  fromType = 'i',  toType = 'I')
+        # self.xemList[1].SendPara(bitVal =bitVal , trigEvent =8) # 8 (int) - cortical tonic drive
+        if  cortical[0][0] == 1:
+            cdrive = 0
+        elif cortical[0][0] == 2:
+            cdrive = 900
         else:
-            bitVal = convertType(0.0, fromType = 'f', toType = 'I')
+            cdrive = 1250
 
-            # TODO: not implemented yet
-            self.xemList[0].SendPara(bitVal = bitVal, trigEvent = 8)
-            self.xemList[1].SendPara(bitVal = bitVal, trigEvent = 8)
-    
+        print cdrive
+        self.vList[1].tellFpga('i_CN1_extra_drive', cdrive);
+        # bitVal = convertType(70.0,  fromType = 'f', toType = 'I')                       # SOMETHING REALLY BAD
+        # self.xemList[2].SendPara(bitVal = 70.0, trigEvent =3) # 3 syn_Ia_gain(float)   # SOMETHING REALLY BAD
+        time.sleep(0.1)
+        self.vList[2].tellFpga('syn_Ia_gain',  60.0);
+        time.sleep(0.1)
+        # bitVal = convertType(1, fromType = 'i',  toType = 'I')
+        # self.xemList[2].SendPara(bitVal = bitVal, trigEvent =6) # 6 s_weight(int)
+        self.vList[2].tellFpga('syn_CN_gain',  200.0);
+        time.sleep(0.1)
+        self.vList[2].tellFpga('syn_II_gain',  60.0);
+        time.sleep(0.1)
+        self.vList[0].tellFpga('spindl_Ia_offset',  250.0);
+        time.sleep(0.1)
+        self.vList[0].tellFpga('spindl_II_offset',  50.0);
+        time.sleep(0.1)
+        self.vList[2].tellFpga("b1", 0.002459);  #
+        time.sleep(0.1)
+        self.vList[0].tellFpga('gamma_dyn',  GdArray[0][0]);
+        time.sleep(0.1)
+        self.vList[0].tellFpga('gamma_sta',  GsArray[0][0]);
+        time.sleep(0.1)
+        self.vList[2].tellFpga('s_weight',  1);
+        time.sleep(0.1)
+        self.vList[2].tellFpga('muscleVelGain',  1.0);
+        time.sleep(0.1)
+
+        bitVal = convertType(1,  fromType = 'i',  toType = 'I') # reset sim to start pipe from the beginning
+        self.on_pushButton_reset_sim_clicked(bitVal)
+        time.sleep(0.1)
+        bitVal = convertType(0,  fromType = 'i',  toType = 'I')
+        self.on_pushButton_reset_sim_clicked(bitVal)
+        self.vList[0].on_checkBox_2_clicked(1) # input from trigger
+        self.vList[2].on_checkBox_2_clicked(1) # input from trigger
+        self.on_pushButtonData_clicked(1)# data logging start
+        print time.time()
+        # logging.debug('Exiting')
+
+
+
+
+
+
+
 
     
     
-    # @pyqtSignature("int")
-    # # def on_spinBox_valueChanged(self, newHalfCnt):
-    #     """
-    #     half count direct input to all boards
-    #     """
-    #     # TODO: not implemented yet
-    #     for eachXem in self.xemList:
-    #         eachXem.SendPara(bitVal = newHalfCnt, trigEvent = 7)
+    @pyqtSignature("int")
+    def on_spinBox_valueChanged(self, newHalfCnt):
+        """
+        half count direct input to all boards
+        """
+        # TODO: not implemented yet
+        for eachXem in self.xemList:
+            eachXem.SendPara(bitVal = newHalfCnt, trigEvent = 7)
+

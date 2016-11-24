@@ -8,15 +8,12 @@ import os
 import sys
 from scipy.io import savemat, loadmat
 import platform
-sys.path.append('..\\')
+sys.path.append('../')
 arch = platform.architecture()[0]
-print arch
-print sys.path
 if arch == "32bit":
-    from opalkelly_32bit_windows import ok
+    from opalkelly_32bit import ok
 elif arch == "64bit":
     from opalkelly_64bit_windows import ok
-
 
 import numpy as np
 from Utilities import *
@@ -105,6 +102,7 @@ class SomeFpga:
         
         return outVal
 
+
     def IsFIFOReady(self, getAddr):
         # assume int32
         # Check for state change
@@ -169,26 +167,24 @@ class SomeFpga:
         else:
             print "Send pipe failed! %d bytes sent" % byteSent
 
-
-
     def SendPipe(self, pipeInData):
         """ Send byte stream to OpalKelly board
         """
         # print pipeInData
 
-        buf = ""
+        buf = "" 
         for x in pipeInData:
             ##print x
             buf += pack('<f', x) # convert float_x to a byte string, '<' = little endian
-            pri`nt len(buf)
-
+        
         bufbyte = bytearray(buf)  # required in windows
         bytesize = 4 # 4 may be too slow for large data, 16 doesn't work why?
         byteSent = self.xem.WriteToBlockPipeIn(PIPE_IN_ADDR, bytesize, bufbyte)
+
         if byteSent == len(buf):
-            print "%d bytes sent via PipeIn!" % byteSent
+            print "%d bytes sent via PipeIn!" % byteSent 
         else:
-            print "Send pipe failed! %d bytes sent" % byteSent
+            print "Send pipe filed! %d bytes sent" % byteSent
     
     def SendPipe2(self, pipeInData):
         """ Send byte stream to OpalKelly board
@@ -200,8 +196,7 @@ class SomeFpga:
             ##print x
             buf += pack('<f', x) # convert float_x to a byte string, '<' = little endian
 
-        bufbyte = bytearray(buf) # required in windows
-        byteSent = self.xem.WriteToBlockPipeIn(0x82, 4, bufbyte)
+        byteSent = self.xem.WriteToBlockPipeIn(0x82, 4, buf)
 
         if byteSent == len(buf):
             print "%d bytes sent via PipeIn!" % byteSent 
@@ -218,8 +213,7 @@ class SomeFpga:
             ##print x
             buf += pack('<I', x) # convert float_x to a byte string, '<' = little endian
 
-        bufbyte = bytearray(buf) # required in windows
-        byteSent = self.xem.WriteToBlockPipeIn(PIPE_IN_ADDR, 4, bufbyte)
+        byteSent = self.xem.WriteToBlockPipeIn(PIPE_IN_ADDR, 4, buf)
 
         if byteSent == len(buf):
             print "%d bytes sent via PipeIn!" % byteSent 

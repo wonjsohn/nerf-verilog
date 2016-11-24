@@ -15,13 +15,14 @@ from Utilities import *
 from collections import deque
 from generate_sin import gen as gen_sin
 from generate_tri import gen as gen_tri
-from generate_spikes import spike_train
+#from generate_spikes import spike_train
 from generate_sequence import gen as gen_ramp
 from generate_rand import gen as gen_rand
 from functools import partial
 from math import floor
 from glob import glob
 import socket
+from loadMatTest import loadMat as loadMat
 
 from MVC_MainGUI import MultiXemScheduler
 
@@ -229,16 +230,17 @@ class View(QMainWindow, Ui_Dialog):
             ch.data.appendleft(pt)
             ch.labelnum.setText("%4.6f" % pt)     
             
-            if ch.addr == 0x24 or ch.addr == 0x2C or ch.addr == 0x34 or ch.addr == 0x3A:   # synaptic strength
-                #self.udp_send(pt)   # send udp
-                val1 = self.allUserInput["flag_sync_inputs"].doubleSpinBox.value()      #flag_sync_inputs
-                val2 = self.allUserInput["block_neuron2"].doubleSpinBox.value()      #block_neuron2
-                val3 = self.allUserInput["block_neuron1"].doubleSpinBox.value()      #block_neuron1
-                val4 = self.allUserInput["half_count"].doubleSpinBox.value()      
-                val5 = self.resetSimClick
-                
-                self.udp_send("%d,%d,%d,%d,%d,%d,%d" % (pt,  ch.addr,  val1,  val2, val3, val4, val5))
+            # <--stdp setting
+            # if ch.addr == 0x24 or ch.addr == 0x2C or ch.addr == 0x34 or ch.addr == 0x3A:   # synaptic strength
+            #   # send udp
+                # val1 = self.allUserInput["flag_sync_inputs"].doubleSpinBox.value()      #flag_sync_inputs
+                # val2 = self.allUserInput["block_neuron2"].doubleSpinBox.value()      #block_neuron2
+                # val3 = self.allUserInput["block_neuron1"].doubleSpinBox.value()      #block_neuron1
+                # val4 = self.allUserInput["half_count"].doubleSpinBox.value()
+                # val5 = self.resetSimClick
+                # self.udp_send("%d,%d,%d,%d,%d,%d,%d" % (pt,  ch.addr,  val1,  val2, val3, val4, val5))  -->
                 #print pt
+
 
         self.spike_all = newSpikeAll
         
@@ -430,22 +432,66 @@ class View(QMainWindow, Ui_Dialog):
           
  
         elif choice == "waveform 3":
+            self.pipeinloop( filepath = "C:\Users\wonjsohn\Dropbox\BBDL_data\sliceBy4Output\\", fileId = "Gd200_Gs200_c3_v4")
+
 #            pipeInData = gen_tri() 
 
 #            pipeInData = spike_train(firing_rate = 1) 
-            print "waveform 3 fed"
-#            pipeInData = gen_sin(F = 0.5, AMP = 0.15,  BIAS = 1.15,  T = 2.0) 
-            pipeInData = abs(gen_sin(F = 0.5, AMP = 12000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
-            
-            #pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.3, 1.3, 1.0, 1.0], FILT = False)
-#            pipeInData = gen_ramp(T = [0.0, 0.4, 1.5, 1.55,  1.6,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)
-#                pipeInData = gen_ramp(T = [0.0, 0.2, 0.25, 1.75,  1.8,  2.0], L = [1.0,  1.0,  5000.0, 5000.0, 1.0, 1.0], FILT = False)  # abrupt rise / fall
-#            pipeInData = spike_train(firing_rate = 1000) 
+#             print "waveform 3 fed"
+# #            pipeInData = gen_sin(F = 0.5, AMP = 0.15,  BIAS = 1.15,  T = 2.0)
+#             pipeInData = abs(gen_sin(F = 0.5, AMP = 12000.0,  BIAS = 0.0,  T = 2.0))   #big sine wave for training stdp
+#
+#             #pipeInData = gen_ramp(T = [0.0, 0.1, 0.2, 0.8, 0.9, 2.0], L = [1.0, 1.0, 1.3, 1.3, 1.0, 1.0], FILT = False)
+# #            pipeInData = gen_ramp(T = [0.0, 0.4, 1.5, 1.55,  1.6,  2.0], L = [0,  0,  15000, 15000, 0, 0], FILT = False)
+# #                pipeInData = gen_ramp(T = [0.0, 0.2, 0.25, 1.75,  1.8,  2.0], L = [1.0,  1.0,  5000.0, 5000.0, 1.0, 1.0], FILT = False)  # abrupt rise / fall
+# #            pipeInData = spike_train(firing_rate = 1000)
+#
+#         self.nerfModel.SendPipe(pipeInData)
+#         self.nerfModel.SendPipe2(pipeInData2)
+#
 
+
+    def pipeinloop(self, filepath, fileId):
+
+        filename = fileId+".mat"
+        [flexorLengthThisGamma, GdArray ,GsArray, cortical, vel] = loadMat(filepath, filename)
+        print  GdArray[0][0],  GsArray[0][0], cortical[0][0], vel[0][0]
+        pipeInData = flexorLengthThisGamma
         self.nerfModel.SendPipe(pipeInData)
-        self.nerfModel.SendPipe2(pipeInData2)
-          
 
+        # bitVal = convertType(720,  fromType = 'i',  toType = 'I')
+        # self.on_spinBox_valueChanged(bitVal)  # set clock 1/10th of real time. (int)
+        # print GdArray[0][0],  GsArray[0][0], cortical[0][0]
+        #bitVal = convertType( GdArray[0][0], fromType = 'f', toType = 'I')
+        # self.xemList[0].SendPara(bitVal = bitVal,  trigEvent = 4) # 4 (float) - Gd
+        # self.tellFpga('gamma_dyn', GdArray[0][0]);
+        # bitVal = convertType( GsArray[0][0], fromType = 'f', toType = 'I')
+        # self.xemList[0].SendPara(bitVal = bitVal, trigEvent =5) # 5 (float) - Gs
+        # self.tellFpga('gamma_sta', GsArray[0][0]);
+        # bitVal = convertType(cortical[0][0],  fromType = 'i',  toType = 'I')
+        # self.xemList[1].SendPara(bitVal =bitVal , trigEvent =8) # 8 (int) - cortical tonic drive
+        # self.tellFpga('i_CN1_extra_drive', cortical[0][0]);
+        # bitVal = convertType(70.0,  fromType = 'f', toType = 'I')                       # SOMETHING REALLY BAD
+        # self.xemList[2].SendPara(bitVal = 70.0, trigEvent =3) # 3 syn_Ia_gain(float)   # SOMETHING REALLY BAD
+        # self.tellFpga('syn_Ia_gain',  60.0);
+        # bitVal = convertType(1, fromType = 'i',  toType = 'I')
+        # self.xemList[2].SendPara(bitVal = bitVal, trigEvent =6) # 6 s_weight(int)
+        # self.tellFpga('syn_CN_gain',  200.0);
+        # self.tellFpga('syn_II_gain',  60.0);
+        # self.tellFpga("b1", 0.002489);  # SOMETHING REALLY BAD
+        # self.tellFpga('gamma_dyn',  GdArray[0][0]);
+        # self.tellFpga('gamma_sta',  GsArray[0][0]);
+        # self.tellFpga('s_weight',  1);
+
+
+        # bitVal = convertType(1,  fromType = 'i',  toType = 'I') # reset sim to start pipe from the beginning
+        # self.on_pushButton_reset_sim_clicked(bitVal)
+        # bitVal = convertType(0,  fromType = 'i',  toType = 'I')
+        # self.on_pushButton_reset_sim_clicked(bitVal)
+        # self.on_checkBox_2_clicked(1) # input from trigger
+        # self.on_pushButtonData_clicked(1)# data logging start
+        print time.time()
+        # logging.debug('Exiting')
 
 
 

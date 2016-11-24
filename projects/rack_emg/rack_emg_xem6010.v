@@ -105,6 +105,9 @@
         reg [31:0] triggered_input6;    // Triggered input sent from USB (clk_divider)  
         reg [31:0] triggered_input7; 
         reg [31:0] triggered_input8; 
+		  
+		  
+		  reg [31:0] muscleVelGain;
 //        reg [31:0] triggered_input9; 
 //        reg [31:0] triggered_input10; 
 //        reg [31:0] triggered_input11; 
@@ -125,7 +128,7 @@
         // Output and OpalKelly Interface Wire Definitions
         
         wire [27*17-1:0] ok2x;
-        wire [15:0] ep00wire, ep01wire, ep02wire, ep03wire, ep04wire, ep05wire, ep06wire, ep07wire, ep08wire;
+        wire [15:0] ep00wire, ep01wire, ep02wire, ep03wire, ep04wire; //,ep05wire, ep06wire, ep07wire, ep08wire;
         wire [15:0] ep50trig;
         
         wire pipe_in_write;
@@ -194,19 +197,19 @@
 
 
         // Triggered Input triggered_input0 Instance Definition (lce & vel _ from PXI)
-        reg [31:0] f_len_pxi_F0, f_velocity_F0, i_extraMN_drive, i_extraMN2_drive;
+        reg [31:0] f_len_pxi_F0, f_velocity_F0;//, i_extraMN_drive, i_extraMN2_drive;
         always @ (posedge ep50trig[9] or posedge reset_global)
         if (reset_global) begin
             f_len_pxi_F0 <= 32'h3F800000;         //reset to 1.0    
             f_velocity_F0 <= 32'h0;         //reset to 0   
-            i_extraMN_drive <= 32'h0;             
-            i_extraMN2_drive <= 32'h0;            
+//            i_extraMN_drive <= 32'h0;             
+//            i_extraMN2_drive <= 32'h0;            
         end
         else  begin
             f_len_pxi_F0 <= {ep02wire, ep01wire};  
             f_velocity_F0 <= {ep04wire, ep03wire};         
-            i_extraMN_drive <= {ep06wire, ep05wire};             
-            i_extraMN2_drive <= {ep08wire, ep07wire};             
+//            i_extraMN_drive <= {ep06wire, ep05wire};             
+//            i_extraMN2_drive <= {ep08wire, ep07wire};             
         end
 
         // Triggered Input triggered_input1 Instance Definition (tau)
@@ -260,33 +263,6 @@
 //            f_extraCN_syn_gain <= {ep02wire, ep01wire};    
 
         
-//        reg [31:0] triggered_input4_a;    //
-//        reg [31:0] triggered_input4_b;    //
-//        reg [31:0] triggered_input4_c;    //
-//        reg [31:0] triggered_input4_d;    //
-//        reg [31:0] triggered_input4_e;    //
-//        reg [31:0] triggered_input4_f;    //
-//        reg [31:0] triggered_input4_g;    //
-//        // Triggered Input triggered_input4 Instance Definition (threshold)
-//        always @ (posedge ep50trig[10] or posedge reset_global)
-//        if (reset_global) begin
-//            triggered_input4_a <= 32'd30;         //reset to 0      
-//            triggered_input4_b <= 32'd0;         //reset to 0  
-//            triggered_input4_c <= 32'd0;         //reset to 0      
-//            triggered_input4_d <= 32'd0;         //reset to 0      
-//            triggered_input4_e <= 32'd0;         //reset to 0      
-//            triggered_input4_f <= 32'd0;         //reset to 0    
-//            triggered_input4_g <= 32'd0;         //reset to 0                 
-//        end
-//        else begin
-//            triggered_input4_a <= {ep02wire, ep01wire};        //to implement size principle. progressively decreasing threshold.
-//            triggered_input4_b <= {ep02wire, ep01wire} - 32'd2; 
-//            triggered_input4_c <= {ep02wire, ep01wire} - 32'd4;
-//            triggered_input4_d <= {ep02wire, ep01wire} - 32'd6;
-//            triggered_input4_e <= {ep02wire, ep01wire} - 32'd8;
-//            triggered_input4_f <= {ep02wire, ep01wire} - 32'd10;
-//            triggered_input4_g <= {ep02wire, ep01wire} - 32'd12;
-//        end
 
         // Triggered Input triggered_input5 Instance Definition (syn1_gain)
         always @ (posedge ep50trig[3] or posedge reset_global)
@@ -328,7 +304,7 @@
         always @ (posedge ep50trig[1] or posedge reset_global)
         if (reset_global)
             //triggered_input7 <= 32'h3AA24463;     //0.001238 (b1 default) 
-            triggered_input7 <= 32'h3B1C90C5;      // 0.002389 (b1 default) 1
+            triggered_input7 <= 32'h3B231E7E;      // 0.002489 (b1 default) 1
             //triggered_input7 <= 32'h3AC3B0C4;       // 0.001493  (b1 default)   2
         else
             triggered_input7 <= {ep02wire, ep01wire};      
@@ -350,11 +326,11 @@
             triggered_input8 <= {ep02wire, ep01wire};  
 
         // a1
-//        always @ (posedge ep50trig[5] or posedge reset_global)
-//        if (reset_global)
-//            triggered_input9 <= 32'hC00F3B64;     //- 2.238 (a1 default)
-//        else
-//            triggered_input9 <= {ep02wire, ep01wire};   
+        always @ (posedge ep50trig[5] or posedge reset_global)
+        if (reset_global)
+            muscleVelGain <= 32'h3F800000;     //1.0 (default)
+        else
+            muscleVelGain <= {ep02wire, ep01wire};   
 
 //        // a2
 //        always @ (posedge ep50trig[6] or posedge reset_global)
@@ -367,7 +343,7 @@
         reg [31:0] apply_s_weight;
         always @ (posedge ep50trig[6] or posedge reset_global)
         if (reset_global)
-            apply_s_weight <= 32'h0;     //
+            apply_s_weight <= 32'h1;     //
         else
             apply_s_weight <= {ep02wire, ep01wire};  
 
@@ -402,14 +378,6 @@
         else
             i_MN_offset <= {ep02wire, ep01wire}; 
 
-
-
-//     wire [31:0]  i_spike_count_neuron_sync_inputPin;
-//      spike_counter  sync_counter_input
-//      (                 .clk(neuron_clk),
-//                        .reset(reset_sim),
-//                        .spike_in(spikein1),
-//                        .spike_count(i_spike_count_neuron_sync_inputPin) );   
             
        //** latch the inputs
 
@@ -827,8 +795,20 @@
 
         
 
-        // Waveform Generator mixed_input0 Instance Definition
-        waveform_from_pipe_bram_16s gen_mixed_input0(
+//        // Waveform Generator mixed_input0 Instance Definition
+//        waveform_from_pipe_bram_16s gen_mixed_input0(
+//            .reset(reset_sim),               // reset the waveform
+//            .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
+//            .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
+//            .data_from_trig(f_len_pxi),	// data from one of ep50 channel
+//            .is_from_trigger(is_from_trigger),
+//            .pipe_in_data(pipe_in_data),        // waveform data from opalkelly pipe in
+//            .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
+//            .wave(mixed_input0)                   // wave out signal
+//        );
+        
+		  		          // Waveform Generator mixed_input0 Instance Definition
+        waveform_from_pipe_bram_32s gen_mixed_input32s(
             .reset(reset_sim),               // reset the waveform
             .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
             .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
@@ -838,7 +818,6 @@
             .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
             .wave(mixed_input0)                   // wave out signal
         );
-        
 
         
     //FPGA-FPGA Outputs
@@ -885,10 +864,10 @@
         okWireIn    wi02    (.ok1(ok1), .ep_addr(8'h02),    .ep_dataout(ep02wire)   );
         okWireIn    wi03    (.ok1(ok1), .ep_addr(8'h03),    .ep_dataout(ep03wire)   );
         okWireIn    wi04    (.ok1(ok1), .ep_addr(8'h04),    .ep_dataout(ep04wire)   );
-        okWireIn    wi05    (.ok1(ok1), .ep_addr(8'h05),    .ep_dataout(ep05wire));
-        okWireIn    wi06    (.ok1(ok1), .ep_addr(8'h06),    .ep_dataout(ep06wire));
-        okWireIn    wi07    (.ok1(ok1), .ep_addr(8'h07),    .ep_dataout(ep07wire));
-        okWireIn    wi08    (.ok1(ok1),  .ep_addr(8'h08),   .ep_dataout(ep08wire));
+//        okWireIn    wi05    (.ok1(ok1), .ep_addr(8'h05),    .ep_dataout(ep05wire));
+//        okWireIn    wi06    (.ok1(ok1), .ep_addr(8'h06),    .ep_dataout(ep06wire));
+//        okWireIn    wi07    (.ok1(ok1), .ep_addr(8'h07),    .ep_dataout(ep07wire));
+//        okWireIn    wi08    (.ok1(ok1),  .ep_addr(8'h08),   .ep_dataout(ep08wire));
 
         
         okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
@@ -915,21 +894,21 @@
         okWireOut wo2C (    .ep_datain(population_neuron_MN6[15:0]),  .ok1(ok1),  .ok2(ok2x[13*17 +: 17]), .ep_addr(8'h2C)    );
         okWireOut wo2D (    .ep_datain(population_neuron_MN6[31:16]),  .ok1(ok1),  .ok2(ok2x[14*17 +: 17]), .ep_addr(8'h2D)   );    
         
-//        okWireOut wo2E (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
-//        okWireOut wo2F (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
+        okWireOut wo2E (    .ep_datain(mixed_input0[15:0]),  .ok1(ok1),  .ok2(ok2x[15*17 +: 17]), .ep_addr(8'h2E)    );
+        okWireOut wo2F (    .ep_datain(mixed_input0[31:16]),  .ok1(ok1),  .ok2(ok2x[16*17 +: 17]), .ep_addr(8'h2F)   );   
 
 
-        okWireOut wo30 (    .ep_datain(i_active_muscleDrive[15:0]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h30)    );
-        okWireOut wo31 (    .ep_datain(i_active_muscleDrive[31:16]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h31)   );         
+//        okWireOut wo30 (    .ep_datain(i_active_muscleDrive[15:0]),  .ok1(ok1),  .ok2(ok2x[17*17 +: 17]), .ep_addr(8'h30)    );
+//        okWireOut wo31 (    .ep_datain(i_active_muscleDrive[31:16]),  .ok1(ok1),  .ok2(ok2x[18*17 +: 17]), .ep_addr(8'h31)   );         
 
-        okWireOut wo32 (    .ep_datain(total_force_out_muscle0_sync[15:0]),  .ok1(ok1),  .ok2(ok2x[19*17 +: 17]), .ep_addr(8'h32)    );
-        okWireOut wo33 (    .ep_datain(total_force_out_muscle0_sync[31:16]),  .ok1(ok1),  .ok2(ok2x[20*17 +: 17]), .ep_addr(8'h33)   );  
+//        okWireOut wo32 (    .ep_datain(total_force_out_muscle0_sync[15:0]),  .ok1(ok1),  .ok2(ok2x[19*17 +: 17]), .ep_addr(8'h32)    );
+//        okWireOut wo33 (    .ep_datain(total_force_out_muscle0_sync[31:16]),  .ok1(ok1),  .ok2(ok2x[20*17 +: 17]), .ep_addr(8'h33)   );  
 
 //        okWireOut wo34 (    .ep_datain(i_spike_count_neuron_sync_inputPin[15:0]),  .ok1(ok1),  .ok2(ok2x[21*17 +: 17]), .ep_addr(8'h34)    );
 //        okWireOut wo35 (    .ep_datain(i_spike_count_neuron_sync_inputPin[31:16]),  .ok1(ok1),  .ok2(ok2x[22*17 +: 17]), .ep_addr(8'h35)   );       
 
-        okWireOut wo36 (    .ep_datain(i_time[15:0]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h36)    );
-        okWireOut wo37 (    .ep_datain(i_time[31:16]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h37)   );            
+//        okWireOut wo36 (    .ep_datain(i_time[15:0]),  .ok1(ok1),  .ok2(ok2x[23*17 +: 17]), .ep_addr(8'h36)    );
+//        okWireOut wo37 (    .ep_datain(i_time[31:16]),  .ok1(ok1),  .ok2(ok2x[24*17 +: 17]), .ep_addr(8'h37)   );            
 
        
 
@@ -944,18 +923,18 @@
         );
         
         // time tagging       
-       reg [31:0] i_time;
-
-        always @(posedge sim_clk or posedge reset_global)
-         begin
-           if (reset_global)
-            begin
-              i_time <= 32'd0;
-            end else begin
-              i_time <= i_time + 1; 
-            end
-        end
-          
+//       reg [31:0] i_time;
+//
+//        always @(posedge sim_clk or posedge reset_global)
+//         begin
+//           if (reset_global)
+//            begin
+//              i_time <= 32'd0;
+//            end else begin
+//              i_time <= i_time + 1; 
+//            end
+//        end
+//          
 
 //////
      wire [31:0]  spike_count_neuron_sync_MN1;
@@ -1014,7 +993,7 @@
                                 (spike_count_neuron_sync_MN2*32'd3 ) + 
                                 (spike_count_neuron_sync_MN3*32'd6 ) +
                                 (spike_count_neuron_sync_MN4*32'd15 ) + 
-                                (spike_count_neuron_sync_MN5*32'd22 ) + 
+                                (spike_count_neuron_sync_MN5*32'd22 ) +
                                 (spike_count_neuron_sync_MN6*32'd34 ) ;
 //                                (spike_count_neuron_sync_MN7*32'd49 );  // MN7 is largest MN (fires last) -> need to scale MUAP big
 
@@ -1071,26 +1050,62 @@
             .out(i_mixed_input0)
         );
    
-   wire [31:0] i_active_muscleDrive;
-   assign i_active_muscleDrive = is_from_trigger? total_spike_count_sync:i_mixed_input0;
-   
-   wire [31:0] total_force_out_muscle0_sync;
-  
-    // Muscle muscle0 Wire Definitions
-    shadmehr_muscle muscle0_sync(
-        .i_spike_cnt(i_active_muscleDrive),
-        .f_pos(f_len_pxi),
-        .f_vel(f_velocity),
-        .clk(sim_clk),
-        .reset(reset_sim),
-        .apply_s_weight(apply_s_weight),
-        .f_tau(triggered_input1),
-        .f_total_force_out(total_force_out_muscle0_sync)
-        //.f_current_A(),
-        //.f_current_fp_spikes()
-    );     
-        
-       
+//	wire [31:0] f_length;
+//   wire [31:0] i_active_muscleDrive;
+//   assign i_active_muscleDrive = total_spike_count_sync;
+//	//assign f_length = is_from_trigger? f_len_pxi:mixed_input0;
+//   wire [31:0] total_force_out_muscle0_sync;
+//  
+//    // Muscle muscle0 Wire Definitions
+//    shadmehr_muscle muscle0_sync(
+//        .i_spike_cnt(i_active_muscleDrive),
+//        .f_pos(mixed_input0),
+//        .f_vel(f_derivative),
+//        .clk(sim_clk),
+//        .reset(reset_sim),
+//        .apply_s_weight(apply_s_weight),
+//        .f_tau(triggered_input1),
+//        .f_total_force_out(total_force_out_muscle0_sync)
+//        //.f_current_A(),
+//        //.f_current_fp_spikes()
+//    );     
+//        
+//		  
+//		  
+		  
+		  
+		  
+		  
+	   reg [31:0] f_mixed_input0_F0, f_mixed_input0_F1, f_mixed_input0_F2, f_mixed_input0_F3, f_mixed_input0_F4;
+
+	  always @(posedge sim_clk or posedge reset_global)
+		begin
+		  if (reset_global)
+			begin
+			  f_mixed_input0_F0 <= 32'd0;
+			  f_mixed_input0_F1 <= 32'd0;
+			  f_mixed_input0_F2 <= 32'd0;
+			  f_mixed_input0_F3 <= 32'd0;
+			  f_mixed_input0_F4 <= 32'd0;
+			end else begin
+			  f_mixed_input0_F0 <= mixed_input0;
+			  f_mixed_input0_F1 <= f_mixed_input0_F0;
+				f_mixed_input0_F2 <= f_mixed_input0_F1; 	
+				f_mixed_input0_F3 <= f_mixed_input0_F2; 	
+				f_mixed_input0_F4 <= f_mixed_input0_F3; 	
+			end
+		 end	  
+		  
+    //*********** add  *********
+        wire [31:0] f_difference;
+        sub sub1(.x(f_mixed_input0_F0), .y(f_mixed_input0_F4), .out(f_difference));
+		//wire [31:0] f_gain_controlled_I_synapse_Ia;
+		wire [31:0] f_derivative;
+		wire[31:0] f_derivative_raw;
+		wire [31:0] IEEE_240;
+		assign IEEE_240 = 32'h43700000;
+		mult mult1(.x(f_difference), .y(IEEE_240), .out(f_derivative_raw)); // multiplicator is adjusted to get vel=~4.5 at fastest ramp (Kian's)
+		mult mult2(.x(f_derivative_raw), .y(muscleVelGain), .out(f_derivative));
         
 /////////////////////// END INSTANCE DEFINITIONS //////////////////////////
 
@@ -1101,7 +1116,7 @@
     assign led[3] = ~spike_count_neuron_sync_MN2;
     assign led[4] = ~spike_count_neuron_sync_MN3;
     assign led[5] = ~spike_count_neuron_sync_MN4;
-    assign led[6] = ~spike_count_neuron_sync_MN6; // 
+    assign led[6] = ~0;//~spike_count_neuron_sync_MN6; // 
     assign led[7] = ~sim_clk; // clock
     
 endmodule

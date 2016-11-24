@@ -58,7 +58,13 @@ class SingleXemTester(QDialog):
     def close(self):
         self.dispView.close()
         self.dispView.plotData(self.data)
-        
+
+    # def savefile(self):
+    #     copy1 = self.data
+    #     self.data = []
+    #     self.dispView.plotData(self.data)
+    #     print self.data
+    #
         
     def startSim(self):
         # hold the simulation until start button is pushed

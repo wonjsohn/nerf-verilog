@@ -1,13 +1,13 @@
 from numpy import *
-from pylab import *
+#from pylab import *
 from math import exp
 from decimal import *
 import math
 import struct, binascii
 import os
 
-import matplotlib.pyplot 
-import matplotlib.pyplot  as pyplot
+#import matplotlib.pyplot 
+#import matplotlib.pyplot  as pyplot
 from scipy import * 
 from scipy.integrate import quad
 

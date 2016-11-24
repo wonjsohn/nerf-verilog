@@ -75,7 +75,7 @@ when the FIFO is full is not destructive to the contents of the FIFO.
 
 **/
 wire [31:0] wave_temp;
-fifo_16seconds fifo32s (
+fifo_standard32s fifo_std32s (
   .rst(reset),   // input rst
   .wr_clk(pipe_clk),   // input wr_clk
   .rd_clk(pop_clk),   // input rd_clk

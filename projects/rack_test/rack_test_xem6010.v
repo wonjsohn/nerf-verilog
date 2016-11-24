@@ -306,7 +306,7 @@
             triggered_input8 <= {ep02wire, ep01wire};                  
         
 
-
+//
 //        // Waveform Generator mixed_input0 Instance Definition
 //        waveform_from_pipe_bram_2s gen_mixed_input0(
 //            .reset(reset_sim),               // reset the waveform
@@ -318,10 +318,9 @@
 //            .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
 //            .wave(mixed_input0)                   // wave out signal
 //        );
-        
 		  
-		         // Waveform Generator mixed_input0 Instance Definition
-        fifo_long fifo1(
+		          // Waveform Generator mixed_input0 Instance Definition
+        waveform_from_pipe_bram_32s gen_mixed_input32s(
             .reset(reset_sim),               // reset the waveform
             .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
             .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
@@ -329,11 +328,25 @@
             .is_from_trigger(is_from_trigger),
             .pipe_in_data(pipe_in_data),        // waveform data from opalkelly pipe in
             .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
-            .wave(mixed_input0),                   // wave out signal
-				.almostfifofull1(fifo_almost_full),					// fifo is almost full
-				.n_fifo_almost_em(fifo_almost_empty)
+            .wave(mixed_input0)                   // wave out signal
         );
-		 
+        
+        
+		  
+//		         // Waveform Generator mixed_input0 Instance Definition
+//        fifo_long fifo1(
+//            .reset(reset_sim),               // reset the waveform
+//            .pipe_clk(ti_clk),                  // target interface clock from opalkelly interface
+//            .pipe_in_write(pipe_in_write),      // write enable signal from opalkelly pipe in
+//            .data_from_trig(triggered_input0),	// data from one of ep50 channel
+//            .is_from_trigger(is_from_trigger),
+//            .pipe_in_data(pipe_in_data),        // waveform data from opalkelly pipe in
+//            .pop_clk(sim_clk),                  // trigger next waveform sample every 1ms
+//            .wave(mixed_input0),                   // wave out signal
+//				.almostfifofull1(fifo_almost_full),					// fifo is almost full
+//				.n_fifo_almost_em(fifo_almost_empty)
+//        );
+//		 
 		  
 		  // trigger out fifo full signal
 		  
@@ -405,10 +418,10 @@
         okWireIn    wi01    (.ok1(ok1), .ep_addr(8'h01),    .ep_dataout(ep01wire)   );
         okWireIn    wi02    (.ok1(ok1), .ep_addr(8'h02),    .ep_dataout(ep02wire)   );
         
-//        okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
-//                            .ep_blockstrobe(), .ep_dataout(pipe_in_data), .ep_ready(1'b1));
-        okPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
-                             .ep_dataout(pipe_in_data));
+        okBTPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
+                            .ep_blockstrobe(), .ep_dataout(pipe_in_data), .ep_ready(1'b1));
+//        okPipeIn ep80 (   .ok1(ok1), .ok2(ok2x[0*17 +: 17]), .ep_addr(8'h80), .ep_write(pipe_in_write),
+//                             .ep_dataout(pipe_in_data));
         
 		  
         okWireOut wo20 (    .ep_datain(population_neuron0[31:16]),  .ok1(ok1),  .ok2(ok2x[1*17 +: 17]), .ep_addr(8'h20)    );

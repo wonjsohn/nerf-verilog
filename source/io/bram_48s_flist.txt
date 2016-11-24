@@ -1,0 +1,16 @@
+# Output products list for <bram_48s>
+_xmsgs\pn_parser.xmsgs
+blk_mem_gen_ds512.pdf
+blk_mem_gen_readme.txt
+bram_48s.asy
+bram_48s.gise
+bram_48s.ngc
+bram_48s.sym
+bram_48s.v
+bram_48s.veo
+bram_48s.vhd
+bram_48s.vho
+bram_48s.xco
+bram_48s.xise
+bram_48s_flist.txt
+bram_48s_xmdf.tcl

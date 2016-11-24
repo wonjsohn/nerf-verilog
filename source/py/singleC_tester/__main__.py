@@ -3,13 +3,15 @@
 
 import sys, PyQt4
 from PyQt4.QtGui import QFileDialog
-
+sys.path.insert(0, 'C:\\Users\\wonjsohn\\Documents\\GitHub\\nerf_verilog\\projects\\derivative')
+# import config_test_local
 from PyQt4.QtCore import QTimer,  SIGNAL, SLOT, Qt,  QRect
 from MVC_MainGUI import MultiXemScheduler
 from C_XemScheduler import SingleXemTester # Controller in MVC
 from M_Fpga import SomeFpga # Model in MVC
 from V_Display import View, ViewChannel,  CtrlChannel # Viewer in MVC
 import os
+import importlib
 
 sys.path.append('../')
 import platform 
@@ -17,7 +19,7 @@ arch = platform.architecture()[0]
 if arch == "32bit":
     from opalkelly_32bit import ok
 elif arch == "64bit":
-    from opalkelly_64bit import ok
+    from opalkelly_64bit_windows import ok
 
 
 if __name__ == "__main__":        
@@ -25,13 +27,13 @@ if __name__ == "__main__":
     
 #    ROOT_PATH = QFileDialog.getExistingDirectory(None, "Path for the Verilog .bit file", os.getcwd() + "../../")
 
-    LINUX = 1
-    WINDOWS = 0
+    LINUX = 0
+    WINDOWS = 1
     assert (LINUX + WINDOWS ==1),  "CHOOSE ONE ENVIRONMENT!"
     
    
     if (WINDOWS==1) :
-        ROOT_PATH = "C:\\nerf_sangerlab\\projects\\"  # windows setting
+        ROOT_PATH = "C:\\Users\\wonjsohn\\Documents\\GitHub\\nerf_verilog\\projects\\"  # windows setting
     if (LINUX==1):
         ROOT_PATH = "/home/eric/nerf_verilog_eric/projects/"
 
@@ -39,7 +41,7 @@ if __name__ == "__main__":
    
 #    PROJECT_LIST = ["izneuron_range_test"] 
 #    PROJECT_LIST = ["rack_mn_muscle"] 
-    PROJECT_LIST = ["stdp_test"] 
+    PROJECT_LIST = ["derivative"]
 
     PROJECT_PATH = [(ROOT_PATH + p) for p in PROJECT_LIST]
     DEVICE_MODEL = "xem6010"
@@ -48,10 +50,11 @@ if __name__ == "__main__":
     #print BITFILE_NAME
     #assert os.path.exists(BITFILE_NAME.encode('utf-8')), ".bit file NOT found!"
     
-    #sys.path.append(PROJECT_PATH)
+    sys.path.append(PROJECT_PATH)
     print PROJECT_PATH
-    os.chdir('/home/eric/nerf_verilog_eric/projects/stdp_test')
-    from config_test_local import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT,  USER_INPUT  
+    os.chdir('C:\\Users\\wonjsohn\\Documents\\GitHub\\nerf_verilog\\projects\\derivative')
+    # board_scheme = importlib.import_module(str('config_test_local'))
+    from config_test_local import NUM_NEURON, SAMPLING_RATE, FPGA_OUTPUT,  USER_INPUT
     FPGA_OUTPUT_B = []
     USER_INPUT_B = []
     
@@ -72,7 +75,7 @@ if __name__ == "__main__":
     print "Found ",  numFpga, " OpalKelly devices:"           
     xemSerialList = [testrun.GetDeviceListSerial(i) for i in xrange(numFpga)]
     print xemSerialList
-    xemSerialList = ['11160001CJ']
+    xemSerialList = ['000000054O']
 
     print xemSerialList
     

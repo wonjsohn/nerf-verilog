@@ -13,7 +13,7 @@ arch = platform.architecture()[0]
 if arch == "32bit":
     from opalkelly_32bit import ok
 elif arch == "64bit":
-    from opalkelly_64bit import ok
+    from opalkelly_64bit_windows import ok
 
 import numpy as np
 from Utilities import *
@@ -137,17 +137,21 @@ class SomeFpga:
         """
         # print pipeInData
 
-        buf = "" 
+        buf = ""
         for x in pipeInData:
             ##print x
             buf += pack('<f', x) # convert float_x to a byte string, '<' = little endian
 
-        byteSent = self.xem.WriteToBlockPipeIn(PIPE_IN_ADDR, 4, buf)
+        bufbyte = bytearray(buf)  # required in windows
+        bytesize = 4 # 4 may be too slow for large data, 16 doesn't work why?
+        byteSent = self.xem.WriteToBlockPipeIn(PIPE_IN_ADDR, bytesize, bufbyte)
 
         if byteSent == len(buf):
             print "%d bytes sent via PipeIn!" % byteSent 
         else:
             print "Send pipe filed! %d bytes sent" % byteSent
+
+
     
     def SendPipe2(self, pipeInData):
         """ Send byte stream to OpalKelly board

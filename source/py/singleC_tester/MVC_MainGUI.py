@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 from Utilities import *
 from generate_sin import gen as gen_sin
 from generate_tri import gen as gen_tri
-from generate_spikes import spike_train
+#from generate_spikes import spike_train
 from generate_sequence import gen as gen_ramp
 from math import floor,  pi
 import types

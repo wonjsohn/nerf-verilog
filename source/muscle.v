@@ -129,9 +129,9 @@ module shadmehr_active_force(i_spikes, f_active_force_out, f_fp_spikes_out, clk,
 	int_to_float get_fp_spike(.out(spikes_i), .in(i_spikes));
 	 
     //two competing active muscle models
-    h_diff_eq gen_h(.x_i1(spikes_i1), .x_i2(spikes_i2), .y_i1(h_i1), .y_i2(h_i2), .y_i(h_i));
+    //h_diff_eq gen_h(.x_i1(spikes_i1), .x_i2(spikes_i2), .y_i1(h_i1), .y_i2(h_i2), .y_i(h_i));
     
-	//fuglevand_twitch twitch(.x_i1(spikes_i1), .x_i2(spikes_i2), .y_i1(h_i1), .y_i2(h_i2), .y_i(h_i), .tau(f_tau));
+	fuglevand_twitch twitch(.x_i1(spikes_i1), .x_i2(spikes_i2), .y_i1(h_i1), .y_i2(h_i2), .y_i(h_i), .tau(f_tau));
 	 
 	 
 	 
